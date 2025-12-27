@@ -1,4 +1,4 @@
-/* iLoveIMG Design - Fixed Version */
+/* iLoveIMG Design - Client-Side Version */
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +12,6 @@ body {
     line-height: 1.5;
 }
 
-/* Side Menu */
 .side-menu {
     position: fixed;
     top: 0;
@@ -63,7 +62,6 @@ body {
     background: #f5f5f5;
 }
 
-/* Header */
 .header {
     display: flex;
     justify-content: space-between;
@@ -115,7 +113,6 @@ body {
     font-size: 22px;
 }
 
-/* Hero Section */
 .hero {
     text-align: center;
     padding: 40px 20px;
@@ -135,7 +132,6 @@ body {
     opacity: 0.95;
 }
 
-/* Category Navigation */
 .category-nav {
     display: flex;
     gap: 8px;
@@ -173,13 +169,11 @@ body {
     background: #f5f5f5;
 }
 
-/* Tools Container */
 .tools-container {
     padding: 16px;
     max-width: 100%;
 }
 
-/* Tool Card */
 .tool-card {
     display: flex;
     align-items: flex-start;
@@ -227,7 +221,6 @@ body {
     line-height: 1.4;
 }
 
-/* TABLET & DESKTOP - 2 Column Layout */
 @media (min-width: 768px) {
     .tools-container {
         display: grid;
@@ -251,7 +244,6 @@ body {
     }
 }
 
-/* LARGE DESKTOP - 3 Column Layout */
 @media (min-width: 1200px) {
     .tools-container {
         grid-template-columns: repeat(3, 1fr);
@@ -260,7 +252,6 @@ body {
     }
 }
 
-/* Tool Page Styles */
 .tool-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -305,8 +296,9 @@ body {
 }
 
 .upload-icon {
-    font-size: 48px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .upload-area h2 {
@@ -398,6 +390,34 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.controls {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.control-group input,
+.control-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
 }
 
 @media (max-width: 767px) {
