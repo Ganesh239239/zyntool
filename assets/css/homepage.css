@@ -1,0 +1,61 @@
+/* Homepage Specific Styles */
+.tools-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 30px;
+}
+
+.tool-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.tool-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-color);
+}
+
+.tool-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+}
+
+.tool-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 12px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.tool-card p {
+    color: var(--text-light);
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.tool-card p strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .tools-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .tool-card {
+        padding: 30px 20px;
+    }
+}
