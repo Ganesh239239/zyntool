@@ -1,4 +1,4 @@
-/* ZynTool - FIXED */
+/* ZynTool - RIGHT SIDE MENU */
 
 * {
     margin: 0;
@@ -16,21 +16,21 @@ body {
     min-height: 100vh;
 }
 
-/* Side Menu */
+/* Side Menu - RIGHT SIDE */
 .side-menu {
     position: fixed;
     top: 0;
-    left: -280px;
+    right: -280px;
     width: 280px;
     height: 100vh;
     background: white;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    transition: left 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
     z-index: 1000;
 }
 
 .side-menu.active {
-    left: 0;
+    right: 0;
 }
 
 .side-menu-header {
@@ -68,7 +68,7 @@ body {
     color: #FF7657;
 }
 
-/* Header - FIXED with ZynTool logo and NO grid icon */
+/* Header */
 .header {
     display: flex;
     justify-content: space-between;
@@ -105,7 +105,6 @@ body {
     color: #FF7657;
 }
 
-/* LOGO - ZYNTOOL */
 .logo {
     display: flex;
     align-items: center;
@@ -119,9 +118,7 @@ body {
     color: #E85D3F;
 }
 
-/* REMOVED .grid-btn - No longer needed */
-
-/* Hero Section - ORANGE */
+/* Hero Section */
 .hero {
     text-align: center;
     padding: 40px 20px;
@@ -141,7 +138,7 @@ body {
     opacity: 0.95;
 }
 
-/* Category Navigation - FIXED */
+/* Category Navigation */
 .category-nav {
     display: flex;
     gap: 8px;
@@ -236,11 +233,11 @@ body {
     line-height: 1.5;
 }
 
-/* Footer */
+/* Footer - Vertical Layout like iLoveIMG */
 .footer {
     background: #2c3e50;
     color: white;
-    padding: 50px 20px 20px;
+    padding: 50px 20px 30px;
     margin-top: 60px;
 }
 
@@ -250,22 +247,21 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .footer-section h4 {
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     color: #ecf0f1;
 }
 
 .footer-section ul {
     list-style: none;
-}
-
-.footer-section ul li {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .footer-section ul li a {
@@ -273,6 +269,7 @@ body {
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s;
+    display: block;
 }
 
 .footer-section ul li a:hover {
@@ -282,92 +279,14 @@ body {
 .footer-bottom {
     max-width: 1400px;
     margin: 0 auto;
-    padding-top: 20px;
+    padding-top: 30px;
     border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    text-align: center;
 }
 
 .footer-bottom p {
     color: #95a5a6;
     font-size: 14px;
-}
-
-.social-links {
-    display: flex;
-    gap: 16px;
-}
-
-.social-links a {
-    color: #bdc3c7;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.2s;
-}
-
-.social-links a:hover {
-    color: #FF7657;
-}
-
-/* Responsive - Mobile */
-@media (max-width: 767px) {
-    .tools-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .hero h1 {
-        font-size: 24px;
-    }
-
-    .footer-content {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-/* Responsive - Tablet */
-@media (min-width: 768px) and (max-width: 1199px) {
-    .tools-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .hero h1 {
-        font-size: 32px;
-    }
-
-    .hero {
-        padding: 50px 20px;
-    }
-}
-
-/* Responsive - Desktop */
-@media (min-width: 1200px) {
-    .tools-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-        padding: 32px;
-    }
-
-    .hero h1 {
-        font-size: 36px;
-    }
-
-    .hero {
-        padding: 60px 20px;
-    }
 }
 
 /* Tool Header */
@@ -463,12 +382,63 @@ body {
     display: none;
 }
 
+/* Responsive - Mobile */
 @media (max-width: 767px) {
+    .tools-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .hero h1 {
+        font-size: 24px;
+    }
+
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+
     .upload-area {
         padding: 40px 20px;
     }
 
     .tool-header h1 {
         font-size: 24px;
+    }
+}
+
+/* Responsive - Tablet */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .tools-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero {
+        padding: 50px 20px;
+    }
+}
+
+/* Responsive - Desktop */
+@media (min-width: 1200px) {
+    .tools-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 32px;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero {
+        padding: 60px 20px;
     }
 }

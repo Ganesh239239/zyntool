@@ -1,4 +1,4 @@
-/* Tool Pages - FIXED */
+/* Tool Pages - Large Card Buttons */
 
 .tool-workspace {
     max-width: 1200px;
@@ -213,52 +213,67 @@
     margin-top: 6px;
 }
 
-/* SMALL FORMAT BUTTONS - FIXED */
-.format-buttons {
+/* LARGE FORMAT CARDS - Like Screenshot */
+.format-options {
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 12px;
-    flex-wrap: wrap;
 }
 
-.format-btn {
-    display: inline-flex;
+.format-card {
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 18px;
+    gap: 20px;
+    padding: 20px;
     background: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    border: 3px solid #e9ecef;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
+    transition: all 0.3s;
 }
 
-.format-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.format-btn:hover {
+.format-card:hover {
     background: #FFF5F3;
     border-color: #FFB8A5;
-    transform: translateY(-2px);
+    transform: translateX(4px);
 }
 
-.format-btn.active {
+.format-card.active {
     background: linear-gradient(135deg, #FFF5F3 0%, #FFE5E0 100%);
-    border: 2px solid #FF7657;
-    color: #FF7657;
-    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+    border: 3px solid #FF7657;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
 }
 
-.format-btn .format-badge {
-    font-size: 10px;
-    opacity: 0.7;
-    display: block;
-    margin-top: -2px;
+.format-card-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.format-card-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.format-card-info {
+    flex: 1;
+}
+
+.format-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.format-card-desc {
+    font-size: 13px;
+    color: #FF7657;
+    font-weight: 500;
 }
 
 /* Buttons */
@@ -290,7 +305,7 @@
     box-shadow: none;
 }
 
-/* DOWNLOAD BUTTON - ORANGE (NOT GREEN) */
+/* ORANGE Download Button */
 .btn-download {
     width: 100%;
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
@@ -420,13 +435,12 @@
         grid-template-columns: 1fr;
     }
 
-    .format-buttons {
-        flex-direction: column;
+    .format-options {
+        gap: 10px;
     }
 
-    .format-btn {
-        width: 100%;
-        justify-content: center;
+    .format-card {
+        padding: 16px;
     }
 
     .button-group {
