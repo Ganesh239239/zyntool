@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert to JPG | iLoveIMG</title>
+    <title>Remove Background | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
@@ -29,11 +29,11 @@
         <button class="grid-btn" id="grid-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"></circle><circle cx="12" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="12" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle></svg></button>
     </header>
 
-    <div class="tool-header"><h1>Convert to JPG</h1><p>Convert images to JPG format</p></div>
+    <div class="tool-header"><h1>Remove Background</h1><p>Automatically remove image background</p></div>
 
     <main class="tool-workspace">
         <div class="upload-zone" id="upload-zone">
-            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF7657" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle></svg></div>
+            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF7657" stroke-width="2"><path d="M21 4H3v16h18V4z"></path><line x1="3" y1="10" x2="21" y2="10"></line><line x1="10" y1="4" x2="10" y2="20"></line></svg></div>
             <h3>Select images</h3>
             <p class="upload-hint">or drop images here</p>
             <button class="btn-primary" id="select-btn">Select images</button>
@@ -70,6 +70,6 @@
     </footer>
 
     <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/convert-to-jpg.js"></script>
+    <script src="../assets/js/remove-bg.js"></script>
 </body>
 </html>

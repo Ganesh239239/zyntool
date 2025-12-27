@@ -5,140 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blur Face | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
-    <!-- Side Menu -->
     <div class="side-menu" id="side-menu">
         <div class="side-menu-header">
             <div class="logo">
-                <span class="logo-text">I</span>
-                <span class="logo-heart">💙</span>
-                <span class="logo-text">IMG</span>
+                <span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span>
             </div>
             <button class="close-menu" id="close-menu">✕</button>
         </div>
         <nav class="side-menu-nav">
             <a href="../index.html" class="menu-item">Home</a>
             <a href="#" class="menu-item">All tools</a>
-            <a href="#" class="menu-item">Pricing</a>
-            <a href="#" class="menu-item">Login</a>
-            <a href="#" class="menu-item">Sign up</a>
         </nav>
     </div>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menu-btn" aria-label="Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-            <div class="logo">
-                <span class="logo-text">I</span>
-                <span class="logo-heart">💙</span>
-                <span class="logo-text">IMG</span>
-            </div>
+            <button class="menu-btn" id="menu-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <div class="logo"><span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span></div>
         </div>
-        <button class="grid-btn" id="grid-btn" aria-label="Grid menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="5" cy="5" r="2"></circle>
-                <circle cx="12" cy="5" r="2"></circle>
-                <circle cx="19" cy="5" r="2"></circle>
-                <circle cx="5" cy="12" r="2"></circle>
-                <circle cx="12" cy="12" r="2"></circle>
-                <circle cx="19" cy="12" r="2"></circle>
-                <circle cx="5" cy="19" r="2"></circle>
-                <circle cx="12" cy="19" r="2"></circle>
-                <circle cx="19" cy="19" r="2"></circle>
-            </svg>
-        </button>
+        <button class="grid-btn" id="grid-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"></circle><circle cx="12" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="12" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle></svg></button>
     </header>
 
-    <!-- Tool Header -->
-    <div class="tool-header">
-        <h1>Blur Face</h1>
-        <p>Blur sensitive areas</p>
-    </div>
+    <div class="tool-header"><h1>Blur Face</h1><p>Automatically blur faces for privacy</p></div>
 
-    <!-- Tool Content -->
-    <section class="tool-section">
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
-            <h2>Select Image</h2>
-            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
-            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
-            <input type="file" id="file-input" accept="image/*">
-            <p style="margin-top: 15px; font-size: 13px; color: #999;">or drag and drop files here</p>
+    <main class="tool-workspace">
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF7657" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
+            <h3>Select images</h3>
+            <p class="upload-hint">or drop images here</p>
+            <button class="btn-primary" id="select-btn">Select images</button>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing your image...</p>
-        </div>
+        <div class="work-area" id="work-area" style="display: none;">
+            <div class="preview-panel">
+                <div class="image-card">
+                    <div class="image-thumbnail"><img id="thumbnail-img" alt="Preview"></div>
+                    <div class="image-info"><div class="image-name" id="image-name">image.jpg</div></div>
+                </div>
+            </div>
 
-        <div class="controls" id="controls" style="display: none;"></div>
-
-        <div class="preview-section" id="preview-section">
-            <h2>Result</h2>
-            <img id="preview-image" class="image-preview" alt="Preview">
-            <div class="actions">
-                <button class="btn" id="download-btn">Download Result</button>
-                <button class="btn" onclick="location.reload()" style="background: #999;">Process Another</button>
+            <div class="controls-panel">
+                <div class="panel-section" id="controls-content"></div>
+                <button class="btn-process" id="process-btn">Process IMAGE</button>
+                <button class="btn-download" id="download-btn" style="display: none;">Download Result</button>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="spinner-large"></div><p>Processing your image...</p>
+        </div>
+    </main>
+
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h4>Products</h4>
-                <ul>
-                    <li><a href="#">iLovePDF</a></li>
-                    <li><a href="#">iLoveIMG</a></li>
-                    <li><a href="#">Compress IMAGE</a></li>
-                    <li><a href="#">Resize IMAGE</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">Careers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="#">Help</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">API</a></li>
-                    <li><a href="#">Developers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                    <li><a href="#">GDPR</a></li>
-                </ul>
-            </div>
+            <div class="footer-section"><h4>Products</h4><ul><li><a href="#">iLoveIMG</a></li></ul></div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 iLoveIMG. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" aria-label="Twitter">𝕏</a>
-                <a href="#" aria-label="Facebook">f</a>
-                <a href="#" aria-label="Instagram">📷</a>
-                <a href="#" aria-label="LinkedIn">in</a>
-            </div>
         </div>
     </footer>
 

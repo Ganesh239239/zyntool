@@ -5,227 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotate IMAGE | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
-    <!-- Side Menu -->
     <div class="side-menu" id="side-menu">
         <div class="side-menu-header">
             <div class="logo">
-                <span class="logo-text">I</span>
-                <span class="logo-heart">💙</span>
-                <span class="logo-text">IMG</span>
+                <span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span>
             </div>
             <button class="close-menu" id="close-menu">✕</button>
         </div>
         <nav class="side-menu-nav">
             <a href="../index.html" class="menu-item">Home</a>
             <a href="#" class="menu-item">All tools</a>
-            <a href="#" class="menu-item">Pricing</a>
-            <a href="#" class="menu-item">Login</a>
-            <a href="#" class="menu-item">Sign up</a>
         </nav>
     </div>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menu-btn" aria-label="Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-            <div class="logo">
-                <span class="logo-text">I</span>
-                <span class="logo-heart">💙</span>
-                <span class="logo-text">IMG</span>
-            </div>
+            <button class="menu-btn" id="menu-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <div class="logo"><span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span></div>
         </div>
-        <button class="grid-btn" id="grid-btn" aria-label="Grid menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="5" cy="5" r="2"></circle>
-                <circle cx="12" cy="5" r="2"></circle>
-                <circle cx="19" cy="5" r="2"></circle>
-                <circle cx="5" cy="12" r="2"></circle>
-                <circle cx="12" cy="12" r="2"></circle>
-                <circle cx="19" cy="12" r="2"></circle>
-                <circle cx="5" cy="19" r="2"></circle>
-                <circle cx="12" cy="19" r="2"></circle>
-                <circle cx="19" cy="19" r="2"></circle>
-            </svg>
-        </button>
+        <button class="grid-btn" id="grid-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"></circle><circle cx="12" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="12" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle></svg></button>
     </header>
 
-    <!-- Tool Header -->
-    <div class="tool-header">
-        <h1>Rotate IMAGE</h1>
-        <p>Rotate images 90°, 180°, 270° or flip horizontally and vertically</p>
-    </div>
+    <div class="tool-header"><h1>Rotate IMAGE</h1><p>Rotate images at any angle</p></div>
 
-    <!-- Tool Content -->
-    <section class="tool-section">
-        <!-- Upload Area -->
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
-                    <polyline points="23 4 23 10 17 10"></polyline>
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                </svg>
-            </div>
-            <h2>Select Image</h2>
-            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
-            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
+    <main class="tool-workspace">
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF7657" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
+            <h3>Select images</h3>
+            <p class="upload-hint">or drop images here</p>
+            <button class="btn-primary" id="select-btn">Select images</button>
             <input type="file" id="file-input" accept="image/*" style="display: none;">
-            <p style="margin-top: 15px; font-size: 13px; color: #999;">or drag and drop files here</p>
         </div>
 
-        <!-- Loading -->
-        <div class="loading" id="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>Processing your image...</p>
-        </div>
-
-        <!-- Controls Section (appears after upload) -->
-        <div class="controls" id="controls" style="display: none;">
-            <div class="controls-header">
-                <h3>Rotate Controls</h3>
-                <p>Current rotation: <strong><span id="rotation-value">0</span>°</strong></p>
-            </div>
-
-            <!-- Quick Rotate Buttons -->
-            <div class="control-group">
-                <label>Quick Rotate</label>
-                <div class="button-row">
-                    <button class="btn-control" id="rotate-90">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="23 4 23 10 17 10"></polyline>
-                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                        </svg>
-                        Rotate 90°
-                    </button>
-                    <button class="btn-control" id="rotate-180">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
-                        </svg>
-                        Rotate 180°
-                    </button>
-                    <button class="btn-control" id="rotate-270">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="1 20 1 14 7 14"></polyline>
-                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
-                        </svg>
-                        Rotate 270°
-                    </button>
+        <div class="work-area" id="work-area" style="display: none;">
+            <div class="preview-panel">
+                <div class="image-card">
+                    <div class="image-thumbnail"><img id="thumbnail-img" alt="Preview"></div>
+                    <div class="image-info"><div class="image-name" id="image-name">image.jpg</div></div>
                 </div>
             </div>
 
-            <!-- Flip Buttons -->
-            <div class="control-group">
-                <label>Flip Image</label>
-                <div class="button-row">
-                    <button class="btn-control" id="flip-horizontal">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="17 1 21 5 17 9"></polyline>
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                            <polyline points="7 23 3 19 7 15"></polyline>
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                        </svg>
-                        Flip Horizontal
-                    </button>
-                    <button class="btn-control" id="flip-vertical">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="17 1 21 5 17 9"></polyline>
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                            <polyline points="7 23 3 19 7 15"></polyline>
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                        </svg>
-                        Flip Vertical
-                    </button>
-                </div>
-            </div>
-
-            <!-- Custom Rotation Slider -->
-            <div class="control-group">
-                <label>Custom Rotation: <span id="slider-value">0</span>°</label>
-                <input type="range" id="rotation-slider" min="0" max="360" value="0" class="slider">
-            </div>
-
-            <!-- Reset Button -->
-            <div class="control-group">
-                <button class="btn-control btn-reset" id="reset-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-                        <path d="M21 3v5h-5"></path>
-                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-                        <path d="M3 21v-5h5"></path>
-                    </svg>
-                    Reset to Original
-                </button>
+            <div class="controls-panel">
+                <div class="panel-section" id="controls-content"></div>
+                <button class="btn-process" id="process-btn">Process IMAGE</button>
+                <button class="btn-download" id="download-btn" style="display: none;">Download Result</button>
             </div>
         </div>
 
-        <!-- Preview Section -->
-        <div class="preview-section" id="preview-section" style="display: none;">
-            <h2>Preview</h2>
-            <div class="canvas-container">
-                <canvas id="canvas" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></canvas>
-            </div>
-            <div class="actions">
-                <button class="btn" id="download-btn">Download Result</button>
-                <button class="btn" onclick="location.reload()" style="background: #999;">Process Another</button>
-            </div>
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="spinner-large"></div><p>Processing your image...</p>
         </div>
-    </section>
+    </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h4>Products</h4>
-                <ul>
-                    <li><a href="#">iLovePDF</a></li>
-                    <li><a href="#">iLoveIMG</a></li>
-                    <li><a href="#">Compress IMAGE</a></li>
-                    <li><a href="#">Resize IMAGE</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">Careers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="#">Help</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">API</a></li>
-                    <li><a href="#">Developers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                    <li><a href="#">GDPR</a></li>
-                </ul>
-            </div>
+            <div class="footer-section"><h4>Products</h4><ul><li><a href="#">iLoveIMG</a></li></ul></div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 iLoveIMG. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" aria-label="Twitter">𝕏</a>
-                <a href="#" aria-label="Facebook">f</a>
-                <a href="#" aria-label="Instagram">📷</a>
-                <a href="#" aria-label="LinkedIn">in</a>
-            </div>
         </div>
     </footer>
 
