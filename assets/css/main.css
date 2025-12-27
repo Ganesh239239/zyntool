@@ -1,4 +1,4 @@
-/* ZynTool - RIGHT SIDE MENU */
+/* ZynTool - Main CSS */
 
 * {
     margin: 0;
@@ -233,7 +233,7 @@ body {
     line-height: 1.5;
 }
 
-/* Footer - Vertical Layout like iLoveIMG */
+/* Footer */
 .footer {
     background: #2c3e50;
     color: white;
@@ -307,82 +307,7 @@ body {
     opacity: 0.9;
 }
 
-.tool-section {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
-    flex: 1;
-}
-
-.upload-area {
-    background: white;
-    border: 3px dashed #FF7657;
-    border-radius: 16px;
-    padding: 60px 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.upload-area:hover {
-    background: #FFF5F3;
-    border-color: #FF8E53;
-}
-
-.upload-area.dragover {
-    background: #FFE5E0;
-    transform: scale(1.02);
-}
-
-.upload-icon {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.upload-area h2 {
-    color: #FF7657;
-    margin-bottom: 10px;
-    font-size: 20px;
-}
-
-.upload-area p {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-    color: white;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.3s;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-}
-
-.btn:hover {
-    background: linear-gradient(135deg, #E85D3F 0%, #FF7657 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-}
-
-.btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
-
-#file-input {
-    display: none;
-}
-
-/* Responsive - Mobile */
+/* Responsive */
 @media (max-width: 767px) {
     .tools-container {
         display: flex;
@@ -398,17 +323,8 @@ body {
         grid-template-columns: repeat(2, 1fr);
         gap: 30px;
     }
-
-    .upload-area {
-        padding: 40px 20px;
-    }
-
-    .tool-header h1 {
-        font-size: 24px;
-    }
 }
 
-/* Responsive - Tablet */
 @media (min-width: 768px) and (max-width: 1199px) {
     .tools-container {
         display: grid;
@@ -425,7 +341,6 @@ body {
     }
 }
 
-/* Responsive - Desktop */
 @media (min-width: 1200px) {
     .tools-container {
         display: grid;

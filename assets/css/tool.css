@@ -1,4 +1,4 @@
-/* Tool Pages - Large Card Buttons */
+/* Tool Pages - Small Format Buttons */
 
 .tool-workspace {
     max-width: 1200px;
@@ -213,67 +213,65 @@
     margin-top: 6px;
 }
 
-/* LARGE FORMAT CARDS - Like Screenshot */
-.format-options {
+/* SMALL FORMAT BUTTONS - Like Screenshot */
+.format-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin-top: 12px;
 }
 
-.format-card {
+.format-btn {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background: #f8f9fa;
-    border: 3px solid #e9ecef;
-    border-radius: 16px;
+    gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
-.format-card:hover {
+.format-btn:hover {
     background: #FFF5F3;
     border-color: #FFB8A5;
-    transform: translateX(4px);
 }
 
-.format-card.active {
-    background: linear-gradient(135deg, #FFF5F3 0%, #FFE5E0 100%);
-    border: 3px solid #FF7657;
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+.format-btn.active {
+    background: #FFF5F3;
+    border: 2px solid #FF7657;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
 }
 
-.format-card-icon {
+.format-btn-icon {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.format-card-icon svg {
-    width: 48px;
-    height: 48px;
+.format-btn-icon svg {
+    width: 28px;
+    height: 28px;
 }
 
-.format-card-info {
+.format-btn-info {
     flex: 1;
 }
 
-.format-card-title {
-    font-size: 20px;
-    font-weight: 700;
+.format-btn-title {
+    font-size: 16px;
+    font-weight: 600;
     color: #333;
-    margin-bottom: 4px;
 }
 
-.format-card-desc {
-    font-size: 13px;
+.format-btn-desc {
+    font-size: 12px;
     color: #FF7657;
-    font-weight: 500;
+    margin-top: 2px;
 }
 
 /* Buttons */
@@ -433,14 +431,6 @@
 
     .work-area {
         grid-template-columns: 1fr;
-    }
-
-    .format-options {
-        gap: 10px;
-    }
-
-    .format-card {
-        padding: 16px;
     }
 
     .button-group {
