@@ -1,0 +1,8 @@
+{
+  "name": "iloveimg-clone",
+  "version": "1.0.0",
+  "description": "Free online image editing tools - iLoveIMG clone",
+  "dependencies": {
+    "@cf-wasm/photon": "^0.4.0"
+  }
+}
