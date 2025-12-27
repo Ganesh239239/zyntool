@@ -1,4 +1,4 @@
-// Compress IMAGE - Client-Side Processing
+// Compress Tool - Client-Side
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
@@ -9,7 +9,6 @@ const downloadBtn = document.getElementById('download-btn');
 let processedBlob = null;
 let originalFileName = '';
 
-// Drag & Drop
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('dragover');
@@ -45,10 +44,7 @@ async function handleFile(file) {
     loading.classList.add('active');
 
     try {
-        // Load image
         const img = await loadImage(file);
-
-        // Compress using canvas
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -56,7 +52,6 @@ async function handleFile(file) {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
 
-        // Convert to blob with 70% quality
         canvas.toBlob((blob) => {
             processedBlob = blob;
             const url = URL.createObjectURL(blob);
@@ -65,7 +60,6 @@ async function handleFile(file) {
             loading.classList.remove('active');
             previewSection.classList.add('active');
 
-            // Show size reduction
             const originalSize = (file.size / 1024).toFixed(2);
             const compressedSize = (blob.size / 1024).toFixed(2);
             const reduction = ((1 - blob.size / file.size) * 100).toFixed(0);

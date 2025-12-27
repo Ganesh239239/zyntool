@@ -1,10 +1,12 @@
-// Html To Image - Basic UI (Full implementation coming soon)
+// HTML to IMAGE Tool
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
 const previewSection = document.getElementById('preview-section');
 const previewImage = document.getElementById('preview-image');
 const downloadBtn = document.getElementById('download-btn');
+
+let processedBlob = null;
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -42,15 +44,20 @@ async function handleFile(file) {
     setTimeout(() => {
         const url = URL.createObjectURL(file);
         previewImage.src = url;
+        processedBlob = file;
 
         loading.classList.remove('active');
         previewSection.classList.add('active');
-
-        downloadBtn.addEventListener('click', () => {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = file.name;
-            a.click();
-        });
     }, 1000);
 }
+
+downloadBtn.addEventListener('click', () => {
+    if (processedBlob) {
+        const url = URL.createObjectURL(processedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'processed-image.png';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+});

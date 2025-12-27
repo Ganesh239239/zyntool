@@ -1,4 +1,4 @@
-// Rotate IMAGE Tool
+// Blur Face Tool
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
