@@ -3,39 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <title>Compress Image</title>
+
+  <!-- ✅ CORRECT CSS PATH -->
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body>
 
-  <!-- KEEP your existing header / layout -->
+  <!-- ✅ COPY THIS EXACT HEADER FROM index.html -->
+  <header class="site-header">
+    <!-- your existing navbar HTML here -->
+  </header>
 
-  <div class="tool-container">
+  <!-- ✅ MAIN CONTENT WRAPPER (CSS DEPENDS ON THIS) -->
+  <main class="container">
 
-    <input type="file" id="imageInput" accept="image/*" />
+    <section class="tool-page">
+      <h1>Compress Image</h1>
 
-    <img
-      id="imagePreview"
-      alt="Preview"
-      style="display:none; max-width:100%; margin-top:12px;"
-    />
+      <input type="file" id="imageInput" accept="image/*" />
 
-    <canvas id="canvas" hidden></canvas>
+      <img
+        id="imagePreview"
+        style="display:none; max-width:100%; margin-top:12px;"
+      />
 
-    <div style="margin-top:15px;">
-      <label>
-        Quality:
-        <input type="range" id="qualityRange" min="10" max="90" value="70" />
-        <span id="qualityValue">70%</span>
-      </label>
-    </div>
+      <canvas id="canvas" hidden></canvas>
 
-    <button id="compressBtn" style="margin-top:20px;">
-      Compress Image
-    </button>
+      <div class="tool-controls">
+        <label>
+          Quality:
+          <input type="range" id="qualityRange" min="10" max="90" value="70">
+          <span id="qualityValue">70%</span>
+        </label>
+      </div>
 
-  </div>
+      <button id="compressBtn" class="primary-btn">
+        Compress Image
+      </button>
 
-  <!-- SINGLE JS FILE ONLY -->
+    </section>
+
+  </main>
+
+  <!-- ✅ COPY THIS EXACT FOOTER FROM index.html -->
+  <footer class="site-footer">
+    <!-- your existing footer HTML here -->
+  </footer>
+
+  <!-- ✅ TOOL JS -->
   <script src="../assets/js/compress.js"></script>
 </body>
 </html>
