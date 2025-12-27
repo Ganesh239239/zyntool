@@ -1,56 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
+  <!-- REQUIRED for mobile layout -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Compress Image</title>
 
-  <!-- ✅ CORRECT CSS PATH -->
-  <link rel="stylesheet" href="../assets/css/main.css" />
+  <!-- ✅ ABSOLUTE PATH (Cloudflare Pages SAFE) -->
+  <link rel="stylesheet" href="/assets/css/main.css">
 </head>
+
 <body>
 
-  <!-- ✅ COPY THIS EXACT HEADER FROM index.html -->
+  <!-- ================= HEADER (COPY FROM index.html) ================= -->
   <header class="site-header">
-    <!-- your existing navbar HTML here -->
+    <!-- 🔴 PASTE YOUR EXACT NAVBAR CODE FROM index.html HERE -->
   </header>
+  <!-- ================================================================ -->
 
-  <!-- ✅ MAIN CONTENT WRAPPER (CSS DEPENDS ON THIS) -->
+  <!-- ================= MAIN CONTENT ================= -->
   <main class="container">
 
     <section class="tool-page">
-      <h1>Compress Image</h1>
 
-      <input type="file" id="imageInput" accept="image/*" />
+      <h1 class="tool-title">Compress Image</h1>
 
-      <img
-        id="imagePreview"
-        style="display:none; max-width:100%; margin-top:12px;"
-      />
+      <div class="tool-box">
 
-      <canvas id="canvas" hidden></canvas>
+        <input
+          type="file"
+          id="imageInput"
+          accept="image/*"
+          class="file-input"
+        >
 
-      <div class="tool-controls">
-        <label>
-          Quality:
-          <input type="range" id="qualityRange" min="10" max="90" value="70">
-          <span id="qualityValue">70%</span>
-        </label>
+        <img
+          id="imagePreview"
+          class="image-preview"
+          style="display:none;"
+          alt="Preview"
+        >
+
+        <canvas id="canvas" hidden></canvas>
+
+        <div class="tool-controls">
+          <label>
+            Quality:
+            <input
+              type="range"
+              id="qualityRange"
+              min="10"
+              max="90"
+              value="70"
+            >
+            <span id="qualityValue">70%</span>
+          </label>
+        </div>
+
+        <button id="compressBtn" class="primary-btn">
+          Compress Image
+        </button>
+
       </div>
-
-      <button id="compressBtn" class="primary-btn">
-        Compress Image
-      </button>
 
     </section>
 
   </main>
+  <!-- ================================================= -->
 
-  <!-- ✅ COPY THIS EXACT FOOTER FROM index.html -->
+  <!-- ================= FOOTER (COPY FROM index.html) ================= -->
   <footer class="site-footer">
-    <!-- your existing footer HTML here -->
+    <!-- 🔴 PASTE YOUR EXACT FOOTER CODE FROM index.html HERE -->
   </footer>
+  <!-- ================================================================ -->
 
-  <!-- ✅ TOOL JS -->
-  <script src="../assets/js/compress.js"></script>
+  <!-- ✅ TOOL SCRIPT (ABSOLUTE PATH) -->
+  <script src="/assets/js/compress.js"></script>
+
 </body>
 </html>
