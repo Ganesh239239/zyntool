@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Convert to JPG | iLoveIMG</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tool-premium.css">
 </head>
 <body>
     <header class="header">
         <div class="header-left">
-            <a href="../index.html" class="menu-btn">
+            <a href="../../index.html" class="menu-btn">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
@@ -23,38 +23,65 @@
         </div>
     </header>
 
-    <div class="tool-header">
-        <h1>Convert to JPG</h1>
-        <p>Convert to JPG format</p>
-    </div>
-
-    <section class="tool-section">
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
-            <h2>Select Image</h2>
-            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
-            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
-            <input type="file" id="file-input" accept="image/*">
-            <p style="margin-top: 15px; font-size: 13px; color: #999;">or drag and drop files here</p>
+    <div class="tool-container">
+        <div class="tool-title">
+            <h1>Convert to JPG</h1>
+            <p>Convert any format to JPG</p>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing your image...</p>
-        </div>
+        <div class="workspace">
+            <div class="canvas-area">
+                <div class="canvas-wrapper">
+                    <div class="upload-prompt" id="upload-prompt">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h3>Drop your image here</h3>
+                        <p>or click to browse</p>
+                    </div>
+                    <canvas id="preview-canvas"></canvas>
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Processing...</p>
+                    </div>
+                </div>
+            </div>
 
-        <div class="controls" id="controls" style="display: none;"></div>
+            <div class="controls-panel">
+                <h3>Tool Settings</h3>
 
-        <div class="preview-section" id="preview-section">
-            <h2>Result</h2>
-            <img id="preview-image" class="image-preview" alt="Preview">
-            <div class="actions">
-                <button class="btn" id="download-btn">Download</button>
-                <button class="btn" onclick="location.reload()" style="background: #999;">Process Another</button>
+                <div class="control-group">
+                    <label>Processing options will appear after uploading an image</label>
+                </div>
+
+                <div class="file-input-wrapper">
+                    <button class="btn" onclick="document.getElementById('file-input').click()">
+                        📁 Select Image
+                    </button>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+
+                <button class="btn" id="process-btn" disabled>
+                    ⚡ Process Image
+                </button>
+
+                <button class="btn btn-secondary" id="download-btn" style="display: none;">
+                    ⬇️ Download Result
+                </button>
+
+                <button class="btn btn-secondary" onclick="location.reload()" style="display: none;" id="reset-btn">
+                    🔄 Process Another
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <script src="../assets/js/convert-to-jpg.js"></script>
+    <div class="toast" id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="../assets/js/convert-to-jpg-premium.js"></script>
 </body>
 </html>
