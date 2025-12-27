@@ -1,4 +1,4 @@
-import { PhotonImage, rotate, RotateMode } from "@cf-wasm/photon";
+import { PhotonImage, rotate90, rotate180, rotate270 } from "@cf-wasm/photon";
 
 export async function onRequestPost(context) {
     try {
@@ -11,26 +11,28 @@ export async function onRequestPost(context) {
         }
 
         const inputBytes = new Uint8Array(await file.arrayBuffer());
-        const inputImage = PhotonImage.new_from_byteslice(inputBytes);
+        let inputImage = PhotonImage.new_from_byteslice(inputBytes);
 
-        let rotateMode;
+        // Rotate based on angle
         switch(angle) {
-            case 90: rotateMode = RotateMode.Clockwise; break;
-            case 180: rotateMode = RotateMode.HalfTurn; break;
-            case 270: rotateMode = RotateMode.Anticlockwise; break;
-            default: rotateMode = RotateMode.Clockwise;
+            case 90:
+                inputImage = rotate90(inputImage);
+                break;
+            case 180:
+                inputImage = rotate180(inputImage);
+                break;
+            case 270:
+                inputImage = rotate270(inputImage);
+                break;
         }
 
-        const outputImage = rotate(inputImage, rotateMode);
-        const outputBytes = outputImage.get_bytes_webp();
-
+        const outputBytes = inputImage.get_bytes_webp();
         inputImage.free();
-        outputImage.free();
 
         return new Response(outputBytes, {
             headers: {
                 'Content-Type': 'image/webp',
-                'Content-Disposition': `attachment; filename="rotated.webp"`,
+                'Content-Disposition': 'attachment; filename="rotated.webp"',
                 'Access-Control-Allow-Origin': '*'
             }
         });

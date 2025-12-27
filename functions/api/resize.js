@@ -22,7 +22,7 @@ export async function onRequestPost(context) {
         return new Response(outputBytes, {
             headers: {
                 'Content-Type': 'image/webp',
-                'Content-Disposition': `attachment; filename="resized.webp"`,
+                'Content-Disposition': 'attachment; filename="resized.webp"',
                 'Access-Control-Allow-Origin': '*'
             }
         });

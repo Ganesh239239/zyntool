@@ -1,5 +1,6 @@
+// Convert To Jpg API - Under Development
 export async function onRequestPost(context) {
-    return new Response('Tool under development', {
+    return new Response('API endpoint under development', {
         status: 501,
         headers: {
             'Content-Type': 'text/plain',
