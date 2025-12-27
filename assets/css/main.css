@@ -1,4 +1,4 @@
-/* iLoveIMG Design - ORANGE THEME */
+/* ZynTool - FIXED */
 
 * {
     margin: 0;
@@ -16,6 +16,7 @@ body {
     min-height: 100vh;
 }
 
+/* Side Menu */
 .side-menu {
     position: fixed;
     top: 0;
@@ -67,6 +68,7 @@ body {
     color: #FF7657;
 }
 
+/* Header - FIXED with ZynTool logo and NO grid icon */
 .header {
     display: flex;
     justify-content: space-between;
@@ -85,7 +87,7 @@ body {
     gap: 12px;
 }
 
-.menu-btn, .grid-btn {
+.menu-btn {
     background: none;
     border: none;
     padding: 8px;
@@ -98,28 +100,28 @@ body {
     transition: background 0.2s;
 }
 
-.menu-btn:hover, .grid-btn:hover {
+.menu-btn:hover {
     background: #FFF5F3;
     color: #FF7657;
 }
 
+/* LOGO - ZYNTOOL */
 .logo {
     display: flex;
     align-items: center;
     font-size: 24px;
     font-weight: 700;
+    color: #FF7657;
+    text-decoration: none;
 }
 
-.logo-text {
-    color: #000;
+.logo:hover {
+    color: #E85D3F;
 }
 
-.logo-heart {
-    margin: 0 2px;
-    font-size: 22px;
-}
+/* REMOVED .grid-btn - No longer needed */
 
-/* ORANGE HERO SECTION - FIXED */
+/* Hero Section - ORANGE */
 .hero {
     text-align: center;
     padding: 40px 20px;
@@ -139,6 +141,7 @@ body {
     opacity: 0.95;
 }
 
+/* Category Navigation - FIXED */
 .category-nav {
     display: flex;
     gap: 8px;
@@ -174,8 +177,10 @@ body {
 
 .category-btn:not(.active):hover {
     background: #FFF5F3;
+    border-color: #FFB8A5;
 }
 
+/* Tools Container */
 .tools-container {
     padding: 20px;
     max-width: 1400px;
@@ -231,7 +236,7 @@ body {
     line-height: 1.5;
 }
 
-/* Footer Styles */
+/* Footer */
 .footer {
     background: #2c3e50;
     color: white;
@@ -307,7 +312,7 @@ body {
     color: #FF7657;
 }
 
-/* RESPONSIVE */
+/* Responsive - Mobile */
 @media (max-width: 767px) {
     .tools-container {
         display: flex;
@@ -330,6 +335,7 @@ body {
     }
 }
 
+/* Responsive - Tablet */
 @media (min-width: 768px) and (max-width: 1199px) {
     .tools-container {
         display: grid;
@@ -346,6 +352,7 @@ body {
     }
 }
 
+/* Responsive - Desktop */
 @media (min-width: 1200px) {
     .tools-container {
         display: grid;
@@ -363,7 +370,7 @@ body {
     }
 }
 
-/* ORANGE TOOL HEADER - FIXED */
+/* Tool Header */
 .tool-header {
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white;
@@ -388,7 +395,6 @@ body {
     flex: 1;
 }
 
-/* ORANGE UPLOAD AREA - FIXED */
 .upload-area {
     background: white;
     border: 3px dashed #FF7657;
