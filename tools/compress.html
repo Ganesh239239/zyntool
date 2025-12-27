@@ -5,18 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Compress Image</title>
 
-  <!-- DO NOT CHANGE -->
+  <!-- MUST be absolute -->
   <link rel="stylesheet" href="/assets/css/main.css">
 </head>
+
 <body>
 
-  <!-- ===== HEADER (EXACT COPY FROM index.html) ===== -->
+  <!-- ===== HEADER (copy EXACT from index.html) ===== -->
   <header class="header">
-    <!-- paste navbar code exactly -->
+    <!-- navbar code -->
   </header>
 
-  <!-- ===== PAGE WRAPPER (CRITICAL) ===== -->
+  <!-- ===== PAGE (CRITICAL WRAPPER) ===== -->
   <div class="page">
+
+    <!-- ===== PAGE CONTENT (CRITICAL) ===== -->
     <div class="page-content">
 
       <!-- ===== TOOL SECTION ===== -->
@@ -55,7 +58,8 @@
 
             <img
               id="imagePreview"
-              style="display:none; max-width:100%; margin-top:15px;"
+              style="display:none; max-width:100%; margin-top:16px;"
+              alt="Preview"
             >
 
             <canvas id="canvas" hidden></canvas>
@@ -65,16 +69,15 @@
 
       </section>
 
-    </div>
-  </div>
+    </div> <!-- END page-content -->
 
-  <!-- ===== FOOTER (EXACT COPY FROM index.html) ===== -->
+  </div> <!-- END page -->
+
+  <!-- ===== FOOTER (copy EXACT from index.html) ===== -->
   <footer class="footer">
-    <!-- paste footer code exactly -->
+    <!-- footer code -->
   </footer>
 
-  <!-- TOOL JS -->
   <script src="/assets/js/compress.js"></script>
-
 </body>
 </html>
