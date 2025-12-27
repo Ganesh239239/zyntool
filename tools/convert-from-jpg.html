@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert from JPG | iLoveIMG</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="../index.html" class="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <div class="logo">
+                <span class="logo-text">I</span>
+                <span class="logo-heart">💙</span>
+                <span class="logo-text">IMG</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="tool-header">
+        <h1>Convert from JPG</h1>
+        <p>Convert JPG to PNG/GIF</p>
+    </div>
+
+    <section class="tool-section">
+        <div class="upload-area" id="upload-area">
+            <div class="upload-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line></svg></div>
+            <h2>Select Image</h2>
+            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
+            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
+            <input type="file" id="file-input" accept="image/*">
+            <p style="margin-top: 15px; font-size: 13px; color: #999;">or drag and drop files here</p>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your image...</p>
+        </div>
+
+        <div class="preview-section" id="preview-section">
+            <h2>Result</h2>
+            <img id="preview-image" class="image-preview" alt="Preview">
+            <div class="actions">
+                <button class="btn" id="download-btn">Download</button>
+                <button class="btn" onclick="location.reload()" style="background: #999;">Process Another</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="../assets/js/convert-from-jpg.js"></script>
+</body>
+</html>
