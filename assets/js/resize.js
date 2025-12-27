@@ -2,6 +2,10 @@ const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
 const previewSection = document.getElementById('preview-section');
+const previewImage = document.getElementById('preview-image');
+const downloadBtn = document.getElementById('download-btn');
+
+let processedBlob = null;
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -28,5 +32,54 @@ fileInput.addEventListener('change', (e) => {
 });
 
 async function handleFile(file) {
-    alert('This tool is under development. Coming soon!');
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+
+    const width = prompt('Enter width (px):', '800');
+    const height = prompt('Enter height (px):', '600');
+
+    if (!width || !height) return;
+
+    uploadArea.style.display = 'none';
+    loading.classList.add('active');
+
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('width', width);
+        formData.append('height', height);
+
+        const response = await fetch('/api/resize', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Resize failed');
+        }
+
+        processedBlob = await response.blob();
+        const url = URL.createObjectURL(processedBlob);
+        previewImage.src = url;
+
+        loading.classList.remove('active');
+        previewSection.classList.add('active');
+
+    } catch (error) {
+        alert('Error: ' + error.message);
+        location.reload();
+    }
 }
+
+downloadBtn.addEventListener('click', () => {
+    if (processedBlob) {
+        const url = URL.createObjectURL(processedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resized-image.webp';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+});
