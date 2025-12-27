@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compress IMAGE | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
     <!-- Side Menu -->
@@ -63,39 +64,93 @@
         <p>Reduce file size while maintaining quality</p>
     </div>
 
-    <!-- Tool Content -->
-    <section class="tool-section">
-        <div class="upload-area" id="upload-area">
+    <!-- Tool Workspace -->
+    <main class="tool-workspace">
+
+        <!-- Upload Area (Initial State) -->
+        <div class="upload-zone" id="upload-zone">
             <div class="upload-icon">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
             </div>
-            <h2>Select Image</h2>
-            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
-            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
-            <input type="file" id="file-input" accept="image/*">
-            <p style="margin-top: 15px; font-size: 13px; color: #999;">or drag and drop files here</p>
+            <h3>Select images</h3>
+            <p class="upload-hint">or drop images here</p>
+            <button class="btn-primary" onclick="document.getElementById('file-input').click()">
+                Select images
+            </button>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing your image...</p>
-        </div>
+        <!-- Work Area (After Upload) -->
+        <div class="work-area" id="work-area" style="display: none;">
 
-        <div class="controls" id="controls" style="display: none;"></div>
+            <!-- Left: Image Preview -->
+            <div class="preview-panel">
+                <div class="image-card" id="image-card">
+                    <div class="image-thumbnail">
+                        <img id="thumbnail-img" alt="Preview">
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name" id="image-name">image.jpg</div>
+                        <div class="size-info">
+                            <span class="original-size" id="original-size">0 KB</span>
+                            <span class="arrow">→</span>
+                            <span class="compressed-size" id="compressed-size">-</span>
+                        </div>
+                    </div>
+                    <div class="reduction-badge" id="reduction-badge" style="display: none;">
+                        <span id="reduction-text">-50%</span>
+                    </div>
+                </div>
+            </div>
 
-        <div class="preview-section" id="preview-section">
-            <h2>Result</h2>
-            <img id="preview-image" class="image-preview" alt="Preview">
-            <div class="actions">
-                <button class="btn" id="download-btn" style="display: none;">⬇️ Download Compressed</button>
-                <button class="btn" onclick="location.reload()" style="background: #999;">Compress Another</button>
+            <!-- Right: Controls Panel -->
+            <div class="controls-panel">
+                <div class="panel-section">
+                    <h3>Compression Options</h3>
+
+                    <div class="control-item">
+                        <label class="control-label">
+                            Quality
+                            <span class="quality-value" id="quality-display">70%</span>
+                        </label>
+                        <input type="range" class="slider" id="quality-slider" min="10" max="100" value="70">
+                        <div class="slider-labels">
+                            <span>Low</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+
+                    <div class="control-item">
+                        <label class="control-label">Output Format</label>
+                        <select class="select-input" id="format-select">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-compress" id="compress-btn" onclick="compressImage()">
+                    Compress IMAGE
+                </button>
+
+                <button class="btn-download" id="download-btn" style="display: none;" onclick="downloadImage()">
+                    Download compressed image
+                </button>
             </div>
         </div>
-    </section>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="spinner-large"></div>
+            <p>Compressing your image...</p>
+        </div>
+
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
