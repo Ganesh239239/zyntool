@@ -1,4 +1,5 @@
-/* iLoveIMG Design - Desktop Grid Version */
+/* iLoveIMG Design - ORANGE THEME */
+
 * {
     margin: 0;
     padding: 0;
@@ -62,7 +63,8 @@ body {
 }
 
 .menu-item:hover {
-    background: #f5f5f5;
+    background: #FFF5F3;
+    color: #FF7657;
 }
 
 .header {
@@ -97,7 +99,8 @@ body {
 }
 
 .menu-btn:hover, .grid-btn:hover {
-    background: #f0f0f0;
+    background: #FFF5F3;
+    color: #FF7657;
 }
 
 .logo {
@@ -116,10 +119,11 @@ body {
     font-size: 22px;
 }
 
+/* ORANGE HERO SECTION - FIXED */
 .hero {
     text-align: center;
     padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white;
 }
 
@@ -163,16 +167,15 @@ body {
 }
 
 .category-btn.active {
-    background: #333;
+    background: #FF7657;
     color: white;
-    border-color: #333;
+    border-color: #FF7657;
 }
 
 .category-btn:not(.active):hover {
-    background: #f5f5f5;
+    background: #FFF5F3;
 }
 
-/* DESKTOP GRID LAYOUT - MAIN CHANGE */
 .tools-container {
     padding: 20px;
     max-width: 1400px;
@@ -196,7 +199,7 @@ body {
 }
 
 .tool-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
     transform: translateY(-2px);
 }
 
@@ -268,7 +271,7 @@ body {
 }
 
 .footer-section ul li a:hover {
-    color: white;
+    color: #FF7657;
 }
 
 .footer-bottom {
@@ -301,10 +304,10 @@ body {
 }
 
 .social-links a:hover {
-    color: white;
+    color: #FF7657;
 }
 
-/* RESPONSIVE - Mobile First, then Desktop Grid */
+/* RESPONSIVE */
 @media (max-width: 767px) {
     .tools-container {
         display: flex;
@@ -327,7 +330,6 @@ body {
     }
 }
 
-/* Tablet - 2 columns */
 @media (min-width: 768px) and (max-width: 1199px) {
     .tools-container {
         display: grid;
@@ -344,7 +346,6 @@ body {
     }
 }
 
-/* Desktop - 3 COLUMNS GRID LIKE IMAGE */
 @media (min-width: 1200px) {
     .tools-container {
         display: grid;
@@ -362,9 +363,9 @@ body {
     }
 }
 
-/* Tool Page Styles (for premium tools) */
+/* ORANGE TOOL HEADER - FIXED */
 .tool-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white;
     padding: 40px 20px;
     text-align: center;
@@ -387,9 +388,10 @@ body {
     flex: 1;
 }
 
+/* ORANGE UPLOAD AREA - FIXED */
 .upload-area {
     background: white;
-    border: 3px dashed #667eea;
+    border: 3px dashed #FF7657;
     border-radius: 16px;
     padding: 60px 40px;
     text-align: center;
@@ -398,12 +400,12 @@ body {
 }
 
 .upload-area:hover {
-    background: #f8f5ff;
-    border-color: #764ba2;
+    background: #FFF5F3;
+    border-color: #FF8E53;
 }
 
 .upload-area.dragover {
-    background: #f0e8ff;
+    background: #FFE5E0;
     transform: scale(1.02);
 }
 
@@ -414,7 +416,7 @@ body {
 }
 
 .upload-area h2 {
-    color: #667eea;
+    color: #FF7657;
     margin-bottom: 10px;
     font-size: 20px;
 }
@@ -427,7 +429,7 @@ body {
 .btn {
     display: inline-block;
     padding: 14px 32px;
-    background: #667eea;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white;
     border-radius: 8px;
     font-size: 16px;
@@ -436,12 +438,13 @@ body {
     border: none;
     transition: all 0.3s;
     text-decoration: none;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 }
 
 .btn:hover {
-    background: #764ba2;
+    background: linear-gradient(135deg, #E85D3F 0%, #FF7657 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
 }
 
 .btn:disabled {
@@ -454,95 +457,9 @@ body {
     display: none;
 }
 
-.preview-section {
-    display: none;
-    margin-top: 40px;
-}
-
-.preview-section.active {
-    display: block;
-}
-
-.image-preview {
-    max-width: 100%;
-    border-radius: 12px;
-    margin: 20px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.actions {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.loading {
-    display: none;
-    text-align: center;
-    padding: 20px;
-    color: #667eea;
-}
-
-.loading.active {
-    display: block;
-}
-
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.controls {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.control-group {
-    margin-bottom: 15px;
-}
-
-.control-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #333;
-}
-
-.control-group input,
-.control-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
 @media (max-width: 767px) {
     .upload-area {
         padding: 40px 20px;
-    }
-
-    .actions {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
     }
 
     .tool-header h1 {
