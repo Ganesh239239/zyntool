@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resize IMAGE | iLoveIMG</title>
+    <title>Blur Face | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
@@ -59,14 +59,14 @@
 
     <!-- Tool Header -->
     <div class="tool-header">
-        <h1>Resize IMAGE</h1>
-        <p>Change image dimensions</p>
+        <h1>Blur Face</h1>
+        <p>Blur sensitive areas</p>
     </div>
 
     <!-- Tool Content -->
     <section class="tool-section">
         <div class="upload-area" id="upload-area">
-            <div class="upload-icon"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2"><path d="M21 3v7h-7"></path><path d="M3 21v-7h7"></path><path d="M21 10l-7.5 7.5"></path><path d="M3 14l7.5-7.5"></path></svg></div>
+            <div class="upload-icon"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
             <h2>Select Image</h2>
             <p>JPG, PNG, GIF, WEBP up to 10MB</p>
             <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
@@ -143,6 +143,6 @@
     </footer>
 
     <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/resize.js"></script>
+    <script src="../assets/js/blur-face.js"></script>
 </body>
 </html>
