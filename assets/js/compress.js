@@ -1,3 +1,4 @@
+// Compress IMAGE - Client-Side Processing
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
@@ -6,7 +7,9 @@ const previewImage = document.getElementById('preview-image');
 const downloadBtn = document.getElementById('download-btn');
 
 let processedBlob = null;
+let originalFileName = '';
 
+// Drag & Drop
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('dragover');
@@ -37,29 +40,38 @@ async function handleFile(file) {
         return;
     }
 
+    originalFileName = file.name.replace(/\.[^/.]+$/, '');
     uploadArea.style.display = 'none';
     loading.classList.add('active');
 
     try {
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('quality', '80');
+        // Load image
+        const img = await loadImage(file);
 
-        const response = await fetch('/api/compress', {
-            method: 'POST',
-            body: formData
-        });
+        // Compress using canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
-        if (!response.ok) {
-            throw new Error('Compression failed');
-        }
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
-        processedBlob = await response.blob();
-        const url = URL.createObjectURL(processedBlob);
-        previewImage.src = url;
+        // Convert to blob with 70% quality
+        canvas.toBlob((blob) => {
+            processedBlob = blob;
+            const url = URL.createObjectURL(blob);
+            previewImage.src = url;
 
-        loading.classList.remove('active');
-        previewSection.classList.add('active');
+            loading.classList.remove('active');
+            previewSection.classList.add('active');
+
+            // Show size reduction
+            const originalSize = (file.size / 1024).toFixed(2);
+            const compressedSize = (blob.size / 1024).toFixed(2);
+            const reduction = ((1 - blob.size / file.size) * 100).toFixed(0);
+
+            alert(`Compressed!\nOriginal: ${originalSize} KB\nCompressed: ${compressedSize} KB\nReduction: ${reduction}%`);
+        }, 'image/jpeg', 0.7);
 
     } catch (error) {
         alert('Error: ' + error.message);
@@ -67,12 +79,21 @@ async function handleFile(file) {
     }
 }
 
+function loadImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+    });
+}
+
 downloadBtn.addEventListener('click', () => {
     if (processedBlob) {
         const url = URL.createObjectURL(processedBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'compressed-image.jpg';
+        a.download = originalFileName + '-compressed.jpg';
         a.click();
         URL.revokeObjectURL(url);
     }

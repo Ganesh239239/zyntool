@@ -1,8 +1,10 @@
+// Convert From Jpg - Basic UI (Full implementation coming soon)
 const uploadArea = document.getElementById('upload-area');
 const fileInput = document.getElementById('file-input');
 const loading = document.getElementById('loading');
 const previewSection = document.getElementById('preview-section');
 const previewImage = document.getElementById('preview-image');
+const downloadBtn = document.getElementById('download-btn');
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -37,12 +39,18 @@ async function handleFile(file) {
     uploadArea.style.display = 'none';
     loading.classList.add('active');
 
-    // Show preview of uploaded image
-    const url = URL.createObjectURL(file);
-    previewImage.src = url;
+    setTimeout(() => {
+        const url = URL.createObjectURL(file);
+        previewImage.src = url;
 
-    loading.classList.remove('active');
-    previewSection.classList.add('active');
+        loading.classList.remove('active');
+        previewSection.classList.add('active');
 
-    alert('This tool is under development. The API endpoint will be implemented soon!');
+        downloadBtn.addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            a.click();
+        });
+    }, 1000);
 }
