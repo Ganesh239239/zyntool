@@ -1,10 +1,20 @@
-// Compress IMAGE Tool - FULLY FUNCTIONAL
-const uploadArea = document.getElementById('upload-area');
+// Compress IMAGE Tool - Professional iLoveIMG Style
+const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
-const loading = document.getElementById('loading');
-const controls = document.getElementById('controls');
-const previewSection = document.getElementById('preview-section');
-const previewImage = document.getElementById('preview-image');
+const workArea = document.getElementById('work-area');
+const loadingOverlay = document.getElementById('loading-overlay');
+
+const thumbnailImg = document.getElementById('thumbnail-img');
+const imageName = document.getElementById('image-name');
+const originalSizeEl = document.getElementById('original-size');
+const compressedSizeEl = document.getElementById('compressed-size');
+const reductionBadge = document.getElementById('reduction-badge');
+const reductionText = document.getElementById('reduction-text');
+
+const qualitySlider = document.getElementById('quality-slider');
+const qualityDisplay = document.getElementById('quality-display');
+const formatSelect = document.getElementById('format-select');
+const compressBtn = document.getElementById('compress-btn');
 const downloadBtn = document.getElementById('download-btn');
 
 let currentImage = null;
@@ -12,29 +22,38 @@ let originalFile = null;
 let processedBlob = null;
 
 // Drag and Drop
-uploadArea.addEventListener('dragover', (e) => {
+uploadZone.addEventListener('dragover', (e) => {
     e.preventDefault();
-    uploadArea.classList.add('dragover');
+    uploadZone.classList.add('dragover');
 });
 
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
+uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('dragover');
 });
 
-uploadArea.addEventListener('drop', (e) => {
+uploadZone.addEventListener('drop', (e) => {
     e.preventDefault();
-    uploadArea.classList.remove('dragover');
+    uploadZone.classList.remove('dragover');
     const files = e.dataTransfer.files;
     if (files.length > 0) {
         handleFile(files[0]);
     }
 });
 
-// File Input
+uploadZone.addEventListener('click', () => {
+    fileInput.click();
+});
+
+// File Input Change
 fileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
         handleFile(e.target.files[0]);
     }
+});
+
+// Quality Slider
+qualitySlider.addEventListener('input', (e) => {
+    qualityDisplay.textContent = e.target.value + '%';
 });
 
 // Handle File Upload
@@ -45,75 +64,72 @@ async function handleFile(file) {
     }
 
     originalFile = file;
-    uploadArea.style.display = 'none';
-    loading.classList.add('active');
+
+    loadingOverlay.style.display = 'flex';
 
     try {
+        // Load image
         const img = await loadImage(file);
         currentImage = img;
 
-        previewImage.src = URL.createObjectURL(file);
+        // Create thumbnail (max 300px)
+        const thumbnail = await createThumbnail(img, 300);
+        thumbnailImg.src = thumbnail;
 
-        loading.classList.remove('active');
-        previewSection.classList.add('active');
-        controls.style.display = 'block';
+        // Display file info
+        imageName.textContent = file.name;
+        const sizeKB = (file.size / 1024).toFixed(2);
+        originalSizeEl.textContent = sizeKB + ' KB';
 
-        const originalSize = (file.size / 1024).toFixed(2);
-
-        // Create Compression Controls
-        controls.innerHTML = `
-            <h3 style="margin-bottom: 15px;">Compression Settings</h3>
-
-            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <p style="margin: 0 0 10px 0; color: #666; font-size: 13px;">
-                    Original: <strong>${originalSize} KB</strong>
-                </p>
-                <p style="margin: 0; color: #4CAF50; font-size: 13px; font-weight: 600;">
-                    Compressed: <span id="compressed-size">-</span>
-                </p>
-                <p style="margin: 10px 0 0 0; color: #FF9800; font-size: 14px; font-weight: 700;">
-                    Reduction: <span id="reduction">-</span>
-                </p>
-            </div>
-
-            <div class="control-group">
-                <label>Quality: <span id="quality-value">70</span>%</label>
-                <input type="range" id="quality-slider" min="10" max="100" value="70">
-                <small style="color: #999;">Lower = smaller file, lower quality</small>
-            </div>
-
-            <div class="control-group">
-                <label>Output Format</label>
-                <select id="format-select">
-                    <option value="jpeg">JPEG (best compression)</option>
-                    <option value="png">PNG (lossless)</option>
-                    <option value="webp">WebP (modern)</option>
-                </select>
-            </div>
-
-            <button class="btn" onclick="compressImage()" style="width: 100%; background: #4CAF50;">
-                🗜️ Compress Image
-            </button>
-        `;
-
-        // Quality Slider Event
-        document.getElementById('quality-slider').addEventListener('input', (e) => {
-            document.getElementById('quality-value').textContent = e.target.value;
-        });
+        // Hide upload zone, show work area
+        uploadZone.style.display = 'none';
+        workArea.style.display = 'grid';
+        loadingOverlay.style.display = 'none';
 
     } catch (error) {
-        alert('Error: ' + error.message);
-        location.reload();
+        alert('Error loading image: ' + error.message);
+        loadingOverlay.style.display = 'none';
     }
 }
 
-// Compress Image Function
-window.compressImage = function() {
-    const quality = document.getElementById('quality-slider').value / 100;
-    const format = document.getElementById('format-select').value;
+// Create Thumbnail
+function createThumbnail(img, maxSize) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
-    loading.classList.add('active');
-    controls.style.display = 'none';
+        let width = img.width;
+        let height = img.height;
+
+        // Calculate thumbnail size
+        if (width > height) {
+            if (width > maxSize) {
+                height = (height * maxSize) / width;
+                width = maxSize;
+            }
+        } else {
+            if (height > maxSize) {
+                width = (width * maxSize) / height;
+                height = maxSize;
+            }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        resolve(canvas.toDataURL('image/jpeg', 0.9));
+    });
+}
+
+// Compress Image
+window.compressImage = async function() {
+    const quality = qualitySlider.value / 100;
+    const format = formatSelect.value;
+
+    compressBtn.disabled = true;
+    compressBtn.textContent = 'Compressing...';
+    loadingOverlay.style.display = 'flex';
 
     setTimeout(() => {
         const canvas = document.createElement('canvas');
@@ -129,36 +145,40 @@ window.compressImage = function() {
 
         canvas.toBlob((blob) => {
             processedBlob = blob;
-            const url = URL.createObjectURL(blob);
-            previewImage.src = url;
 
+            // Calculate sizes
             const originalSize = (originalFile.size / 1024).toFixed(2);
             const compressedSize = (blob.size / 1024).toFixed(2);
-            const reduction = ((1 - blob.size / originalFile.size) * 100).toFixed(1);
+            const reduction = ((1 - blob.size / originalFile.size) * 100).toFixed(0);
 
-            document.getElementById('compressed-size').textContent = compressedSize + ' KB';
-            document.getElementById('reduction').textContent = reduction + '%';
+            // Update UI
+            compressedSizeEl.textContent = compressedSize + ' KB';
+            reductionText.textContent = '-' + reduction + '%';
+            reductionBadge.style.display = 'block';
 
-            loading.classList.remove('active');
-            controls.style.display = 'block';
-            downloadBtn.style.display = 'inline-block';
-            downloadBtn.textContent = '⬇️ Download Compressed Image';
+            // Show download button
+            downloadBtn.style.display = 'block';
+            compressBtn.textContent = 'Compress IMAGE';
+            compressBtn.disabled = false;
+
+            loadingOverlay.style.display = 'none';
         }, mimeType, quality);
-    }, 500);
+    }, 800);
 };
 
-// Download Button
-downloadBtn.addEventListener('click', () => {
+// Download Image
+window.downloadImage = function() {
     if (processedBlob) {
         const url = URL.createObjectURL(processedBlob);
         const a = document.createElement('a');
         a.href = url;
-        const format = document.getElementById('format-select').value;
-        a.download = `compressed-image.${format === 'jpeg' ? 'jpg' : format}`;
+        const format = formatSelect.value;
+        const ext = format === 'jpeg' ? 'jpg' : format;
+        a.download = `compressed-${Date.now()}.${ext}`;
         a.click();
         URL.revokeObjectURL(url);
     }
-});
+};
 
 // Load Image Helper
 function loadImage(file) {
