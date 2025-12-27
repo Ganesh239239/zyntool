@@ -549,3 +549,155 @@ body {
         font-size: 24px;
     }
 }
+
+
+/* Additional CSS for Rotate Tool Controls */
+/* Add this to your main.css file OR create a separate rotate.css */
+
+.controls {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.controls-header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.controls-header h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.controls-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.controls-header strong {
+    color: #667eea;
+    font-size: 18px;
+}
+
+.control-group {
+    margin-bottom: 25px;
+}
+
+.control-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-control {
+    flex: 1;
+    min-width: 140px;
+    padding: 12px 20px;
+    background: #f0f4ff;
+    border: 2px solid #e0e7ff;
+    border-radius: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-control:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-control svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-reset {
+    width: 100%;
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+.btn-reset:hover {
+    background: #ffc107;
+    border-color: #ffc107;
+    color: #fff;
+}
+
+.slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #e0e7ff;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.canvas-container {
+    text-align: center;
+    margin: 20px 0;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .controls {
+        padding: 20px;
+        margin: 20px 15px;
+    }
+
+    .button-row {
+        flex-direction: column;
+    }
+
+    .btn-control {
+        width: 100%;
+        min-width: auto;
+    }
+}
