@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop IMAGE | Free Image Tool</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tool-page.css">
+</head>
+<body>
+    <div class="tool-header">
+        <h1>Crop IMAGE</h1>
+        <p>Remove unwanted areas from your images</p>
+        <a href="../index.html" class="btn" style="margin-top: 20px;">← Back to Home</a>
+    </div>
+
+    <section class="tool-section">
+        <div class="upload-area" id="upload-area">
+            <div class="upload-icon">✂️</div>
+            <h2>Select Image</h2>
+            <p>JPG, PNG, GIF, WEBP up to 10MB</p>
+            <button class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
+            <input type="file" id="file-input" accept="image/*" multiple>
+            <p style="margin-top: 15px; font-size: 0.9em;">or drag and drop files here</p>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your image...</p>
+        </div>
+
+        <div class="preview-section" id="preview-section">
+            <h2>Preview</h2>
+            <img id="preview-image" class="image-preview" alt="Preview">
+            <div class="actions">
+                <button class="btn" id="download-btn">Download Processed Image</button>
+                <button class="btn" onclick="location.reload()">Process Another</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="../assets/js/crop.js"></script>
+</body>
+</html>
