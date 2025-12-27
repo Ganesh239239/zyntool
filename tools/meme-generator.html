@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Generator | iLoveIMG</title>
+    <title>Meme Generator | ZynTool</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
     <div class="side-menu" id="side-menu">
         <div class="side-menu-header">
-            <div class="logo">
-                <span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span>
-            </div>
+            <a href="../index.html" class="logo">ZynTool</a>
             <button class="close-menu" id="close-menu">✕</button>
         </div>
         <nav class="side-menu-nav">
@@ -23,13 +21,21 @@
 
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menu-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-            <div class="logo"><span class="logo-text">I</span><span class="logo-heart">💙</span><span class="logo-text">IMG</span></div>
+            <button class="menu-btn" id="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <a href="../index.html" class="logo">ZynTool</a>
         </div>
-        <button class="grid-btn" id="grid-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"></circle><circle cx="12" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="12" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle></svg></button>
     </header>
 
-    <div class="tool-header"><h1>Meme Generator</h1><p>Create memes with custom text</p></div>
+    <div class="tool-header">
+        <h1>Meme Generator</h1>
+        <p>Create memes with text</p>
+    </div>
 
     <main class="tool-workspace">
         <div class="upload-zone" id="upload-zone">
@@ -43,8 +49,12 @@
         <div class="work-area" id="work-area" style="display: none;">
             <div class="preview-panel">
                 <div class="image-card">
-                    <div class="image-thumbnail"><img id="thumbnail-img" alt="Preview"></div>
-                    <div class="image-info"><div class="image-name" id="image-name">image.jpg</div></div>
+                    <div class="image-thumbnail">
+                        <img id="thumbnail-img" alt="Preview">
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name" id="image-name">image.jpg</div>
+                    </div>
                 </div>
             </div>
 
@@ -56,16 +66,23 @@
         </div>
 
         <div class="loading-overlay" id="loading-overlay" style="display: none;">
-            <div class="spinner-large"></div><p>Processing your image...</p>
+            <div class="spinner-large"></div>
+            <p>Processing your image...</p>
         </div>
     </main>
 
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section"><h4>Products</h4><ul><li><a href="#">iLoveIMG</a></li></ul></div>
+            <div class="footer-section">
+                <h4>ZynTool</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 iLoveIMG. All rights reserved.</p>
+            <p>&copy; 2025 ZynTool. All rights reserved.</p>
         </div>
     </footer>
 
