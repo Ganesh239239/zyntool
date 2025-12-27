@@ -1,8 +1,0 @@
-{
-  "name": "iloveimg-fixed",
-  "version": "1.0.0",
-  "description": "iLoveIMG clone - Fixed version with working menus and SVG icons",
-  "dependencies": {
-    "@cf-wasm/photon": "^0.4.0"
-  }
-}
