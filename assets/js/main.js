@@ -1,64 +1,53 @@
-// Menu Toggle
-const menuToggle = document.getElementById('menuToggle');
-const navMenu = document.getElementById('navMenu');
+// Main JavaScript - Working Menus & Filters
+document.addEventListener('DOMContentLoaded', function() {
+    // Side Menu
+    const menuBtn = document.getElementById('menu-btn');
+    const sideMenu = document.getElementById('side-menu');
+    const closeMenu = document.getElementById('close-menu');
 
-if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
-}
+    if (menuBtn && sideMenu && closeMenu) {
+        menuBtn.addEventListener('click', function() {
+            sideMenu.classList.add('active');
+        });
 
-// Filter Tabs
-const filterTabs = document.querySelectorAll('.filter-tab');
-const toolCards = document.querySelectorAll('.tool-card');
+        closeMenu.addEventListener('click', function() {
+            sideMenu.classList.remove('active');
+        });
 
-filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        // Remove active class from all tabs
-        filterTabs.forEach(t => t.classList.remove('active'));
-        // Add active class to clicked tab
-        tab.classList.add('active');
-
-        const filter = tab.dataset.filter;
-
-        // Filter tool cards
-        toolCards.forEach(card => {
-            if (filter === 'all' || card.dataset.category === filter) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
+        document.addEventListener('click', function(event) {
+            if (!sideMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+                sideMenu.classList.remove('active');
             }
+        });
+    }
+
+    // Grid button
+    const gridBtn = document.getElementById('grid-btn');
+    if (gridBtn) {
+        gridBtn.addEventListener('click', function() {
+            alert('Grid menu - Coming soon!');
+        });
+    }
+
+    // Category Filters
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const toolCards = document.querySelectorAll('.tool-card');
+
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const category = this.dataset.category;
+
+            toolCards.forEach(card => {
+                const categories = card.dataset.categories;
+                if (category === 'all' || categories.includes(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     });
 });
-
-// File Upload Handling
-function initializeFileUpload(inputId, uploadAreaId) {
-    const fileInput = document.getElementById(inputId);
-    const uploadArea = document.getElementById(uploadAreaId);
-
-    if (!fileInput || !uploadArea) return;
-
-    uploadArea.addEventListener('click', () => {
-        fileInput.click();
-    });
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragover');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-    });
-}

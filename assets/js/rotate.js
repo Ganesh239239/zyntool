@@ -1,137 +1,63 @@
-let img = new Image();
-let canvas, ctx;
-let currentRotation = 0;
-let flipH = false;
-let flipV = false;
+// Rotate IMAGE Tool
+const uploadArea = document.getElementById('upload-area');
+const fileInput = document.getElementById('file-input');
+const loading = document.getElementById('loading');
+const previewSection = document.getElementById('preview-section');
+const previewImage = document.getElementById('preview-image');
+const downloadBtn = document.getElementById('download-btn');
 
-document.addEventListener('DOMContentLoaded', () => {
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
+let processedBlob = null;
 
-    const fileInput = document.getElementById('fileInput');
-    const uploadArea = document.getElementById('uploadArea');
-    const previewArea = document.getElementById('previewArea');
-    const controls = document.getElementById('controls');
-    const resetBtn = document.getElementById('resetBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    // Initialize file upload
-    initializeFileUpload('fileInput', 'uploadArea');
-
-    // File input change
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                img.src = event.target.result;
-                img.onload = () => {
-                    uploadArea.style.display = 'none';
-                    previewArea.classList.add('active');
-                    currentRotation = 0;
-                    flipH = false;
-                    flipV = false;
-                    createControls();
-                    drawImage();
-                };
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    function createControls() {
-        controls.innerHTML = `
-            <div class="control-group">
-                <label>Quick Rotate</label>
-                <div class="button-group">
-                    <button class="btn btn-secondary" onclick="rotate(90)">↻ 90°</button>
-                    <button class="btn btn-secondary" onclick="rotate(180)">↻ 180°</button>
-                    <button class="btn btn-secondary" onclick="rotate(270)">↻ 270°</button>
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Flip</label>
-                <div class="button-group">
-                    <button class="btn btn-secondary" onclick="flipHorizontal()">Flip Horizontal ↔</button>
-                    <button class="btn btn-secondary" onclick="flipVertical()">Flip Vertical ↕</button>
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Current Rotation: <span id="rotationValue">${currentRotation}°</span></label>
-                <input type="range" id="rotationSlider" min="0" max="360" value="${currentRotation}" 
-                       oninput="rotateCustom(this.value)">
-            </div>
-        `;
-    }
-
-    resetBtn.addEventListener('click', () => {
-        currentRotation = 0;
-        flipH = false;
-        flipV = false;
-        createControls();
-        drawImage();
-    });
-
-    downloadBtn.addEventListener('click', () => {
-        const link = document.createElement('a');
-        link.download = 'rotated-image.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    });
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
 });
 
-function drawImage() {
-    const rotation = currentRotation * Math.PI / 180;
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
 
-    // Calculate new canvas size
-    let width = img.width;
-    let height = img.height;
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFile(files[0]);
+    }
+});
 
-    if (currentRotation % 180 !== 0) {
-        canvas.width = height;
-        canvas.height = width;
-    } else {
-        canvas.width = width;
-        canvas.height = height;
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+async function handleFile(file) {
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
+    uploadArea.style.display = 'none';
+    loading.classList.add('active');
 
-    // Move to center
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    setTimeout(() => {
+        const url = URL.createObjectURL(file);
+        previewImage.src = url;
+        processedBlob = file;
 
-    // Apply rotation
-    ctx.rotate(rotation);
-
-    // Apply flips
-    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
-
-    // Draw image centered
-    ctx.drawImage(img, -width / 2, -height / 2, width, height);
-
-    ctx.restore();
+        loading.classList.remove('active');
+        previewSection.classList.add('active');
+    }, 1000);
 }
 
-function rotate(degrees) {
-    currentRotation = (currentRotation + degrees) % 360;
-    document.getElementById('rotationValue').textContent = currentRotation + '°';
-    document.getElementById('rotationSlider').value = currentRotation;
-    drawImage();
-}
-
-function rotateCustom(value) {
-    currentRotation = parseInt(value);
-    document.getElementById('rotationValue').textContent = currentRotation + '°';
-    drawImage();
-}
-
-function flipHorizontal() {
-    flipH = !flipH;
-    drawImage();
-}
-
-function flipVertical() {
-    flipV = !flipV;
-    drawImage();
-}
+downloadBtn.addEventListener('click', () => {
+    if (processedBlob) {
+        const url = URL.createObjectURL(processedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'processed-image.png';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+});
