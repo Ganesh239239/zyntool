@@ -1,63 +1,168 @@
-// Watermark IMAGE Tool
-const uploadArea = document.getElementById('upload-area');
-const fileInput = document.getElementById('file-input');
-const loading = document.getElementById('loading');
-const previewSection = document.getElementById('preview-section');
-const previewImage = document.getElementById('preview-image');
-const downloadBtn = document.getElementById('download-btn');
+let img = new Image();
+let canvas, ctx;
+let watermarkText = 'Watermark';
+let fontSize = 40;
+let position = 'bottom-right';
+let opacity = 0.7;
+let color = '#ffffff';
 
-let processedBlob = null;
+document.addEventListener('DOMContentLoaded', () => {
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
 
-uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-});
+    const fileInput = document.getElementById('fileInput');
+    const previewArea = document.getElementById('previewArea');
+    const uploadArea = document.getElementById('uploadArea');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
-});
+    initializeFileUpload('fileInput', 'uploadArea');
 
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        handleFile(files[0]);
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                img.src = event.target.result;
+                img.onload = () => {
+                    uploadArea.style.display = 'none';
+                    previewArea.classList.add('active');
+                    createControls();
+                    drawImage();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function createControls() {
+        document.getElementById('controls').innerHTML = `
+            <div class="control-group">
+                <label>Watermark Text</label>
+                <input type="text" id="watermarkText" value="${watermarkText}" 
+                       oninput="updateWatermark()">
+            </div>
+            <div class="control-group">
+                <label>Font Size: <span id="fontSizeValue">${fontSize}px</span></label>
+                <input type="range" id="fontSizeSlider" min="20" max="100" value="${fontSize}" 
+                       oninput="updateFontSize(this.value)">
+            </div>
+            <div class="control-group">
+                <label>Position</label>
+                <select id="positionSelect" onchange="updatePosition(this.value)">
+                    <option value="bottom-right" selected>Bottom Right</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="top-right">Top Right</option>
+                    <option value="top-left">Top Left</option>
+                    <option value="center">Center</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Opacity: <span id="opacityValue">${Math.round(opacity * 100)}%</span></label>
+                <input type="range" id="opacitySlider" min="0.1" max="1" step="0.1" value="${opacity}" 
+                       oninput="updateOpacity(this.value)">
+            </div>
+            <div class="control-group">
+                <label>Color</label>
+                <select id="colorSelect" onchange="updateColor(this.value)">
+                    <option value="#ffffff" selected>White</option>
+                    <option value="#000000">Black</option>
+                    <option value="#ff0000">Red</option>
+                    <option value="#00ff00">Green</option>
+                    <option value="#0000ff">Blue</option>
+                </select>
+            </div>
+        `;
     }
+
+    resetBtn.addEventListener('click', () => {
+        watermarkText = 'Watermark';
+        fontSize = 40;
+        position = 'bottom-right';
+        opacity = 0.7;
+        color = '#ffffff';
+        createControls();
+        drawImage();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = 'watermarked-image.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
 });
 
-fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
+function drawImage() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+
+    // Draw watermark
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = opacity;
+
+    const textWidth = ctx.measureText(watermarkText).width;
+    const padding = 20;
+
+    let x, y;
+    switch(position) {
+        case 'bottom-right':
+            x = canvas.width - textWidth - padding;
+            y = canvas.height - padding;
+            break;
+        case 'bottom-left':
+            x = padding;
+            y = canvas.height - padding;
+            break;
+        case 'top-right':
+            x = canvas.width - textWidth - padding;
+            y = fontSize + padding;
+            break;
+        case 'top-left':
+            x = padding;
+            y = fontSize + padding;
+            break;
+        case 'center':
+            x = (canvas.width - textWidth) / 2;
+            y = canvas.height / 2;
+            break;
     }
-});
 
-async function handleFile(file) {
-    if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-    }
+    // Draw text shadow
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 3;
+    ctx.strokeText(watermarkText, x, y);
+    ctx.fillText(watermarkText, x, y);
 
-    uploadArea.style.display = 'none';
-    loading.classList.add('active');
-
-    setTimeout(() => {
-        const url = URL.createObjectURL(file);
-        previewImage.src = url;
-        processedBlob = file;
-
-        loading.classList.remove('active');
-        previewSection.classList.add('active');
-    }, 1000);
+    ctx.globalAlpha = 1;
 }
 
-downloadBtn.addEventListener('click', () => {
-    if (processedBlob) {
-        const url = URL.createObjectURL(processedBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'processed-image.png';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-});
+function updateWatermark() {
+    watermarkText = document.getElementById('watermarkText').value;
+    drawImage();
+}
+
+function updateFontSize(value) {
+    fontSize = parseInt(value);
+    document.getElementById('fontSizeValue').textContent = fontSize + 'px';
+    drawImage();
+}
+
+function updatePosition(value) {
+    position = value;
+    drawImage();
+}
+
+function updateOpacity(value) {
+    opacity = parseFloat(value);
+    document.getElementById('opacityValue').textContent = Math.round(opacity * 100) + '%';
+    drawImage();
+}
+
+function updateColor(value) {
+    color = value;
+    drawImage();
+}
