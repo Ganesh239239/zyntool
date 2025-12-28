@@ -2,27 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zyntool – Image Tools</title>
-
-  <!-- ✅ CORRECT CSS PATH -->
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zyntool</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 
 <header class="header">
   <div class="logo">Zyntool</div>
-  <button class="menu-btn" id="menuBtn">☰</button>
+  <button class="menu-btn">☰</button>
 </header>
-
-<nav class="mobile-menu" id="mobileMenu">
-  <button class="close-btn" id="closeMenu">✕</button>
-  <a href="#">Home</a>
-  <a href="#">Tools</a>
-  <a href="#">Blog</a>
-  <a href="#">Pricing</a>
-  <a href="#">Contact</a>
-</nav>
 
 <section class="hero">
   <h1>Every tool you could want to edit images in bulk</h1>
@@ -38,39 +27,157 @@
   </div>
 </section>
 
-<main class="tools">
+<section class="tools-grid">
 
-  <div class="tool">
-    <div class="icon green"></div>
+  <!-- Compress -->
+  <div class="tool-card">
+    <div class="tool-icon bg-compress">
+      <svg viewBox="0 0 24 24"><polyline points="8 3 3 3 3 8"/><polyline points="16 3 21 3 21 8"/><polyline points="3 16 3 21 8 21"/><polyline points="21 16 21 21 16 21"/></svg>
+    </div>
     <div class="tool-text">
-      <h2>Compress IMAGE</h2>
-      <p>Compress JPG, PNG, SVG, and GIFs while saving space.</p>
+      <h3>Compress IMAGE</h3>
+      <p>Compress JPG, PNG, SVG, and GIFs.</p>
     </div>
   </div>
 
-  <div class="tool">
-    <div class="icon blue"></div>
+  <!-- Resize -->
+  <div class="tool-card">
+    <div class="tool-icon bg-resize">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="9 7 4 12 9 17"/><polyline points="15 7 20 12 15 17"/></svg>
+    </div>
     <div class="tool-text">
-      <h2>Resize IMAGE</h2>
+      <h3>Resize IMAGE</h3>
       <p>Resize images by percent or pixel.</p>
     </div>
   </div>
 
-  <div class="tool">
-    <div class="icon cyan"></div>
+  <!-- Crop -->
+  <div class="tool-card">
+    <div class="tool-icon bg-crop">
+      <svg viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+    </div>
     <div class="tool-text">
-      <h2>Crop IMAGE</h2>
-      <p>Crop JPG, PNG, or GIF images easily.</p>
+      <h3>Crop IMAGE</h3>
+      <p>Crop JPG, PNG, or GIF images.</p>
     </div>
   </div>
 
-</main>
+  <!-- Convert to JPG -->
+  <div class="tool-card">
+    <div class="tool-icon bg-jpg">
+      <span class="text-icon">JPG</span>
+    </div>
+    <div class="tool-text">
+      <h3>Convert to JPG</h3>
+      <p>Convert images to JPG.</p>
+    </div>
+  </div>
+
+  <!-- Convert to PNG -->
+  <div class="tool-card">
+    <div class="tool-icon bg-png">
+      <span class="text-icon">PNG</span>
+    </div>
+    <div class="tool-text">
+      <h3>Convert to PNG</h3>
+      <p>Convert images to PNG.</p>
+    </div>
+  </div>
+
+  <!-- Convert to WebP -->
+  <div class="tool-card">
+    <div class="tool-icon bg-webp">
+      <span class="text-icon">WEBP</span>
+    </div>
+    <div class="tool-text">
+      <h3>Convert to WebP</h3>
+      <p>Convert images to WebP.</p>
+    </div>
+  </div>
+
+  <!-- Photo Editor -->
+  <div class="tool-card">
+    <div class="tool-icon bg-editor">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Photo Editor</h3>
+      <p>Edit photos online.</p>
+    </div>
+  </div>
+
+  <!-- Upscale -->
+  <div class="tool-card">
+    <div class="tool-icon bg-upscale">
+      <svg viewBox="0 0 24 24"><polyline points="12 5 12 19"/><polyline points="5 12 12 5 19 12"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Upscale IMAGE</h3>
+      <p>Increase image resolution.</p>
+    </div>
+  </div>
+
+  <!-- Watermark -->
+  <div class="tool-card">
+    <div class="tool-icon bg-watermark">
+      <svg viewBox="0 0 24 24"><path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9z"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Watermark IMAGE</h3>
+      <p>Add image or text watermark.</p>
+    </div>
+  </div>
+
+  <!-- Rotate -->
+  <div class="tool-card">
+    <div class="tool-icon bg-rotate">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-9.36"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Rotate IMAGE</h3>
+      <p>Rotate images easily.</p>
+    </div>
+  </div>
+
+  <!-- Meme -->
+  <div class="tool-card">
+    <div class="tool-icon bg-meme">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Meme Generator</h3>
+      <p>Create memes online.</p>
+    </div>
+  </div>
+
+  <!-- HTML -->
+  <div class="tool-card">
+    <div class="tool-icon bg-html">
+      <span class="text-icon">HTML</span>
+    </div>
+    <div class="tool-text">
+      <h3>HTML to IMAGE</h3>
+      <p>Convert HTML to image.</p>
+    </div>
+  </div>
+
+  <!-- Blur -->
+  <div class="tool-card">
+    <div class="tool-icon bg-blur">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+    </div>
+    <div class="tool-text">
+      <h3>Blur Face</h3>
+      <p>Hide sensitive areas.</p>
+    </div>
+  </div>
+
+</section>
 
 <footer class="footer">
-  <p>© 2025 Zyntool. All rights reserved.</p>
+  © 2025 Zyntool. All rights reserved.
 </footer>
 
-<!-- ✅ CORRECT JS PATH -->
 <script src="assets/js/main.js"></script>
 </body>
 </html>
