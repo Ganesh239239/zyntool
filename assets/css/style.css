@@ -211,3 +211,62 @@ No fragile breakpoints.
     display: none !important;
   }
 }
+
+/* =========================
+   MOBILE OPTIMIZATION ONLY
+========================= */
+@media (max-width: 768px) {
+
+  /* Hero spacing */
+  .hero {
+    padding: 40px 16px 20px;
+  }
+
+  .hero h1 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  /* Filters (buttons) */
+  .filters {
+    gap: 8px;
+  }
+
+  .filters button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  /* Tool cards */
+  .tool-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .tool-card h3 {
+    font-size: 15px;
+    margin-top: 10px;
+  }
+
+  .tool-card p {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  /* Icon size fix */
+  .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  /* Grid tighter spacing */
+  .tools-grid {
+    gap: 16px;
+  }
+
+}
