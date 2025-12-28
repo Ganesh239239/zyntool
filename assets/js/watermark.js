@@ -1,63 +1,81 @@
-// Watermark IMAGE Tool
-const uploadArea = document.getElementById('upload-area');
-const fileInput = document.getElementById('file-input');
-const loading = document.getElementById('loading');
-const previewSection = document.getElementById('preview-section');
-const previewImage = document.getElementById('preview-image');
-const downloadBtn = document.getElementById('download-btn');
+// Tool functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-input');
+    const selectBtn = document.getElementById('select-btn');
+    const previewSection = document.getElementById('preview-section');
+    const imagePreview = document.getElementById('image-preview');
+    const processBtn = document.getElementById('process-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const loading = document.getElementById('loading');
 
-let processedBlob = null;
+    // Select button click
+    selectBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
 
-uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-});
+    // File input change
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            displayImage(file);
+        }
+    });
 
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
-});
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = '#f9f9ff';
+    });
 
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        handleFile(files[0]);
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#d0d0d0';
+        uploadArea.style.background = 'white';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#d0d0d0';
+        uploadArea.style.background = 'white';
+
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            displayImage(file);
+        }
+    });
+
+    // Display image
+    function displayImage(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            uploadArea.style.display = 'none';
+            previewSection.classList.add('active');
+        };
+        reader.readAsDataURL(file);
     }
-});
 
-fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
-    }
-});
+    // Process button
+    processBtn.addEventListener('click', function() {
+        previewSection.style.display = 'none';
+        loading.classList.add('active');
 
-async function handleFile(file) {
-    if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-    }
+        // Simulate processing
+        setTimeout(() => {
+            loading.classList.remove('active');
+            previewSection.style.display = 'block';
+            processBtn.style.display = 'none';
+            downloadBtn.style.display = 'inline-block';
+        }, 2000);
+    });
 
-    uploadArea.style.display = 'none';
-    loading.classList.add('active');
-
-    setTimeout(() => {
-        const url = URL.createObjectURL(file);
-        previewImage.src = url;
-        processedBlob = file;
-
-        loading.classList.remove('active');
-        previewSection.classList.add('active');
-    }, 1000);
-}
-
-downloadBtn.addEventListener('click', () => {
-    if (processedBlob) {
-        const url = URL.createObjectURL(processedBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'processed-image.png';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
+    // Download button
+    downloadBtn.addEventListener('click', function() {
+        // Create download link
+        const link = document.createElement('a');
+        link.href = imagePreview.src;
+        link.download = 'processed-image.jpg';
+        link.click();
+    });
 });
