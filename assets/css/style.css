@@ -218,3 +218,44 @@ body{
     color: #666;
   }
     }
+
+@media (min-width: 1024px) {
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    max-width: 1280px;   /* MATCH iLoveIMG */
+    margin: 0 auto;
+    align-items: stretch;
+  }
+
+}
+
+@media (min-width: 1024px) {
+
+  .tool-card {
+    height: 100%;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tool-text {
+    flex-grow: 1;
+  }
+
+}
+
+@media (min-width: 1024px) {
+
+  .tool-icon {
+    margin-bottom: 12px;
+  }
+
+  .tool-text h3 {
+    margin-top: 0;
+  }
+
+}
+
