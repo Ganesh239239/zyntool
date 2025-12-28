@@ -71,6 +71,11 @@
         <div class="drop-zone" id="drop-zone">
             <button class="nav-arrow left">‹</button>
             <div class="drop-zone-content">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
                 <div class="drop-zone-text">Drop Your Files Here</div>
             </div>
             <button class="nav-arrow right">›</button>
@@ -79,66 +84,108 @@
         <!-- Loading -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Processing...</p>
+            <p>Processing your image...</p>
         </div>
 
-        <!-- Preview Area -->
+        <!-- PREMIUM PREVIEW AREA -->
         <div class="preview-area" id="preview-area">
-            <div class="image-card">
-                <div class="image-card-header">
-                    <span class="image-card-filename" id="card-filename">image.jpg</span>
-                    <button class="btn-remove" id="remove-btn">✕</button>
-                </div>
-
-                <div class="progress-indicator" id="progress-indicator">Processing...</div>
-
-                <button class="btn-download-single" id="download-single-btn">DOWNLOAD</button>
-            </div>
-
-            <div class="image-filename-display" id="filename-display">image.jpg</div>
-
-            <!-- Settings -->
-            <div class="settings-panel">
-                <div class="setting-row">
-                    <label class="setting-label">Quality</label>
-                    <input type="number" class="quality-input" id="quality-input" value="89" min="1" max="100">
-                    <button class="btn-apply" id="apply-btn">APPLY</button>
-                    <div class="info-icon">i</div>
-                </div>
-
-                <!-- Stats -->
-                <div class="stats-comparison">
-                    <div class="stat-item">
-                        <div class="label">Original:</div>
-                        <div class="value" id="original-size">0 KB</div>
+            <div class="premium-grid">
+                <!-- Left: Image Preview Card -->
+                <div class="image-preview-card">
+                    <div class="preview-header">
+                        <div class="preview-title">Image Preview</div>
+                        <button class="btn-remove-premium" id="remove-btn-premium">✕</button>
                     </div>
-                    <div class="stat-item">
-                        <div class="label">Processed:</div>
-                        <div class="value" id="compressed-size">0 KB</div>
+
+                    <div class="filename-premium" id="filename-premium">image.jpg</div>
+
+                    <div class="progress-display">
+                        <div class="progress-number" id="progress-number">-72%</div>
+                        <div class="progress-label" id="progress-label">File Reduced</div>
                     </div>
+
+                    <button class="btn-download-premium" id="download-btn-premium">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        DOWNLOAD
+                    </button>
                 </div>
 
-                <!-- Pie Chart -->
-                <div class="chart-container">
-                    <div class="pie-chart">
-                        <div class="pie-chart-center">
-                            <div class="pie-chart-percentage">0%</div>
+                <!-- Right: Settings Card -->
+                <div class="settings-card-premium">
+                    <div class="settings-header">
+                        <div class="settings-title">Settings</div>
+                    </div>
+
+                    <div class="quality-control">
+                        <label class="quality-label">Quality Level</label>
+                        <div class="quality-input-group">
+                            <input type="number" class="quality-input-premium" id="quality-input-premium" value="89" min="1" max="100">
+                            <button class="btn-apply-premium" id="apply-btn-premium">APPLY</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Original</div>
+                            <div class="stat-value" id="original-stat">0 KB</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Processed</div>
+                            <div class="stat-value" id="processed-stat">0 KB</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-premium">
+                        <div class="pie-chart-premium">
+                            <div class="pie-chart-center">
+                                <div class="pie-percentage" id="pie-percentage">0%</div>
+                                <div class="pie-label">Progress</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Full Width Comparison Card -->
+            <div class="full-width-card">
+                <div class="comparison-header">
+                    <div class="comparison-title">Detailed Comparison</div>
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <div class="comparison-label">Original Size</div>
+                        <div class="comparison-value" id="original-stat">0 KB</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Processed Size</div>
+                        <div class="comparison-value" id="processed-stat">0 KB</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Format</div>
+                        <div class="comparison-value">JPG</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Quality</div>
+                        <div class="comparison-value">High</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Download All -->
-        <div class="bottom-actions">
-            <button class="btn-download-all" id="download-all-btn" disabled>
+        <!-- Download All Button -->
+        <div class="bottom-actions-premium">
+            <button class="btn-download-all-premium" id="download-all-btn-premium" disabled>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
                 DOWNLOAD ALL
-                <span class="file-count-badge" id="file-count">0</span>
+                <span class="file-count-badge-premium" id="file-count-premium">0</span>
             </button>
         </div>
     </div>
