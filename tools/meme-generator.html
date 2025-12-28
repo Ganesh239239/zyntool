@@ -14,69 +14,76 @@
             <a href="../index.html" class="logo">ZynTool</a>
             <nav class="nav">
                 <a href="../index.html">Home</a>
-                <a href="#tools">All tools</a>
+                <a href="../index.html#tools">All tools</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#blog">Blog</a>
             </nav>
         </div>
     </header>
 
-    <!-- Hero -->
+    <!-- Hero Section -->
     <section class="hero-small">
         <div class="container">
             <h1>Meme generator</h1>
-            <p>Create memes</p>
+            <p>Create memes with text overlays</p>
         </div>
     </section>
 
     <!-- Tool Workspace -->
     <div class="tool-workspace">
-        <!-- Upload Zone -->
-        <div class="upload-zone" id="upload-zone">
-            <div class="upload-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
+        <div class="container">
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h3>Select images</h3>
+                <p class="upload-hint">or drop images here</p>
+                <input type="file" id="file-input" accept="image/*" hidden>
+                <button class="btn-primary" id="select-btn">Select images</button>
             </div>
-            <h3>Select images</h3>
-            <p class="upload-hint">or drop images here</p>
-            <input type="file" id="file-input" accept="image/*" hidden>
-            <button class="btn-primary" id="select-btn">Select images</button>
-        </div>
 
-        <!-- Work Area -->
-        <div class="work-area" id="work-area" style="display: none;">
-            <div class="preview-panel">
-                <div class="image-card">
-                    <div class="image-thumbnail">
-                        <img id="thumbnail-img" src="" alt="Preview">
+            <!-- Work Area (Hidden initially) -->
+            <div class="work-area" id="work-area" style="display: none;">
+                <!-- Preview Panel -->
+                <div class="preview-panel">
+                    <div class="image-card">
+                        <div class="image-thumbnail">
+                            <img id="thumbnail-img" src="" alt="Preview">
+                        </div>
+                        <div class="image-info">
+                            <div class="image-name" id="image-name">image.jpg</div>
+                        </div>
                     </div>
-                    <div class="image-info">
-                        <div class="image-name" id="image-name">image.jpg</div>
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <div class="panel-section">
+                        <h3>Settings</h3>
+                        <div id="controls-content">
+                            <!-- Controls will be injected by JavaScript -->
+                        </div>
                     </div>
+
+                    <button class="btn-process" id="process-btn" disabled>Process IMAGE</button>
+                    <button class="btn-download" id="download-btn" disabled>Download Result</button>
                 </div>
             </div>
 
-            <div class="controls-panel">
-                <div class="panel-section">
-                    <h3>Settings</h3>
-                    <div id="controls-content"></div>
-                </div>
-
-                <button class="btn-process" id="process-btn" disabled>Process IMAGE</button>
-                <button class="btn-download" id="download-btn" disabled>Download Result</button>
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                <div class="spinner-large"></div>
+                <p>Processing your image...</p>
             </div>
-        </div>
-
-        <!-- Loading Overlay -->
-        <div class="loading-overlay" id="loading-overlay" style="display: none;">
-            <div class="spinner-large"></div>
-            <p>Processing your image...</p>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/meme-generator.js"></script>
 </body>
