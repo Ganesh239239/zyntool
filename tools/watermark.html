@@ -21,14 +21,13 @@
             <a href="#" class="menu-item">Features</a>
             <a href="#" class="menu-item">Pricing</a>
             <a href="#" class="menu-item">Blog</a>
-            <a href="#" class="menu-item">Help</a>
         </nav>
     </div>
 
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menu-btn" aria-label="Menu">
+            <button class="menu-btn" id="menu-btn">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -39,7 +38,7 @@
                 <span class="logo-text">I</span><span class="logo-heart">❤️</span><span class="logo-text">IMG</span>
             </a>
         </div>
-        <button class="grid-btn" aria-label="Grid">
+        <button class="grid-btn">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7"></rect>
                 <rect x="14" y="3" width="7" height="7"></rect>
@@ -49,7 +48,7 @@
         </button>
     </header>
 
-    <!-- Tool Header (Hero) -->
+    <!-- Tool Header -->
     <div class="tool-header">
         <h1>Watermark IMAGE</h1>
         <p>Stamp an image or text over your images in seconds. Choose the typography, transparency and position.</p>
@@ -74,7 +73,10 @@
 
         <!-- Preview Section -->
         <div class="preview-section" id="preview-section">
-            <img id="image-preview" class="image-preview" alt="Preview" style="display: block; max-width: 100%; margin: 0 auto;">
+            <img id="image-preview" class="image-preview" alt="Preview">
+
+            <!-- Premium Controls (dynamically added by JS) -->
+            <div class="controls" id="controls"></div>
 
             <div class="actions">
                 <button class="btn" id="process-btn">Process Image</button>
@@ -132,15 +134,15 @@
         <div class="footer-bottom">
             <p>&copy; 2025 iLoveIMG. All rights reserved.</p>
             <div class="social-links">
-                <a href="#" aria-label="Twitter">𝕏</a>
-                <a href="#" aria-label="Facebook">📘</a>
-                <a href="#" aria-label="Instagram">📷</a>
+                <a href="#">𝕏</a>
+                <a href="#">📘</a>
+                <a href="#">📷</a>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts: BOTH main.js (menu) and tool.js (functionality) -->
+    <!-- Scripts: main.js + individual tool JS -->
     <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/tool.js"></script>
+    <script src="../assets/js/watermark.js"></script>
 </body>
 </html>
