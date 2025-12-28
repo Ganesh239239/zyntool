@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compress IMAGE | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/design3-wizard.css">
+    <link rel="stylesheet" href="../assets/css/tool-design.css">
 </head>
 <body>
     <!-- Mobile Side Menu -->
@@ -56,90 +56,104 @@
 
     <!-- Tool Section -->
     <div class="tool-section">
-        <!-- Step Progress Bar -->
-        <div class="step-progress">
-            <div class="step active" id="step-1">
-                <div class="step-circle">1</div>
-                <div class="step-label">Upload</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step" id="step-2">
-                <div class="step-circle">2</div>
-                <div class="step-label">Adjust</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step" id="step-3">
-                <div class="step-circle">3</div>
-                <div class="step-label">Download</div>
-            </div>
+        <!-- Top Action Buttons -->
+        <div class="top-actions">
+            <button class="btn-upload" id="upload-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                UPLOAD FILES
+            </button>
+            <button class="btn-clear" id="clear-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                CLEAR QUEUE
+            </button>
         </div>
 
-        <!-- Step 1: Upload (Collapsed when completed) -->
-        <div class="step-summary" id="step1-summary"></div>
+        <input type="file" id="file-input" accept="image/*" multiple>
 
-        <!-- Step 1 Content: Upload Area -->
-        <div class="step-content active" id="step1-content">
-            <div class="upload-area" id="upload-area">
-                <div class="upload-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6abf69" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                </div>
-                <h2>Select images</h2>
-                <p>or drop images here</p>
-                <button class="btn" id="select-btn">Select images</button>
-                <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+        <!-- Drop Zone (Before Upload) -->
+        <div class="drop-zone" id="drop-zone">
+            <button class="nav-arrow left">‹</button>
+            <div class="drop-zone-content">
+                <div class="drop-zone-text">Drop Your Files Here</div>
             </div>
-        </div>
-
-        <!-- Step 2 Content: Adjust Settings -->
-        <div class="step-content" id="step2-content">
-            <div class="adjust-content">
-                <!-- Left: Preview Area -->
-                <div class="preview-area">
-                    <img id="image-preview" class="image-preview" alt="Preview">
-                    <div class="image-stats" id="image-stats"></div>
-                </div>
-
-                <!-- Right: Settings Area -->
-                <div class="settings-area">
-                    <div id="controls"></div>
-                </div>
-            </div>
-
-            <div class="step-buttons">
-                <button class="btn-wizard btn-wizard-primary" id="process-btn">
-                    ⚙️ Process Image
-                </button>
-            </div>
-        </div>
-
-        <!-- Step 3 Content: Download -->
-        <div class="step-content" id="step3-content">
-            <div class="download-content">
-                <div class="success-icon">✓</div>
-                <h3>Processing Complete!</h3>
-                <p>Your image has been successfully compressed</p>
-
-                <div class="final-stats" id="final-stats"></div>
-
-                <div class="step-buttons">
-                    <button class="btn-wizard btn-wizard-success" id="download-btn">
-                        ↓ Download Result
-                    </button>
-                    <button class="btn-wizard btn-wizard-secondary" id="start-over-btn">
-                        🔄 Start Over
-                    </button>
-                </div>
-            </div>
+            <button class="nav-arrow right">›</button>
         </div>
 
         <!-- Loading -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <p>Processing your image...</p>
+        </div>
+
+        <!-- Preview Area (After Upload) -->
+        <div class="preview-area" id="preview-area">
+            <!-- Image Card -->
+            <div class="image-card" id="image-card">
+                <div class="image-card-header">
+                    <span class="image-card-filename" id="card-filename">Screenshot_b12.jpg</span>
+                    <button class="btn-remove" id="remove-btn">✕</button>
+                </div>
+
+                <div class="progress-indicator" id="progress-indicator">-72%</div>
+
+                <button class="btn-download-single" id="download-single-btn">DOWNLOAD</button>
+            </div>
+
+            <!-- Filename Display -->
+            <div class="image-filename-display" id="filename-display">
+                Screenshot_2025-12-28-11-75_40deb401b9ffe8e1df2f1cc5ba480b12.jpg
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="setting-row">
+                    <label class="setting-label">Quality</label>
+                    <input type="number" class="quality-input" id="quality-input" value="89" min="1" max="100">
+                    <button class="btn-apply" id="apply-btn">APPLY</button>
+                    <div class="info-icon" title="Adjust quality from 1-100. Lower = smaller file size.">i</div>
+                </div>
+
+                <!-- Stats Comparison -->
+                <div class="stats-comparison">
+                    <div class="stat-item">
+                        <div class="label">Original:</div>
+                        <div class="value" id="original-size">291 KB</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Compressed:</div>
+                        <div class="value" id="compressed-size">81 KB (-72%)</div>
+                    </div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="chart-container">
+                    <div class="pie-chart">
+                        <div class="pie-chart-center">
+                            <div class="pie-chart-percentage">-72%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download All Button -->
+        <div class="bottom-actions">
+            <button class="btn-download-all" id="download-all-btn" disabled>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                DOWNLOAD ALL
+                <span class="file-count-badge" id="file-count">0</span>
+            </button>
         </div>
     </div>
 
