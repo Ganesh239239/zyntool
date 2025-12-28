@@ -165,3 +165,56 @@ body{
   padding:20px;
   color:#777;
 }
+
+/* ================= ILOVEIMG DESKTOP MATCH ================= */
+@media (min-width: 1024px) {
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .tool-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: none;
+    border: 1px solid #e6e8ee;
+    transition: box-shadow .25s ease, transform .25s ease;
+    height: 100%;
+  }
+
+  .tool-card:hover {
+    box-shadow: 0 14px 30px rgba(0,0,0,.10);
+    transform: translateY(-4px);
+  }
+
+  .tool-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+
+  .tool-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
+
+  .tool-text h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .tool-text p {
+    font-size: 13px;
+    line-height: 1.45;
+    color: #666;
+  }
+    }
