@@ -1,5 +1,6 @@
 // ZynTool - Main JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu only
     const menuBtn = document.getElementById('menu-btn');
     const sideMenu = document.getElementById('side-menu');
     const closeMenu = document.getElementById('close-menu');
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Category filtering
     const categoryBtns = document.querySelectorAll('.category-btn');
     const toolCards = document.querySelectorAll('.tool-card');
 
