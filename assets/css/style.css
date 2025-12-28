@@ -1,58 +1,47 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 body {
-  background: #f6f7fb;
+  background: #f6f8fb;
   color: #222;
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 16px;
 }
 
 /* HEADER */
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
   background: #fff;
   border-bottom: 1px solid #eee;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-}
-
 .logo {
-  font-size: 20px;
   font-weight: 700;
+  font-size: 20px;
 }
 
-.nav-links {
-  display: flex;
-  gap: 24px;
-}
-
-.nav-links a {
+.nav a {
+  margin-left: 20px;
   text-decoration: none;
   color: #333;
 }
 
-.hamburger {
-  display: none;
+.menu-btn {
   font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* HERO */
 .hero {
   text-align: center;
-  padding: 48px 16px 32px;
+  padding: 40px 16px;
 }
 
 .hero h1 {
@@ -62,19 +51,20 @@ body {
 
 .hero p {
   color: #666;
-  margin-bottom: 24px;
 }
 
+/* CATEGORY BUTTONS */
 .categories {
+  margin-top: 24px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
   justify-content: center;
+  gap: 12px;
 }
 
 .categories button {
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 8px 18px;
+  border-radius: 999px;
   border: 1px solid #ddd;
   background: #fff;
   cursor: pointer;
@@ -87,91 +77,79 @@ body {
 
 /* TOOLS GRID */
 .tools-grid {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 16px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  margin-bottom: 60px;
 }
 
+/* TOOL CARD */
 .tool-card {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
 }
 
-.tool-icon {
+.icon {
   width: 56px;
   height: 56px;
   border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tool-content h3 {
-  font-size: 16px;
-  margin-bottom: 4px;
-}
-
-.tool-content p {
-  font-size: 13px;
-  color: #666;
+.icon svg {
+  width: 26px;
+  height: 26px;
+  fill: #fff;
 }
 
 /* ICON COLORS */
-.green { background:#7ac943; }
-.blue { background:#4f8df7; }
-.teal { background:#2ec4c4; }
-.yellow { background:#f4b400; }
-.purple { background:#9c6ade; }
-.cyan { background:#34c3eb; }
-.mint { background:#2bb673; }
-.lime { background:#6dd400; }
-.orange { background:#f39c12; }
-.red { background:#f25f5c; }
+.green { background: #7ac943; }
+.blue { background: #4e8df5; }
+.teal { background: #2fc2c2; }
+
+/* TEXT */
+.tool-text h3 {
+  font-size: 18px;
+}
+
+.tool-text p {
+  font-size: 14px;
+  color: #666;
+}
 
 /* FOOTER */
 .footer {
   text-align: center;
-  padding: 24px;
+  padding: 40px;
   color: #999;
-  font-size: 14px;
 }
 
-/* =========================
-   MOBILE FIX (CRITICAL)
-========================= */
-@media (max-width: 768px) {
-
-  .nav-links {
-    display: none;
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .hamburger {
-    display: block;
-  }
-
-  .hero h1 {
-    font-size: 24px;
-  }
+@media (max-width: 640px) {
+  .desktop-nav { display: none; }
+  .mobile-only { display: block; }
 
   .tools-grid {
     grid-template-columns: 1fr;
   }
 
-  /* KEY FIX YOU ASKED FOR */
+  /* MOBILE: ICON LEFT, TEXT RIGHT (LIKE ILOVEIMG) */
   .tool-card {
     flex-direction: row;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .tool-content h3 {
-    font-size: 15px;
-  }
-
-  .tool-content p {
-    font-size: 13px;
   }
 }
