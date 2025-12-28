@@ -2,96 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zyntool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
 <header class="header">
-  <div class="logo">Zyntool</div>
+  <div class="header-inner">
+    <div class="logo">Zyntool</div>
 
-  <nav class="desktop-nav">
+    <!-- Desktop nav -->
+    <nav class="desktop-nav">
+      <a href="#">Home</a>
+      <a href="#">Tools</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button class="menu-btn" id="menuBtn">☰</button>
+  </div>
+
+  <!-- Mobile nav -->
+  <nav class="mobile-nav" id="mobileNav">
     <a href="#">Home</a>
     <a href="#">Tools</a>
     <a href="#">Blog</a>
     <a href="#">Contact</a>
   </nav>
-
-  <button class="menu-btn" id="menuBtn">☰</button>
 </header>
 
-<nav class="mobile-nav" id="mobileNav">
-  <a href="#">Home</a>
-  <a href="#">Tools</a>
-  <a href="#">Blog</a>
-  <a href="#">Contact</a>
-</nav>
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Every tool you could want to edit images in bulk</h1>
+    <p>Your online photo editor is here and forever free!</p>
 
-<section class="hero">
-  <h1>Every tool you could want to edit images in bulk</h1>
-  <p>Your online photo editor is here and forever free!</p>
-
-  <div class="filters">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="optimize">Optimize</button>
-    <button class="filter" data-filter="edit">Edit</button>
-    <button class="filter" data-filter="convert">Convert</button>
-    <button class="filter" data-filter="security">Security</button>
-  </div>
-</section>
-
-<section class="tools-grid">
-
-  <div class="tool-card optimize">
-    <div class="icon green">
-      <svg viewBox="0 0 24 24"><path d="M4 12h16" /></svg>
+    <div class="filters">
+      <button class="active">All</button>
+      <button>Optimize</button>
+      <button>Create</button>
+      <button>Edit</button>
+      <button>Convert</button>
+      <button>Security</button>
     </div>
-    <h3>Compress IMAGE</h3>
-    <p>Compress JPG, PNG, SVG, and GIFs.</p>
-  </div>
+  </section>
 
-  <div class="tool-card optimize">
-    <div class="icon blue">
-      <svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" /></svg>
+  <!-- TOOLS GRID -->
+  <section class="tools-section">
+    <div class="tools-grid">
+
+      <!-- CARD -->
+      <div class="tool-card">
+        <div class="icon green"></div>
+        <h3>Compress IMAGE</h3>
+        <p>Compress JPG, PNG, SVG, and GIFs.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon blue"></div>
+        <h3>Resize IMAGE</h3>
+        <p>Resize images by percent or pixel.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon teal"></div>
+        <h3>Crop IMAGE</h3>
+        <p>Crop JPG, PNG or GIF images.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon yellow"></div>
+        <h3>Convert to JPG</h3>
+        <p>Convert images to JPG.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon purple"></div>
+        <h3>Convert to PNG</h3>
+        <p>Convert images to PNG.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon cyan"></div>
+        <h3>Convert to WebP</h3>
+        <p>Convert images to WebP.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon teal"></div>
+        <h3>Photo Editor</h3>
+        <p>Edit photos online.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon green"></div>
+        <h3>Upscale IMAGE</h3>
+        <p>Increase image resolution.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon blue"></div>
+        <h3>Watermark IMAGE</h3>
+        <p>Add image or text watermark.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon blue"></div>
+        <h3>Rotate IMAGE</h3>
+        <p>Rotate images easily.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon orange"></div>
+        <h3>HTML to IMAGE</h3>
+        <p>Convert HTML to image.</p>
+      </div>
+
+      <div class="tool-card">
+        <div class="icon red"></div>
+        <h3>Blur Face</h3>
+        <p>Hide sensitive areas.</p>
+      </div>
+
     </div>
-    <h3>Resize IMAGE</h3>
-    <p>Resize images by percent or pixel.</p>
-  </div>
-
-  <div class="tool-card edit">
-    <div class="icon teal">
-      <svg viewBox="0 0 24 24"><path d="M4 4l16 16" /></svg>
-    </div>
-    <h3>Crop IMAGE</h3>
-    <p>Crop JPG, PNG or GIF images.</p>
-  </div>
-
-  <div class="tool-card convert">
-    <div class="icon yellow">
-      <svg viewBox="0 0 24 24"><path d="M6 12h12" /></svg>
-    </div>
-    <h3>Convert to JPG</h3>
-    <p>Convert images to JPG.</p>
-  </div>
-
-  <div class="tool-card convert">
-    <div class="icon purple">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
-    </div>
-    <h3>Convert to PNG</h3>
-    <p>Convert images to PNG.</p>
-  </div>
-
-  <div class="tool-card security">
-    <div class="icon red">
-      <svg viewBox="0 0 24 24"><path d="M12 6v12" /></svg>
-    </div>
-    <h3>Blur Face</h3>
-    <p>Hide sensitive areas.</p>
-  </div>
-
-</section>
+  </section>
+</main>
 
 <footer class="footer">
   © 2025 Zyntool. All rights reserved.
