@@ -1,6 +1,5 @@
 /* Tool Page Design - FULLY RESPONSIVE FOR ALL DEVICES */
 
-/* Base Styles */
 * {
     box-sizing: border-box;
 }
@@ -69,7 +68,6 @@
     height: 20px;
 }
 
-/* Hide file input */
 #file-input {
     display: none;
 }
@@ -112,7 +110,7 @@
     margin: 15px 0;
 }
 
-/* Navigation Arrows - HIDDEN ON MOBILE */
+/* Navigation Arrows */
 .nav-arrow {
     position: absolute;
     top: 50%;
@@ -145,7 +143,7 @@
     right: 15px;
 }
 
-/* Preview Area - RESPONSIVE */
+/* Preview Area */
 .preview-area {
     display: none;
 }
@@ -154,7 +152,7 @@
     display: block;
 }
 
-/* Image Card - RESPONSIVE */
+/* Image Card */
 .image-card {
     background: white;
     border: 2px solid #90caf9;
@@ -226,7 +224,6 @@
     color: white;
 }
 
-/* Image Filename Display - RESPONSIVE */
 .image-filename-display {
     margin: 16px 0;
     font-size: 13px;
@@ -236,7 +233,7 @@
     line-height: 1.5;
 }
 
-/* Settings Panel - RESPONSIVE */
+/* Settings Panel */
 .settings-panel {
     background: white;
     border-radius: 12px;
@@ -301,7 +298,7 @@
     flex-shrink: 0;
 }
 
-/* Stats Comparison - RESPONSIVE */
+/* Stats Comparison */
 .stats-comparison {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -326,7 +323,7 @@
     color: #333;
 }
 
-/* Pie Chart - RESPONSIVE */
+/* Pie Chart */
 .chart-container {
     display: flex;
     justify-content: center;
@@ -337,7 +334,7 @@
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    background: conic-gradient(#7e57c2 0deg 259deg, #e3f2fd 259deg 360deg);
+    background: conic-gradient(#7e57c2 0deg 0deg, #e3f2fd 0deg 360deg);
     position: relative;
     display: flex;
     align-items: center;
@@ -360,7 +357,7 @@
     color: #7e57c2;
 }
 
-/* Download All Button - RESPONSIVE */
+/* Download All Button */
 .bottom-actions {
     display: flex;
     justify-content: center;
@@ -448,9 +445,7 @@
     font-weight: 500;
 }
 
-/* ============================================
-   RESPONSIVE BREAKPOINTS
-   ============================================ */
+/* RESPONSIVE BREAKPOINTS */
 
 /* Small Mobile (320px - 480px) */
 @media (max-width: 480px) {
@@ -480,20 +475,8 @@
         display: none !important;
     }
 
-    .image-card-filename {
-        font-size: 12px;
-    }
-
     .progress-indicator {
         font-size: 36px;
-    }
-
-    .image-filename-display {
-        font-size: 12px;
-    }
-
-    .settings-panel {
-        padding: 16px 12px;
     }
 
     .setting-row {
@@ -520,39 +503,10 @@
     }
 }
 
-/* Mobile Landscape & Small Tablet (481px - 767px) */
-@media (min-width: 481px) and (max-width: 767px) {
-    .tool-section {
-        padding: 16px;
-    }
-
-    .drop-zone {
-        min-height: 250px;
-    }
-
-    .drop-zone-text {
-        font-size: 20px;
-    }
-
-    .nav-arrow {
-        display: none !important;
-    }
-}
-
 /* Tablet (768px - 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
     .tool-section {
         padding: 20px;
-    }
-
-    .top-actions {
-        gap: 16px;
-    }
-
-    .btn-upload,
-    .btn-clear {
-        font-size: 15px;
-        padding: 15px 24px;
     }
 
     .drop-zone {
@@ -587,20 +541,12 @@
     .pie-chart-percentage {
         font-size: 30px;
     }
-
-    .setting-row {
-        justify-content: flex-start;
-    }
 }
 
 /* Desktop (1025px+) */
 @media (min-width: 1025px) {
     .tool-section {
         padding: 24px;
-    }
-
-    .top-actions {
-        gap: 20px;
     }
 
     .btn-upload,
