@@ -1,2 +1,200 @@
-// Remove Background - FIXED VERSION
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Remove Background</h3><div class="info-box"><p><strong>Mode:</strong> Smart Edge Detection</p><p>This tool detects edges and removes the background automatically.</p></div><div class="control-item"><label class="control-label">Threshold <span id="threshold-display">128</span></label><input type="range" class="slider" id="threshold-slider" min="50" max="200" value="128"><div class="slider-labels"><span>Less</span><span>More</span></div></div>`;processBtn.textContent='Remove Background';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});setTimeout(()=>{const thresholdSlider=document.getElementById('threshold-slider'),thresholdDisplay=document.getElementById('threshold-display');if(thresholdSlider)thresholdSlider.addEventListener('input',e=>thresholdDisplay.textContent=e.target.value)},100);processBtn.addEventListener('click',removeBackground);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function removeBackground(){const threshold=parseInt(document.getElementById('threshold-slider')?document.getElementById('threshold-slider').value:128);processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;ctx.drawImage(currentImage,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),data=imageData.data;for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2],brightness=(r+g+b)/3;if(brightness>threshold){data[i+3]=0}}ctx.putImageData(imageData,0,0);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Remove Background';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/png')},1000)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download=`removed-bg-${Date.now()}.png`;a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+let selectedFiles = [];
+let processedImages = [];
+
+const imageInput = document.getElementById('imageInput');
+const uploadSection = document.getElementById('uploadSection');
+const uploadBox = document.getElementById('uploadBox');
+const settingsSection = document.getElementById('settingsSection');
+const resultsSection = document.getElementById('resultsSection');
+const processBtn = document.getElementById('processBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+imageInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+});
+
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    handleFiles(files);
+});
+
+function handleFiles(files) {
+    if (files.length > 0) {
+        selectedFiles = files;
+        settingsSection.style.display = 'block';
+        uploadSection.style.display = 'none';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function downloadSingle(index) {
+    const item = processedImages[index];
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(item.processed);
+    link.download = item.processed.name;
+    link.click();
+}
+
+downloadAllBtn.addEventListener('click', async () => {
+    if (processedImages.length === 1) {
+        downloadSingle(0);
+    } else {
+        const zip = new JSZip();
+        processedImages.forEach((item) => {
+            zip.file(item.processed.name, item.processed);
+        });
+        const content = await zip.generateAsync({type: 'blob'});
+        saveAs(content, 'processed_images.zip');
+    }
+});
+
+resetBtn.addEventListener('click', () => {
+    selectedFiles = [];
+    processedImages = [];
+    imageInput.value = '';
+    resultsSection.style.display = 'none';
+    uploadSection.style.display = 'block';
+});
+
+function displayResults(prefix = 'processed') {
+    resultsContainer.innerHTML = '';
+
+    processedImages.forEach((item, index) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        const imgURL = URL.createObjectURL(item.processed);
+
+        resultDiv.innerHTML = `
+            <div class="result-preview">
+                <img src="${imgURL}" alt="Result">
+            </div>
+            <div class="result-info">
+                <h4>${item.processed.name}</h4>
+                <div class="size-comparison">
+                    <span class="size-badge original">Original: ${formatFileSize(item.originalSize)}</span>
+                    <span class="size-badge processed">Processed: ${formatFileSize(item.processedSize)}</span>
+                </div>
+                <button class="primary-btn download-single" data-index="${index}">Download</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(resultDiv);
+    });
+
+    document.querySelectorAll('.download-single').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            downloadSingle(e.target.dataset.index);
+        });
+    });
+}
+
+const bgCanvas = document.getElementById('bgCanvas');
+const tolerance = document.getElementById('tolerance');
+const toleranceValue = document.getElementById('toleranceValue');
+
+let currentImage = null;
+let bgCtx = null;
+
+tolerance.addEventListener('input', (e) => {
+    toleranceValue.textContent = e.target.value;
+});
+
+processBtn.addEventListener('click', () => {
+    if (selectedFiles.length === 0) return;
+
+    const file = selectedFiles[0];
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        img.onload = () => {
+            currentImage = img;
+            const maxWidth = settingsSection.offsetWidth - 50;
+            const scale = Math.min(maxWidth / img.width, 1);
+
+            bgCanvas.width = img.width * scale;
+            bgCanvas.height = img.height * scale;
+
+            bgCtx = bgCanvas.getContext('2d');
+            bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
+
+            setupRemoveBg();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+function setupRemoveBg() {
+    bgCanvas.addEventListener('click', (e) => {
+        const rect = bgCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        removeBackground(x, y);
+    });
+
+    const finishBtn = document.createElement('button');
+    finishBtn.textContent = 'Finish & Download';
+    finishBtn.className = 'primary-btn';
+    finishBtn.style.marginTop = '1rem';
+    finishBtn.onclick = finishRemoveBg;
+    settingsSection.appendChild(finishBtn);
+}
+
+function removeBackground(x, y) {
+    const imageData = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height);
+    const targetColor = bgCtx.getImageData(x, y, 1, 1).data;
+    const tol = parseInt(tolerance.value);
+
+    for (let i = 0; i < imageData.data.length; i += 4) {
+        const r = imageData.data[i];
+        const g = imageData.data[i + 1];
+        const b = imageData.data[i + 2];
+
+        if (Math.abs(r - targetColor[0]) < tol &&
+            Math.abs(g - targetColor[1]) < tol &&
+            Math.abs(b - targetColor[2]) < tol) {
+            imageData.data[i + 3] = 0;
+        }
+    }
+
+    bgCtx.putImageData(imageData, 0, 0);
+}
+
+function finishRemoveBg() {
+    bgCanvas.toBlob((blob) => {
+        const file = new File([blob], 'no-bg_' + selectedFiles[0].name, { type: 'image/png' });
+        processedImages = [{
+            original: selectedFiles[0],
+            processed: file,
+            originalSize: selectedFiles[0].size,
+            processedSize: file.size
+        }];
+
+        displayResults('no-bg');
+        settingsSection.style.display = 'none';
+        resultsSection.style.display = 'block';
+    }, 'image/png');
+}

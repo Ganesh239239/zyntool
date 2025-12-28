@@ -109,23 +109,16 @@ function displayResults(prefix = 'processed') {
     });
 }
 
-const topText = document.getElementById('topText');
-const bottomText = document.getElementById('bottomText');
-const memeFontSize = document.getElementById('memeFontSize');
-const memeFontSizeValue = document.getElementById('memeFontSizeValue');
-
-memeFontSize.addEventListener('input', (e) => {
-    memeFontSizeValue.textContent = e.target.value;
-});
-
 processBtn.addEventListener('click', async () => {
     processBtn.disabled = true;
-    processBtn.innerHTML = '<span class="loading"></span> Creating Memes...';
+    processBtn.innerHTML = '<span class="loading"></span> Converting...';
     processedImages = [];
+
+    const quality = document.getElementById('quality') ? document.getElementById('quality').value / 100 : 0.9;
 
     for (let file of selectedFiles) {
         try {
-            const processed = await createMeme(file);
+            const processed = await convertImage(file, quality);
             processedImages.push({
                 original: file,
                 processed: processed,
@@ -133,18 +126,18 @@ processBtn.addEventListener('click', async () => {
                 processedSize: processed.size
             });
         } catch (error) {
-            console.error('Meme creation error:', error);
+            console.error('Conversion error:', error);
         }
     }
 
-    displayResults('meme');
+    displayResults('converted');
     settingsSection.style.display = 'none';
     resultsSection.style.display = 'block';
     processBtn.disabled = false;
     processBtn.textContent = 'Process Images';
 });
 
-function createMeme(file) {
+function convertImage(file, quality) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         const reader = new FileReader();
@@ -159,32 +152,10 @@ function createMeme(file) {
 
                 ctx.drawImage(img, 0, 0);
 
-                const size = parseInt(memeFontSize.value);
-                ctx.font = `bold ${size}px Impact`;
-                ctx.fillStyle = 'white';
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 3;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'top';
-
-                // Top text
-                if (topText.value) {
-                    const text = topText.value.toUpperCase();
-                    ctx.strokeText(text, canvas.width / 2, 10);
-                    ctx.fillText(text, canvas.width / 2, 10);
-                }
-
-                // Bottom text
-                if (bottomText.value) {
-                    ctx.textBaseline = 'bottom';
-                    const text = bottomText.value.toUpperCase();
-                    ctx.strokeText(text, canvas.width / 2, canvas.height - 10);
-                    ctx.fillText(text, canvas.width / 2, canvas.height - 10);
-                }
-
                 canvas.toBlob((blob) => {
-                    resolve(new File([blob], 'meme_' + file.name, { type: file.type }));
-                }, file.type, 0.95);
+                    const newName = file.name.replace(/\.[^.]+$/, '.webp');
+                    resolve(new File([blob], newName, { type: 'image/webp' }));
+                }, 'image/webp', quality);
             };
             img.src = e.target.result;
         };

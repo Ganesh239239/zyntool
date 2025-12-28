@@ -1,2 +1,238 @@
-// Crop
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Crop</h3><div class="control-item"><label class="control-label">Area <span id="c">80%</span></label><input type="range" class="slider" id="crop" min="10" max="100" value="80"></div>`;processBtn.textContent='Crop';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});processBtn.addEventListener('click',processImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function processImage(){processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;const p=(document.getElementById("crop")?document.getElementById("crop").value:80)/100;const w=currentImage.width*p,h=currentImage.height*p;canvas.width=w;canvas.height=h;ctx.drawImage(currentImage,(currentImage.width-w)/2,(currentImage.height-h)/2,w,h,0,0,w,h);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Crop';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/jpeg',0.9)},600)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download='crop-${Date.now()}.jpg';a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+let selectedFiles = [];
+let processedImages = [];
+
+const imageInput = document.getElementById('imageInput');
+const uploadSection = document.getElementById('uploadSection');
+const uploadBox = document.getElementById('uploadBox');
+const settingsSection = document.getElementById('settingsSection');
+const resultsSection = document.getElementById('resultsSection');
+const processBtn = document.getElementById('processBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+imageInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+});
+
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    handleFiles(files);
+});
+
+function handleFiles(files) {
+    if (files.length > 0) {
+        selectedFiles = files;
+        settingsSection.style.display = 'block';
+        uploadSection.style.display = 'none';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function downloadSingle(index) {
+    const item = processedImages[index];
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(item.processed);
+    link.download = item.processed.name;
+    link.click();
+}
+
+downloadAllBtn.addEventListener('click', async () => {
+    if (processedImages.length === 1) {
+        downloadSingle(0);
+    } else {
+        const zip = new JSZip();
+        processedImages.forEach((item) => {
+            zip.file(item.processed.name, item.processed);
+        });
+        const content = await zip.generateAsync({type: 'blob'});
+        saveAs(content, 'processed_images.zip');
+    }
+});
+
+resetBtn.addEventListener('click', () => {
+    selectedFiles = [];
+    processedImages = [];
+    imageInput.value = '';
+    resultsSection.style.display = 'none';
+    uploadSection.style.display = 'block';
+});
+
+function displayResults(prefix = 'processed') {
+    resultsContainer.innerHTML = '';
+
+    processedImages.forEach((item, index) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        const imgURL = URL.createObjectURL(item.processed);
+
+        resultDiv.innerHTML = `
+            <div class="result-preview">
+                <img src="${imgURL}" alt="Result">
+            </div>
+            <div class="result-info">
+                <h4>${item.processed.name}</h4>
+                <div class="size-comparison">
+                    <span class="size-badge original">Original: ${formatFileSize(item.originalSize)}</span>
+                    <span class="size-badge processed">Processed: ${formatFileSize(item.processedSize)}</span>
+                </div>
+                <button class="primary-btn download-single" data-index="${index}">Download</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(resultDiv);
+    });
+
+    document.querySelectorAll('.download-single').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            downloadSingle(e.target.dataset.index);
+        });
+    });
+}
+
+const aspectRatio = document.getElementById('aspectRatio');
+const cropCanvas = document.getElementById('cropCanvas');
+let currentImage = null;
+let cropData = { x: 0, y: 0, width: 0, height: 0 };
+
+processBtn.addEventListener('click', async () => {
+    if (selectedFiles.length === 0) return;
+
+    // Show canvas for first image
+    const file = selectedFiles[0];
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        img.onload = () => {
+            currentImage = img;
+            const maxWidth = settingsSection.offsetWidth - 50;
+            const scale = maxWidth / img.width;
+
+            cropCanvas.width = img.width * scale;
+            cropCanvas.height = img.height * scale;
+
+            const ctx = cropCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, cropCanvas.width, cropCanvas.height);
+
+            setupCropSelection();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+function setupCropSelection() {
+    // Simple crop: click to start, drag to define area
+    let isDrawing = false;
+    let startX, startY;
+
+    cropCanvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const rect = cropCanvas.getBoundingClientRect();
+        startX = e.clientX - rect.left;
+        startY = e.clientY - rect.top;
+    });
+
+    cropCanvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const rect = cropCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Redraw image
+        const ctx = cropCanvas.getContext('2d');
+        ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+        ctx.drawImage(currentImage, 0, 0, cropCanvas.width, cropCanvas.height);
+
+        // Draw selection
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(startX, startY, x - startX, y - startY);
+    });
+
+    cropCanvas.addEventListener('mouseup', (e) => {
+        if (!isDrawing) return;
+        isDrawing = false;
+
+        const rect = cropCanvas.getBoundingClientRect();
+        const endX = e.clientX - rect.left;
+        const endY = e.clientY - rect.top;
+
+        const scale = currentImage.width / cropCanvas.width;
+        cropData = {
+            x: Math.min(startX, endX) * scale,
+            y: Math.min(startY, endY) * scale,
+            width: Math.abs(endX - startX) * scale,
+            height: Math.abs(endY - startY) * scale
+        };
+
+        processCrop();
+    });
+}
+
+async function processCrop() {
+    processedImages = [];
+
+    for (let file of selectedFiles) {
+        try {
+            const processed = await cropImage(file);
+            processedImages.push({
+                original: file,
+                processed: processed,
+                originalSize: file.size,
+                processedSize: processed.size
+            });
+        } catch (error) {
+            console.error('Crop error:', error);
+        }
+    }
+
+    displayResults('cropped');
+    settingsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+}
+
+function cropImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = cropData.width;
+                canvas.height = cropData.height;
+
+                ctx.drawImage(img, cropData.x, cropData.y, cropData.width, cropData.height, 0, 0, cropData.width, cropData.height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], 'cropped_' + file.name, { type: file.type }));
+                }, file.type, 0.95);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}

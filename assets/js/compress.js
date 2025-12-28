@@ -1,2 +1,176 @@
-// Compress IMAGE
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Compression Options</h3><div class="control-item"><label class="control-label">Quality <span id="quality-display">70%</span></label><input type="range" class="slider" id="quality-slider" min="10" max="100" value="70"><div class="slider-labels"><span>Low</span><span>High</span></div></div><div class="control-item"><label class="control-label">Output Format</label><div class="format-buttons"><button class="format-btn active" data-format="jpeg"><div class="format-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></div><div class="format-btn-info"><div class="format-btn-title">JPG</div><div class="format-btn-desc">Best</div></div></button><button class="format-btn" data-format="png"><div class="format-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="format-btn-info"><div class="format-btn-title">PNG</div><div class="format-btn-desc">Lossless</div></div></button><button class="format-btn" data-format="webp"><div class="format-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="format-btn-info"><div class="format-btn-title">WebP</div><div class="format-btn-desc">Modern</div></div></button></div></div>`;processBtn.textContent='Compress IMAGE';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});setTimeout(()=>{const qualitySlider=document.getElementById('quality-slider'),qualityDisplay=document.getElementById('quality-display');if(qualitySlider)qualitySlider.addEventListener('input',e=>qualityDisplay.textContent=e.target.value+'%');document.querySelectorAll('.format-btn').forEach(btn=>btn.addEventListener('click',function(){document.querySelectorAll('.format-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')}))},100);processBtn.addEventListener('click',compressImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function compressImage(){const quality=document.getElementById('quality-slider').value/100,formatBtn=document.querySelector('.format-btn.active'),format=formatBtn?formatBtn.dataset.format:'jpeg';processBtn.disabled=true;processBtn.textContent='Compressing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;ctx.drawImage(currentImage,0,0);let mimeType=format==='png'?'image/png':format==='webp'?'image/webp':'image/jpeg';canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Compress IMAGE';processBtn.disabled=false;loadingOverlay.style.display='none'},mimeType,quality)},800)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download=`compressed-${Date.now()}.jpg`;a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+let selectedFiles = [];
+let compressedImages = [];
+
+const imageInput = document.getElementById('imageInput');
+const uploadSection = document.getElementById('uploadSection');
+const uploadBox = document.getElementById('uploadBox');
+const settingsSection = document.getElementById('settingsSection');
+const resultsSection = document.getElementById('resultsSection');
+const qualitySlider = document.getElementById('qualitySlider');
+const qualityValue = document.getElementById('qualityValue');
+const maxWidthInput = document.getElementById('maxWidth');
+const compressBtn = document.getElementById('compressBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+// Quality slider update
+qualitySlider.addEventListener('input', (e) => {
+    qualityValue.textContent = e.target.value;
+});
+
+// File input change
+imageInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+});
+
+// Drag and drop
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    handleFiles(files);
+});
+
+function handleFiles(files) {
+    if (files.length > 0) {
+        selectedFiles = files;
+        settingsSection.style.display = 'block';
+        uploadSection.style.display = 'none';
+    }
+}
+
+// Compress images
+compressBtn.addEventListener('click', async () => {
+    compressBtn.disabled = true;
+    compressBtn.innerHTML = '<span class="loading"></span> Compressing...';
+    compressedImages = [];
+
+    const quality = qualitySlider.value / 100;
+    const maxWidth = maxWidthInput.value ? parseInt(maxWidthInput.value) : null;
+
+    for (let file of selectedFiles) {
+        try {
+            const compressed = await compressImage(file, quality, maxWidth);
+            compressedImages.push({
+                original: file,
+                compressed: compressed,
+                originalSize: file.size,
+                compressedSize: compressed.size
+            });
+        } catch (error) {
+            console.error('Compression error:', error);
+        }
+    }
+
+    displayResults();
+    settingsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+    compressBtn.disabled = false;
+    compressBtn.textContent = 'Compress Images';
+});
+
+function compressImage(file, quality, maxWidth) {
+    return new Promise((resolve, reject) => {
+        new Compressor(file, {
+            quality: quality,
+            maxWidth: maxWidth,
+            mimeType: file.type,
+            success(result) {
+                resolve(result);
+            },
+            error(err) {
+                reject(err);
+            },
+        });
+    });
+}
+
+function displayResults() {
+    resultsContainer.innerHTML = '';
+
+    compressedImages.forEach((item, index) => {
+        const savings = ((1 - item.compressedSize / item.originalSize) * 100).toFixed(1);
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        const imgURL = URL.createObjectURL(item.compressed);
+
+        resultDiv.innerHTML = `
+            <div class="result-preview">
+                <img src="${imgURL}" alt="Compressed">
+            </div>
+            <div class="result-info">
+                <h4>${item.original.name}</h4>
+                <div class="size-comparison">
+                    <span class="size-badge original">Original: ${formatFileSize(item.originalSize)}</span>
+                    <span class="size-badge compressed">Compressed: ${formatFileSize(item.compressedSize)}</span>
+                </div>
+                <p class="savings">✓ Saved ${savings}% (${formatFileSize(item.originalSize - item.compressedSize)} reduced)</p>
+                <button class="primary-btn download-single" data-index="${index}">Download</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(resultDiv);
+    });
+
+    // Add download event listeners
+    document.querySelectorAll('.download-single').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = e.target.dataset.index;
+            downloadSingle(index);
+        });
+    });
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function downloadSingle(index) {
+    const item = compressedImages[index];
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(item.compressed);
+    link.download = 'compressed_' + item.original.name;
+    link.click();
+}
+
+downloadAllBtn.addEventListener('click', async () => {
+    if (compressedImages.length === 1) {
+        downloadSingle(0);
+    } else {
+        downloadAllBtn.disabled = true;
+        downloadAllBtn.innerHTML = '<span class="loading"></span> Creating ZIP...';
+
+        const zip = new JSZip();
+        compressedImages.forEach((item, index) => {
+            zip.file('compressed_' + item.original.name, item.compressed);
+        });
+        const content = await zip.generateAsync({type: 'blob'});
+        saveAs(content, 'compressed_images.zip');
+
+        downloadAllBtn.disabled = false;
+        downloadAllBtn.textContent = 'Download All';
+    }
+});
+
+resetBtn.addEventListener('click', () => {
+    selectedFiles = [];
+    compressedImages = [];
+    imageInput.value = '';
+    resultsSection.style.display = 'none';
+    uploadSection.style.display = 'block';
+});

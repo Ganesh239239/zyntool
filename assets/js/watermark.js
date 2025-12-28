@@ -1,2 +1,214 @@
-// Watermark
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Watermark</h3><div class="control-item"><label class="control-label">Text</label><input type="text" class="input-field" id="wm" value="© ZynTool"></div>`;processBtn.textContent='Add';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});processBtn.addEventListener('click',processImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function processImage(){processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;ctx.drawImage(currentImage,0,0);ctx.font="bold 30px Arial";ctx.fillStyle="#fff";ctx.globalAlpha=0.7;ctx.textAlign="right";ctx.fillText(document.getElementById("wm")?document.getElementById("wm").value:"© ZynTool",canvas.width-30,canvas.height-30);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Add';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/jpeg',0.9)},600)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download='watermark-${Date.now()}.jpg';a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+let selectedFiles = [];
+let processedImages = [];
+
+const imageInput = document.getElementById('imageInput');
+const uploadSection = document.getElementById('uploadSection');
+const uploadBox = document.getElementById('uploadBox');
+const settingsSection = document.getElementById('settingsSection');
+const resultsSection = document.getElementById('resultsSection');
+const processBtn = document.getElementById('processBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+imageInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+});
+
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    handleFiles(files);
+});
+
+function handleFiles(files) {
+    if (files.length > 0) {
+        selectedFiles = files;
+        settingsSection.style.display = 'block';
+        uploadSection.style.display = 'none';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function downloadSingle(index) {
+    const item = processedImages[index];
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(item.processed);
+    link.download = item.processed.name;
+    link.click();
+}
+
+downloadAllBtn.addEventListener('click', async () => {
+    if (processedImages.length === 1) {
+        downloadSingle(0);
+    } else {
+        const zip = new JSZip();
+        processedImages.forEach((item) => {
+            zip.file(item.processed.name, item.processed);
+        });
+        const content = await zip.generateAsync({type: 'blob'});
+        saveAs(content, 'processed_images.zip');
+    }
+});
+
+resetBtn.addEventListener('click', () => {
+    selectedFiles = [];
+    processedImages = [];
+    imageInput.value = '';
+    resultsSection.style.display = 'none';
+    uploadSection.style.display = 'block';
+});
+
+function displayResults(prefix = 'processed') {
+    resultsContainer.innerHTML = '';
+
+    processedImages.forEach((item, index) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        const imgURL = URL.createObjectURL(item.processed);
+
+        resultDiv.innerHTML = `
+            <div class="result-preview">
+                <img src="${imgURL}" alt="Result">
+            </div>
+            <div class="result-info">
+                <h4>${item.processed.name}</h4>
+                <div class="size-comparison">
+                    <span class="size-badge original">Original: ${formatFileSize(item.originalSize)}</span>
+                    <span class="size-badge processed">Processed: ${formatFileSize(item.processedSize)}</span>
+                </div>
+                <button class="primary-btn download-single" data-index="${index}">Download</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(resultDiv);
+    });
+
+    document.querySelectorAll('.download-single').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            downloadSingle(e.target.dataset.index);
+        });
+    });
+}
+
+const watermarkText = document.getElementById('watermarkText');
+const fontSize = document.getElementById('fontSize');
+const fontSizeValue = document.getElementById('fontSizeValue');
+const opacity = document.getElementById('opacity');
+const opacityValue = document.getElementById('opacityValue');
+const position = document.getElementById('position');
+const textColor = document.getElementById('textColor');
+
+fontSize.addEventListener('input', (e) => {
+    fontSizeValue.textContent = e.target.value;
+});
+
+opacity.addEventListener('input', (e) => {
+    opacityValue.textContent = e.target.value;
+});
+
+processBtn.addEventListener('click', async () => {
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<span class="loading"></span> Adding Watermark...';
+    processedImages = [];
+
+    for (let file of selectedFiles) {
+        try {
+            const processed = await addWatermark(file);
+            processedImages.push({
+                original: file,
+                processed: processed,
+                originalSize: file.size,
+                processedSize: processed.size
+            });
+        } catch (error) {
+            console.error('Watermark error:', error);
+        }
+    }
+
+    displayResults('watermarked');
+    settingsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+    processBtn.disabled = false;
+    processBtn.textContent = 'Process Images';
+});
+
+function addWatermark(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                ctx.drawImage(img, 0, 0);
+
+                // Set watermark style
+                const size = parseInt(fontSize.value);
+                ctx.font = `bold ${size}px Arial`;
+                ctx.fillStyle = textColor.value;
+                ctx.globalAlpha = opacity.value / 100;
+
+                const text = watermarkText.value;
+                const metrics = ctx.measureText(text);
+
+                // Position calculation
+                let x, y;
+                const padding = 20;
+
+                switch(position.value) {
+                    case 'top-left':
+                        x = padding;
+                        y = size + padding;
+                        break;
+                    case 'top-right':
+                        x = canvas.width - metrics.width - padding;
+                        y = size + padding;
+                        break;
+                    case 'bottom-left':
+                        x = padding;
+                        y = canvas.height - padding;
+                        break;
+                    case 'bottom-right':
+                        x = canvas.width - metrics.width - padding;
+                        y = canvas.height - padding;
+                        break;
+                    default: // center
+                        x = (canvas.width - metrics.width) / 2;
+                        y = canvas.height / 2;
+                }
+
+                ctx.fillText(text, x, y);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], 'watermarked_' + file.name, { type: file.type }));
+                }, file.type, 0.95);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}

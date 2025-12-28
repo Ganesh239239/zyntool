@@ -1,2 +1,209 @@
-// Resize
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Resize</h3><div class="control-item"><label class="control-label">Width</label><input type="number" class="input-field" id="w" value="800"></div><div class="control-item"><label class="control-label">Height</label><input type="number" class="input-field" id="h" value="600"></div>`;processBtn.textContent='Resize';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});processBtn.addEventListener('click',processImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function processImage(){processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;const w=parseInt(document.getElementById("w")?document.getElementById("w").value:800);const h=parseInt(document.getElementById("h")?document.getElementById("h").value:600);canvas.width=w;canvas.height=h;ctx.drawImage(currentImage,0,0,w,h);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Resize';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/jpeg',0.9)},600)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download='resize-${Date.now()}.jpg';a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+let selectedFiles = [];
+let processedImages = [];
+
+const imageInput = document.getElementById('imageInput');
+const uploadSection = document.getElementById('uploadSection');
+const uploadBox = document.getElementById('uploadBox');
+const settingsSection = document.getElementById('settingsSection');
+const resultsSection = document.getElementById('resultsSection');
+const processBtn = document.getElementById('processBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+const pixelRadio = document.querySelector('input[value="pixels"]');
+const percentageRadio = document.querySelector('input[value="percentage"]');
+const pixelsOptions = document.getElementById('pixelsOptions');
+const percentageOptions = document.getElementById('percentageOptions');
+const widthInput = document.getElementById('widthInput');
+const heightInput = document.getElementById('heightInput');
+const maintainRatio = document.getElementById('maintainRatio');
+const percentageSlider = document.getElementById('percentageSlider');
+const percentageValue = document.getElementById('percentageValue');
+
+// Mode switching
+pixelRadio.addEventListener('change', () => {
+    pixelsOptions.style.display = 'block';
+    percentageOptions.style.display = 'none';
+});
+
+percentageRadio.addEventListener('change', () => {
+    pixelsOptions.style.display = 'none';
+    percentageOptions.style.display = 'block';
+});
+
+percentageSlider.addEventListener('input', (e) => {
+    percentageValue.textContent = e.target.value;
+});
+
+// File handling
+imageInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+});
+
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    handleFiles(files);
+});
+
+function handleFiles(files) {
+    if (files.length > 0) {
+        selectedFiles = files;
+        settingsSection.style.display = 'block';
+        uploadSection.style.display = 'none';
+    }
+}
+
+// Process images
+processBtn.addEventListener('click', async () => {
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<span class="loading"></span> Resizing...';
+    processedImages = [];
+
+    const mode = document.querySelector('input[name="resizeMode"]:checked').value;
+
+    for (let file of selectedFiles) {
+        try {
+            const resized = await resizeImage(file, mode);
+            processedImages.push({
+                original: file,
+                processed: resized,
+                originalSize: file.size,
+                processedSize: resized.size
+            });
+        } catch (error) {
+            console.error('Resize error:', error);
+        }
+    }
+
+    displayResults();
+    settingsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+    processBtn.disabled = false;
+    processBtn.textContent = 'Process Images';
+});
+
+function resizeImage(file, mode) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let newWidth, newHeight;
+
+                if (mode === 'pixels') {
+                    const targetWidth = parseInt(widthInput.value) || img.width;
+                    const targetHeight = parseInt(heightInput.value) || img.height;
+
+                    if (maintainRatio.checked) {
+                        const ratio = Math.min(targetWidth / img.width, targetHeight / img.height);
+                        newWidth = img.width * ratio;
+                        newHeight = img.height * ratio;
+                    } else {
+                        newWidth = targetWidth;
+                        newHeight = targetHeight;
+                    }
+                } else {
+                    const scale = percentageSlider.value / 100;
+                    newWidth = img.width * scale;
+                    newHeight = img.height * scale;
+                }
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, { type: file.type }));
+                }, file.type, 0.95);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function displayResults() {
+    resultsContainer.innerHTML = '';
+
+    processedImages.forEach((item, index) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        const imgURL = URL.createObjectURL(item.processed);
+
+        resultDiv.innerHTML = `
+            <div class="result-preview">
+                <img src="${imgURL}" alt="Resized">
+            </div>
+            <div class="result-info">
+                <h4>${item.original.name}</h4>
+                <div class="size-comparison">
+                    <span class="size-badge original">Original: ${formatFileSize(item.originalSize)}</span>
+                    <span class="size-badge processed">Resized: ${formatFileSize(item.processedSize)}</span>
+                </div>
+                <button class="primary-btn download-single" data-index="${index}">Download</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(resultDiv);
+    });
+
+    document.querySelectorAll('.download-single').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            downloadSingle(e.target.dataset.index);
+        });
+    });
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function downloadSingle(index) {
+    const item = processedImages[index];
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(item.processed);
+    link.download = 'resized_' + item.original.name;
+    link.click();
+}
+
+downloadAllBtn.addEventListener('click', async () => {
+    if (processedImages.length === 1) {
+        downloadSingle(0);
+    } else {
+        const zip = new JSZip();
+        processedImages.forEach((item) => {
+            zip.file('resized_' + item.original.name, item.processed);
+        });
+        const content = await zip.generateAsync({type: 'blob'});
+        saveAs(content, 'resized_images.zip');
+    }
+});
+
+resetBtn.addEventListener('click', () => {
+    selectedFiles = [];
+    processedImages = [];
+    imageInput.value = '';
+    resultsSection.style.display = 'none';
+    uploadSection.style.display = 'block';
+});
