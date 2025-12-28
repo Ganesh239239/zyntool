@@ -1,22 +1,21 @@
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
+  margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f6f7fb;
   color: #222;
 }
 
-/* Top bar */
-.topbar {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+/* Header */
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
 }
 
-.topbar-inner {
+.header-inner {
   max-width: 1100px;
   margin: auto;
   padding: 14px 16px;
@@ -26,11 +25,15 @@ body {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 800;
 }
 
-.menu-icon {
+.logo span {
+  color: #3b82f6;
+}
+
+.menu {
   font-size: 20px;
   cursor: pointer;
 }
@@ -38,30 +41,29 @@ body {
 /* Hero */
 .hero {
   text-align: center;
-  padding: 50px 16px 30px;
+  padding: 40px 16px 24px;
 }
 
 .hero h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-size: 30px;
+  margin: 0 0 10px;
 }
 
 .hero p {
-  font-size: 16px;
+  font-size: 15px;
   color: #666;
 }
 
 /* Categories */
 .categories {
   display: flex;
-  gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 20px 16px;
+  gap: 10px;
+  padding: 10px 16px 20px;
 }
 
-.pill {
+.cat {
   padding: 8px 18px;
   border-radius: 20px;
   border: 1px solid #ddd;
@@ -70,14 +72,14 @@ body {
   cursor: pointer;
 }
 
-.pill.active {
+.cat.active {
   background: #111;
   color: #fff;
   border-color: #111;
 }
 
-/* Tools */
-.tools-list {
+/* Tools grid */
+.tools {
   max-width: 1100px;
   margin: auto;
   padding: 10px 16px 60px;
@@ -88,34 +90,39 @@ body {
 
 .tool-card {
   background: #fff;
+  border: 1px solid #e3e3e3;
   border-radius: 14px;
-  padding: 18px;
+  padding: 16px;
   display: flex;
   gap: 14px;
-  border: 1px solid #e1e1e1;
 }
 
 .tool-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
   color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
-.tool-icon.green { background: #6cc24a; }
-.tool-icon.blue { background: #4aa3df; }
-.tool-icon.cyan { background: #2bbcd6; }
+.green { background: #6cc24a; }
+.blue { background: #4aa3df; }
+.cyan { background: #2bbcd6; }
+.yellow { background: #f2c94c; color: #333; }
+.purple { background: #9b59b6; }
+.gray { background: #95a5a6; }
 
 .tool-content h3 {
   font-size: 16px;
-  margin-bottom: 6px;
+  margin: 0 0 6px;
 }
 
 .tool-content p {
   font-size: 14px;
   color: #666;
+  margin: 0;
 }
