@@ -3,131 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compress IMAGE | ZynTool</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/tool.css">
+    <title>Compress Image - Free Online Image Compressor</title>
+    <meta name="description" content="Compress JPG, PNG, and WebP images online. Reduce file size while maintaining quality.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
-    <!-- Mobile Side Menu Only -->
-    <div class="side-menu" id="side-menu">
-        <div class="side-menu-header">
-            <a href="../index.html" class="logo">ZynTool</a>
-            <button class="close-menu" id="close-menu">✕</button>
-        </div>
-        <nav class="side-menu-nav">
-            <a href="../index.html" class="menu-item">Home</a>
-            <a href="#" class="menu-item">All tools</a>
-            <a href="#" class="menu-item">Pricing</a>
-            <a href="#" class="menu-item">Blog</a>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <a href="../index.html"><h1>🖼️ ImageTools</h1></a>
+                </div>
+                <a href="../index.html" class="back-btn">← Back to Home</a>
+            </div>
         </nav>
-    </div>
-
-    <!-- Header with Desktop Nav -->
-    <header class="header">
-        <div class="header-left">
-            <a href="../index.html" class="logo">ZynTool</a>
-        </div>
-        <!-- Desktop Navigation (Hidden on Mobile) -->
-        <nav class="desktop-nav">
-            <a href="../index.html">Home</a>
-            <a href="#">All tools</a>
-            <a href="#">Pricing</a>
-            <a href="#">Blog</a>
-        </nav>
-        <!-- Mobile Menu Button (Hidden on Desktop) -->
-        <button class="menu-btn" id="menu-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
     </header>
 
-    <div class="tool-header">
-        <h1>Compress IMAGE</h1>
-        <p>Reduce file size while maintaining quality</p>
-    </div>
+    <main class="tool-page">
+        <div class="container">
+            <div class="tool-header">
+                <h2>📦 Compress Image</h2>
+                <p>Reduce image file size while maintaining quality. Batch compress multiple images at once.</p>
+            </div>
 
-    <main class="tool-workspace">
-        <div class="upload-zone" id="upload-zone">
-            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></div>
-            <h3>Select images</h3>
-            <p class="upload-hint">or drop images here</p>
-            <button class="btn-primary" id="select-btn">Select images</button>
-            <input type="file" id="file-input" accept="image/*" style="display: none;">
-        </div>
-
-        <div class="work-area" id="work-area" style="display: none;">
-            <div class="preview-panel">
-                <div class="image-card">
-                    <div class="image-thumbnail">
-                        <img id="thumbnail-img" alt="Preview">
-                    </div>
-                    <div class="image-info">
-                        <div class="image-name" id="image-name">image.jpg</div>
-                    </div>
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-box" id="uploadBox">
+                    <input type="file" id="imageInput" accept="image/*" multiple>
+                    <label for="imageInput">
+                        <div class="upload-icon">📁</div>
+                        <h3>Select Images</h3>
+                        <p>or drag and drop here</p>
+                        <p class="supported">Supports: JPG, PNG, WebP, GIF</p>
+                    </label>
                 </div>
             </div>
 
-            <div class="controls-panel">
-                <div class="panel-section" id="controls-content"></div>
-                <button class="btn-process" id="process-btn">Process IMAGE</button>
-                <button class="btn-download" id="download-btn" style="display: none;">Download Result</button>
+            <div class="settings-section" id="settingsSection" style="display: none;">
+                <h3>Compression Settings</h3>
+                <div class="setting-item">
+                    <label for="qualitySlider">Quality: <span id="qualityValue">80</span>%</label>
+                    <input type="range" id="qualitySlider" min="10" max="100" value="80">
+                </div>
+                <div class="setting-item">
+                    <label for="maxWidth">Max Width (px, optional):</label>
+                    <input type="number" id="maxWidth" placeholder="Leave empty for original size">
+                </div>
+                <button id="compressBtn" class="primary-btn">Compress Images</button>
             </div>
-        </div>
 
-        <div class="loading-overlay" id="loading-overlay" style="display: none;">
-            <div class="spinner-large"></div>
-            <p>Processing your image...</p>
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h3>Compressed Images</h3>
+                <div id="resultsContainer"></div>
+                <button id="downloadAllBtn" class="primary-btn">Download All</button>
+                <button id="resetBtn" class="secondary-btn">Process More Images</button>
+            </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Products</h4>
-                <ul>
-                    <li><a href="#">ZynTool</a></li>
-                    <li><a href="#">PDF Tools</a></li>
-                    <li><a href="#">Desktop App</a></li>
-                    <li><a href="#">Mobile App</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Tutorials</a></li>
-                    <li><a href="#">API</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                    <li><a href="#">GDPR</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 ZynTool. All rights reserved.</p>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ImageTools. All processing happens in your browser.</p>
         </div>
     </footer>
 
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/compress.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="../js/compress.js"></script>
 </body>
 </html>

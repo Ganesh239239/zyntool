@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resize Image - Free Online Image Tool</title>
-    <meta name="description" content="Change image dimensions by pixels or percentage. Perfect for social media and web optimization.">
+    <title>Convert to WEBP - Free Online Image Tool</title>
+    <meta name="description" content="Convert images to WEBP format.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/tool.css">
 </head>
@@ -23,8 +23,8 @@
     <main class="tool-page">
         <div class="container">
             <div class="tool-header">
-                <h2>📐 Resize Image</h2>
-                <p>Change image dimensions by pixels or percentage. Perfect for social media and web optimization.</p>
+                <h2>🔄 Convert to WEBP</h2>
+                <p>Convert images to WEBP format.</p>
             </div>
 
             <div class="upload-section" id="uploadSection">
@@ -42,36 +42,10 @@
             <div class="settings-section" id="settingsSection" style="display: none;">
                 <h3>Settings</h3>
                 
-<div class="setting-item">
-    <label>
-        <input type="radio" name="resizeMode" value="pixels" checked> By Pixels
-    </label>
-    <label>
-        <input type="radio" name="resizeMode" value="percentage"> By Percentage
-    </label>
-</div>
-<div id="pixelsOptions">
-    <div class="setting-item">
-        <label for="widthInput">Width (px):</label>
-        <input type="number" id="widthInput" placeholder="e.g., 800">
-    </div>
-    <div class="setting-item">
-        <label for="heightInput">Height (px):</label>
-        <input type="number" id="heightInput" placeholder="e.g., 600">
-    </div>
-    <div class="setting-item">
-        <label>
-            <input type="checkbox" id="maintainRatio" checked> Maintain aspect ratio
-        </label>
-    </div>
-</div>
-<div id="percentageOptions" style="display: none;">
-    <div class="setting-item">
-        <label for="percentageSlider">Scale: <span id="percentageValue">100</span>%</label>
-        <input type="range" id="percentageSlider" min="10" max="200" value="100">
-    </div>
-</div>
-
+        <div class="alert alert-info">
+            All selected images will be converted to WEBP format.
+        </div>
+        
                 <button id="processBtn" class="primary-btn">Process Images</button>
             </div>
 
@@ -93,6 +67,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="../js/resize.js"></script>
+    <script src="../js/convert-to-webp.js"></script>
 </body>
 </html>
