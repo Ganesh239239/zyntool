@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZynTool | Free Image Tools Online</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <!-- Mobile Side Menu -->
+    <div class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <a href="index.html" class="logo">Zyn<span>Tool</span></a>
+            <button class="close-menu" id="close-menu">✕</button>
+        </div>
+        <nav class="side-menu-nav">
+            <a href="index.html" class="menu-item">Home</a>
+            <a href="#" class="menu-item">All tools</a>
+            <a href="#" class="menu-item">Pricing</a>
+            <a href="#" class="menu-item">Blog</a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">Zyn<span>Tool</span></a>
+        <nav class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="#">All tools</a>
+            <a href="#">Pricing</a>
+            <a href="#">Blog</a>
+        </nav>
+        <button class="menu-btn" id="menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Hero Section - EXACT from screenshot -->
+    <div class="hero">
+        <h1>Every tool you could want to edit images in bulk</h1>
+        <p class="subtitle">Your online photo editor is here and forever free!</p>
+    </div>
+
+    <!-- Category Navigation - EXACT from screenshot -->
+    <nav class="category-nav">
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="optimize">Optimize</button>
+        <button class="category-btn" data-category="create">Create</button>
+        <button class="category-btn" data-category="edit">Edit</button>
+        <button class="category-btn" data-category="convert">Convert</button>
+        <button class="category-btn" data-category="security">Security</button>
+    </nav>
+
+    <!-- Tools Grid - EXACT from screenshot -->
+    <div class="tools-container">
+        <!-- Compress IMAGE -->
+        <a href="tools/compress.html" class="tool-card" data-category="optimize">
+            <div class="tool-icon" style="background: #6abf69;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+                    <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+                    <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+                    <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Compress IMAGE</h3>
+                <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
+            </div>
+        </a>
+
+        <!-- Resize IMAGE -->
+        <a href="tools/resize.html" class="tool-card" data-category="edit">
+            <div class="tool-icon" style="background: #5eb9e6;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Resize IMAGE</h3>
+                <p>Define your dimensions, by percent or pixel, and resize your JPG, PNG, SVG, and GIF images.</p>
+            </div>
+        </a>
+
+        <!-- Crop IMAGE -->
+        <a href="tools/crop.html" class="tool-card" data-category="edit">
+            <div class="tool-icon" style="background: #4db8dc;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15M1 6.13L16 6a2 2 0 0 1 2 2v15"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Crop IMAGE</h3>
+                <p>Crop JPG, PNG, or GIFs with ease. Choose pixels to define your rectangle or use our visual editor.</p>
+            </div>
+        </a>
+
+        <!-- Convert to JPG -->
+        <a href="tools/convert-to-jpg.html" class="tool-card" data-category="convert">
+            <div class="tool-icon" style="background: #ffc244;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Convert to JPG</h3>
+                <p>Turn PNG, GIF, TIF, PSD, SVG, WebP or RAW format images to JPG in bulk with ease.</p>
+            </div>
+        </a>
+
+        <!-- Convert from JPG -->
+        <a href="tools/convert-from-jpg.html" class="tool-card" data-category="convert">
+            <div class="tool-icon" style="background: #ffc244;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <polyline points="16 16 12 12 8 16"></polyline>
+                    <line x1="12" y1="12" x2="12" y2="21"></line>
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Convert from JPG</h3>
+                <p>Transform JPG images to PNG, GIF or choose several JPG to create an animated GIF in seconds.</p>
+            </div>
+        </a>
+
+        <!-- Photo editor -->
+        <a href="tools/photo-editor.html" class="tool-card" data-category="edit">
+            <div class="tool-icon" style="background: #c25e9f;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Photo editor</h3>
+                <p>Explore your creativity and edit images with ease. Add text, effects, frames or stickers. Simple editing tools for your images.</p>
+            </div>
+        </a>
+
+        <!-- Upscale Image -->
+        <a href="tools/upscale.html" class="tool-card" data-category="optimize">
+            <div class="tool-icon" style="background: #95d48a;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M3 19V8.5a.5.5 0 0 1 .5-.5h17a.5.5 0 0 1 .5.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="7 8 7 3 17 3 17 8"></polyline>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Upscale Image</h3>
+                <p>Upscale image resolution with high quality. Easily increase the size of the image file, maintaining visual quality.</p>
+            </div>
+        </a>
+
+        <!-- Remove background -->
+        <a href="tools/remove-bg.html" class="tool-card" data-category="edit">
+            <div class="tool-icon" style="background: #6abf69;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Remove background</h3>
+                <p>Remove image backgrounds with high accuracy. Instantly detect object and cut out backgrounds in seconds.</p>
+            </div>
+        </a>
+
+        <!-- Watermark IMAGE -->
+        <a href="tools/watermark.html" class="tool-card" data-category="security">
+            <div class="tool-icon" style="background: #4285f4;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Watermark IMAGE</h3>
+                <p>Stamp an image or text over your images in bulk. Choose position, transparency, typography and more.</p>
+            </div>
+        </a>
+
+        <!-- Meme generator -->
+        <a href="tools/meme-generator.html" class="tool-card" data-category="create">
+            <div class="tool-icon" style="background: #9b5c95;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Meme generator</h3>
+                <p>Create your memes online. Add text. Caption meme images or upload your pictures to make custom memes.</p>
+            </div>
+        </a>
+
+        <!-- Rotate IMAGE -->
+        <a href="tools/rotate.html" class="tool-card" data-category="edit">
+            <div class="tool-icon" style="background: #4db8dc;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Rotate IMAGE</h3>
+                <p>Rotate many JPG, PNG or GIF at same time. Define the angle in degrees or just use our visual editor.</p>
+            </div>
+        </a>
+
+        <!-- HTML to IMAGE -->
+        <a href="tools/html-to-image.html" class="tool-card" data-category="convert">
+            <div class="tool-icon" style="background: #ffc244;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>HTML to IMAGE</h3>
+                <p>Convert webpages in HTML to JPG or SVG. Click and easily capture your SVG or JPG images.</p>
+            </div>
+        </a>
+
+        <!-- Blur face -->
+        <a href="tools/blur-face.html" class="tool-card" data-category="security">
+            <div class="tool-icon" style="background: #4285f4;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <line x1="21.17" y1="8" x2="12" y2="8"></line>
+                    <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+                    <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+                </svg>
+            </div>
+            <div class="tool-info">
+                <h3>Blur face</h3>
+                <p>Easily blur out faces in photos. You can blur faces online and other sensitive information.</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="#">ZynTool</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Desktop App</a></li>
+                    <li><a href="#">Mobile App</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Tutorials</a></li>
+                    <li><a href="#">API</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ZynTool. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
