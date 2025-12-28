@@ -1,24 +1,18 @@
-// Hero tab filtering
-const tabs = document.querySelectorAll('#tabs button');
-const cards = document.querySelectorAll('.card');
-
+// Tabs filter
+const tabs=document.querySelectorAll('#tabs button');
+const cards=document.querySelectorAll('.card');
 tabs.forEach(tab=>{
-  tab.addEventListener('click',()=>{
+  tab.onclick=()=>{
     tabs.forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
-    const filter = tab.dataset.filter;
-
-    cards.forEach(card=>{
-      if(filter==='all' || card.classList.contains(filter)){
-        card.style.display='flex';
-      }else{
-        card.style.display='none';
-      }
+    const f=tab.dataset.filter;
+    cards.forEach(c=>{
+      c.style.display=(f==='all'||c.classList.contains(f))?'flex':'none';
     });
-  });
+  };
 });
 
-// Menu button (placeholder)
-document.getElementById('menuBtn').addEventListener('click',()=>{
-  alert('Navigation menu clicked');
-});
+// Mobile menu toggle
+const menuBtn=document.getElementById('menuBtn');
+const mobileMenu=document.getElementById('mobileMenu');
+menuBtn.onclick=()=>mobileMenu.classList.toggle('open');
