@@ -150,3 +150,43 @@ body {
   color: #666;
   margin: 0;
 }
+
+/* ================================
+   DESKTOP-ONLY GRID FIX (iLoveIMG)
+   ================================ */
+@media (min-width: 1024px) {
+
+  .tools {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .tool-card {
+    flex-direction: column;              /* icon on top */
+    align-items: flex-start;
+    padding: 22px;
+    min-height: 220px;                   /* equal height */
+    border-radius: 16px;
+  }
+
+  .tool-icon {
+    margin-bottom: 14px;                 /* space between icon & text */
+  }
+
+  .tool-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .tool-content h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .tool-content p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  }
