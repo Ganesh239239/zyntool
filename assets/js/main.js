@@ -1,7 +1,5 @@
 // Main JavaScript - Menu & Category Filter
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Main.js loaded');
-
     // Mobile menu toggle
     const menuBtn = document.getElementById('menu-btn');
     const sideMenu = document.getElementById('side-menu');
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sideMenu.classList.remove('active');
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                 sideMenu.classList.remove('active');
@@ -24,23 +21,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Category filter functionality (homepage only)
+    // Category filter
     const categoryBtns = document.querySelectorAll('.category-btn');
     const toolCards = document.querySelectorAll('.tool-card');
 
-    if (categoryBtns.length > 0 && toolCards.length > 0) {
+    if (categoryBtns.length > 0) {
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                // Remove active class from all buttons
                 categoryBtns.forEach(b => b.classList.remove('active'));
-
-                // Add active class to clicked button
                 this.classList.add('active');
-
-                // Get selected category
                 const category = this.dataset.category;
-
-                // Filter tool cards
                 toolCards.forEach(card => {
                     if (category === 'all' || card.dataset.category === category) {
                         card.style.display = 'flex';

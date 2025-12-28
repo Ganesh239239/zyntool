@@ -1,5 +1,8 @@
-// Tool functionality
+// Crop IMAGE - Premium Features
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ crop.js loaded');
+
+    // Elements
     const uploadArea = document.getElementById('upload-area');
     const fileInput = document.getElementById('file-input');
     const selectBtn = document.getElementById('select-btn');
@@ -8,13 +11,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const processBtn = document.getElementById('process-btn');
     const downloadBtn = document.getElementById('download-btn');
     const loading = document.getElementById('loading');
+    const controlsDiv = document.getElementById('controls');
 
-    // Select button click
-    selectBtn.addEventListener('click', () => {
-        fileInput.click();
-    });
+    let uploadedImage = null;
 
-    // File input change
+    // Select button
+    if (selectBtn) {
+        selectBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            fileInput.click();
+        });
+    }
+
+    // File input
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -22,23 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Drag and drop
+    // Drag & drop
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#667eea';
-        uploadArea.style.background = '#f9f9ff';
+        uploadArea.classList.add('dragover');
     });
 
     uploadArea.addEventListener('dragleave', () => {
-        uploadArea.style.borderColor = '#d0d0d0';
-        uploadArea.style.background = 'white';
+        uploadArea.classList.remove('dragover');
     });
 
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#d0d0d0';
-        uploadArea.style.background = 'white';
-
+        uploadArea.classList.remove('dragover');
         const file = e.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) {
             displayImage(file);
@@ -49,33 +54,54 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayImage(file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            imagePreview.src = e.target.result;
+            uploadedImage = e.target.result;
+            imagePreview.src = uploadedImage;
             uploadArea.style.display = 'none';
             previewSection.classList.add('active');
+            showPremiumControls();
         };
         reader.readAsDataURL(file);
     }
 
-    // Process button
-    processBtn.addEventListener('click', function() {
-        previewSection.style.display = 'none';
-        loading.classList.add('active');
+    // Show premium controls based on tool
+    function showPremiumControls() {
+        if (!controlsDiv) return;
 
-        // Simulate processing
-        setTimeout(() => {
-            loading.classList.remove('active');
-            previewSection.style.display = 'block';
-            processBtn.style.display = 'none';
-            downloadBtn.style.display = 'inline-block';
-        }, 2000);
-    });
+        controlsDiv.innerHTML = '';
+
+        
+        // Batch processing info
+        const batchInfo = document.createElement('div');
+        batchInfo.className = 'premium-feature';
+        batchInfo.innerHTML = `
+            <p>💎 <strong>Premium:</strong> Batch process up to 50 images at once!</p>
+        `;
+        controlsDiv.appendChild(batchInfo);
+    }
+
+    // Process button
+    if (processBtn) {
+        processBtn.addEventListener('click', function() {
+            previewSection.style.display = 'none';
+            loading.classList.add('active');
+
+            // Simulate processing
+            setTimeout(() => {
+                loading.classList.remove('active');
+                previewSection.style.display = 'block';
+                processBtn.style.display = 'none';
+                downloadBtn.style.display = 'inline-block';
+            }, 2000);
+        });
+    }
 
     // Download button
-    downloadBtn.addEventListener('click', function() {
-        // Create download link
-        const link = document.createElement('a');
-        link.href = imagePreview.src;
-        link.download = 'processed-image.jpg';
-        link.click();
-    });
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.href = imagePreview.src;
+            link.download = 'crop_' + Date.now() + '.jpg';
+            link.click();
+        });
+    }
 });
