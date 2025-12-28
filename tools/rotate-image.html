@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotate Image</title>
+    <link rel="stylesheet" href="/functions/css/main.css">
+    <link rel="stylesheet" href="/functions/css/tools.css">
+</head>
+<body>
+    <header class="header"><div class="container"><div class="logo"><a href="/" style="text-decoration:none;color:inherit;"><h1>🖼️ ImageTools</h1></a></div></div></header>
+    <main class="main-content">
+        <div class="container">
+            <a href="/" class="back-home">← Back to Home</a>
+            <div class="tool-header"><h1>🔃 Rotate IMAGE</h1><p>Rotate images by 90, 180, or 270 degrees</p></div>
+            <div class="upload-area" id="uploadArea"><div class="upload-icon">⬆️</div><h2>Select images</h2><button class="select-files-btn" onclick="document.getElementById('fileInput').click()">Select</button><input type="file" id="fileInput" class="file-input" accept="image/*" multiple></div>
+            <div class="tool-options" id="toolOptions"><h3>Rotation</h3><div class="option-group"><label>Angle:</label><select id="angle"><option value="90">90° Right</option><option value="180">180°</option><option value="270">270° Right</option></select></div><div class="action-buttons"><button class="btn btn-primary" id="rotateBtn">Rotate</button></div></div>
+            <div class="preview-area" id="previewArea"><img id="preview" class="preview-image" alt="Preview"></div>
+            <div class="loading" id="loading"><div class="spinner"></div><p>Rotating...</p></div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>&copy; 2025 ImageTools</p></div></footer>
+    <script src="/functions/js/main.js"></script>
+    <script src="/functions/js/rotate.js"></script>
+</body>
+</html>
