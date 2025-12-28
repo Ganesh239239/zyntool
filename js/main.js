@@ -67,3 +67,5 @@ hamburger.addEventListener("click", () => {
   mobileNav.style.display =
     mobileNav.style.display === "flex" ? "none" : "flex";
 });
+
+document.getElementById("year").textContent = new Date().getFullYear();
