@@ -3,40 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zyntool</title>
+  <title>Zyntool – Image Tools</title>
 
-  <!-- Correct CSS path -->
+  <!-- ✅ CORRECT CSS PATH -->
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
+<header class="header">
+  <div class="logo">Zyntool</div>
+  <button class="menu-btn" id="menuBtn">☰</button>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" id="closeMenu">✕</button>
+  <a href="#">Home</a>
+  <a href="#">Tools</a>
+  <a href="#">Blog</a>
+  <a href="#">Pricing</a>
+  <a href="#">Contact</a>
+</nav>
+
+<section class="hero">
+  <h1>Every tool you could want to edit images in bulk</h1>
+  <p>Your online photo editor is here and forever free!</p>
+
+  <div class="filters">
+    <button class="active">All</button>
+    <button>Optimize</button>
+    <button>Create</button>
+    <button>Edit</button>
+    <button>Convert</button>
+    <button>Security</button>
+  </div>
+</section>
+
 <main class="tools">
 
   <div class="tool">
-    <div class="icon compress"></div>
+    <div class="icon green"></div>
     <div class="tool-text">
       <h2>Compress IMAGE</h2>
-      <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
+      <p>Compress JPG, PNG, SVG, and GIFs while saving space.</p>
     </div>
   </div>
 
   <div class="tool">
-    <div class="icon resize"></div>
+    <div class="icon blue"></div>
     <div class="tool-text">
       <h2>Resize IMAGE</h2>
-      <p>Define your dimensions, by percent or pixel.</p>
+      <p>Resize images by percent or pixel.</p>
     </div>
   </div>
 
   <div class="tool">
-    <div class="icon crop"></div>
+    <div class="icon cyan"></div>
     <div class="tool-text">
       <h2>Crop IMAGE</h2>
-      <p>Crop JPG, PNG, or GIFs with ease.</p>
+      <p>Crop JPG, PNG, or GIF images easily.</p>
     </div>
   </div>
 
 </main>
 
+<footer class="footer">
+  <p>© 2025 Zyntool. All rights reserved.</p>
+</footer>
+
+<!-- ✅ CORRECT JS PATH -->
+<script src="assets/js/main.js"></script>
 </body>
 </html>
