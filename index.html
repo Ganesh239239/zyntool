@@ -2,106 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zyntool – Image Tools</title>
-
-  <!-- LOCKED CSS -->
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <title>Image Tools – Free Online Image Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    header {
+      background: white;
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+    }
+    header h1 {
+      margin: 0;
+    }
+    main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 16px;
+      text-align: center;
+    }
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .tool {
+      background: white;
+      padding: 24px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      color: black;
+    }
+    .tool:hover {
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <div class="container header-inner">
-    <div class="logo">Zyntool</div>
-
-    <nav class="nav">
-      <a href="#">Home</a>
-      <a href="#tools">Tools</a>
-      <a href="#">Blog</a>
-      <a href="#">Contact</a>
-    </nav>
-  </div>
+<header>
+  <h1>Image Tools</h1>
 </header>
 
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <h1>Every tool you could want to edit images in bulk</h1>
-  <p>Your online photo editor is here and forever free!</p>
+<main>
+  <h2>Free Online Image Tools</h2>
+  <p>Compress, resize, crop, and convert images online. No signup required.</p>
 
-  <div class="categories">
-    <button class="active">All</button>
-    <button>Optimize</button>
-    <button>Edit</button>
-    <button>Convert</button>
-    <button>Security</button>
+  <div class="tools">
+    <a class="tool" href="#">Compress Image</a>
+    <a class="tool" href="#">Resize Image</a>
+    <a class="tool" href="#">Crop Image</a>
+    <a class="tool" href="#">JPG to PNG</a>
+    <a class="tool" href="#">PNG to JPG</a>
+    <a class="tool" href="#">JPG to WebP</a>
+    <a class="tool" href="#">Rotate Image</a>
+    <a class="tool" href="#">Flip Image</a>
   </div>
-</section>
+</main>
 
-<!-- ===== TOOLS GRID ===== -->
-<section id="tools" class="tools">
-  <div class="container">
-    <div class="tools-grid">
-
-      <!-- TOOL CARD -->
-      <a href="tools/compress-image.html" class="tool-card">
-        <div class="icon green">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-          </svg>
-        </div>
-        <div>
-          <h3>Compress IMAGE</h3>
-          <p>Compress JPG, PNG, SVG, GIF</p>
-        </div>
-      </a>
-
-      <a href="tools/resize-image.html" class="tool-card">
-        <div class="icon blue">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 5v14M5 12h14"></path>
-          </svg>
-        </div>
-        <div>
-          <h3>Resize IMAGE</h3>
-          <p>Resize images easily</p>
-        </div>
-      </a>
-
-      <a href="tools/crop-image.html" class="tool-card">
-        <div class="icon teal">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 4h16v16H4z"></path>
-          </svg>
-        </div>
-        <div>
-          <h3>Crop IMAGE</h3>
-          <p>Crop images online</p>
-        </div>
-      </a>
-
-      <a href="tools/convert-to-jpg.html" class="tool-card">
-        <div class="icon yellow">
-          <svg viewBox="0 0 24 24">
-            <path d="M6 2h9l3 3v17H6z"></path>
-          </svg>
-        </div>
-        <div>
-          <h3>Convert to JPG</h3>
-          <p>Convert images to JPG</p>
-        </div>
-      </a>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  © 2025 Zyntool. All rights reserved.
+<footer>
+  © 2025 Image Tools. All rights reserved.
 </footer>
 
 </body>
