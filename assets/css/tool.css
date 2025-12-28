@@ -15,8 +15,8 @@
 }
 
 .tool-header p {
-  color: #6b7280;
   font-size: 16px;
+  color: #6b7280;
 }
 
 .upload-box {
@@ -34,15 +34,9 @@
   color: #fff;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .upload-btn input {
   display: none;
-}
-
-.upload-hint {
-  margin-top: 14px;
-  font-size: 14px;
-  color: #6b7280;
 }
