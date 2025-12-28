@@ -280,9 +280,10 @@ body {
   }
 }
 
-
 @media (min-width: 1024px) {
-  body {
-    outline: 10px solid green;
+  .tools {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    background: yellow;
   }
 }
