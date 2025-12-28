@@ -1,5 +1,7 @@
-// iLoveIMG Clone - Main JavaScript
+// Main JavaScript - Menu & Category Filter
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Main.js loaded');
+
     // Mobile menu toggle
     const menuBtn = document.getElementById('menu-btn');
     const sideMenu = document.getElementById('side-menu');
@@ -22,11 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Category filter functionality
+    // Category filter functionality (homepage only)
     const categoryBtns = document.querySelectorAll('.category-btn');
     const toolCards = document.querySelectorAll('.tool-card');
 
-    if (categoryBtns.length > 0) {
+    if (categoryBtns.length > 0 && toolCards.length > 0) {
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 // Remove active class from all buttons
