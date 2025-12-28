@@ -1,1 +1,9 @@
-/package.json
+{
+  "name": "image-tools",
+  "private": true,
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build"
+  }
+}
