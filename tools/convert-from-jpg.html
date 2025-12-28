@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
+    <!-- Mobile Side Menu Only -->
     <div class="side-menu" id="side-menu">
         <div class="side-menu-header">
             <a href="../index.html" class="logo">ZynTool</a>
@@ -21,10 +22,19 @@
         </nav>
     </div>
 
+    <!-- Header with Desktop Nav -->
     <header class="header">
         <div class="header-left">
             <a href="../index.html" class="logo">ZynTool</a>
         </div>
+        <!-- Desktop Navigation (Hidden on Mobile) -->
+        <nav class="desktop-nav">
+            <a href="../index.html">Home</a>
+            <a href="#">All tools</a>
+            <a href="#">Pricing</a>
+            <a href="#">Blog</a>
+        </nav>
+        <!-- Mobile Menu Button (Hidden on Desktop) -->
         <button class="menu-btn" id="menu-btn">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -41,7 +51,7 @@
 
     <main class="tool-workspace">
         <div class="upload-zone" id="upload-zone">
-            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF7657" stroke-width="2"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg></div>
+            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg></div>
             <h3>Select images</h3>
             <p class="upload-hint">or drop images here</p>
             <button class="btn-primary" id="select-btn">Select images</button>
