@@ -9,6 +9,11 @@ body {
   color: #222;
 }
 
+/* Hide all SVGs completely */
+svg {
+  display: none !important;
+}
+
 /* Header */
 .header {
   background: #fff;
@@ -29,6 +34,32 @@ body {
   border: none;
   font-size: 22px;
   cursor: pointer;
+}
+
+/* Desktop: hide menu button */
+@media (min-width: 901px) {
+  .menu-btn {
+    display: none;
+  }
+}
+
+/* Mobile Nav */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mobile-nav a {
+  padding: 14px 20px;
+  text-decoration: none;
+  color: #222;
+  border-top: 1px solid #eee;
+}
+
+.mobile-nav.show {
+  display: flex;
 }
 
 /* Hero */
@@ -71,7 +102,7 @@ body {
   margin: 40px auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -80,6 +111,9 @@ body {
   border-radius: 14px;
   padding: 22px;
   border: 1px solid #e5e7eb;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
