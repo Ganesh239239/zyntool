@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Zyntool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -19,7 +19,7 @@
       <a href="#">Contact</a>
     </nav>
 
-    <button class="menu-btn mobile-only" id="menuBtn">☰</button>
+    <button class="menu-btn" id="menuBtn">☰</button>
   </div>
 
   <nav class="mobile-nav" id="mobileNav">
@@ -39,6 +39,7 @@
   <div class="categories">
     <button class="active" data-filter="all">All</button>
     <button data-filter="optimize">Optimize</button>
+    <button data-filter="create">Create</button>
     <button data-filter="edit">Edit</button>
     <button data-filter="convert">Convert</button>
     <button data-filter="security">Security</button>
@@ -48,44 +49,112 @@
 <section class="tools-section">
   <div class="tools-grid">
 
-    <!-- TOOL -->
+    <!-- OPTIMIZE -->
     <div class="tool-card" data-category="optimize">
-      <div class="icon green">
-        <svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm14 0h2v6h-6v-2h4v-4z"/></svg>
-      </div>
+      <div class="icon green"></div>
       <div class="tool-text">
         <h3>Compress IMAGE</h3>
         <p>Compress JPG, PNG, SVG, and GIFs.</p>
       </div>
     </div>
 
-    <div class="tool-card" data-category="edit">
-      <div class="icon blue">
-        <svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/></svg>
+    <div class="tool-card" data-category="optimize">
+      <div class="icon teal"></div>
+      <div class="tool-text">
+        <h3>Upscale IMAGE</h3>
+        <p>Increase image resolution.</p>
       </div>
+    </div>
+
+    <!-- CREATE -->
+    <div class="tool-card" data-category="create">
+      <div class="icon purple"></div>
+      <div class="tool-text">
+        <h3>Meme Generator</h3>
+        <p>Create memes online.</p>
+      </div>
+    </div>
+
+    <!-- EDIT -->
+    <div class="tool-card" data-category="edit">
+      <div class="icon blue"></div>
       <div class="tool-text">
         <h3>Resize IMAGE</h3>
         <p>Resize images by percent or pixel.</p>
       </div>
     </div>
 
-    <div class="tool-card" data-category="convert">
-      <div class="icon yellow">
-        <svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>
+    <div class="tool-card" data-category="edit">
+      <div class="icon cyan"></div>
+      <div class="tool-text">
+        <h3>Crop IMAGE</h3>
+        <p>Crop JPG, PNG or GIF images.</p>
       </div>
+    </div>
+
+    <div class="tool-card" data-category="edit">
+      <div class="icon mint"></div>
+      <div class="tool-text">
+        <h3>Photo Editor</h3>
+        <p>Edit photos online.</p>
+      </div>
+    </div>
+
+    <div class="tool-card" data-category="edit">
+      <div class="icon blue"></div>
+      <div class="tool-text">
+        <h3>Rotate IMAGE</h3>
+        <p>Rotate images easily.</p>
+      </div>
+    </div>
+
+    <!-- CONVERT -->
+    <div class="tool-card" data-category="convert">
+      <div class="icon yellow"></div>
       <div class="tool-text">
         <h3>Convert to JPG</h3>
         <p>Convert images to JPG.</p>
       </div>
     </div>
 
-    <div class="tool-card" data-category="security">
-      <div class="icon red">
-        <svg viewBox="0 0 24 24"><path d="M12 6v12"/></svg>
+    <div class="tool-card" data-category="convert">
+      <div class="icon purple"></div>
+      <div class="tool-text">
+        <h3>Convert to PNG</h3>
+        <p>Convert images to PNG.</p>
       </div>
+    </div>
+
+    <div class="tool-card" data-category="convert">
+      <div class="icon cyan"></div>
+      <div class="tool-text">
+        <h3>Convert to WebP</h3>
+        <p>Convert images to WebP.</p>
+      </div>
+    </div>
+
+    <div class="tool-card" data-category="convert">
+      <div class="icon orange"></div>
+      <div class="tool-text">
+        <h3>HTML to IMAGE</h3>
+        <p>Convert HTML to image.</p>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="tool-card" data-category="security">
+      <div class="icon red"></div>
       <div class="tool-text">
         <h3>Blur Face</h3>
         <p>Hide sensitive areas.</p>
+      </div>
+    </div>
+
+    <div class="tool-card" data-category="security">
+      <div class="icon green"></div>
+      <div class="tool-text">
+        <h3>Watermark IMAGE</h3>
+        <p>Add image or text watermark.</p>
       </div>
     </div>
 
@@ -98,6 +167,6 @@
   © 2025 Zyntool. All rights reserved.
 </footer>
 
-<script src="assets/js/script.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
