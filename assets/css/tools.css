@@ -1,0 +1,340 @@
+/* ===== TOOL PAGE STYLES ===== */
+
+.tool-header {
+    text-align: center;
+    padding: 2rem 0;
+    background: var(--bg-white);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.tool-header h1 {
+    font-size: 2.2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.tool-header p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+/* Upload Area */
+.upload-area {
+    background: var(--bg-white);
+    border: 3px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background: #fef5f5;
+}
+
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background: #fef5f5;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.upload-area h2 {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.upload-area p {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.select-files-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.select-files-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.file-input {
+    display: none;
+}
+
+/* Tool Options */
+.tool-options {
+    background: var(--bg-white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    display: none;
+}
+
+.tool-options.active {
+    display: block;
+}
+
+.tool-options h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+}
+
+.option-group {
+    margin-bottom: 1.5rem;
+}
+
+.option-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.option-group input[type="number"],
+.option-group input[type="text"],
+.option-group input[type="color"],
+.option-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.option-group input:focus,
+.option-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.option-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Preview Area */
+.preview-area {
+    background: var(--bg-white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    display: none;
+}
+
+.preview-area.active {
+    display: block;
+}
+
+.preview-area h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+}
+
+.preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+}
+
+.edit-canvas {
+    max-width: 100%;
+    border: 1px solid var(--border-color);
+    cursor: crosshair;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading Spinner */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.loading.active {
+    display: block;
+}
+
+.spinner {
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* File List */
+.file-list {
+    margin-top: 1.5rem;
+}
+
+.file-item {
+    background: var(--bg-light);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file-icon {
+    font-size: 1.5rem;
+}
+
+.file-details h4 {
+    font-size: 1rem;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+}
+
+.file-details p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.remove-file {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.remove-file:hover {
+    background: #c0392b;
+}
+
+/* Back to Home */
+.back-home {
+    display: inline-block;
+    margin: 2rem 0;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.back-home:hover {
+    color: var(--secondary-color);
+    transform: translateX(-5px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tool-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .upload-area {
+        padding: 2rem 1rem;
+    }
+
+    .option-row {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
