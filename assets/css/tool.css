@@ -1,0 +1,149 @@
+/* Tool Page Specific Styles */
+
+.tool-section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.upload-area {
+    background: white;
+    border: 2px dashed #d0d0d0;
+    border-radius: 12px;
+    padding: 60px 20px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #667eea;
+    background: #f9f9ff;
+}
+
+.upload-icon {
+    margin-bottom: 20px;
+}
+
+.upload-area h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.upload-area p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+#file-input {
+    display: none;
+}
+
+/* Preview Section */
+.preview-section {
+    display: none;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.preview-section.active {
+    display: block;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 500px;
+    display: block;
+    margin: 0 auto 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.controls {
+    margin-bottom: 30px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.actions .btn {
+    min-width: 150px;
+}
+
+/* Loading */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading.active {
+    display: block;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .upload-area {
+        padding: 40px 20px;
+    }
+
+    .upload-area h2 {
+        font-size: 20px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+
+    .actions .btn {
+        min-width: 120px;
+    }
+}
