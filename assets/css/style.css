@@ -16,7 +16,7 @@ body {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   position: relative;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .header-inner {
@@ -24,8 +24,8 @@ body {
   margin: auto;
   padding: 14px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
@@ -41,7 +41,6 @@ body {
 .desktop-nav a {
   text-decoration: none;
   color: #333;
-  font-weight: 500;
 }
 
 .menu-btn {
@@ -59,6 +58,10 @@ body {
   border-top: 1px solid #eee;
 }
 
+.mobile-nav.show {
+  display: flex;
+}
+
 .mobile-nav a {
   padding: 14px 20px;
   border-bottom: 1px solid #eee;
@@ -66,14 +69,10 @@ body {
   color: #333;
 }
 
-.mobile-nav.show {
-  display: flex;
-}
-
 /* HERO */
 .hero {
   text-align: center;
-  padding: 50px 20px 30px;
+  padding: 48px 20px 30px;
   position: relative;
   z-index: 1;
 }
@@ -85,7 +84,7 @@ body {
 
 .hero p {
   color: #666;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 /* CATEGORIES */
@@ -120,8 +119,6 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
-  position: relative;
-  z-index: 1;
 }
 
 /* CARD */
@@ -150,22 +147,19 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon svg {
-  width: 26px;
-  height: 26px;
-  fill: #fff;
+  flex-shrink: 0;
 }
 
 /* COLORS */
 .green { background:#7ac943; }
 .blue { background:#4e8df5; }
+.teal { background:#2fc2c2; }
+.cyan { background:#34c3eb; }
+.purple { background:#9b6df3; }
 .yellow { background:#f4b400; }
+.orange { background:#f59e0b; }
 .red { background:#f25f5c; }
+.mint { background:#2bb673; }
 
 /* FOOTER */
 .footer {
@@ -177,10 +171,15 @@ body {
 /* RESPONSIVE */
 @media (min-width: 1024px) {
   .desktop-nav { display: flex; }
-  .mobile-only { display: none; }
+  .menu-btn { display: none; }
 }
 
 @media (max-width: 640px) {
-  .desktop-nav { display: none; }
-  .mobile-only { display: block; }
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-card {
+    align-items: center;
+  }
 }
