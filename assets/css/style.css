@@ -1,24 +1,30 @@
+/* =========================
+   RESET & BASE
+========================= */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f6f8fb;
   color: #222;
+  line-height: 1.4;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .header {
-  background: #fff;
+  background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .header-inner {
   max-width: 1280px;
-  margin: auto;
+  margin: 0 auto;
   padding: 14px 20px;
   display: flex;
   align-items: center;
@@ -30,17 +36,19 @@ body {
   font-weight: 700;
 }
 
-/* NAV */
+/* Desktop nav */
 .desktop-nav {
   display: none;
-  gap: 20px;
+  gap: 24px;
 }
 
 .desktop-nav a {
   text-decoration: none;
   color: #333;
+  font-weight: 500;
 }
 
+/* Mobile menu button */
 .menu-btn {
   font-size: 22px;
   background: none;
@@ -48,16 +56,17 @@ body {
   cursor: pointer;
 }
 
-/* MOBILE NAV */
+/* Mobile nav */
 .mobile-nav {
   display: none;
   flex-direction: column;
-  background: #fff;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
 }
 
 .mobile-nav a {
   padding: 14px 20px;
-  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
   text-decoration: none;
   color: #333;
 }
@@ -66,7 +75,9 @@ body {
   display: flex;
 }
 
-/* HERO */
+/* =========================
+   HERO SECTION
+========================= */
 .hero {
   text-align: center;
   padding: 60px 20px 30px;
@@ -74,14 +85,17 @@ body {
 
 .hero h1 {
   font-size: 32px;
+  font-weight: 700;
   margin-bottom: 10px;
 }
 
 .hero p {
   color: #666;
+  font-size: 16px;
   margin-bottom: 24px;
 }
 
+/* Filters */
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -91,55 +105,77 @@ body {
 
 .filters button {
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 999px;
   border: 1px solid #ddd;
   background: #fff;
+  font-size: 14px;
   cursor: pointer;
 }
 
-.filters .active {
+.filters button.active {
   background: #000;
   color: #fff;
   border-color: #000;
 }
 
-/* TOOLS GRID */
+/* =========================
+   TOOLS GRID (IMPORTANT)
+========================= */
 .tools-section {
   padding: 30px 20px 60px;
 }
 
+/*
+This is the KEY FIX.
+Matches iLoveIMG behavior.
+No fragile breakpoints.
+*/
 .tools-grid {
-  max-width: 1280px;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
 }
 
-/* CARD */
+/* =========================
+   TOOL CARD
+========================= */
 .tool-card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+  padding: 22px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.06);
 }
 
 .tool-card h3 {
-  margin: 14px 0 6px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .tool-card p {
-  color: #666;
   font-size: 14px;
+  color: #666;
 }
 
-/* ICONS */
+/* =========================
+   ICON BLOCKS (TEMP)
+========================= */
 .icon {
   width: 56px;
   height: 56px;
-  border-radius: 12px;
+  border-radius: 14px;
 }
 
+/* Colors */
 .green { background: #7ac943; }
 .blue { background: #4f8ef7; }
 .teal { background: #2fc1c0; }
@@ -149,7 +185,9 @@ body {
 .orange { background: #f59e0b; }
 .red { background: #f87171; }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 .footer {
   text-align: center;
   color: #999;
@@ -157,24 +195,19 @@ body {
   padding: 30px 0;
 }
 
-/* TABLET */
-@media (min-width: 768px) {
-  .tools-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* DESKTOP */
-@media (min-width: 1200px) {
-  .tools-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
+/* =========================
+   RESPONSIVE NAV
+========================= */
+@media (min-width: 1024px) {
   .desktop-nav {
     display: flex;
   }
 
   .menu-btn {
     display: none;
+  }
+
+  .mobile-nav {
+    display: none !important;
   }
 }
