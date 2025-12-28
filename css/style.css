@@ -302,3 +302,7 @@ body {
     min-height: 260px;
   }
 }
+
+body {
+  outline: 10px solid purple;
+}
