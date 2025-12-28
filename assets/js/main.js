@@ -1,19 +1,27 @@
-const buttons = document.querySelectorAll('.cat');
+// Mobile nav
+const menuBtn = document.getElementById('menuBtn');
+const navMenu = document.getElementById('navMenu');
+
+menuBtn.addEventListener('click', () => {
+  navMenu.classList.toggle('active');
+});
+
+// Category filter
+const cats = document.querySelectorAll('.cat');
 const cards = document.querySelectorAll('.tool-card');
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    buttons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+cats.forEach(cat => {
+  cat.addEventListener('click', () => {
+    cats.forEach(c => c.classList.remove('active'));
+    cat.classList.add('active');
 
-    const filter = btn.dataset.filter;
+    const filter = cat.dataset.filter;
 
     cards.forEach(card => {
-      if (filter === 'all' || card.dataset.category.includes(filter)) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display =
+        filter === 'all' || card.dataset.category === filter
+          ? 'flex'
+          : 'none';
     });
   });
 });
