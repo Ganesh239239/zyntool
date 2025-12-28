@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zyntool</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 
+<!-- HEADER -->
 <header class="header">
   <div class="header-inner">
     <div class="logo">Zyntool</div>
@@ -19,10 +20,10 @@
       <a href="#">Contact</a>
     </nav>
 
-    <button class="menu-btn" id="menuBtn">☰</button>
+    <button id="menuBtn" class="menu-btn">☰</button>
   </div>
 
-  <nav class="mobile-nav" id="mobileNav">
+  <nav id="mobileNav" class="mobile-nav">
     <a href="#">Home</a>
     <a href="#">Tools</a>
     <a href="#">Blog</a>
@@ -30,6 +31,7 @@
   </nav>
 </header>
 
+<!-- HERO -->
 <section class="hero">
   <h1>Every tool you could want to edit images in bulk</h1>
   <p>Your online photo editor is here and forever free!</p>
@@ -44,111 +46,86 @@
   </div>
 </section>
 
+<!-- TOOLS GRID -->
 <section class="tools">
   <div class="tools-grid">
 
-    <!-- COMPRESS -->
+    <!-- CARD -->
     <div class="tool-card">
       <div class="icon green">
-        <svg viewBox="0 0 24 24">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-        </svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Compress IMAGE</h3>
         <p>Compress JPG, PNG, SVG, GIF</p>
       </div>
     </div>
 
-    <!-- RESIZE -->
     <div class="tool-card">
       <div class="icon blue">
-        <svg viewBox="0 0 24 24">
-          <path d="M4 12h16M12 4v16"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Resize IMAGE</h3>
         <p>Resize images easily</p>
       </div>
     </div>
 
-    <!-- CROP -->
     <div class="tool-card">
-      <div class="icon cyan">
-        <svg viewBox="0 0 24 24">
-          <path d="M6 2v16h16M2 6h16"/>
-        </svg>
+      <div class="icon teal">
+        <svg viewBox="0 0 24 24"><path d="M4 4h10v10H4zM14 14h6v6h-6z"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Crop IMAGE</h3>
         <p>Crop images online</p>
       </div>
     </div>
 
-    <!-- JPG -->
     <div class="tool-card">
       <div class="icon yellow">
-        <svg viewBox="0 0 24 24">
-          <path d="M6 4h12v16H6z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Convert to JPG</h3>
         <p>Convert images to JPG</p>
       </div>
     </div>
 
-    <!-- PNG -->
     <div class="tool-card">
       <div class="icon purple">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="7"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Convert to PNG</h3>
         <p>Convert images to PNG</p>
       </div>
     </div>
 
-    <!-- UPSCALE -->
     <div class="tool-card">
       <div class="icon teal">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2l5 10-5 10-5-10z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l4 8-4 12-4-12z"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Upscale IMAGE</h3>
         <p>Increase image resolution</p>
       </div>
     </div>
 
-    <!-- ROTATE -->
     <div class="tool-card">
       <div class="icon blue">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 4v4l3-3M4 12a8 8 0 1 0 8-8"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 0 7 7"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Rotate IMAGE</h3>
         <p>Rotate images</p>
       </div>
     </div>
 
-    <!-- BLUR -->
     <div class="tool-card">
       <div class="icon red">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="6"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>
       </div>
-      <div class="tool-text">
+      <div>
         <h3>Blur Face</h3>
         <p>Hide sensitive areas</p>
       </div>
