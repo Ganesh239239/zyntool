@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ main.js loaded');
 
-    // Mobile menu toggle
     const menuBtn = document.getElementById('menu-btn');
     const sideMenu = document.getElementById('side-menu');
     const closeMenu = document.getElementById('close-menu');
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Category filter
     const categoryBtns = document.querySelectorAll('.category-btn');
     const toolCards = document.querySelectorAll('.tool-card');
     if (categoryBtns.length > 0) {

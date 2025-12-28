@@ -1,40 +1,26 @@
-// Compress IMAGE - Wizard Design
+// Compress IMAGE - Reference Design
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ compress.js (Wizard) loaded');
+    console.log('✅ compress.js (Reference Design) loaded');
 
-    const uploadArea = document.getElementById('upload-area');
+    const uploadBtn = document.getElementById('upload-btn');
+    const clearBtn = document.getElementById('clear-btn');
     const fileInput = document.getElementById('file-input');
-    const selectBtn = document.getElementById('select-btn');
+    const dropZone = document.getElementById('drop-zone');
+    const previewArea = document.getElementById('preview-area');
+    const imageCard = document.getElementById('image-card');
+    const downloadAllBtn = document.getElementById('download-all-btn');
+    const fileCountBadge = document.getElementById('file-count');
     const loading = document.getElementById('loading');
 
     let uploadedFile = null;
     let originalSize = 0;
-    let currentStep = 1;
+    let compressedSize = 0;
+    let fileCount = 0;
 
-    // Step elements
-    const step1 = document.getElementById('step-1');
-    const step2 = document.getElementById('step-2');
-    const step3 = document.getElementById('step-3');
-
-    const step1Content = document.getElementById('step1-content');
-    const step2Content = document.getElementById('step2-content');
-    const step3Content = document.getElementById('step3-content');
-
-    const step1Summary = document.getElementById('step1-summary');
-
-    // Buttons
-    const continueBtn = document.getElementById('continue-btn');
-    const processBtn = document.getElementById('process-btn');
-    const downloadBtn = document.getElementById('download-btn');
-    const startOverBtn = document.getElementById('start-over-btn');
-
-    // Select button click
-    if (selectBtn) {
-        selectBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            fileInput.click();
-        });
-    }
+    // Upload button click
+    uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
 
     // File input change
     fileInput.addEventListener('change', function(e) {
@@ -42,193 +28,183 @@ document.addEventListener('DOMContentLoaded', function() {
         if (file && file.type.startsWith('image/')) {
             uploadedFile = file;
             originalSize = file.size;
-            goToStep2(file);
+            handleFileUpload(file);
         }
     });
 
     // Drag & drop
-    uploadArea.addEventListener('dragover', (e) => {
+    dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        uploadArea.classList.add('dragover');
+        dropZone.classList.add('dragover');
     });
 
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragover');
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
     });
 
-    uploadArea.addEventListener('drop', (e) => {
+    dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
-        uploadArea.classList.remove('dragover');
+        dropZone.classList.remove('dragover');
         const file = e.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) {
             uploadedFile = file;
             originalSize = file.size;
-            goToStep2(file);
+            handleFileUpload(file);
         }
     });
 
-    // Go to Step 2: Adjust
-    function goToStep2(file) {
-        // Update steps
-        step1.classList.add('completed');
-        step1.classList.remove('active');
-        step2.classList.add('active');
+    // Click on drop zone
+    dropZone.addEventListener('click', () => {
+        if (!previewArea.classList.contains('active')) {
+            fileInput.click();
+        }
+    });
 
-        // Hide step 1 content, show summary
-        step1Content.classList.remove('active');
-        step1Summary.classList.add('active');
-        step1Summary.innerHTML = `
-            <div class="step-summary-icon">✓</div>
-            <div class="step-summary-text">
-                <strong>File Uploaded</strong>
-                <span>${file.name} (${formatFileSize(file.size)})</span>
-            </div>
-        `;
+    // Handle file upload
+    function handleFileUpload(file) {
+        // Hide drop zone, show loading
+        dropZone.style.display = 'none';
+        loading.classList.add('active');
 
-        // Show step 2 content
-        step2Content.classList.add('active');
+        // Simulate processing
+        setTimeout(() => {
+            loading.classList.remove('active');
+            previewArea.classList.add('active');
 
-        // Display image
-        const imagePreview = document.getElementById('image-preview');
+            // Show file info
+            displayFileInfo(file);
+
+            // Auto-compress
+            autoCompress(file);
+
+            // Update file count
+            fileCount = 1;
+            updateFileCount();
+        }, 1500);
+    }
+
+    // Display file info
+    function displayFileInfo(file) {
+        const filename = file.name;
+
+        document.getElementById('card-filename').textContent = filename;
+        document.getElementById('filename-display').textContent = filename;
+
+        // Show image preview (optional - can add img element)
         const reader = new FileReader();
         reader.onload = function(e) {
-            imagePreview.src = e.target.result;
-
-            // Update image stats
-            updateImageStats(file);
-
-            // Show premium controls
-            showPremiumControls();
+            // Store for download
+            uploadedFile.dataUrl = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    // Update image stats
-    function updateImageStats(file) {
-        const imageStats = document.getElementById('image-stats');
-        const fileSize = formatFileSize(file.size);
-        const fileType = file.type.split('/')[1].toUpperCase();
-
-        imageStats.innerHTML = `
-            <div class="stat-box">
-                <div class="label">File Size</div>
-                <div class="value">${fileSize}</div>
-            </div>
-            <div class="stat-box">
-                <div class="label">Format</div>
-                <div class="value">${fileType}</div>
-            </div>
-        `;
+    // Auto compress
+    function autoCompress(file) {
+        const quality = parseInt(document.getElementById('quality-input').value);
+        compressImage(quality);
     }
 
-    // Show premium controls
-    function showPremiumControls() {
-        const controlsDiv = document.getElementById('controls');
-        controlsDiv.innerHTML = `
-            <h3>⚙️ Compression Settings</h3>
+    // Compress image
+    function compressImage(quality) {
+        // Calculate compressed size (simulated)
+        compressedSize = Math.round(originalSize * (quality / 100));
+        const savings = Math.round(((originalSize - compressedSize) / originalSize) * 100);
 
-            <div class="control-group">
-                <label>
-                    <span>Quality</span>
-                    <span class="control-value" id="quality-display">80%</span>
-                </label>
-                <input type="range" id="quality-slider" min="1" max="100" value="80">
-            </div>
+        // Update progress indicator
+        document.getElementById('progress-indicator').textContent = `-${savings}%`;
 
-            <div class="control-group">
-                <label>Compression Mode</label>
-                <select id="compression-mode">
-                    <option value="balanced">Balanced (Recommended)</option>
-                    <option value="maximum">Maximum Compression</option>
-                    <option value="high-quality">High Quality</option>
-                </select>
-            </div>
+        // Update stats
+        document.getElementById('original-size').textContent = formatFileSize(originalSize);
+        document.getElementById('compressed-size').textContent = 
+            `${formatFileSize(compressedSize)} (-${savings}%)`;
 
-            <div class="control-group">
-                <label>
-                    <input type="checkbox" id="preserve-metadata" checked>
-                    Preserve metadata
-                </label>
-            </div>
-
-            <div class="premium-badge">
-                💎 Batch process up to 50 images at once!
-            </div>
-        `;
-
-        // Quality slider interaction
-        const qualitySlider = document.getElementById('quality-slider');
-        const qualityDisplay = document.getElementById('quality-display');
-        qualitySlider.addEventListener('input', function() {
-            qualityDisplay.textContent = this.value + '%';
-        });
+        // Update pie chart
+        updatePieChart(savings);
     }
 
-    // Continue to Step 3 (Process)
-    if (processBtn) {
-        processBtn.addEventListener('click', function() {
-            step2Content.classList.remove('active');
-            loading.classList.add('active');
+    // Update pie chart
+    function updatePieChart(percentage) {
+        const pieChart = document.querySelector('.pie-chart');
+        const deg = Math.round((percentage / 100) * 360);
+        pieChart.style.background = `conic-gradient(#7e57c2 0deg ${deg}deg, #e3f2fd ${deg}deg 360deg)`;
 
-            // Complete step 2
-            step2.classList.add('completed');
-            step2.classList.remove('active');
-            step3.classList.add('active');
-
-            // Simulate processing
-            setTimeout(() => {
-                loading.classList.remove('active');
-                step3Content.classList.add('active');
-                showFinalResults();
-            }, 2500);
-        });
+        document.querySelector('.pie-chart-percentage').textContent = `-${percentage}%`;
     }
 
-    // Show final results in Step 3
-    function showFinalResults() {
-        const finalStats = document.getElementById('final-stats');
-        const quality = document.getElementById('quality-slider')?.value || 80;
-        const estimatedSize = Math.round(originalSize * (quality / 100));
-        const savings = Math.round(((originalSize - estimatedSize) / originalSize) * 100);
+    // Apply quality change
+    document.getElementById('apply-btn').addEventListener('click', function() {
+        const quality = parseInt(document.getElementById('quality-input').value);
+        if (quality >= 1 && quality <= 100 && uploadedFile) {
+            compressImage(quality);
+        }
+    });
 
-        finalStats.innerHTML = `
-            <div class="final-stat">
-                <div class="value">${formatFileSize(originalSize)}</div>
-                <div class="label">Original Size</div>
-            </div>
-            <div class="final-stat">
-                <div class="value">${formatFileSize(estimatedSize)}</div>
-                <div class="label">New Size</div>
-            </div>
-            <div class="final-stat">
-                <div class="value">${savings}%</div>
-                <div class="label">Space Saved</div>
-            </div>
-        `;
-    }
+    // Quality input enter key
+    document.getElementById('quality-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('apply-btn').click();
+        }
+    });
 
-    // Download button
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', function() {
-            const imagePreview = document.getElementById('image-preview');
+    // Remove file
+    document.getElementById('remove-btn').addEventListener('click', function() {
+        resetTool();
+    });
+
+    // Clear queue
+    clearBtn.addEventListener('click', function() {
+        resetTool();
+    });
+
+    // Download single file
+    document.getElementById('download-single-btn').addEventListener('click', function() {
+        if (uploadedFile && uploadedFile.dataUrl) {
             const link = document.createElement('a');
-            link.href = imagePreview.src;
-            link.download = 'compressed_' + Date.now() + '.jpg';
+            link.href = uploadedFile.dataUrl;
+            link.download = 'compressed_' + uploadedFile.name;
             link.click();
-        });
+        }
+    });
+
+    // Download all
+    downloadAllBtn.addEventListener('click', function() {
+        if (fileCount > 0 && uploadedFile && uploadedFile.dataUrl) {
+            const link = document.createElement('a');
+            link.href = uploadedFile.dataUrl;
+            link.download = 'compressed_' + uploadedFile.name;
+            link.click();
+        }
+    });
+
+    // Reset tool
+    function resetTool() {
+        uploadedFile = null;
+        originalSize = 0;
+        compressedSize = 0;
+        fileCount = 0;
+
+        previewArea.classList.remove('active');
+        dropZone.style.display = 'flex';
+        updateFileCount();
+
+        // Reset quality input
+        document.getElementById('quality-input').value = '89';
     }
 
-    // Start Over button
-    if (startOverBtn) {
-        startOverBtn.addEventListener('click', function() {
-            location.reload();
-        });
+    // Update file count
+    function updateFileCount() {
+        fileCountBadge.textContent = fileCount;
+        downloadAllBtn.disabled = fileCount === 0;
     }
 
     // Format file size
     function formatFileSize(bytes) {
         if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
         return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     }
+
+    // Initialize
+    updateFileCount();
 });
