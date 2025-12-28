@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -12,12 +11,12 @@ body {
 
 /* Header */
 .header {
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid #e3e3e3;
 }
 
 .header-inner {
-  max-width: 1080px;
+  max-width: 1200px;
   margin: auto;
   padding: 14px 16px;
   display: flex;
@@ -25,23 +24,58 @@ body {
   align-items: center;
 }
 
-.logo {
+.site-title {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
-.logo span {
-  color: #3b82f6;
+/* Desktop nav */
+.desktop-nav {
+  display: none;
+  gap: 24px;
 }
 
-.menu {
-  font-size: 20px;
+.desktop-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Hamburger */
+.hamburger {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: #222;
+}
+
+/* Mobile nav */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1px solid #e3e3e3;
+}
+
+.mobile-nav a {
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #222;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 /* Hero */
 .hero {
   text-align: center;
-  padding: 36px 16px 20px;
+  padding: 40px 16px 20px;
 }
 
 .hero h1 {
@@ -75,295 +109,73 @@ body {
 .cat.active {
   background: #111;
   color: #fff;
-  border-color: #111;
 }
 
 /* Tools grid */
 .tools {
-  max-width: 1080px;
+  max-width: 1200px;
   margin: auto;
-  padding: 10px 16px 60px;
+  padding: 20px 16px 60px;
   display: grid;
   gap: 16px;
 }
 
-/* Desktop: 4 columns */
-@media (min-width: 1024px) {
+/* Desktop */
+@media (min-width: 900px) {
+  .desktop-nav { display: flex; }
+  .hamburger, .mobile-nav { display: none !important; }
+
   .tools {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* Tablet: 2 columns */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .tools {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Mobile: 1 column */
-@media (max-width: 639px) {
+/* Mobile */
+@media (max-width: 899px) {
   .tools {
     grid-template-columns: 1fr;
   }
 }
 
+/* Tool card */
+.tool-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .tool-card {
   background: #fff;
   border: 1px solid #e3e3e3;
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
   display: flex;
-  gap: 14px;
+  flex-direction: column;
+  min-height: 210px;
 }
 
 .tool-icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #fff;
+  background: #4aa3df;
+  margin-bottom: 12px;
 }
-
-.tool-icon svg {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
-}
-
-.green { background: #6cc24a; }
-.blue { background: #4aa3df; }
-.cyan { background: #2bbcd6; }
-.yellow { background: #f2c94c; color: #333; }
-.purple { background: #9b59b6; }
-.gray { background: #95a5a6; }
 
 .tool-content h3 {
-  font-size: 15px;
+  font-size: 16px;
   margin: 0 0 6px;
 }
 
 .tool-content p {
   font-size: 14px;
   color: #666;
-  margin: 0;
 }
 
-/* ================================
-   DESKTOP-ONLY GRID FIX (iLoveIMG)
-   ================================ */
-@media (min-width: 1024px) {
-
-  .tools {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-
-  .tool-card {
-    flex-direction: column;              /* icon on top */
-    align-items: flex-start;
-    padding: 22px;
-    min-height: 220px;                   /* equal height */
-    border-radius: 16px;
-  }
-
-  .tool-icon {
-    margin-bottom: 14px;                 /* space between icon & text */
-  }
-
-  .tool-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-  }
-
-  .tool-content h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-
-  .tool-content p {
-    font-size: 14px;
-    line-height: 1.4;
-  }
-  }
-
-
-  /* =====================================================
-   DESKTOP GRID — MATCH iLoveIMG DESKTOP EXACTLY
-   ===================================================== */
-@media (min-width: 1024px) {
-
-  /* Center and limit content width */
-  .tools {
-    max-width: 1200px;
-    margin: 0 auto;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-
-  /* Vertical card layout */
-  .tool-card {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 22px;
-    min-height: 260px;
-    border-radius: 18px;
-  }
-
-  /* Icon on top */
-  .tool-icon {
-    margin-bottom: 16px;
-  }
-
-  /* Text spacing */
-  .tool-content {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .tool-content h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-
-  .tool-content p {
-    font-size: 14px;
-    line-height: 1.45;
-  }
-}
-
-
-/* =====================================================
-   FORCE DESKTOP GRID (iLoveIMG STYLE) — FINAL OVERRIDE
-   ===================================================== */
-@media (min-width: 1024px) {
-
-  body .tools {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-
-    display: grid;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 20px;
-  }
-
-  body .tool-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-
-    padding: 22px !important;
-    min-height: 260px;
-    border-radius: 18px;
-  }
-
-  body .tool-icon {
-    margin-bottom: 16px;
-  }
-
-  body .tool-content h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-
-  body .tool-content p {
-    font-size: 14px;
-    line-height: 1.45;
-  }
-}
-
-/* =====================================================
-   DESKTOP CARD SPACING ADJUSTMENT (FINAL TUNE)
-   ===================================================== */
-@media (min-width: 900px) {
-
-  body .tools {
-    max-width: 1200px;
-    margin: 0 auto;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-
-  body .tool-card {
-    flex-direction: column;
-    align-items: flex-start;
-
-    padding: 18px;              /* reduced */
-    min-height: 210px;          /* reduced */
-    border-radius: 18px;
-  }
-
-  body .tool-icon {
-    margin-bottom: 12px;        /* tighter */
-  }
-
-  body .tool-content h3 {
-    font-size: 16px;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-
-  body .tool-content p {
-    font-size: 13.5px;
-    line-height: 1.35;          /* tighter text */
-  }
-}
-
-
-.site-title {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-/* Hamburger */
-.hamburger {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.hamburger span {
-  width: 22px;
-  height: 2px;
-  background: #222;
-}
-
-/* Mobile nav */
-.mobile-nav {
-  display: none;
-  flex-direction: column;
-  background: #fff;
-  border-top: 1px solid #e3e3e3;
-}
-
-.mobile-nav a {
-  padding: 14px 16px;
-  text-decoration: none;
-  color: #222;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.mobile-nav a:hover {
-  background: #f6f7fb;
-}
-
-
+/* Footer */
 .footer {
   background: #fff;
   border-top: 1px solid #e3e3e3;
   padding: 30px 16px;
-  margin-top: 60px;
 }
 
 .footer-inner {
@@ -376,8 +188,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
 .footer-nav a {
@@ -389,74 +200,4 @@ body {
 .footer-copy {
   font-size: 13px;
   color: #888;
-}
-
-
-/* Desktop nav */
-.desktop-nav {
-  display: none;
-  gap: 24px;
-}
-
-.desktop-nav a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* Hamburger (mobile only) */
-.hamburger {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.hamburger span {
-  width: 22px;
-  height: 2px;
-  background: #222;
-}
-
-/* Mobile nav */
-.mobile-nav {
-  display: none;
-  flex-direction: column;
-  background: #fff;
-  border-top: 1px solid #e3e3e3;
-}
-
-.mobile-nav a {
-  padding: 14px 16px;
-  text-decoration: none;
-  color: #222;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-/* ===== Responsive behavior ===== */
-
-/* Desktop */
-@media (min-width: 900px) {
-  .desktop-nav {
-    display: flex;
-  }
-
-  .hamburger,
-  .mobile-nav {
-    display: none !important;
-  }
-}
-
-/* Mobile */
-@media (max-width: 899px) {
-  .desktop-nav {
-    display: none;
-  }
-
-  .hamburger {
-    display: flex;
-  }
 }
