@@ -279,36 +279,40 @@ body {
     line-height: 1.45;
   }
 }
+
+/* =====================================================
+   DESKTOP CARD SPACING ADJUSTMENT (FINAL TUNE)
+   ===================================================== */
 @media (min-width: 900px) {
+
   body .tools {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
 
   body .tool-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    padding: 22px !important;
-    min-height: 260px;
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding: 18px;              /* reduced */
+    min-height: 210px;          /* reduced */
     border-radius: 18px;
   }
 
   body .tool-icon {
-    margin-bottom: 16px;
+    margin-bottom: 12px;        /* tighter */
   }
 
   body .tool-content h3 {
     font-size: 16px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-weight: 600;
   }
 
   body .tool-content p {
-    font-size: 14px;
-    line-height: 1.45;
+    font-size: 13.5px;
+    line-height: 1.35;          /* tighter text */
   }
 }
