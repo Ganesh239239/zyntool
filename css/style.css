@@ -20,8 +20,8 @@ body {
   margin: auto;
   padding: 14px 16px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .site-title {
@@ -29,7 +29,7 @@ body {
   font-weight: 700;
 }
 
-/* Desktop nav */
+/* Desktop Nav */
 .desktop-nav {
   display: none;
   gap: 24px;
@@ -57,7 +57,7 @@ body {
   background: #222;
 }
 
-/* Mobile nav */
+/* Mobile Nav */
 .mobile-nav {
   display: none;
   flex-direction: column;
@@ -111,7 +111,7 @@ body {
   color: #fff;
 }
 
-/* Tools grid */
+/* Tools Grid */
 .tools {
   max-width: 1200px;
   margin: auto;
@@ -124,20 +124,15 @@ body {
 @media (min-width: 900px) {
   .desktop-nav { display: flex; }
   .hamburger, .mobile-nav { display: none !important; }
-
-  .tools {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  .tools { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* Mobile */
 @media (max-width: 899px) {
-  .tools {
-    grid-template-columns: 1fr;
-  }
+  .tools { grid-template-columns: 1fr; }
 }
 
-/* Tool card */
+/* Tool Cards */
 .tool-link {
   text-decoration: none;
   color: inherit;
@@ -148,18 +143,31 @@ body {
   border: 1px solid #e3e3e3;
   border-radius: 16px;
   padding: 18px;
+  min-height: 210px;
   display: flex;
   flex-direction: column;
-  min-height: 210px;
 }
 
 .tool-icon {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
-  background: #4aa3df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
   margin-bottom: 12px;
 }
+
+.tool-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.green { background: #6cc24a; }
+.blue { background: #4aa3df; }
+.cyan { background: #2bbcd6; }
+.yellow { background: #f2c94c; color: #333; }
 
 .tool-content h3 {
   font-size: 16px;
@@ -200,4 +208,4 @@ body {
 .footer-copy {
   font-size: 13px;
   color: #888;
-}
+  }
