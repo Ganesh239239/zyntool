@@ -108,6 +108,7 @@ body {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-color);
+    cursor: pointer;
 }
 
 .tool-card:hover {
@@ -116,16 +117,26 @@ body {
     border-color: var(--primary-color);
 }
 
+.tool-card:hover .tool-icon svg {
+    stroke: var(--primary-color);
+    transform: scale(1.1);
+}
+
 .tool-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fef5f5 0%, #fee 100%);
+    transition: var(--transition);
+}
+
+.tool-icon svg {
+    stroke: var(--primary-color);
+    transition: var(--transition);
 }
 
 .tool-card h3 {
@@ -195,5 +206,15 @@ body {
 
     .main-content {
         padding: 2rem 0;
+    }
+
+    .tool-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .tool-icon svg {
+        width: 36px;
+        height: 36px;
     }
 }

@@ -44,9 +44,15 @@
 }
 
 .upload-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1rem;
     color: var(--primary-color);
+}
+
+.upload-icon svg {
+    stroke: var(--primary-color);
 }
 
 .upload-area h2 {
