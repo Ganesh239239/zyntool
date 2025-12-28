@@ -1,75 +1,26 @@
-const menuBtn = document.getElementById("menuBtn");
-const closeMenu = document.getElementById("closeMenu");
-const mobileMenu = document.getElementById("mobileMenu");
-
-menuBtn.addEventListener("click", () => {
-  mobileMenu.classList.add("open");
-});
-
-closeMenu.addEventListener("click", () => {
-  mobileMenu.classList.remove("open");
-});
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     MOBILE NAVIGATION MENU
-  ========================= */
-
+  /* MOBILE MENU */
   const menuBtn = document.querySelector(".menu-btn");
-  let navOpen = false;
+  const mobileMenu = document.querySelector(".mobile-menu");
+  const closeMenu = document.querySelector(".close-menu");
 
-  // Create mobile menu dynamically
-  const mobileMenu = document.createElement("div");
-  mobileMenu.className = "mobile-menu";
-  mobileMenu.innerHTML = `
-    <div class="menu-header">
-      <span class="menu-title">Zyntool</span>
-      <button class="close-menu">&times;</button>
-    </div>
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Tools</a></li>
-      <li><a href="#">Blog</a></li>
-      <li><a href="#">Pricing</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-  `;
-  document.body.appendChild(mobileMenu);
+  menuBtn.onclick = () => mobileMenu.classList.add("open");
+  closeMenu.onclick = () => mobileMenu.classList.remove("open");
 
-  const closeBtn = mobileMenu.querySelector(".close-menu");
-
-  menuBtn.addEventListener("click", () => {
-    navOpen = true;
-    mobileMenu.classList.add("open");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    navOpen = false;
-    mobileMenu.classList.remove("open");
-  });
-
-  /* =========================
-     HERO FILTER BUTTONS
-  ========================= */
-
+  /* FILTERS */
   const filterButtons = document.querySelectorAll(".filters button");
   const toolCards = document.querySelectorAll(".tool-card");
 
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-
-      // active state
       filterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      const filter = btn.innerText.toLowerCase();
+      const filter = btn.dataset.filter;
 
       toolCards.forEach(card => {
-        const category = card.getAttribute("data-category");
-
-        if (filter === "all" || category === filter) {
+        if(filter === "all" || card.dataset.category === filter){
           card.style.display = "flex";
         } else {
           card.style.display = "none";
@@ -78,14 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* =========================
-     TOOL CARD CLICK (DEMO)
-  ========================= */
-
+  /* TOOL CLICK (demo) */
   toolCards.forEach(card => {
     card.addEventListener("click", () => {
-      const toolName = card.querySelector("h3").innerText;
-      alert(`${toolName} clicked`);
+      alert(card.querySelector("h3").innerText + " clicked");
     });
   });
 
