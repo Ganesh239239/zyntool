@@ -3,83 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zyntool</title>
+  <title>Zyntool – Image Tools</title>
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
 <header class="header">
-  <div class="nav">
+  <div class="container header-inner">
     <div class="logo">Zyntool</div>
-    <nav class="nav-links">
+
+    <nav class="nav">
       <a href="#">Home</a>
       <a href="#">Tools</a>
       <a href="#">Blog</a>
       <a href="#">Contact</a>
     </nav>
+
+    <button class="menu-toggle" id="menuToggle">☰</button>
   </div>
 </header>
 
-<section class="hero">
-  <h1>Every tool you could want to edit images in bulk</h1>
-  <p>Your online photo editor is here and forever free!</p>
+<main>
+  <section class="hero">
+    <h1>Every tool you could want to edit images in bulk</h1>
+    <p>Your online photo editor is here and forever free!</p>
 
-  <div class="categories">
-    <button class="active">All</button>
-    <button>Optimize</button>
-    <button>Create</button>
-    <button>Edit</button>
-    <button>Convert</button>
-    <button>Security</button>
-  </div>
-</section>
-
-<section class="tools">
-  <div class="tools-grid">
-
-    <!-- CARD -->
-    <div class="tool-card">
-      <div class="icon green">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
-      </div>
-      <div>
-        <h3>Compress IMAGE</h3>
-        <p>Compress JPG, PNG, SVG, GIF</p>
-      </div>
+    <div class="categories">
+      <button class="cat active" data-filter="all">All</button>
+      <button class="cat" data-filter="optimize">Optimize</button>
+      <button class="cat" data-filter="edit">Edit</button>
+      <button class="cat" data-filter="convert">Convert</button>
+      <button class="cat" data-filter="security">Security</button>
     </div>
+  </section>
 
-    <div class="tool-card">
-      <div class="icon blue">
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+  <section class="tools container">
+    <div class="tools-grid">
+
+      <!-- TOOL CARD -->
+      <div class="tool-card" data-category="optimize">
+        <div class="icon green">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <div>
+          <h3>Compress IMAGE</h3>
+          <p>Compress JPG, PNG, SVG, GIF</p>
+        </div>
       </div>
-      <div>
-        <h3>Resize IMAGE</h3>
-        <p>Resize images easily</p>
+
+      <div class="tool-card" data-category="edit">
+        <div class="icon blue">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <div>
+          <h3>Resize IMAGE</h3>
+          <p>Resize images easily</p>
+        </div>
       </div>
+
+      <div class="tool-card" data-category="edit">
+        <div class="icon teal">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+        </div>
+        <div>
+          <h3>Crop IMAGE</h3>
+          <p>Crop images online</p>
+        </div>
+      </div>
+
+      <div class="tool-card" data-category="convert">
+        <div class="icon yellow">
+          <svg viewBox="0 0 24 24"><path d="M6 2h9l3 3v17H6z"/></svg>
+        </div>
+        <div>
+          <h3>Convert to JPG</h3>
+          <p>Convert images to JPG</p>
+        </div>
+      </div>
+
+      <div class="tool-card" data-category="convert">
+        <div class="icon purple">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></svg>
+        </div>
+        <div>
+          <h3>Convert to PNG</h3>
+          <p>Convert images to PNG</p>
+        </div>
+      </div>
+
+      <div class="tool-card" data-category="edit">
+        <div class="icon teal">
+          <svg viewBox="0 0 24 24"><path d="M12 2l6 10-6 10-6-10z"/></svg>
+        </div>
+        <div>
+          <h3>Upscale IMAGE</h3>
+          <p>Increase image resolution</p>
+        </div>
+      </div>
+
+      <div class="tool-card" data-category="edit">
+        <div class="icon blue">
+          <svg viewBox="0 0 24 24"><path d="M12 5v4l3-3"/></svg>
+        </div>
+        <div>
+          <h3>Rotate IMAGE</h3>
+          <p>Rotate images</p>
+        </div>
+      </div>
+
+      <div class="tool-card" data-category="security">
+        <div class="icon red">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
+        </div>
+        <div>
+          <h3>Blur Face</h3>
+          <p>Hide sensitive areas</p>
+        </div>
+      </div>
+
     </div>
-
-    <div class="tool-card">
-      <div class="icon teal">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
-      </div>
-      <div>
-        <h3>Crop IMAGE</h3>
-        <p>Crop images online</p>
-      </div>
-    </div>
-
-    <div class="tool-card">
-      <div class="icon yellow">
-        <svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/></svg>
-      </div>
-      <div>
-        <h3>Convert to JPG</h3>
-        <p>Convert images to JPG</p>
-      </div>
-    </div>
-
-  </div>
-</section>
+  </section>
+</main>
 
 <footer class="footer">
   © 2025 Zyntool. All rights reserved.
