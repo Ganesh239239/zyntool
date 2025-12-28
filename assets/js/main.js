@@ -1,7 +1,6 @@
-const menuBtn = document.getElementById("menuBtn");
-const mobileNav = document.getElementById("mobileNav");
-
-menuBtn.addEventListener("click", () => {
-  mobileNav.style.display =
-    mobileNav.style.display === "flex" ? "none" : "flex";
+document.querySelectorAll('.categories button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelector('.categories .active')?.classList.remove('active');
+    btn.classList.add('active');
+  });
 });
