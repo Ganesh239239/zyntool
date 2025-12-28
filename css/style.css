@@ -16,7 +16,7 @@ body {
 }
 
 .header-inner {
-  max-width: 1100px;
+  max-width: 1080px;
   margin: auto;
   padding: 14px 16px;
   display: flex;
@@ -35,18 +35,17 @@ body {
 
 .menu {
   font-size: 20px;
-  cursor: pointer;
 }
 
 /* Hero */
 .hero {
   text-align: center;
-  padding: 40px 16px 24px;
+  padding: 36px 16px 20px;
 }
 
 .hero h1 {
-  font-size: 30px;
-  margin: 0 0 10px;
+  font-size: 28px;
+  margin-bottom: 8px;
 }
 
 .hero p {
@@ -58,8 +57,8 @@ body {
 .categories {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: wrap;
   padding: 10px 16px 20px;
 }
 
@@ -80,7 +79,7 @@ body {
 
 /* Tools grid */
 .tools {
-  max-width: 1080px; /* tighter like iLoveIMG */
+  max-width: 1080px;
   margin: auto;
   padding: 10px 16px 60px;
   display: grid;
@@ -115,7 +114,6 @@ body {
   padding: 16px;
   display: flex;
   gap: 14px;
-  align-items: flex-start;
 }
 
 .tool-icon {
@@ -126,10 +124,29 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: #fff;
 }
 
 .tool-icon svg {
   width: 22px;
   height: 22px;
-  fill: #fff;
-  }
+  fill: currentColor;
+}
+
+.green { background: #6cc24a; }
+.blue { background: #4aa3df; }
+.cyan { background: #2bbcd6; }
+.yellow { background: #f2c94c; color: #333; }
+.purple { background: #9b59b6; }
+.gray { background: #95a5a6; }
+
+.tool-content h3 {
+  font-size: 15px;
+  margin: 0 0 6px;
+}
+
+.tool-content p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
