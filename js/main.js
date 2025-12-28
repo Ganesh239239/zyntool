@@ -32,11 +32,18 @@ const toolsData = [
 const toolsContainer = document.getElementById("tools");
 const categoryButtons = document.querySelectorAll(".cat");
 
+
 function renderTools(category) {
   toolsContainer.innerHTML = "";
+
   toolsData
     .filter(t => category === "All" || t.cat === category)
     .forEach(tool => {
+
+      const link = document.createElement("a");
+      link.href = tool.url;
+      link.className = "tool-link";
+
       const card = document.createElement("div");
       card.className = "tool-card";
       card.innerHTML = `
@@ -46,9 +53,11 @@ function renderTools(category) {
           <p>${tool.desc}</p>
         </div>
       `;
-      toolsContainer.appendChild(card);
+
+      link.appendChild(card);
+      toolsContainer.appendChild(link);
     });
-}
+                                          }
 
 categoryButtons.forEach(btn => {
   btn.addEventListener("click", () => {
