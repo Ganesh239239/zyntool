@@ -1,202 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zyntool</title>
-<link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <title>Zyntool – Image Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
-
 <body>
 
 <header class="header">
   <div class="logo">Zyntool</div>
-  <button class="menu-btn">☰</button>
+  <button class="menu-btn" id="menuBtn">☰</button>
 </header>
-
-<!-- Mobile Menu -->
-<nav class="mobile-menu">
-  <div class="menu-header">
-    <span>Zyntool</span>
-    <button class="close-menu">×</button>
-  </div>
-  <a href="#">Home</a>
-  <a href="#">Tools</a>
-  <a href="#">Blog</a>
-  <a href="#">Pricing</a>
-  <a href="#">Contact</a>
-</nav>
 
 <section class="hero">
   <h1>Every tool you could want to edit images in bulk</h1>
   <p>Your online photo editor is here and forever free!</p>
 
   <div class="filters">
-    <button class="active" data-filter="all">All</button>
-    <button data-filter="optimize">Optimize</button>
-    <button data-filter="create">Create</button>
-    <button data-filter="edit">Edit</button>
-    <button data-filter="convert">Convert</button>
-    <button data-filter="security">Security</button>
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="optimize">Optimize</button>
+    <button class="filter" data-filter="edit">Edit</button>
+    <button class="filter" data-filter="convert">Convert</button>
+    <button class="filter" data-filter="security">Security</button>
   </div>
 </section>
 
-<section class="tools-grid desktop-grid">
+<section class="tools-grid">
 
-<!-- TOOL CARD TEMPLATE -->
-<div class="tool-card" data-category="optimize">
-  <div class="tool-icon bg-compress">
-    <svg viewBox="0 0 24 24">
-      <polyline points="8 3 3 3 3 8"/>
-      <polyline points="16 3 21 3 21 8"/>
-      <polyline points="3 16 3 21 8 21"/>
-      <polyline points="21 16 21 21 16 21"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <!-- Optimize -->
+  <div class="tool-card optimize">
+    <div class="icon green"></div>
     <h3>Compress IMAGE</h3>
     <p>Compress JPG, PNG, SVG, and GIFs.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="edit">
-  <div class="tool-icon bg-resize">
-    <svg viewBox="0 0 24 24">
-      <line x1="4" y1="12" x2="20" y2="12"/>
-      <polyline points="9 7 4 12 9 17"/>
-      <polyline points="15 7 20 12 15 17"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card optimize">
+    <div class="icon blue"></div>
     <h3>Resize IMAGE</h3>
     <p>Resize images by percent or pixel.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="edit">
-  <div class="tool-icon bg-crop">
-    <svg viewBox="0 0 24 24">
-      <path d="M6 2v14a2 2 0 0 0 2 2h14"/>
-      <path d="M18 22V8a2 2 0 0 0-2-2H2"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <!-- Edit -->
+  <div class="tool-card edit">
+    <div class="icon teal"></div>
     <h3>Crop IMAGE</h3>
     <p>Crop JPG, PNG or GIF images.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="convert">
-  <div class="tool-icon bg-jpg text-icon">JPG</div>
-  <div class="tool-text">
-    <h3>Convert to JPG</h3>
-    <p>Convert images to JPG.</p>
-  </div>
-</div>
-
-<div class="tool-card" data-category="convert">
-  <div class="tool-icon bg-png text-icon">PNG</div>
-  <div class="tool-text">
-    <h3>Convert to PNG</h3>
-    <p>Convert images to PNG.</p>
-  </div>
-</div>
-
-<div class="tool-card" data-category="convert">
-  <div class="tool-icon bg-webp text-icon">WEBP</div>
-  <div class="tool-text">
-    <h3>Convert to WebP</h3>
-    <p>Convert images to WebP.</p>
-  </div>
-</div>
-
-<div class="tool-card" data-category="edit">
-  <div class="tool-icon bg-editor">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 20h9"/>
-      <path d="M16.5 3.5l4 4L7 21H3v-4z"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card edit">
+    <div class="icon purple"></div>
     <h3>Photo Editor</h3>
     <p>Edit photos online.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="optimize">
-  <div class="tool-icon bg-upscale">
-    <svg viewBox="0 0 24 24">
-      <polyline points="12 5 12 19"/>
-      <polyline points="5 12 12 5 19 12"/>
-    </svg>
+  <!-- Convert -->
+  <div class="tool-card convert">
+    <div class="icon yellow"></div>
+    <h3>Convert to JPG</h3>
+    <p>Convert images to JPG.</p>
   </div>
-  <div class="tool-text">
+
+  <div class="tool-card convert">
+    <div class="icon violet"></div>
+    <h3>Convert to PNG</h3>
+    <p>Convert images to PNG.</p>
+  </div>
+
+  <div class="tool-card convert">
+    <div class="icon cyan"></div>
+    <h3>Convert to WebP</h3>
+    <p>Convert images to WebP.</p>
+  </div>
+
+  <!-- More -->
+  <div class="tool-card optimize">
+    <div class="icon mint"></div>
     <h3>Upscale IMAGE</h3>
     <p>Increase image resolution.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="security">
-  <div class="tool-icon bg-watermark">
-    <svg viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="9"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card edit">
+    <div class="icon lime"></div>
     <h3>Watermark IMAGE</h3>
     <p>Add image or text watermark.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="edit">
-  <div class="tool-icon bg-rotate">
-    <svg viewBox="0 0 24 24">
-      <polyline points="1 4 1 10 7 10"/>
-      <path d="M3.5 15a9 9 0 1 0 .5-9"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card edit">
+    <div class="icon blue"></div>
     <h3>Rotate IMAGE</h3>
     <p>Rotate images easily.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="create">
-  <div class="tool-icon bg-meme">
-    <svg viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card edit">
+    <div class="icon pink"></div>
     <h3>Meme Generator</h3>
     <p>Create memes online.</p>
   </div>
-</div>
 
-<div class="tool-card" data-category="convert">
-  <div class="tool-icon bg-html text-icon">HTML</div>
-  <div class="tool-text">
-    <h3>HTML to IMAGE</h3>
-    <p>Convert HTML to image.</p>
-  </div>
-</div>
-
-<div class="tool-card" data-category="security">
-  <div class="tool-icon bg-blur">
-    <svg viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10"/>
-    </svg>
-  </div>
-  <div class="tool-text">
+  <div class="tool-card security">
+    <div class="icon red"></div>
     <h3>Blur Face</h3>
     <p>Hide sensitive areas.</p>
   </div>
-</div>
 
 </section>
 
 <footer class="footer">
-© 2025 Zyntool. All rights reserved.
+  © 2025 Zyntool. All rights reserved.
 </footer>
 
 <script src="assets/js/main.js"></script>
