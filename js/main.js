@@ -9,66 +9,60 @@ const icons = {
 
 const toolsData = [
   {
-  title: "Compress IMAGE",
-  desc: "Compress JPG, PNG, SVG, and GIFs while saving space.",
-  cat: "Optimize",
-  icon: icons.compress,
-  color: "green",
-  url: "/tools/compress.html"
-}
-  { title: "Resize IMAGE", desc: "Resize images by pixel or percent.", cat: "Optimize", icon: icons.resize, color: "blue" },
-
-  { title: "Crop IMAGE", desc: "Crop JPG, PNG, or GIFs easily.", cat: "Edit", icon: icons.crop, color: "cyan" },
-  { title: "Rotate IMAGE", desc: "Rotate images in bulk.", cat: "Edit", icon: icons.edit, color: "blue" },
-  { title: "Photo editor", desc: "Add text, effects, and frames.", cat: "Edit", icon: icons.edit, color: "purple" },
-  { title: "Upscale Image", desc: "Increase image resolution.", cat: "Edit", icon: icons.resize, color: "green" },
-
-  { title: "Convert to JPG", desc: "Convert PNG, SVG, WEBP, HEIC to JPG.", cat: "Convert", icon: icons.convert, color: "yellow" },
-  { title: "Convert from JPG", desc: "Convert JPG to PNG or GIF.", cat: "Convert", icon: icons.convert, color: "yellow" },
-  { title: "JPG to PDF", desc: "Convert JPG images to PDF.", cat: "Convert", icon: icons.convert, color: "gray" },
-  { title: "PDF to JPG", desc: "Extract images from PDF.", cat: "Convert", icon: icons.convert, color: "gray" },
-  { title: "HTML to IMAGE", desc: "Convert webpages to images.", cat: "Convert", icon: icons.convert, color: "yellow" },
-
-  { title: "Meme generator", desc: "Create memes online.", cat: "Create", icon: icons.edit, color: "purple" },
-  { title: "Watermark IMAGE", desc: "Add watermark to images.", cat: "Create", icon: icons.security, color: "blue" },
-
-  { title: "Blur face", desc: "Blur faces in photos.", cat: "Security", icon: icons.security, color: "gray" },
-  { title: "Remove background", desc: "Remove image background.", cat: "Security", icon: icons.crop, color: "gray" }
+    title: "Compress Image",
+    desc: "Compress JPG, PNG, SVG, and GIF images.",
+    cat: "Optimize",
+    url: "/tools/compress.html"
+  },
+  {
+    title: "Resize Image",
+    desc: "Resize images by pixel or percentage.",
+    cat: "Optimize",
+    url: "/tools/resize.html"
+  },
+  {
+    title: "Crop Image",
+    desc: "Crop images easily online.",
+    cat: "Edit",
+    url: "/tools/crop.html"
+  },
+  {
+    title: "Convert Image",
+    desc: "Convert images to different formats.",
+    cat: "Convert",
+    url: "/tools/convert.html"
+  }
 ];
 
 const toolsContainer = document.getElementById("tools");
-const categoryButtons = document.querySelectorAll(".cat");
-
+const cats = document.querySelectorAll(".cat");
 
 function renderTools(category) {
   toolsContainer.innerHTML = "";
-
   toolsData
     .filter(t => category === "All" || t.cat === category)
     .forEach(tool => {
-
       const link = document.createElement("a");
       link.href = tool.url;
       link.className = "tool-link";
 
-      const card = document.createElement("div");
-      card.className = "tool-card";
-      card.innerHTML = `
-        <div class="tool-icon ${tool.color}">${tool.icon}</div>
-        <div class="tool-content">
-          <h3>${tool.title}</h3>
-          <p>${tool.desc}</p>
+      link.innerHTML = `
+        <div class="tool-card">
+          <div class="tool-icon"></div>
+          <div class="tool-content">
+            <h3>${tool.title}</h3>
+            <p>${tool.desc}</p>
+          </div>
         </div>
       `;
 
-      link.appendChild(card);
       toolsContainer.appendChild(link);
     });
-                                          }
+}
 
-categoryButtons.forEach(btn => {
+cats.forEach(btn => {
   btn.addEventListener("click", () => {
-    categoryButtons.forEach(b => b.classList.remove("active"));
+    cats.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     renderTools(btn.dataset.cat);
   });
@@ -76,6 +70,7 @@ categoryButtons.forEach(btn => {
 
 renderTools("All");
 
+/* Hamburger */
 const hamburger = document.getElementById("hamburger");
 const mobileNav = document.getElementById("mobileNav");
 
@@ -84,4 +79,5 @@ hamburger.addEventListener("click", () => {
     mobileNav.style.display === "flex" ? "none" : "flex";
 });
 
+/* Footer year */
 document.getElementById("year").textContent = new Date().getFullYear();
