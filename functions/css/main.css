@@ -1,4 +1,4 @@
-/* iLoveIMG Clone - Exact Design */
+/* iLoveIMG Clone - Fixed CSS */
 
 * {
     margin: 0;
@@ -42,6 +42,9 @@ body {
     padding: 8px 12px;
     border-radius: 6px;
     transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .menu-btn:hover,
@@ -49,22 +52,20 @@ body {
     background: #f3f4f6;
 }
 
+/* FIXED: Logo styling */
 .logo {
     display: flex;
     align-items: center;
-    gap: 2px;
     font-size: 28px;
     font-weight: 700;
     color: #1a1a1a;
+    gap: 0;
 }
 
-.logo-text {
-    font-weight: 700;
-}
-
-.heart-icon {
-    width: 32px;
-    height: 32px;
+.logo .heart {
+    color: #4A90E2;
+    font-size: 28px;
+    line-height: 1;
     margin: 0 -2px;
 }
 
@@ -174,6 +175,7 @@ body {
 .tool-icon svg {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
 }
 
 .badge {
@@ -294,6 +296,14 @@ body {
     .category-btn {
         padding: 8px 20px;
         font-size: 14px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .logo .heart {
+        font-size: 24px;
     }
 }
 
