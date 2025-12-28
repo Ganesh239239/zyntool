@@ -1,7 +1,7 @@
 *{box-sizing:border-box;font-family:system-ui,-apple-system}
 body{
   margin:0;
-  background:#f4f6fb;
+  background:#f5f7fb;
   color:#222;
 }
 
@@ -10,27 +10,32 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:14px 20px;
+  padding:14px 18px;
   background:#fff;
   border-bottom:1px solid #e6e9ef;
 }
-.left{display:flex;align-items:center;gap:14px}
+.left{display:flex;align-items:center;gap:12px}
 .hamburger{font-size:22px}
 .logo{font-weight:900;font-size:20px}
 .logo span{font-weight:600;margin-left:6px}
 .nav{font-weight:600}
 
 /* Hero */
-.hero{text-align:center;padding:46px 20px 24px}
-.hero h1{font-size:32px;margin-bottom:10px}
-.hero p{color:#666;margin-bottom:26px}
+.hero{text-align:center;padding:36px 16px 22px}
+.hero h1{font-size:28px;margin-bottom:8px}
+.hero p{color:#666;margin-bottom:22px}
 
 /* Tabs */
-.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.tabs{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
 .tabs button{
-  border:1px solid #ddd;
+  border:1px solid #dcdfe6;
   background:#fff;
-  padding:10px 18px;
+  padding:8px 16px;
   border-radius:999px;
   font-weight:600;
 }
@@ -40,62 +45,56 @@ body{
   border-color:#111;
 }
 
-/* Grid */
-.grid{
-  max-width:1200px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
-  gap:26px;
-  padding:30px 20px 70px;
+/* Tools list (MOBILE FIRST) */
+.tools{
+  padding:14px 14px 40px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
 }
 
-/* Cards */
+/* Card */
 .card{
   display:flex;
   align-items:center;
-  gap:22px;
+  gap:18px;
   background:#fff;
-  border-radius:24px;
-  padding:28px;
+  border-radius:22px;
+  padding:18px 18px;
   border:1px solid #e6e9ef;
-  box-shadow:0 6px 18px rgba(0,0,0,.04);
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
 .text h3{
-  margin:0 0 6px;
-  font-size:20px;
+  margin:0 0 4px;
+  font-size:18px;
   font-weight:700;
 }
 .text p{
   margin:0;
   color:#6b6b6b;
-  font-size:15px;
+  font-size:14px;
 }
 
-/* Icon containers */
+/* Icons */
 .icon{
-  width:76px;
-  height:76px;
-  border-radius:20px;
+  width:64px;
+  height:64px;
+  border-radius:18px;
   display:flex;
   align-items:center;
   justify-content:center;
   color:#fff;
 }
 .icon svg{
-  width:34px;
-  height:34px;
+  width:30px;
+  height:30px;
   stroke:#fff;
   stroke-width:1.6;
   fill:none;
 }
-
-/* Compress quad */
-.quad{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  font-size:18px;
-  line-height:1;
+.text-icon{
+  font-weight:800;
+  font-size:22px;
 }
 
 /* Colors */
@@ -103,21 +102,22 @@ body{
 .blue{background:#4f8cff}
 .cyan{background:#2fc4e6}
 .yellow{background:#f4b400}
-.text-icon{
-  font-weight:800;
-  font-size:22px;
+
+/* Desktop enhancement */
+@media(min-width:900px){
+  .tools{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
+  }
+  .hero h1{font-size:34px}
 }
 
 /* Footer */
 footer{
   text-align:center;
-  padding:40px;
+  padding:30px;
   color:#777;
-}
-
-/* Mobile */
-@media(max-width:600px){
-  .hero h1{font-size:26px}
-  .card{padding:22px}
-  .icon{width:68px;height:68px}
 }
