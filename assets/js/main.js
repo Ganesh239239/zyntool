@@ -12,7 +12,11 @@ tabs.forEach(tab=>{
   };
 });
 
-// Mobile menu toggle
+// Mobile menu
 const menuBtn=document.getElementById('menuBtn');
-const mobileMenu=document.getElementById('mobileMenu');
-menuBtn.onclick=()=>mobileMenu.classList.toggle('open');
+const closeBtn=document.getElementById('closeMenu');
+const menu=document.getElementById('mobileMenu');
+const overlay=document.getElementById('overlay');
+
+menuBtn.onclick=()=>{menu.classList.add('open');overlay.classList.add('show');}
+overlay.onclick=()=>{menu.classList.remove('open');overlay.classList.remove('show');}
