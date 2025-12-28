@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watermark IMAGE | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
     <!-- Mobile Side Menu -->
@@ -50,17 +49,18 @@
         </button>
     </header>
 
-    <!-- Hero Section -->
-    <div class="hero">
+    <!-- Tool Header (Hero) -->
+    <div class="tool-header">
         <h1>Watermark IMAGE</h1>
-        <p class="subtitle">Stamp an image or text over your images in seconds. Choose the typography, transparency and position.</p>
+        <p>Stamp an image or text over your images in seconds. Choose the typography, transparency and position.</p>
     </div>
 
     <!-- Tool Section -->
     <div class="tool-section">
+        <!-- Upload Area -->
         <div class="upload-area" id="upload-area">
             <div class="upload-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4285f4" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="17 8 12 3 7 8"></polyline>
                     <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -69,21 +69,23 @@
             <h2>Select images</h2>
             <p>or drop images here</p>
             <button class="btn" id="select-btn">Select images</button>
-            <input type="file" id="file-input" accept="image/*" multiple>
+            <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
         </div>
 
+        <!-- Preview Section -->
         <div class="preview-section" id="preview-section">
-            <img id="image-preview" class="image-preview" alt="Preview">
-            <div class="controls" id="controls"></div>
+            <img id="image-preview" class="image-preview" alt="Preview" style="display: block; max-width: 100%; margin: 0 auto;">
+
             <div class="actions">
                 <button class="btn" id="process-btn">Process Image</button>
                 <button class="btn" id="download-btn" style="display:none;">Download</button>
             </div>
         </div>
 
+        <!-- Loading -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Processing...</p>
+            <p>Processing your image...</p>
         </div>
     </div>
 
@@ -137,7 +139,8 @@
         </div>
     </footer>
 
+    <!-- Scripts: BOTH main.js (menu) and tool.js (functionality) -->
     <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/watermark.js"></script>
+    <script src="../assets/js/tool.js"></script>
 </body>
 </html>
