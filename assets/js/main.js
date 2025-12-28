@@ -2,19 +2,18 @@
 const filters = document.querySelectorAll('.filter');
 const cards = document.querySelectorAll('.tool-card');
 
-filters.forEach(filter => {
-  filter.addEventListener('click', () => {
+filters.forEach(btn => {
+  btn.addEventListener('click', () => {
     document.querySelector('.filter.active').classList.remove('active');
-    filter.classList.add('active');
+    btn.classList.add('active');
 
-    const type = filter.dataset.filter;
+    const type = btn.dataset.filter;
 
     cards.forEach(card => {
-      if (type === 'all' || card.classList.contains(type)) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display =
+        type === 'all' || card.classList.contains(type)
+          ? 'flex'
+          : 'none';
     });
   });
 });
