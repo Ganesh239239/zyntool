@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #f2f2f2;
+  background: #f3f3f3;
   color: #333;
 }
 
@@ -18,15 +18,15 @@ body {
 
 /* Header */
 .site-header {
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid #ddd;
 }
 
 .header-flex {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  align-items: center;
+  padding: 14px 0;
 }
 
 .logo {
@@ -37,51 +37,54 @@ body {
 .main-nav a {
   margin-left: 16px;
   text-decoration: none;
-  color: #333;
   font-size: 14px;
+  color: #333;
 }
 
-/* Hero */
-.hero {
-  padding: 50px 16px;
-  background: #f7f7f7;
-}
-
-.hero-box {
-  background: #ffffff;
-  max-width: 700px;
-  margin: auto;
-  padding: 40px 25px;
-  text-align: center;
-  border-radius: 8px;
+/* Launcher (Hero) */
+.launcher {
+  background: #fff;
   border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 30px 20px;
+  margin: 40px 0;
+  text-align: center;
 }
 
-.hero-box h1 {
+.launcher h1 {
   margin-top: 0;
-  font-size: 32px;
+  font-size: 30px;
 }
 
-.hero-box p {
+.launcher p {
   color: #666;
-  font-size: 16px;
-  line-height: 1.5;
+  margin-bottom: 20px;
 }
 
-.primary-btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 14px 28px;
-  background: #007bff;
-  color: #ffffff;
+.launcher-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.launcher-tools a {
+  display: block;
+  padding: 14px;
+  border: 1px solid #007bff;
+  border-radius: 6px;
   text-decoration: none;
-  border-radius: 5px;
-  font-size: 15px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.launcher-tools a:hover {
+  background: #007bff;
+  color: #fff;
 }
 
 /* Tools */
 .tools-section {
-  margin-top: 60px;
+  margin: 30px 0 60px;
 }
 
 .tools-section h2 {
@@ -89,50 +92,29 @@ body {
 }
 
 .tools {
-  margin-top: 30px;
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 .tool-card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #ddd;
-  padding: 26px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 6px;
   text-align: center;
   text-decoration: none;
   color: #000;
-  font-size: 16px;
 }
 
 .tool-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
-
-/* Info */
-.info-section {
-  margin-top: 70px;
-  background: #ffffff;
-  padding: 50px 16px;
-  border-top: 1px solid #ddd;
-}
-
-.info-section h3 {
-  text-align: center;
-}
-
-.info-section p {
-  text-align: center;
-  color: #666;
-  max-width: 700px;
-  margin: 10px auto 0;
+  border-color: #007bff;
 }
 
 /* Footer */
 .site-footer {
-  margin-top: 60px;
-  background: #ffffff;
+  background: #fff;
   border-top: 1px solid #ddd;
   padding: 20px;
   text-align: center;
