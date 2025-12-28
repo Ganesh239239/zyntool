@@ -279,16 +279,7 @@ body {
     line-height: 1.45;
   }
 }
-
-@media (min-width: 1024px) {
-  .tools {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    background: yellow;
-  }
-}
-
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   body .tools {
     max-width: 1200px;
     margin: 0 auto;
@@ -298,11 +289,26 @@ body {
   }
 
   body .tool-card {
+    display: flex !important;
     flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 22px !important;
     min-height: 260px;
+    border-radius: 18px;
   }
-}
 
-body {
-  outline: 10px solid purple;
+  body .tool-icon {
+    margin-bottom: 16px;
+  }
+
+  body .tool-content h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  body .tool-content p {
+    font-size: 14px;
+    line-height: 1.45;
+  }
 }
