@@ -1,59 +1,181 @@
+/* RESET */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 20px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f7fb;
+  background: #f6f8fb;
+  color: #222;
 }
 
-.tools {
-  max-width: 680px;
-  margin: auto;
-}
-
-/* ILOVEIMG MOBILE CARD */
-.tool {
+/* ================= HEADER ================= */
+.header {
   background: #ffffff;
-  border-radius: 22px;
-  padding: 20px;
-  margin-bottom: 18px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-
+  padding: 14px 16px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  border-bottom: 1px solid #eaeaea;
 }
 
-/* ICON CONTAINER */
-.icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* COLORS (iloveimg-like) */
-.compress { background: #7ac943; }
-.resize   { background: #4f8df7; }
-.crop     { background: #32c0dd; }
-
-/* TEXT */
-.tool-text h2 {
-  margin: 0 0 4px;
+.logo {
   font-size: 20px;
   font-weight: 700;
 }
 
-.tool-text p {
-  margin: 0;
+.menu-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 75%;
+  height: 100%;
+  background: #ffffff;
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 999;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu a {
+  display: block;
+  margin: 18px 0;
+  font-size: 18px;
+  text-decoration: none;
+  color: #222;
+}
+
+.close-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+  float: right;
+  cursor: pointer;
+}
+
+/* ================= HERO ================= */
+.hero {
+  padding: 28px 16px 10px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 22px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.hero p {
   font-size: 14px;
-  line-height: 1.45;
-  color: #6b7280;
+  color: #666;
+}
+
+/* ================= FILTER BUTTONS ================= */
+.filters {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.filters button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filters .active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* ================= TOOLS LIST ================= */
+.tools {
+  padding: 16px;
+}
+
+/* TOOL CARD (MOBILE — iloveimg style) */
+.tool {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+/* ICON BOX — IMPORTANT */
+.icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+/* ICON COLORS (TEMP PLACEHOLDERS) */
+.green { background: #7ac943; }
+.blue { background: #4f8ef7; }
+.cyan { background: #34c3db; }
+.yellow { background: #f4b400; }
+.purple { background: #9b6df3; }
+.teal { background: #2bb0aa; }
+
+/* TOOL TEXT */
+.tool-text h2 {
+  font-size: 18px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.tool-text p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  text-align: center;
+  padding: 22px 16px;
+  font-size: 13px;
+  color: #777;
+}
+
+/* ================= DESKTOP GRID ================= */
+@media (min-width: 900px) {
+  .tools {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .tool {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .icon {
+    margin-bottom: 10px;
+  }
 }
