@@ -6,7 +6,7 @@ body {
 }
 
 .tools {
-  padding: 20px;
+  padding: 16px;
 }
 
 .tool-card {
@@ -14,10 +14,10 @@ body {
   align-items: center;
   background: #fff;
   border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
   border: 1px solid #e6e9f0;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.05);
 }
 
 .icon {
@@ -27,14 +27,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 26px;
   flex-shrink: 0;
 }
 
-.green .icon { background: #7ac943; }
-.blue .icon { background: #4f8ef7; }
-.cyan .icon { background: #2fc2dd; }
+.icon svg {
+  width: 26px;
+  height: 26px;
+  fill: white;
+}
+
+.green { background: #7ac943; }
+.blue { background: #4f8ef7; }
+.cyan { background: #2fc2dd; }
 
 .text {
   margin-left: 16px;
@@ -44,6 +48,7 @@ body {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
+  color: #111827;
 }
 
 .text p {
