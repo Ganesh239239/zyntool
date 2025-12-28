@@ -1,82 +1,54 @@
 
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:#f5f7fb;color:#222}
-
-.top{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
-.logo{font-size:20px;font-weight:800}
-.menu-btn{background:none;border:none;font-size:24px}
-
-.hero{
-  text-align:center;
-  padding:48px 16px 32px;
-  background:
-    radial-gradient(circle at 10% 10%, #e8f0ff 0%, transparent 40%),
-    radial-gradient(circle at 90% 20%, #e6fff7 0%, transparent 40%),
-    #f5f7fb;
-}
-.hero h1{font-size:clamp(26px,4vw,40px);margin-bottom:10px}
-.hero p{color:#555;margin-bottom:20px}
-
-.tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.tabs button{
-  padding:8px 16px;
-  border-radius:999px;
-  border:1px solid #ddd;
-  background:#fff;
-  cursor:pointer;
-}
-.tabs .active{background:#111;color:#fff}
-
-.tools{
-  padding:24px 16px;
-  display:grid;
-  gap:22px;
-}
-@media(min-width:768px){
-  .tools{
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fb;
 }
 
-.card{
-  background:#fff;
-  border-radius:22px;
-  padding:22px 20px;
-  border:1px solid #e6e9ef;
-  box-shadow:
-    0 20px 40px rgba(0,0,0,.06),
-    0 2px 6px rgba(0,0,0,.04);
-  text-align:center;
+.tools {
+  padding: 20px;
 }
 
-.card h3{margin:14px 0 6px}
-.card p{margin:0;color:#666;font-size:14px}
-
-.icon{
-  width:72px;
-  height:72px;
-  margin:0 auto;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  color:#fff;
-  font-size:20px;
+.tool-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e6e9f0;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.04);
 }
 
-.green{background:#7ac943}
-.blue{background:#4f8cff}
-.cyan{background:#2fc4e6}
-.yellow{background:#f4b400}
-.purple{background:#a46af3}
-.teal{background:#38b2ac}
-.orange{background:#f59e0b}
-.red{background:#f56565}
+.icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 26px;
+  flex-shrink: 0;
+}
 
-footer{
-  text-align:center;
-  padding:24px;
-  font-size:14px;
-  color:#666;
+.green .icon { background: #7ac943; }
+.blue .icon { background: #4f8ef7; }
+.cyan .icon { background: #2fc2dd; }
+
+.text {
+  margin-left: 16px;
+}
+
+.text h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.text p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
 }
