@@ -3,95 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert to JPG | ImageTools</title>
-    <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #2c3e50;}
-        .container {max-width: 1200px; margin: 0 auto; padding: 0 20px;}
-        .header {background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 1.5rem 0;}
-        .logo h1 {font-size: 1.8rem; color: #e74c3c; font-weight: 700;}
-        .logo a {text-decoration: none; color: inherit;}
-        .back-link {display: inline-block; margin: 2rem 0; color: #e74c3c; text-decoration: none; font-weight: 600;}
-        .back-link:hover {color: #c0392b;}
-        .tool-header {text-align: center; padding: 2rem; background: white; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.08);}
-        .tool-header h1 {font-size: 2.2rem; color: #2c3e50; margin-bottom: 0.5rem;}
-        .tool-header p {font-size: 1.1rem; color: #7f8c8d;}
-        .upload-area {background: white; border: 3px dashed #e1e8ed; border-radius: 12px; padding: 3rem 2rem; text-align: center; margin-bottom: 2rem; cursor: pointer; transition: all 0.3s;}
-        .upload-area:hover {border-color: #e74c3c; background: #fef5f5;}
-        .upload-icon {display: flex; justify-content: center; margin-bottom: 1rem;}
-        .upload-icon svg {width: 64px; height: 64px; stroke: #e74c3c; fill: none; stroke-width: 2;}
-        .upload-area h2 {font-size: 1.5rem; margin-bottom: 0.5rem;}
-        .upload-area p {color: #7f8c8d; margin-bottom: 1.5rem;}
-        .btn {background: #e74c3c; color: white; border: none; padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;}
-        .btn:hover {background: #c0392b; transform: translateY(-2px);}
-        .file-input {display: none;}
-        .tool-options, .preview-area, .loading {background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 2rem; display: none;}
-        .tool-options.active, .preview-area.active, .loading.active {display: block;}
-        .option-group {margin-bottom: 1.5rem;}
-        .option-group label {display: block; font-weight: 600; margin-bottom: 0.5rem;}
-        .option-group input, .option-group select {width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 1rem;}
-        .option-group input:focus, .option-group select:focus {outline: none; border-color: #e74c3c;}
-        .option-row {display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;}
-        .action-buttons {display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;}
-        .btn-secondary {background: #95a5a6;}
-        .btn-secondary:hover {background: #7f8c8d;}
-        .preview-container {display: flex; justify-content: center; align-items: center; min-height: 300px; background: #f8f9fa; border-radius: 8px;}
-        .preview-image {max-width: 100%; max-height: 500px; object-fit: contain;}
-        .loading {text-align: center;}
-        .spinner {border: 4px solid #e1e8ed; border-top: 4px solid #e74c3c; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 1rem;}
-        @keyframes spin {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
-        .footer {background: white; padding: 2rem 0; text-align: center; margin-top: 4rem;}
-        .footer p {color: #7f8c8d; font-size: 0.9rem;}
-        @media (max-width: 768px) {.option-row {grid-template-columns: 1fr;} .tool-header h1 {font-size: 1.8rem;}}
-    </style>
+    <title>Convert Image - Image Tools</title>
+    <link rel="stylesheet" href="../functions/css/main.css">
+    <link rel="stylesheet" href="../functions/css/tools.css">
 </head>
 <body>
-    <header class="header">
+    <header class="tool-header">
         <div class="container">
-            <div class="logo">
-                <a href="/index.html"><h1>🖼️ ImageTools</h1></a>
-            </div>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🔄 Convert Image</h1>
+            <p>Convert between JPG, PNG, WebP</p>
         </div>
     </header>
-    <main>
-        <div class="container">
-            <a href="/index.html" class="back-link">← Back to Home</a>
-            <div class="tool-header">
-                <h1>Convert to JPG</h1>
-                <p>Convert images to JPG format</p>
+
+    <main class="tool-container">
+        <div class="upload-area" id="uploadArea">
+            <input type="file" id="fileInput" accept="image/*">
+            <div class="upload-icon">📤</div>
+            <h2>Select or Drop Image</h2>
+            <p>Supports JPG, PNG, GIF, WebP (Max 50MB)</p>
+        </div>
+
+        <div class="controls" id="controls">
+            <div class="control-group">
+                <label for="format">Convert To:</label>
+                <select id="format">
+                    <option value="image/png">PNG</option>
+                    <option value="image/jpeg">JPG</option>
+                    <option value="image/webp">WebP</option>
+                </select>
             </div>
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                </div>
-                <h2>Select images</h2>
-                <p>or drag and drop them here</p>
-                <button class="btn" onclick="document.getElementById('fileInput').click()">Select Images</button>
-                <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+            <div class="control-group" id="qualityGroup" style="display: none;">
+                <label for="quality">Quality: <span id="qualityValue">90</span>%</label>
+                <input type="range" id="quality" min="1" max="100" value="90">
             </div>
-            <div class="tool-options" id="toolOptions">
-                <h3>Options</h3>
-                <div id="options-content"></div>
-                <div class="action-buttons">
-                    <button class="btn" id="processBtn">Process</button>
-                    <button class="btn btn-secondary" id="resetBtn">Reset</button>
-                </div>
+            <div class="button-group">
+                <button class="btn" id="convertBtn">Convert Image</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Converted</button>
             </div>
-            <div class="preview-area" id="previewArea">
-                <h3>Preview</h3>
-                <div class="preview-container" id="previewContainer"></div>
-            </div>
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Processing...</p>
-            </div>
+            <p class="info-text" id="infoText"></p>
+        </div>
+
+        <div class="preview-area" id="previewArea">
+            <h3>Preview</h3>
+            <canvas id="canvas"></canvas>
         </div>
     </main>
-    <footer class="footer">
+
+    <footer>
         <div class="container">
-            <p>&copy; 2025 ImageTools. All rights reserved.</p>
+            <p>&copy; 2025 Image Tools. All processing done in your browser.</p>
         </div>
     </footer>
-    <script src="/js/convert.js"></script>
+
+    <script src="../functions/js/main.js"></script>
+    <script src="../functions/js/convert.js"></script>
 </body>
 </html>

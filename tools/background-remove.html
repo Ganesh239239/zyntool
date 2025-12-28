@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compress Image - Image Tools</title>
+    <title>Remove Background - Image Tools</title>
     <link rel="stylesheet" href="../functions/css/main.css">
     <link rel="stylesheet" href="../functions/css/tools.css">
 </head>
@@ -11,8 +11,8 @@
     <header class="tool-header">
         <div class="container">
             <a href="../index.html" class="back-link">← Back to Home</a>
-            <h1>🗜️ Compress Image</h1>
-            <p>Reduce image file size while maintaining quality</p>
+            <h1>🖌️ Remove Background</h1>
+            <p>Remove image background (Manual Selection)</p>
         </div>
     </header>
 
@@ -26,19 +26,19 @@
 
         <div class="controls" id="controls">
             <div class="control-group">
-                <label for="quality">Compression Quality: <span id="qualityValue">80</span>%</label>
-                <input type="range" id="quality" min="1" max="100" value="80">
+                <label for="tolerance">Color Tolerance: <span id="toleranceValue">30</span></label>
+                <input type="range" id="tolerance" min="0" max="100" value="30">
             </div>
+            <p class="info-text">Click on the background color you want to remove</p>
             <div class="button-group">
-                <button class="btn" id="compressBtn">Compress Image</button>
-                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Compressed</button>
+                <button class="btn" id="resetBtn">Reset</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download PNG</button>
             </div>
-            <p class="info-text" id="infoText"></p>
         </div>
 
         <div class="preview-area" id="previewArea">
             <h3>Preview</h3>
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" style="cursor: crosshair; background: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc); background-size: 20px 20px; background-position: 0 0, 10px 10px;"></canvas>
         </div>
     </main>
 
@@ -49,6 +49,6 @@
     </footer>
 
     <script src="../functions/js/main.js"></script>
-    <script src="../functions/js/compress.js"></script>
+    <script src="../functions/js/background-remove.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compress Image - Image Tools</title>
+    <title>Image Filters - Image Tools</title>
     <link rel="stylesheet" href="../functions/css/main.css">
     <link rel="stylesheet" href="../functions/css/tools.css">
 </head>
@@ -11,8 +11,8 @@
     <header class="tool-header">
         <div class="container">
             <a href="../index.html" class="back-link">← Back to Home</a>
-            <h1>🗜️ Compress Image</h1>
-            <p>Reduce image file size while maintaining quality</p>
+            <h1>🎨 Image Filters</h1>
+            <p>Apply artistic filters and effects</p>
         </div>
     </header>
 
@@ -26,14 +26,21 @@
 
         <div class="controls" id="controls">
             <div class="control-group">
-                <label for="quality">Compression Quality: <span id="qualityValue">80</span>%</label>
-                <input type="range" id="quality" min="1" max="100" value="80">
+                <label>Filters:</label>
+                <div class="filter-buttons">
+                    <button class="btn filter-btn" onclick="applyFilter('original')">Original</button>
+                    <button class="btn filter-btn" onclick="applyFilter('grayscale')">Grayscale</button>
+                    <button class="btn filter-btn" onclick="applyFilter('sepia')">Sepia</button>
+                    <button class="btn filter-btn" onclick="applyFilter('invert')">Invert</button>
+                    <button class="btn filter-btn" onclick="applyFilter('brightness')">Brighten</button>
+                    <button class="btn filter-btn" onclick="applyFilter('darken')">Darken</button>
+                    <button class="btn filter-btn" onclick="applyFilter('blur')">Blur</button>
+                    <button class="btn filter-btn" onclick="applyFilter('sharpen')">Sharpen</button>
+                </div>
             </div>
             <div class="button-group">
-                <button class="btn" id="compressBtn">Compress Image</button>
-                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Compressed</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Filtered</button>
             </div>
-            <p class="info-text" id="infoText"></p>
         </div>
 
         <div class="preview-area" id="previewArea">
@@ -49,6 +56,6 @@
     </footer>
 
     <script src="../functions/js/main.js"></script>
-    <script src="../functions/js/compress.js"></script>
+    <script src="../functions/js/filters.js"></script>
 </body>
 </html>
