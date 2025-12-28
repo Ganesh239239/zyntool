@@ -1,4 +1,4 @@
-/* ZynTool - Main CSS */
+/* ZynTool - iLoveIMG.com Style */
 
 * {
     margin: 0;
@@ -8,9 +8,9 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #f8f9fa;
+    background: #fafafa;
     color: #333;
-    line-height: 1.5;
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -21,9 +21,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 16px 24px;
     background: white;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e5e5e5;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -32,42 +32,38 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
-    color: #6c5ce7;
+    color: #c23934;
     text-decoration: none;
 }
 
 .logo:hover {
-    color: #5f4dd1;
+    color: #a32f2a;
 }
 
-/* Desktop Navigation - Horizontal Links */
+/* Desktop Navigation */
 .desktop-nav {
     display: none;
-    gap: 30px;
+    gap: 32px;
     align-items: center;
 }
 
 .desktop-nav a {
     text-decoration: none;
-    color: #333;
+    color: #666;
     font-size: 15px;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .desktop-nav a:hover {
-    color: #6c5ce7;
+    color: #c23934;
 }
 
-/* Show desktop nav on desktop, hide hamburger */
 @media (min-width: 768px) {
     .desktop-nav {
         display: flex;
@@ -82,25 +78,15 @@ body {
     }
 }
 
-/* Mobile Menu Button - Only on Mobile */
+/* Mobile Menu */
 .menu-btn {
     background: none;
     border: none;
     padding: 8px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    border-radius: 50%;
-    transition: background 0.2s;
+    color: #666;
 }
 
-.menu-btn:hover {
-    background: #f5f5f5;
-}
-
-/* Side Menu - Only on Mobile */
 .side-menu {
     position: fixed;
     top: 0;
@@ -122,7 +108,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .close-menu {
@@ -130,7 +116,6 @@ body {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    padding: 8px;
     color: #666;
 }
 
@@ -142,159 +127,159 @@ body {
 .menu-item {
     padding: 16px 20px;
     text-decoration: none;
-    color: #333;
-    border-bottom: 1px solid #f0f0f0;
+    color: #666;
+    border-bottom: 1px solid #f5f5f5;
     transition: background 0.2s;
 }
 
 .menu-item:hover {
-    background: #f5f5f5;
-    color: #6c5ce7;
+    background: #f9f9f9;
+    color: #c23934;
 }
 
-/* Hero Section - Like iloveimg.com */
+/* Hero Section - EXACTLY like iLoveIMG.com */
 .hero {
     text-align: center;
-    padding: 60px 20px 40px;
+    padding: 80px 24px 60px;
     background: white;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .hero h1 {
-    font-size: 32px;
+    font-size: 48px;
     font-weight: 700;
-    color: #2c3e50;
-    line-height: 1.3;
-    margin-bottom: 12px;
+    color: #333;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero h1 span {
+    color: #c23934;
 }
 
 .hero .subtitle {
-    font-size: 16px;
+    font-size: 20px;
     color: #666;
-}
-
-/* Tool Header - Like iloveimg.com */
-.tool-header {
-    background: white;
-    color: #2c3e50;
-    padding: 40px 20px;
-    text-align: center;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.tool-header h1 {
-    font-size: 28px;
-    margin-bottom: 12px;
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.tool-header p {
-    font-size: 16px;
-    color: #666;
+    font-weight: 400;
+    margin-top: 12px;
 }
 
 /* Category Navigation */
 .category-nav {
     display: flex;
-    gap: 8px;
-    padding: 16px;
-    overflow-x: auto;
+    gap: 12px;
+    padding: 24px;
+    justify-content: center;
     background: white;
-    border-bottom: 1px solid #e0e0e0;
-    scrollbar-width: none;
-}
-
-.category-nav::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
 }
 
 .category-btn {
-    padding: 8px 20px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
+    padding: 10px 24px;
+    border-radius: 24px;
+    border: 2px solid #e5e5e5;
     background: white;
     color: #666;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
     transition: all 0.2s;
 }
 
 .category-btn.active {
-    background: #6c5ce7;
+    background: #c23934;
     color: white;
-    border-color: #6c5ce7;
+    border-color: #c23934;
 }
 
 .category-btn:not(.active):hover {
-    background: #f5f5f5;
-    border-color: #6c5ce7;
+    border-color: #c23934;
+    color: #c23934;
 }
 
-/* Tools Container */
+/* Tools Container - EXACTLY like iLoveIMG.com Grid */
 .tools-container {
-    padding: 20px;
+    padding: 48px 24px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
-    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
 
 .tool-card {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: all 0.2s;
-    height: 100%;
+    border: 1px solid #e5e5e5;
+    transition: all 0.3s;
+    text-align: center;
 }
 
 .tool-card:hover {
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    transform: translateY(-4px);
+    border-color: transparent;
 }
 
 .tool-icon {
-    flex-shrink: 0;
-    width: 52px;
-    height: 52px;
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
-}
-
-.tool-info {
-    flex: 1;
-    min-width: 0;
+    border-radius: 20px;
+    margin-bottom: 20px;
 }
 
 .tool-info h3 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     color: #333;
 }
 
 .tool-info p {
-    font-size: 13px;
-    color: #666;
+    font-size: 14px;
+    color: #999;
     line-height: 1.5;
+}
+
+/* Tool Header - Like iLoveIMG.com */
+.tool-header {
+    background: white;
+    padding: 60px 24px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.tool-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.tool-header p {
+    font-size: 18px;
+    color: #666;
 }
 
 /* Footer */
 .footer {
     background: #2c3e50;
     color: white;
-    padding: 50px 20px 30px;
-    margin-top: 60px;
+    padding: 60px 24px 40px;
+    margin-top: auto;
 }
 
 .footer-content {
@@ -302,8 +287,8 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    margin-bottom: 30px;
+    gap: 48px;
+    margin-bottom: 40px;
 }
 
 .footer-section h4 {
@@ -325,17 +310,16 @@ body {
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s;
-    display: block;
 }
 
 .footer-section ul li a:hover {
-    color: #6c5ce7;
+    color: white;
 }
 
 .footer-bottom {
     max-width: 1400px;
     margin: 0 auto;
-    padding-top: 30px;
+    padding-top: 32px;
     border-top: 1px solid rgba(255,255,255,0.1);
     text-align: center;
 }
@@ -347,51 +331,45 @@ body {
 
 /* Responsive */
 @media (max-width: 767px) {
-    .tools-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+    .hero h1 {
+        font-size: 32px;
     }
 
-    .hero h1 {
-        font-size: 24px;
+    .hero .subtitle {
+        font-size: 16px;
+    }
+
+    .tools-container {
+        grid-template-columns: 1fr;
+        padding: 32px 16px;
     }
 
     .footer-content {
         grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
+        gap: 32px;
     }
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
-    .tools-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .hero h1 {
-        font-size: 36px;
-    }
-
-    .hero {
-        padding: 70px 20px 50px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .tools-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-        padding: 32px;
-    }
-
     .hero h1 {
         font-size: 42px;
     }
 
+    .tools-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
     .hero {
-        padding: 80px 20px 60px;
+        padding: 100px 24px 80px;
+    }
+
+    .hero h1 {
+        font-size: 52px;
+    }
+
+    .tools-container {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
