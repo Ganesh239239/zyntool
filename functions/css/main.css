@@ -1,116 +1,316 @@
+/* iLoveIMG Clone - Exact Design */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    --primary-color: #e74c3c;
-    --secondary-color: #3498db;
-    --dark-bg: #2c3e50;
-    --light-bg: #ecf0f1;
-    --text-dark: #2c3e50;
-    --text-light: #7f8c8d;
-    --border-radius: 12px;
-    --shadow: 0 4px 6px rgba(0,0,0,0.1);
-    --shadow-hover: 0 8px 15px rgba(0,0,0,0.2);
-}
-
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f8f9fc;
+    color: #333;
     line-height: 1.6;
-    color: var(--text-dark);
-    background: #f8f9fa;
 }
 
-.container {
-    max-width: 1200px;
+/* Header */
+.main-header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-header {
-    background: linear-gradient(135deg, var(--primary-color), #c0392b);
-    color: white;
-    padding: 40px 0;
+.menu-btn,
+.dots-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.menu-btn:hover,
+.dots-btn:hover {
+    background: #f3f4f6;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.logo-text {
+    font-weight: 700;
+}
+
+.heart-icon {
+    width: 32px;
+    height: 32px;
+    margin: 0 -2px;
+}
+
+/* Hero Section */
+.hero {
     text-align: center;
-    box-shadow: var(--shadow);
+    padding: 40px 20px 30px;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+.hero h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    line-height: 1.3;
 }
 
-header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
+.hero-subtitle {
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
 }
 
-main {
-    padding: 60px 20px;
+/* Categories */
+.categories {
+    padding: 0 20px 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.category-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.category-btn {
+    padding: 10px 24px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #4b5563;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.category-btn:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+.category-btn.active {
+    background: #1f2937;
+    color: white;
+    border-color: #1f2937;
+}
+
+/* Tools Section */
+.tools-section {
+    padding: 0 20px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
 }
 
 .tool-card {
     background: white;
-    padding: 30px;
-    border-radius: var(--border-radius);
-    text-align: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
     text-decoration: none;
-    color: var(--text-dark);
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    color: inherit;
+    transition: all 0.2s;
+    position: relative;
 }
 
 .tool-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
-    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #d1d5db;
+    transform: translateY(-2px);
 }
 
 .tool-icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
 }
 
-.tool-card h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: var(--text-dark);
+.tool-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
-.tool-card p {
-    color: var(--text-light);
-    font-size: 0.95rem;
-}
-
-footer {
-    background: var(--dark-bg);
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #3b82f6;
     color: white;
-    text-align: center;
-    padding: 30px 0;
-    margin-top: 60px;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-footer p {
-    opacity: 0.8;
+.tool-content {
+    flex: 1;
 }
 
+.tool-content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+.tool-content p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.tool-content p strong {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Icon Colors */
+.tool-icon.green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.tool-icon.blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.tool-icon.cyan {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.tool-icon.yellow {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.tool-icon.purple {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+}
+
+.tool-icon.light-green {
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+}
+
+.tool-icon.green-light {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.tool-icon.blue-dark {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.tool-icon.pink {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+.tool-icon.teal {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.tool-icon.orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.tool-icon.blue-light {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
+    .hero h1 {
+        font-size: 26px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
     }
 
     .tools-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 12px;
+    }
+
+    .tool-card {
+        padding: 16px;
+    }
+
+    .category-buttons {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .category-buttons::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-btn {
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1025px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1400px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
