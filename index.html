@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Image Tools</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="logo">I ❤️ IMG</div>
-    <div class="menu-icon">⋮⋮⋮</div>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">I<span>♥</span>IMG</div>
+    <div class="menu">⋮⋮⋮</div>
   </div>
 </header>
 
@@ -21,41 +21,16 @@
 </section>
 
 <section class="categories">
-  <button class="pill active">All</button>
-  <button class="pill">Optimize</button>
-  <button class="pill">Create</button>
-  <button class="pill">Edit</button>
-  <button class="pill">Convert</button>
-  <button class="pill">Security</button>
+  <button class="cat active" data-cat="All">All</button>
+  <button class="cat" data-cat="Optimize">Optimize</button>
+  <button class="cat" data-cat="Create">Create</button>
+  <button class="cat" data-cat="Edit">Edit</button>
+  <button class="cat" data-cat="Convert">Convert</button>
+  <button class="cat" data-cat="Security">Security</button>
 </section>
 
-<section class="tools-list">
+<section class="tools" id="tools"></section>
 
-  <div class="tool-card">
-    <div class="tool-icon green">⇲</div>
-    <div class="tool-content">
-      <h3>Compress IMAGE</h3>
-      <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
-    </div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-icon blue">🖼</div>
-    <div class="tool-content">
-      <h3>Resize IMAGE</h3>
-      <p>Define your dimensions by percent or pixel and resize images easily.</p>
-    </div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-icon cyan">✂</div>
-    <div class="tool-content">
-      <h3>Crop IMAGE</h3>
-      <p>Crop JPG, PNG, or GIFs with ease using pixels or visual editor.</p>
-    </div>
-  </div>
-
-</section>
-
+<script src="js/main.js"></script>
 </body>
 </html>
