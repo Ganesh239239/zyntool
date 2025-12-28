@@ -17,16 +17,20 @@ body {
 .tool {
   background: #ffffff;
   border-radius: 22px;
-  padding: 28px;
-  margin-bottom: 22px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
 }
 
 .icon {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* iloveimg-like colors */
@@ -35,14 +39,20 @@ body {
 .crop     { background: #32c0dd; }
 
 h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
+  margin: 0 0 6px;
+  font-size: 20px;
   font-weight: 700;
 }
 
 p {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.45;
   color: #6b7280;
-  line-height: 1.5;
+}
+
+.icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: #ffffff;
 }
