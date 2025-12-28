@@ -1,14 +1,12 @@
-// Resize IMAGE - Unique Logic
+// Resize IMAGE - RESIZE MODE
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ resize.js loaded - RESIZE MODE');
+    console.log('✅ resize.js - RESIZE MODE');
 
     const uploadBtn = document.getElementById('upload-btn');
     const clearBtn = document.getElementById('clear-btn');
     const fileInput = document.getElementById('file-input');
     const dropZone = document.getElementById('drop-zone');
     const previewArea = document.getElementById('preview-area');
-    const downloadAllBtn = document.getElementById('download-all-btn');
-    const fileCountBadge = document.getElementById('file-count');
     const loading = document.getElementById('loading');
 
     let uploadedFile = null;
@@ -69,8 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayFileInfo(file) {
-        document.getElementById('card-filename').textContent = file.name;
-        document.getElementById('filename-display').textContent = file.name;
+        document.getElementById('filename-premium').textContent = file.name;
 
         const reader = new FileReader();
         reader.onload = (e) => uploadedFile.dataUrl = e.target.result;
@@ -78,66 +75,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function processImage(quality) {
-        // RESIZE: Shows WxH dimensions
+        // RESIZE
         const scale = quality;
         const newWidth = Math.round(1920 * scale / 100);
         const newHeight = Math.round(1080 * scale / 100);
         processedSize = Math.round(originalSize * (scale / 100));
 
-        document.getElementById('progress-indicator').textContent = `${newWidth}×${newHeight}`;
-        document.getElementById('original-size').textContent = '1920×1080px';
-        document.getElementById('compressed-size').textContent = 
-            `${newWidth}×${newHeight}px`;
+        document.getElementById('progress-number').textContent = `${newWidth}×${newHeight}`;
+        document.getElementById('progress-label').textContent = 'New Dimensions';
+        document.getElementById('original-stat').textContent = '1920×1080px';
+        document.getElementById('processed-stat').textContent = `${newWidth}×${newHeight}px`;
+        document.getElementById('pie-percentage').textContent = `${scale}%`;
 
-        updatePieChart(scale, 'resize');
+        updatePieChart(scale);
     }
 
-    function updatePieChart(percentage, type) {
-        const pieChart = document.querySelector('.pie-chart');
+    function updatePieChart(percentage) {
+        const pieChart = document.querySelector('.pie-chart-premium');
         let deg = Math.min(Math.max(Math.round((percentage / 100) * 360), 0), 360);
-
-        pieChart.style.background = `conic-gradient(#7e57c2 0deg ${deg}deg, #e3f2fd ${deg}deg 360deg)`;
-
-        const percentageElement = document.querySelector('.pie-chart-percentage');
-
-        if (type === 'compress') {
-            percentageElement.textContent = `-${percentage}%`;
-        } else if (type === 'upscale') {
-            percentageElement.textContent = `+${percentage}%`;
-        } else if (type === 'rotate') {
-            percentageElement.textContent = `${Math.round(quality * 3.6)}°`;
-        } else if (type === 'removebg' || type === 'convert' || type === 'meme') {
-            percentageElement.textContent = '✓';
-        } else {
-            percentageElement.textContent = `${percentage}%`;
-        }
+        pieChart.style.background = `conic-gradient(#667eea 0deg ${deg}deg, #e9ecef ${deg}deg 360deg)`;
     }
 
-    const applyBtn = document.getElementById('apply-btn');
+    const applyBtn = document.getElementById('apply-btn-premium');
     if (applyBtn) {
         applyBtn.addEventListener('click', function() {
-            quality = parseInt(document.getElementById('quality-input').value);
+            quality = parseInt(document.getElementById('quality-input-premium').value);
             if (quality >= 1 && quality <= 100 && uploadedFile) {
                 processImage(quality);
             }
         });
     }
 
-    const qualityInput = document.getElementById('quality-input');
+    const qualityInput = document.getElementById('quality-input-premium');
     if (qualityInput) {
         qualityInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') applyBtn.click();
         });
     }
 
-    const removeBtn = document.getElementById('remove-btn');
+    const removeBtn = document.getElementById('remove-btn-premium');
     if (removeBtn) removeBtn.addEventListener('click', () => resetTool());
 
     if (clearBtn) clearBtn.addEventListener('click', () => resetTool());
 
-    const downloadSingleBtn = document.getElementById('download-single-btn');
-    if (downloadSingleBtn) {
-        downloadSingleBtn.addEventListener('click', function() {
+    const downloadBtn = document.getElementById('download-btn-premium');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
             if (uploadedFile && uploadedFile.dataUrl) {
                 const link = document.createElement('a');
                 link.href = uploadedFile.dataUrl;
@@ -147,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const downloadAllBtn = document.getElementById('download-all-btn-premium');
     if (downloadAllBtn) {
         downloadAllBtn.addEventListener('click', function() {
             if (fileCount > 0 && uploadedFile && uploadedFile.dataUrl) {
@@ -169,12 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
         dropZone.style.display = 'flex';
         updateFileCount();
 
-        document.getElementById('quality-input').value = '89';
+        document.getElementById('quality-input-premium').value = '89';
     }
 
     function updateFileCount() {
-        fileCountBadge.textContent = fileCount;
-        downloadAllBtn.disabled = fileCount === 0;
+        const badge = document.getElementById('file-count-premium');
+        if (badge) badge.textContent = fileCount;
+        const btn = document.getElementById('download-all-btn-premium');
+        if (btn) btn.disabled = fileCount === 0;
     }
 
     function formatFileSize(bytes) {
