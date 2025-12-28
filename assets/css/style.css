@@ -23,13 +23,13 @@ body {
   margin: auto;
   padding: 14px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .logo {
-  font-weight: 700;
   font-size: 20px;
+  font-weight: 700;
 }
 
 .desktop-nav {
@@ -71,8 +71,6 @@ body {
 .hero {
   text-align: center;
   padding: 40px 20px;
-  position: relative;
-  z-index: 1;
 }
 
 .categories {
@@ -96,7 +94,7 @@ body {
   color: #fff;
 }
 
-/* GRID (THIS IS THE KEY FIX) */
+/* GRID */
 .tools {
   padding: 30px 20px;
 }
@@ -105,7 +103,7 @@ body {
   max-width: 1200px;
   margin: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* DESKTOP LOCK */
   gap: 24px;
 }
 
@@ -117,7 +115,7 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,.04);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.04);
 }
 
 /* ICON */
@@ -125,17 +123,50 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.green { background:#7ac943 }
-.blue { background:#4e8df5 }
-.teal { background:#2fc2c2 }
-.yellow { background:#f4b400 }
-.red { background:#f25f5c }
+.icon svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+}
 
-/* DESKTOP */
+/* COLORS */
+.green { background:#7ac943; }
+.blue { background:#4e8df5; }
+.teal { background:#2fc2c2; }
+.yellow { background:#f4b400; }
+.red { background:#f25f5c; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+}
+
 @media (min-width: 1024px) {
-  .desktop-nav { display: flex; }
-  .menu-btn { display: none; }
+  .desktop-nav {
+    display: flex;
+  }
+
+  .menu-btn {
+    display: none;
+  }
 }
