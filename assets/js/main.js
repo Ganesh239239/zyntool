@@ -1,17 +1,17 @@
-// FILTER LOGIC
-const filterButtons = document.querySelectorAll('.filter');
+// FILTERS
+const filters = document.querySelectorAll('.filter');
 const cards = document.querySelectorAll('.tool-card');
 
-filterButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
+filters.forEach(filter => {
+  filter.addEventListener('click', () => {
     document.querySelector('.filter.active').classList.remove('active');
-    btn.classList.add('active');
+    filter.classList.add('active');
 
-    const filter = btn.dataset.filter;
+    const type = filter.dataset.filter;
 
     cards.forEach(card => {
-      if (filter === 'all' || card.classList.contains(filter)) {
-        card.style.display = 'block';
+      if (type === 'all' || card.classList.contains(type)) {
+        card.style.display = 'flex';
       } else {
         card.style.display = 'none';
       }
@@ -19,7 +19,10 @@ filterButtons.forEach(btn => {
   });
 });
 
-// NAV MENU (placeholder, working click)
-document.getElementById('menuBtn').addEventListener('click', () => {
-  alert('Navigation menu clicked');
+// MOBILE MENU
+const menuBtn = document.getElementById('menuBtn');
+const mobileNav = document.getElementById('mobileNav');
+
+menuBtn.addEventListener('click', () => {
+  mobileNav.classList.toggle('show');
 });
