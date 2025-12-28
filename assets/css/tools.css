@@ -48,11 +48,11 @@
     justify-content: center;
     align-items: center;
     margin: 0 auto 1rem;
-    color: var(--primary-color);
 }
 
 .upload-icon svg {
     stroke: var(--primary-color);
+    display: block;
 }
 
 .upload-area h2 {
@@ -319,7 +319,6 @@
 
 .back-home:hover {
     color: var(--secondary-color);
-    transform: translateX(-5px);
 }
 
 /* Responsive */

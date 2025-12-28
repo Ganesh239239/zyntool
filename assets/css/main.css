@@ -117,6 +117,10 @@ body {
     border-color: var(--primary-color);
 }
 
+.tool-card:hover .tool-icon {
+    background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+}
+
 .tool-card:hover .tool-icon svg {
     stroke: var(--primary-color);
     transform: scale(1.1);
@@ -137,6 +141,7 @@ body {
 .tool-icon svg {
     stroke: var(--primary-color);
     transition: var(--transition);
+    display: block;
 }
 
 .tool-card h3 {
@@ -193,6 +198,16 @@ body {
     .logo h1 {
         font-size: 1.5rem;
     }
+
+    .tool-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .tool-icon svg {
+        width: 36px;
+        height: 36px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -206,15 +221,5 @@ body {
 
     .main-content {
         padding: 2rem 0;
-    }
-
-    .tool-icon {
-        width: 60px;
-        height: 60px;
-    }
-
-    .tool-icon svg {
-        width: 36px;
-        height: 36px;
     }
 }
