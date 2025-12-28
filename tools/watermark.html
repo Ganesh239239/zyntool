@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermark IMAGE - iLoveIMG Clone</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/tools.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>iLove<span>IMG</span></h1>
+        </div>
+        <nav class="main-nav">
+            <a href="../index.html" class="nav-item">
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 9L12 2L21 9V20C21 21 19 22 19 22H5C3 22 3 20 3 20V9Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span class="text">Home</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="tool-page">
+            <a href="../index.html" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Back to Home
+            </a>
+
+            <div class="tool-header">
+                <h1>Watermark IMAGE</h1>
+                <p>Add image or text watermarks</p>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Select Image or Drop Here</div>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+            </div>
+
+            <div class="processing-area" id="processingArea">
+                <h3>Image Preview</h3>
+                <img id="previewImage" class="preview-image" alt="Preview">
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="watermarkText">Watermark Text</label>
+                        <input type="text" id="watermarkText" placeholder="Enter text">
+                    </div>
+                    <div class="control-group">
+                        <label for="positionSelect">Position</label>
+                        <select id="positionSelect">
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="top-left">Top Left</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="fontSizeInput">Font Size</label>
+                        <input type="number" id="fontSizeInput" min="10" max="200" value="40">
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-large btn-process" id="processBtn">Add Watermark</button>
+                    <button class="btn-large btn-download" id="downloadBtn" style="display:none;">Download</button>
+                    <button class="btn-large btn-reset" id="resetBtn">Reset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/fileHandler.js"></script>
+    <script src="../assets/js/imageProcessor.js"></script>
+    <script src="../assets/js/tools/watermark.js"></script>
+</body>
+</html>
