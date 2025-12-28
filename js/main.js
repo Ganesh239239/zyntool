@@ -8,7 +8,14 @@ const icons = {
 };
 
 const toolsData = [
-  { title: "Compress IMAGE", desc: "Compress JPG, PNG, SVG, and GIFs while saving space.", cat: "Optimize", icon: icons.compress, color: "green" },
+  {
+  title: "Compress IMAGE",
+  desc: "Compress JPG, PNG, SVG, and GIFs while saving space.",
+  cat: "Optimize",
+  icon: icons.compress,
+  color: "green",
+  url: "/tools/compress.html"
+}
   { title: "Resize IMAGE", desc: "Resize images by pixel or percent.", cat: "Optimize", icon: icons.resize, color: "blue" },
 
   { title: "Crop IMAGE", desc: "Crop JPG, PNG, or GIFs easily.", cat: "Edit", icon: icons.crop, color: "cyan" },
