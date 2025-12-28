@@ -390,3 +390,73 @@ body {
   font-size: 13px;
   color: #888;
 }
+
+
+/* Desktop nav */
+.desktop-nav {
+  display: none;
+  gap: 24px;
+}
+
+.desktop-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Hamburger (mobile only) */
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: #222;
+}
+
+/* Mobile nav */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1px solid #e3e3e3;
+}
+
+.mobile-nav a {
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #222;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* ===== Responsive behavior ===== */
+
+/* Desktop */
+@media (min-width: 900px) {
+  .desktop-nav {
+    display: flex;
+  }
+
+  .hamburger,
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 899px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
