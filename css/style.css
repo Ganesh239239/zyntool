@@ -279,3 +279,10 @@ body {
     line-height: 1.45;
   }
 }
+
+
+@media (min-width: 1024px) {
+  body {
+    outline: 10px solid green;
+  }
+}
