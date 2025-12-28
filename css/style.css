@@ -287,3 +287,18 @@ body {
     background: yellow;
   }
 }
+
+@media (min-width: 1024px) {
+  body .tools {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px;
+  }
+
+  body .tool-card {
+    flex-direction: column !important;
+    min-height: 260px;
+  }
+}
