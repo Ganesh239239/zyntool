@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Mobile menu
+  /* MOBILE MENU */
   const menuBtn = document.getElementById("menuBtn");
   const mobileNav = document.getElementById("mobileNav");
 
@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     mobileNav.classList.toggle("show");
   });
 
-  // Category filter
+  /* CATEGORY FILTER */
   const buttons = document.querySelectorAll(".categories button");
-  const tools = document.querySelectorAll(".tool-card");
+  const cards = document.querySelectorAll(".tool-card");
 
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const filter = btn.dataset.filter;
 
-      tools.forEach(tool => {
-        tool.style.display =
-          filter === "all" || tool.dataset.category.includes(filter)
+      cards.forEach(card => {
+        card.style.display =
+          filter === "all" || card.dataset.category === filter
             ? "flex"
             : "none";
       });
