@@ -1,31 +1,43 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-  /* MOBILE MENU */
+  /* =========================
+     MOBILE NAVIGATION
+  ========================= */
   const menuBtn = document.getElementById("menuBtn");
   const mobileNav = document.getElementById("mobileNav");
 
-  menuBtn.addEventListener("click", () => {
-    mobileNav.classList.toggle("show");
-  });
+  if (menuBtn && mobileNav) {
+    menuBtn.addEventListener("click", function () {
+      mobileNav.classList.toggle("show");
+    });
+  }
 
-  /* CATEGORY FILTER */
+  /* =========================
+     CATEGORY FILTERING
+  ========================= */
   const buttons = document.querySelectorAll(".categories button");
   const cards = document.querySelectorAll(".tool-card");
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      buttons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+  if (buttons.length && cards.length) {
+    buttons.forEach(button => {
+      button.addEventListener("click", function () {
 
-      const filter = btn.dataset.filter;
+        // Active state
+        buttons.forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
 
-      cards.forEach(card => {
-        card.style.display =
-          filter === "all" || card.dataset.category === filter
-            ? "flex"
-            : "none";
+        const filter = this.dataset.filter;
+
+        cards.forEach(card => {
+          if (filter === "all" || card.dataset.category === filter) {
+            card.style.display = "flex";
+          } else {
+            card.style.display = "none";
+          }
+        });
+
       });
     });
-  });
+  }
 
 });
