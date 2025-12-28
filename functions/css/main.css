@@ -1,5 +1,4 @@
-/* iLoveIMG Clone - Fixed CSS */
-
+/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -11,9 +10,10 @@ body {
     background: #f8f9fc;
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
-/* Header */
+/* Header Styles */
 .main-header {
     background: white;
     border-bottom: 1px solid #e5e7eb;
@@ -26,7 +26,7 @@ body {
 .header-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 12px 20px;
+    padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,15 +36,13 @@ body {
 .dots-btn {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 24px;
     color: #666;
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 6px;
     transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    line-height: 1;
 }
 
 .menu-btn:hover,
@@ -52,21 +50,20 @@ body {
     background: #f3f4f6;
 }
 
-/* FIXED: Logo styling */
 .logo {
     display: flex;
     align-items: center;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     color: #1a1a1a;
     gap: 0;
+    line-height: 1;
 }
 
 .logo .heart {
     color: #4A90E2;
-    font-size: 28px;
-    line-height: 1;
-    margin: 0 -2px;
+    font-size: 26px;
+    margin: 0 -1px;
 }
 
 /* Hero Section */
@@ -138,10 +135,11 @@ body {
 
 .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(1, 1fr);
     gap: 16px;
 }
 
+/* Tool Card - THIS IS THE CRITICAL PART */
 .tool-card {
     background: white;
     border: 1px solid #e5e7eb;
@@ -153,6 +151,7 @@ body {
     color: inherit;
     transition: all 0.2s;
     position: relative;
+    align-items: flex-start;
 }
 
 .tool-card:hover {
@@ -161,9 +160,12 @@ body {
     transform: translateY(-2px);
 }
 
+/* Tool Icon Box */
 .tool-icon {
     width: 48px;
     height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -175,7 +177,7 @@ body {
 .tool-icon svg {
     width: 24px;
     height: 24px;
-    flex-shrink: 0;
+    display: block;
 }
 
 .badge {
@@ -189,10 +191,12 @@ body {
     border-radius: 4px;
     font-weight: 600;
     text-transform: uppercase;
+    line-height: 1.2;
 }
 
 .tool-content {
     flex: 1;
+    min-width: 0;
 }
 
 .tool-content h3 {
@@ -200,12 +204,14 @@ body {
     font-weight: 600;
     color: #1a1a1a;
     margin-bottom: 6px;
+    line-height: 1.3;
 }
 
 .tool-content p {
     font-size: 13px;
     color: #666;
     line-height: 1.5;
+    margin: 0;
 }
 
 .tool-content p strong {
@@ -213,7 +219,7 @@ body {
     color: #333;
 }
 
-/* Icon Colors */
+/* Icon Background Colors - Gradients */
 .tool-icon.green {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
@@ -262,6 +268,19 @@ body {
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
 }
 
+/* Responsive Grid */
+@media (min-width: 640px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .hero h1 {
@@ -270,11 +289,6 @@ body {
 
     .hero-subtitle {
         font-size: 15px;
-    }
-
-    .tools-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
     }
 
     .tool-card {
@@ -299,28 +313,10 @@ body {
     }
 
     .logo {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .logo .heart {
-        font-size: 24px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1025px) {
-    .tools-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1400px) {
-    .tools-grid {
-        grid-template-columns: repeat(3, 1fr);
+        font-size: 22px;
     }
 }
