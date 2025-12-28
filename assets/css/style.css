@@ -1,109 +1,73 @@
 *{box-sizing:border-box;font-family:system-ui,-apple-system}
-body{
-  margin:0;
-  background:#f5f7fb;
-  color:#222;
-}
+body{margin:0;background:#f5f7fb;color:#222}
 
 /* Header */
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:14px 18px;
+  padding:14px 16px;
   background:#fff;
   border-bottom:1px solid #e6e9ef;
 }
-.left{display:flex;align-items:center;gap:12px}
-.hamburger{font-size:22px}
-.logo{font-weight:900;font-size:20px}
-.logo span{font-weight:600;margin-left:6px}
-.nav{font-weight:600}
+.logo{font-size:20px;font-weight:900}
+.right{display:flex;gap:10px}
+.menu-btn,.apps-btn{
+  background:none;border:none;font-size:22px;cursor:pointer;
+}
 
 /* Hero */
-.hero{text-align:center;padding:36px 16px 22px}
-.hero h1{font-size:28px;margin-bottom:8px}
-.hero p{color:#666;margin-bottom:22px}
+.hero{text-align:center;padding:34px 16px 20px}
+.hero h1{font-size:28px;margin-bottom:6px}
+.hero p{color:#666;margin-bottom:20px}
 
 /* Tabs */
-.tabs{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:10px;
-}
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .tabs button{
   border:1px solid #dcdfe6;
   background:#fff;
   padding:8px 16px;
   border-radius:999px;
   font-weight:600;
+  cursor:pointer;
 }
-.tabs .active{
-  background:#111;
-  color:#fff;
-  border-color:#111;
-}
+.tabs .active{background:#111;color:#fff;border-color:#111}
 
-/* Tools list (MOBILE FIRST) */
+/* Tools */
 .tools{
-  padding:14px 14px 40px;
+  padding:14px;
   display:flex;
   flex-direction:column;
   gap:16px;
 }
-
-/* Card */
 .card{
   display:flex;
   align-items:center;
   gap:18px;
   background:#fff;
   border-radius:22px;
-  padding:18px 18px;
+  padding:18px;
   border:1px solid #e6e9ef;
   box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
-.text h3{
-  margin:0 0 4px;
-  font-size:18px;
-  font-weight:700;
-}
-.text p{
-  margin:0;
-  color:#6b6b6b;
-  font-size:14px;
-}
+.text h3{margin:0 0 4px;font-size:18px}
+.text p{margin:0;color:#666;font-size:14px}
 
 /* Icons */
 .icon{
-  width:64px;
-  height:64px;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
+  width:64px;height:64px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;
 }
-.icon svg{
-  width:30px;
-  height:30px;
-  stroke:#fff;
-  stroke-width:1.6;
-  fill:none;
-}
-.text-icon{
-  font-weight:800;
-  font-size:22px;
-}
-
-/* Colors */
 .green{background:#7ac943}
 .blue{background:#4f8cff}
 .cyan{background:#2fc4e6}
 .yellow{background:#f4b400}
+.purple{background:#a46af3}
+.teal{background:#38b2ac}
+.red{background:#f56565}
 
-/* Desktop enhancement */
+/* Desktop */
 @media(min-width:900px){
   .tools{
     max-width:1200px;
@@ -116,8 +80,4 @@ body{
 }
 
 /* Footer */
-footer{
-  text-align:center;
-  padding:30px;
-  color:#777;
-}
+footer{text-align:center;padding:30px;color:#777}
