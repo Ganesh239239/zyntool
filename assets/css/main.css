@@ -1,5 +1,4 @@
-/* iLoveIMG.com Exact Clone - Based on detailed analysis */
-
+/* iLoveIMG Design - Desktop Grid Version */
 * {
     margin: 0;
     padding: 0;
@@ -16,7 +15,6 @@ body {
     min-height: 100vh;
 }
 
-/* ========== MOBILE SIDE MENU ========== */
 .side-menu {
     position: fixed;
     top: 0;
@@ -67,7 +65,6 @@ body {
     background: #f5f5f5;
 }
 
-/* ========== HEADER ========== */
 .header {
     display: flex;
     justify-content: space-between;
@@ -78,7 +75,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    height: 56px;
 }
 
 .header-left {
@@ -109,7 +105,6 @@ body {
     align-items: center;
     font-size: 24px;
     font-weight: 700;
-    text-decoration: none;
 }
 
 .logo-text {
@@ -121,28 +116,25 @@ body {
     font-size: 22px;
 }
 
-/* ========== HERO SECTION ========== */
 .hero {
     text-align: center;
     padding: 40px 20px;
-    background: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .hero h1 {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
     line-height: 1.3;
     margin-bottom: 12px;
-    color: #333;
 }
 
 .hero .subtitle {
     font-size: 16px;
-    color: #666;
     opacity: 0.95;
 }
 
-/* ========== CATEGORY NAVIGATION ========== */
 .category-nav {
     display: flex;
     gap: 8px;
@@ -180,7 +172,7 @@ body {
     background: #f5f5f5;
 }
 
-/* ========== TOOLS CONTAINER ========== */
+/* DESKTOP GRID LAYOUT - MAIN CHANGE */
 .tools-container {
     padding: 20px;
     max-width: 1400px;
@@ -189,7 +181,6 @@ body {
     flex: 1;
 }
 
-/* MOBILE: LIST VIEW */
 .tool-card {
     display: flex;
     align-items: flex-start;
@@ -201,7 +192,6 @@ body {
     color: inherit;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     transition: all 0.2s;
-    margin-bottom: 12px;
     height: 100%;
 }
 
@@ -218,11 +208,6 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-}
-
-.tool-icon svg {
-    width: 24px;
-    height: 24px;
 }
 
 .tool-info {
@@ -243,7 +228,7 @@ body {
     line-height: 1.5;
 }
 
-/* ========== FOOTER ========== */
+/* Footer Styles */
 .footer {
     background: #2c3e50;
     color: white;
@@ -319,9 +304,7 @@ body {
     color: white;
 }
 
-/* ========== RESPONSIVE - MOBILE FIRST ========== */
-
-/* Mobile: < 768px (List view) */
+/* RESPONSIVE - Mobile First, then Desktop Grid */
 @media (max-width: 767px) {
     .tools-container {
         display: flex;
@@ -344,21 +327,12 @@ body {
     }
 }
 
-/* Tablet: 768px - 1199px (2 columns) */
+/* Tablet - 2 columns */
 @media (min-width: 768px) and (max-width: 1199px) {
     .tools-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
-    }
-
-    .tool-card {
-        flex-direction: column;
-        margin-bottom: 0;
-    }
-
-    .tool-icon {
-        margin-bottom: 12px;
     }
 
     .hero h1 {
@@ -370,7 +344,7 @@ body {
     }
 }
 
-/* Desktop: ≥ 1200px (3 columns) */
+/* Desktop - 3 COLUMNS GRID LIKE IMAGE */
 @media (min-width: 1200px) {
     .tools-container {
         display: grid;
@@ -379,20 +353,199 @@ body {
         padding: 32px;
     }
 
-    .tool-card {
-        flex-direction: column;
-        margin-bottom: 0;
-    }
-
-    .tool-icon {
-        margin-bottom: 12px;
-    }
-
     .hero h1 {
         font-size: 36px;
     }
 
     .hero {
         padding: 60px 20px;
+    }
+}
+
+/* Tool Page Styles (for premium tools) */
+.tool-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.tool-header h1 {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.tool-header p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.tool-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    flex: 1;
+}
+
+.upload-area {
+    background: white;
+    border: 3px dashed #667eea;
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    background: #f8f5ff;
+    border-color: #764ba2;
+}
+
+.upload-area.dragover {
+    background: #f0e8ff;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.upload-area h2 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.upload-area p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #667eea;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#file-input {
+    display: none;
+}
+
+.preview-section {
+    display: none;
+    margin-top: 40px;
+}
+
+.preview-section.active {
+    display: block;
+}
+
+.image-preview {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: #667eea;
+}
+
+.loading.active {
+    display: block;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.controls {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.control-group input,
+.control-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+@media (max-width: 767px) {
+    .upload-area {
+        padding: 40px 20px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .tool-header h1 {
+        font-size: 24px;
     }
 }
