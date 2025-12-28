@@ -316,3 +316,44 @@ body {
     line-height: 1.35;          /* tighter text */
   }
 }
+
+
+.site-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Hamburger */
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: #222;
+}
+
+/* Mobile nav */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1px solid #e3e3e3;
+}
+
+.mobile-nav a {
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #222;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-nav a:hover {
+  background: #f6f7fb;
+}
