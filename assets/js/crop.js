@@ -1,2 +1,108 @@
 // Crop
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Crop</h3><div class="control-item"><label class="control-label">Area <span id="c">80%</span></label><input type="range" class="slider" id="crop" min="10" max="100" value="80"></div>`;processBtn.textContent='Crop';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});processBtn.addEventListener('click',processImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function processImage(){processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;const p=(document.getElementById("crop")?document.getElementById("crop").value:80)/100;const w=currentImage.width*p,h=currentImage.height*p;canvas.width=w;canvas.height=h;ctx.drawImage(currentImage,(currentImage.width-w)/2,(currentImage.height-h)/2,w,h,0,0,w,h);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Crop';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/jpeg',0.9)},600)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download='crop-${Date.now()}.jpg';a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;
+
+controlsContent.innerHTML=`<div class="control-item">
+    <label class="control-label">Aspect Ratio</label>
+    <select id="aspect-ratio" class="select-field">
+        <option value="free">Free</option>
+        <option value="1:1">Square (1:1)</option>
+        <option value="16:9">Landscape (16:9)</option>
+        <option value="4:3">Standard (4:3)</option>
+        <option value="9:16">Portrait (9:16)</option>
+    </select>
+</div>
+<div class="info-box">
+    <p>Select an aspect ratio to crop your image</p>
+</div>`;
+
+// Quality slider handler
+if(document.getElementById('quality-slider')){
+    const slider=document.getElementById('quality-slider'),valueDisplay=document.getElementById('quality-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+// Blur slider handler
+if(document.getElementById('blur-slider')){
+    const slider=document.getElementById('blur-slider'),valueDisplay=document.getElementById('blur-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+selectBtn.onclick=()=>fileInput.click();
+uploadZone.onclick=()=>fileInput.click();
+uploadZone.ondragover=e=>{e.preventDefault();uploadZone.classList.add('dragover');};
+uploadZone.ondragleave=()=>uploadZone.classList.remove('dragover');
+uploadZone.ondrop=e=>{
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if(e.dataTransfer.files.length)fileInput.files=e.dataTransfer.files,handleFileSelect();
+};
+
+fileInput.onchange=handleFileSelect;
+
+function handleFileSelect(){
+    const file=fileInput.files[0];
+    if(!file||!file.type.startsWith('image/'))return alert('Please select an image file');
+    originalFile=file;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        currentImage=new Image();
+        currentImage.onload=()=>{
+            uploadZone.style.display='none';
+            workArea.style.display='grid';
+            thumbnailImg.src=e.target.result;
+            imageName.textContent=file.name;
+            processBtn.disabled=false;
+        };
+        currentImage.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+processBtn.onclick=()=>{
+    if(!currentImage)return;
+    loadingOverlay.style.display='flex';
+    setTimeout(()=>{
+        try{
+const ratio = document.getElementById('aspect-ratio').value;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = currentImage.width;
+    let height = currentImage.height;
+
+    if (ratio === '1:1') {
+        width = height = Math.min(width, height);
+    } else if (ratio === '16:9') {
+        height = Math.round(width * 9 / 16);
+    } else if (ratio === '4:3') {
+        height = Math.round(width * 3 / 4);
+    } else if (ratio === '9:16') {
+        width = Math.round(height * 9 / 16);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(currentImage, 0, 0, width, height);
+
+    canvas.toBlob(blob => {
+        processedBlob = blob;
+        downloadBtn.disabled = false;
+        loadingOverlay.style.display = 'none';
+    }, 'image/jpeg', 0.95);
+        }catch(err){
+            console.error(err);
+            loadingOverlay.style.display='none';
+            alert('Error processing image');
+        }
+    },500);
+};
+
+downloadBtn.onclick=()=>{
+    if(!processedBlob)return;
+    const url=URL.createObjectURL(processedBlob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='crop_'+originalFile.name;
+    a.click();
+    URL.revokeObjectURL(url);
+};

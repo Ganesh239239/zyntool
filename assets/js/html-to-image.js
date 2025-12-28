@@ -1,3 +1,84 @@
-// HTML to Image - FIXED VERSION
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let processedBlob=null;controlsContent.innerHTML=`<h3>HTML to Image</h3><div class="control-item"><label class="control-label">HTML Code</label><textarea class="input-field" id="html-input" rows="8" placeholder="<h1>Hello World</h1>"><h1 style="color: #6c5ce7; font-family: Arial;">Hello World!</h1>
-<p style="color: #666;">This is a demo HTML</p></textarea></div><div class="control-item"><label class="control-label">Width (px)</label><input type="number" class="input-field" id="width-input" value="800"></div><div class="control-item"><label class="control-label">Height (px)</label><input type="number" class="input-field" id="height-input" value="600"></div>`;processBtn.textContent='Convert to Image';uploadZone.innerHTML='<div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div><h3>Enter HTML Code</h3><p class="upload-hint">Type or paste your HTML in the panel</p>';uploadZone.style.display='block';workArea.style.display='grid';processBtn.addEventListener('click',convertToImage);downloadBtn.addEventListener('click',downloadImage);async function convertToImage(){const html=document.getElementById('html-input')?document.getElementById('html-input').value:'<h1>Hello</h1>',width=parseInt(document.getElementById('width-input')?document.getElementById('width-input').value:800),height=parseInt(document.getElementById('height-input')?document.getElementById('height-input').value:600);if(!html.trim()){alert('Please enter HTML code');return}processBtn.disabled=true;processBtn.textContent='Converting...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=width;canvas.height=height;ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);const tempDiv=document.createElement('div');tempDiv.innerHTML=html;tempDiv.style.cssText=`width:${width}px;height:${height}px;padding:20px;box-sizing:border-box;font-family:Arial,sans-serif;`;document.body.appendChild(tempDiv);const svgData=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;padding:20px;box-sizing:border-box;font-family:Arial,sans-serif;">${html}</div></foreignObject></svg>`;const img=new Image();const blob=new Blob([svgData],{type:'image/svg+xml;charset=utf-8'});const url=URL.createObjectURL(blob);img.onload=()=>{ctx.drawImage(img,0,0);document.body.removeChild(tempDiv);URL.revokeObjectURL(url);canvas.toBlob(blob=>{processedBlob=blob;const preview=canvas.toDataURL();thumbnailImg.src=preview;imageName.textContent='converted.png';uploadZone.style.display='none';downloadBtn.style.display='block';processBtn.textContent='Convert to Image';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/png')};img.onerror=()=>{document.body.removeChild(tempDiv);URL.revokeObjectURL(url);alert('Error rendering HTML');processBtn.textContent='Convert to Image';processBtn.disabled=false;loadingOverlay.style.display='none'};img.src=url},500)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download=`html-to-image-${Date.now()}.png`;a.click();URL.revokeObjectURL(url)}}
+// HTML to Image
+const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;
+
+controlsContent.innerHTML=`<div class="info-box">
+    <p><strong>HTML to Image Converter</strong></p>
+    <p>Upload an HTML file or image to convert</p>
+</div>`;
+
+// Quality slider handler
+if(document.getElementById('quality-slider')){
+    const slider=document.getElementById('quality-slider'),valueDisplay=document.getElementById('quality-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+// Blur slider handler
+if(document.getElementById('blur-slider')){
+    const slider=document.getElementById('blur-slider'),valueDisplay=document.getElementById('blur-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+selectBtn.onclick=()=>fileInput.click();
+uploadZone.onclick=()=>fileInput.click();
+uploadZone.ondragover=e=>{e.preventDefault();uploadZone.classList.add('dragover');};
+uploadZone.ondragleave=()=>uploadZone.classList.remove('dragover');
+uploadZone.ondrop=e=>{
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if(e.dataTransfer.files.length)fileInput.files=e.dataTransfer.files,handleFileSelect();
+};
+
+fileInput.onchange=handleFileSelect;
+
+function handleFileSelect(){
+    const file=fileInput.files[0];
+    if(!file||!file.type.startsWith('image/'))return alert('Please select an image file');
+    originalFile=file;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        currentImage=new Image();
+        currentImage.onload=()=>{
+            uploadZone.style.display='none';
+            workArea.style.display='grid';
+            thumbnailImg.src=e.target.result;
+            imageName.textContent=file.name;
+            processBtn.disabled=false;
+        };
+        currentImage.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+processBtn.onclick=()=>{
+    if(!currentImage)return;
+    loadingOverlay.style.display='flex';
+    setTimeout(()=>{
+        try{
+const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = currentImage.width;
+    canvas.height = currentImage.height;
+    ctx.drawImage(currentImage, 0, 0);
+
+    canvas.toBlob(blob => {
+        processedBlob = blob;
+        downloadBtn.disabled = false;
+        loadingOverlay.style.display = 'none';
+    }, 'image/png');
+        }catch(err){
+            console.error(err);
+            loadingOverlay.style.display='none';
+            alert('Error processing image');
+        }
+    },500);
+};
+
+downloadBtn.onclick=()=>{
+    if(!processedBlob)return;
+    const url=URL.createObjectURL(processedBlob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='html-to-image_'+originalFile.name;
+    a.click();
+    URL.revokeObjectURL(url);
+};

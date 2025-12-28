@@ -1,2 +1,97 @@
-// Blur
-const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;controlsContent.innerHTML=`<h3>Blur</h3><div class="control-item"><label class="control-label">Amount <span id="bv">10px</span></label><input type="range" class="slider" id="bl" min="5" max="30" value="10"></div>`;processBtn.textContent='Blur';selectBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});fileInput.addEventListener('change',e=>{if(e.target.files.length>0)handleFile(e.target.files[0])});uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0])});processBtn.addEventListener('click',processImage);downloadBtn.addEventListener('click',downloadImage);async function handleFile(file){if(!file.type.startsWith('image/')){alert('Please select an image file');return}originalFile=file;loadingOverlay.style.display='flex';try{const img=await loadImage(file);currentImage=img;const thumbnail=await createThumbnail(img,300);thumbnailImg.src=thumbnail;imageName.textContent=file.name;uploadZone.style.display='none';workArea.style.display='grid';loadingOverlay.style.display='none';downloadBtn.style.display='none'}catch(error){alert('Error loading image');loadingOverlay.style.display='none'}}async function processImage(){processBtn.disabled=true;processBtn.textContent='Processing...';loadingOverlay.style.display='flex';setTimeout(()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=currentImage.width;canvas.height=currentImage.height;const blur=document.getElementById("bl")?document.getElementById("bl").value:10;ctx.filter=`blur(${blur}px)`;ctx.drawImage(currentImage,0,0);canvas.toBlob(blob=>{processedBlob=blob;downloadBtn.style.display='block';processBtn.textContent='Blur';processBtn.disabled=false;loadingOverlay.style.display='none'},'image/jpeg',0.9)},600)}function downloadImage(){if(processedBlob){const url=URL.createObjectURL(processedBlob),a=document.createElement('a');a.href=url;a.download='blur-face-${Date.now()}.jpg';a.click();URL.revokeObjectURL(url)}}function loadImage(file){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=URL.createObjectURL(file)})}function createThumbnail(img,maxSize){return new Promise(resolve=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let width=img.width,height=img.height;if(width>height){if(width>maxSize){height=height*maxSize/width;width=maxSize}}else{if(height>maxSize){width=width*maxSize/height;height=maxSize}}canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.9))})}
+// Blur Face
+const uploadZone=document.getElementById('upload-zone'),selectBtn=document.getElementById('select-btn'),fileInput=document.getElementById('file-input'),workArea=document.getElementById('work-area'),loadingOverlay=document.getElementById('loading-overlay'),thumbnailImg=document.getElementById('thumbnail-img'),imageName=document.getElementById('image-name'),controlsContent=document.getElementById('controls-content'),processBtn=document.getElementById('process-btn'),downloadBtn=document.getElementById('download-btn');let currentImage=null,originalFile=null,processedBlob=null;
+
+controlsContent.innerHTML=`<div class="control-item">
+    <label class="control-label">
+        <span>Blur Amount</span>
+        <span id="blur-value">10</span>
+    </label>
+    <input type="range" id="blur-slider" class="slider" min="1" max="50" value="10">
+    <div class="slider-labels">
+        <span>Light</span>
+        <span>Heavy</span>
+    </div>
+</div>
+<div class="info-box">
+    <p>Apply blur effect to your image</p>
+</div>`;
+
+// Quality slider handler
+if(document.getElementById('quality-slider')){
+    const slider=document.getElementById('quality-slider'),valueDisplay=document.getElementById('quality-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+// Blur slider handler
+if(document.getElementById('blur-slider')){
+    const slider=document.getElementById('blur-slider'),valueDisplay=document.getElementById('blur-value');
+    slider.oninput=()=>valueDisplay.textContent=slider.value;
+}
+
+selectBtn.onclick=()=>fileInput.click();
+uploadZone.onclick=()=>fileInput.click();
+uploadZone.ondragover=e=>{e.preventDefault();uploadZone.classList.add('dragover');};
+uploadZone.ondragleave=()=>uploadZone.classList.remove('dragover');
+uploadZone.ondrop=e=>{
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if(e.dataTransfer.files.length)fileInput.files=e.dataTransfer.files,handleFileSelect();
+};
+
+fileInput.onchange=handleFileSelect;
+
+function handleFileSelect(){
+    const file=fileInput.files[0];
+    if(!file||!file.type.startsWith('image/'))return alert('Please select an image file');
+    originalFile=file;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        currentImage=new Image();
+        currentImage.onload=()=>{
+            uploadZone.style.display='none';
+            workArea.style.display='grid';
+            thumbnailImg.src=e.target.result;
+            imageName.textContent=file.name;
+            processBtn.disabled=false;
+        };
+        currentImage.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+processBtn.onclick=()=>{
+    if(!currentImage)return;
+    loadingOverlay.style.display='flex';
+    setTimeout(()=>{
+        try{
+const blurAmount = parseInt(document.getElementById('blur-slider').value);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = currentImage.width;
+    canvas.height = currentImage.height;
+
+    ctx.filter = `blur(${blurAmount}px)`;
+    ctx.drawImage(currentImage, 0, 0);
+
+    canvas.toBlob(blob => {
+        processedBlob = blob;
+        downloadBtn.disabled = false;
+        loadingOverlay.style.display = 'none';
+    }, 'image/jpeg', 0.95);
+        }catch(err){
+            console.error(err);
+            loadingOverlay.style.display='none';
+            alert('Error processing image');
+        }
+    },500);
+};
+
+downloadBtn.onclick=()=>{
+    if(!processedBlob)return;
+    const url=URL.createObjectURL(processedBlob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='blur-face_'+originalFile.name;
+    a.click();
+    URL.revokeObjectURL(url);
+};
