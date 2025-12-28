@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageTools | Free Online Image Editor</title>
+    <style>
+        /* INLINE CSS - GUARANTEED TO LOAD */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #e74c3c;
+            font-weight: 700;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .hero .highlight {
+            color: #e74c3c;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 3rem;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-decoration: none;
+            color: #2c3e50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e1e8ed;
+            display: block;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+            border-color: #e74c3c;
+        }
+
+        .tool-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fef5f5 0%, #fee 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover .tool-icon {
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+        }
+
+        .tool-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: #e74c3c;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .tool-card:hover .tool-icon svg {
+            transform: scale(1.1);
+        }
+
+        .tool-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .tool-card p {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .tool-card strong {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .tool-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .tool-icon svg {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>🖼️ ImageTools</h1>
+                <p>Your online photo editor</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2>Every tool you could want to <span class="highlight">edit images</span> in bulk</h2>
+                <p class="hero-subtitle">Your online photo editor is here and forever free!</p>
+            </section>
+
+            <!-- Tools Grid -->
+            <div class="tools-grid">
+                <!-- Tool 1: Resize -->
+                <a href="/tools/resize.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </div>
+                    <h3>Resize IMAGE</h3>
+                    <p>Define your dimensions, by percent or pixel, and resize your <strong>JPG</strong>, <strong>PNG</strong>, <strong>SVG</strong>, and <strong>GIF</strong> images.</p>
+                </a>
+
+                <!-- Tool 2: Crop -->
+                <a href="/tools/crop.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"></path>
+                            <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"></path>
+                        </svg>
+                    </div>
+                    <h3>Crop IMAGE</h3>
+                    <p>Crop <strong>JPG</strong>, <strong>PNG</strong>, or <strong>GIFs</strong> with ease; Choose pixels to define your rectangle or use our visual editor.</p>
+                </a>
+
+                <!-- Tool 3: Convert to JPG -->
+                <a href="/tools/convert.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Convert to JPG</h3>
+                    <p>Turn <strong>PNG</strong>, <strong>GIF</strong>, <strong>WEBP</strong>, <strong>HEIC</strong> format images to JPG in bulk with ease.</p>
+                </a>
+
+                <!-- Tool 4: Compress -->
+                <a href="/tools/compress.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3>Compress IMAGE</h3>
+                    <p>Reduce file size of your images. Compress <strong>JPG</strong>, <strong>PNG</strong>, and <strong>GIF</strong> files while maintaining quality.</p>
+                </a>
+
+                <!-- Tool 5: Watermark -->
+                <a href="/tools/watermark.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>Watermark IMAGE</h3>
+                    <p>Stamp an image or text over your images in seconds. Choose the typography, transparency and position.</p>
+                </a>
+
+                <!-- Tool 6: Rotate -->
+                <a href="/tools/rotate.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                    </div>
+                    <h3>Rotate IMAGE</h3>
+                    <p>Rotate many images <strong>JPG</strong>, <strong>PNG</strong> or <strong>GIF</strong> at same time. Choose to rotate only landscape or portrait images!</p>
+                </a>
+
+                <!-- Tool 7: Meme Generator -->
+                <a href="/tools/meme.html" class="tool-card">
+                    <div class="tool-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                    </div>
+                    <h3>Meme generator</h3>
+                    <p>Create your memes online with ease. Caption meme images or upload your pictures to make custom memes.</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 ImageTools. All rights reserved. | 100% Free Forever</p>
+        </div>
+    </footer>
+</body>
+</html>
