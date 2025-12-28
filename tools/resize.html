@@ -3,194 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resize IMAGE | iLoveIMG</title>
+    <title>Resize IMAGE | ZynTool</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/tool.css">
 </head>
 <body>
-    <!-- Mobile Side Menu -->
+    <!-- Mobile Side Menu Only -->
     <div class="side-menu" id="side-menu">
         <div class="side-menu-header">
-            <a href="../index.html" class="logo">
-                <span class="logo-text">I</span><span class="logo-heart">❤️</span><span class="logo-text">IMG</span>
-            </a>
+            <a href="../index.html" class="logo">ZynTool</a>
             <button class="close-menu" id="close-menu">✕</button>
         </div>
         <nav class="side-menu-nav">
             <a href="../index.html" class="menu-item">Home</a>
             <a href="#" class="menu-item">All tools</a>
+            <a href="#" class="menu-item">Pricing</a>
+            <a href="#" class="menu-item">Blog</a>
         </nav>
     </div>
 
-    <!-- Header -->
+    <!-- Header with Desktop Nav -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" id="menu-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-            <a href="../index.html" class="logo">
-                <span class="logo-text">I</span><span class="logo-heart">❤️</span><span class="logo-text">IMG</span>
-            </a>
+            <a href="../index.html" class="logo">ZynTool</a>
         </div>
+        <!-- Desktop Navigation (Hidden on Mobile) -->
+        <nav class="desktop-nav">
+            <a href="../index.html">Home</a>
+            <a href="#">All tools</a>
+            <a href="#">Pricing</a>
+            <a href="#">Blog</a>
+        </nav>
+        <!-- Mobile Menu Button (Hidden on Desktop) -->
+        <button class="menu-btn" id="menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
     </header>
 
-    <!-- Tool Header -->
     <div class="tool-header">
         <h1>Resize IMAGE</h1>
-        <p>Resize images</p>
+        <p>Change image dimensions</p>
     </div>
 
-    <!-- Tool Section -->
-    <div class="tool-section">
-        <!-- Top Buttons -->
-        <div class="top-actions">
-            <button class="btn-upload" id="upload-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                UPLOAD FILES
-            </button>
-            <button class="btn-clear" id="clear-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-                CLEAR QUEUE
-            </button>
+    <main class="tool-workspace">
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2"><path d="M21 3v7h-7M3 21v-7h7"></path></svg></div>
+            <h3>Select images</h3>
+            <p class="upload-hint">or drop images here</p>
+            <button class="btn-primary" id="select-btn">Select images</button>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
         </div>
 
-        <input type="file" id="file-input" accept="image/*" multiple>
-
-        <!-- Drop Zone -->
-        <div class="drop-zone" id="drop-zone">
-            <button class="nav-arrow left">‹</button>
-            <div class="drop-zone-content">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="1.5">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <div class="drop-zone-text">Drop Your Files Here</div>
+        <div class="work-area" id="work-area" style="display: none;">
+            <div class="preview-panel">
+                <div class="image-card">
+                    <div class="image-thumbnail">
+                        <img id="thumbnail-img" alt="Preview">
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name" id="image-name">image.jpg</div>
+                    </div>
+                </div>
             </div>
-            <button class="nav-arrow right">›</button>
+
+            <div class="controls-panel">
+                <div class="panel-section" id="controls-content"></div>
+                <button class="btn-process" id="process-btn">Process IMAGE</button>
+                <button class="btn-download" id="download-btn" style="display: none;">Download Result</button>
+            </div>
         </div>
 
-        <!-- Loading -->
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="spinner-large"></div>
             <p>Processing your image...</p>
         </div>
+    </main>
 
-        <!-- PREMIUM PREVIEW AREA -->
-        <div class="preview-area" id="preview-area">
-            <div class="premium-grid">
-                <!-- Left: Image Preview Card -->
-                <div class="image-preview-card">
-                    <div class="preview-header">
-                        <div class="preview-title">Image Preview</div>
-                        <button class="btn-remove-premium" id="remove-btn-premium">✕</button>
-                    </div>
-
-                    <div class="filename-premium" id="filename-premium">image.jpg</div>
-
-                    <div class="progress-display">
-                        <div class="progress-number" id="progress-number">-72%</div>
-                        <div class="progress-label" id="progress-label">File Reduced</div>
-                    </div>
-
-                    <button class="btn-download-premium" id="download-btn-premium">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        DOWNLOAD
-                    </button>
-                </div>
-
-                <!-- Right: Settings Card -->
-                <div class="settings-card-premium">
-                    <div class="settings-header">
-                        <div class="settings-title">Settings</div>
-                    </div>
-
-                    <div class="quality-control">
-                        <label class="quality-label">Quality Level</label>
-                        <div class="quality-input-group">
-                            <input type="number" class="quality-input-premium" id="quality-input-premium" value="89" min="1" max="100">
-                            <button class="btn-apply-premium" id="apply-btn-premium">APPLY</button>
-                        </div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div class="stat-label">Original</div>
-                            <div class="stat-value" id="original-stat">0 KB</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Processed</div>
-                            <div class="stat-value" id="processed-stat">0 KB</div>
-                        </div>
-                    </div>
-
-                    <div class="chart-premium">
-                        <div class="pie-chart-premium">
-                            <div class="pie-chart-center">
-                                <div class="pie-percentage" id="pie-percentage">0%</div>
-                                <div class="pie-label">Progress</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="#">ZynTool</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Desktop App</a></li>
+                    <li><a href="#">Mobile App</a></li>
+                </ul>
             </div>
-
-            <!-- Full Width Comparison Card -->
-            <div class="full-width-card">
-                <div class="comparison-header">
-                    <div class="comparison-title">Detailed Comparison</div>
-                </div>
-                <div class="comparison-grid">
-                    <div class="comparison-item">
-                        <div class="comparison-label">Original Size</div>
-                        <div class="comparison-value" id="original-stat">0 KB</div>
-                    </div>
-                    <div class="comparison-item">
-                        <div class="comparison-label">Processed Size</div>
-                        <div class="comparison-value" id="processed-stat">0 KB</div>
-                    </div>
-                    <div class="comparison-item">
-                        <div class="comparison-label">Format</div>
-                        <div class="comparison-value">JPG</div>
-                    </div>
-                    <div class="comparison-item">
-                        <div class="comparison-label">Quality</div>
-                        <div class="comparison-value">High</div>
-                    </div>
-                </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Tutorials</a></li>
+                    <li><a href="#">API</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
             </div>
         </div>
-
-        <!-- Download All Button -->
-        <div class="bottom-actions-premium">
-            <button class="btn-download-all-premium" id="download-all-btn-premium" disabled>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                DOWNLOAD ALL
-                <span class="file-count-badge-premium" id="file-count-premium">0</span>
-            </button>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ZynTool. All rights reserved.</p>
         </div>
-    </div>
+    </footer>
 
-    <!-- Scripts -->
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/resize.js"></script>
 </body>
