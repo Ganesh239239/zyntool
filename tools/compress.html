@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compress IMAGE | iLoveIMG</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/design3-wizard.css">
 </head>
 <body>
     <!-- Mobile Side Menu -->
@@ -20,7 +21,6 @@
             <a href="#" class="menu-item">All tools</a>
             <a href="#" class="menu-item">Features</a>
             <a href="#" class="menu-item">Pricing</a>
-            <a href="#" class="menu-item">Blog</a>
         </nav>
     </div>
 
@@ -56,31 +56,83 @@
 
     <!-- Tool Section -->
     <div class="tool-section">
-        <!-- Upload Area -->
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6abf69" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
+        <!-- Step Progress Bar -->
+        <div class="step-progress">
+            <div class="step active" id="step-1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Upload</div>
+                <div class="step-line"></div>
             </div>
-            <h2>Select images</h2>
-            <p>or drop images here</p>
-            <button class="btn" id="select-btn">Select images</button>
-            <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+            <div class="step" id="step-2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Adjust</div>
+                <div class="step-line"></div>
+            </div>
+            <div class="step" id="step-3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Download</div>
+            </div>
         </div>
 
-        <!-- Preview Section -->
-        <div class="preview-section" id="preview-section">
-            <img id="image-preview" class="image-preview" alt="Preview">
+        <!-- Step 1: Upload (Collapsed when completed) -->
+        <div class="step-summary" id="step1-summary"></div>
 
-            <!-- Premium Controls (dynamically added by JS) -->
-            <div class="controls" id="controls"></div>
+        <!-- Step 1 Content: Upload Area -->
+        <div class="step-content active" id="step1-content">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6abf69" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h2>Select images</h2>
+                <p>or drop images here</p>
+                <button class="btn" id="select-btn">Select images</button>
+                <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+            </div>
+        </div>
 
-            <div class="actions">
-                <button class="btn" id="process-btn">Process Image</button>
-                <button class="btn" id="download-btn" style="display:none;">Download</button>
+        <!-- Step 2 Content: Adjust Settings -->
+        <div class="step-content" id="step2-content">
+            <div class="adjust-content">
+                <!-- Left: Preview Area -->
+                <div class="preview-area">
+                    <img id="image-preview" class="image-preview" alt="Preview">
+                    <div class="image-stats" id="image-stats"></div>
+                </div>
+
+                <!-- Right: Settings Area -->
+                <div class="settings-area">
+                    <div id="controls"></div>
+                </div>
+            </div>
+
+            <div class="step-buttons">
+                <button class="btn-wizard btn-wizard-primary" id="process-btn">
+                    ⚙️ Process Image
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3 Content: Download -->
+        <div class="step-content" id="step3-content">
+            <div class="download-content">
+                <div class="success-icon">✓</div>
+                <h3>Processing Complete!</h3>
+                <p>Your image has been successfully compressed</p>
+
+                <div class="final-stats" id="final-stats"></div>
+
+                <div class="step-buttons">
+                    <button class="btn-wizard btn-wizard-success" id="download-btn">
+                        ↓ Download Result
+                    </button>
+                    <button class="btn-wizard btn-wizard-secondary" id="start-over-btn">
+                        🔄 Start Over
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -100,16 +152,14 @@
                     <li><a href="#">iLoveIMG</a></li>
                     <li><a href="#">iLovePDF</a></li>
                     <li><a href="#">Desktop</a></li>
-                    <li><a href="#">Mobile</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Company</h4>
                 <ul>
                     <li><a href="#">About</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Press</a></li>
                     <li><a href="#">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -118,7 +168,6 @@
                     <li><a href="#">Help</a></li>
                     <li><a href="#">Blog</a></li>
                     <li><a href="#">API</a></li>
-                    <li><a href="#">Developers</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -127,7 +176,6 @@
                     <li><a href="#">Privacy</a></li>
                     <li><a href="#">Terms</a></li>
                     <li><a href="#">Cookies</a></li>
-                    <li><a href="#">GDPR</a></li>
                 </ul>
             </div>
         </div>
@@ -141,7 +189,7 @@
         </div>
     </footer>
 
-    <!-- Scripts: main.js + individual tool JS -->
+    <!-- Scripts -->
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/compress.js"></script>
 </body>
