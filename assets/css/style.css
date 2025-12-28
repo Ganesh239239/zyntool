@@ -173,6 +173,8 @@ nav .container {
     color: var(--text);
     padding-left: 0.5rem;
     border-left: 4px solid var(--primary);
+    display: flex;
+    align-items: center;
 }
 
 .grid {
@@ -200,8 +202,10 @@ nav .container {
 }
 
 .tool-card .icon {
-    font-size: 3rem;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .tool-card h5 {
@@ -239,8 +243,9 @@ nav .container {
 }
 
 .feature-icon {
-    font-size: 3rem;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
 }
 
 .feature-item h4 {
@@ -291,6 +296,8 @@ footer {
 .footer-section h4 {
     margin-bottom: 1rem;
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
 }
 
 .footer-section p {
@@ -361,6 +368,10 @@ footer {
 @media (max-width: 480px) {
     .logo h1 {
         font-size: 1.25rem;
+    }
+
+    .logo .tagline {
+        display: none;
     }
 
     .hero h2 {
