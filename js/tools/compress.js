@@ -7,31 +7,32 @@ const qualityRange = document.getElementById("qualityRange");
 const qualityInput = document.getElementById("qualityInput");
 const applyBtn = document.getElementById("applyBtn");
 
-let files = [];
-let previews = [];
+/* STATE */
+let images = []; // { file, img, card }
 let quality = qualityRange.value;
+let applied = false;
 
-/* OPEN FILE PICKER */
+/* -------------------------
+   UPLOAD
+------------------------- */
+
 uploadBtn.onclick = () => fileInput.click();
 
-/* UPLOAD */
 fileInput.onchange = () => {
-  files = [...fileInput.files];
-  renderLivePreviews();
+  loadFiles([...fileInput.files]);
 };
 
-/* DRAG & DROP */
 uploadArea.addEventListener("dragover", e => e.preventDefault());
+
 uploadArea.addEventListener("drop", e => {
   e.preventDefault();
-  files = [...e.dataTransfer.files].filter(f => f.type.startsWith("image/"));
-  renderLivePreviews();
+  loadFiles([...e.dataTransfer.files].filter(f => f.type.startsWith("image/")));
 });
 
-/* LIVE PREVIEW */
-function renderLivePreviews() {
+function loadFiles(files) {
   results.innerHTML = "";
-  previews = [];
+  images = [];
+  applied = false;
 
   files.forEach(file => {
     const reader = new FileReader();
@@ -40,19 +41,43 @@ function renderLivePreviews() {
       img.src = e.target.result;
 
       img.onload = () => {
-        previews.push({ file, img });
-        updatePreview();
+        const card = createCard(file);
+        images.push({ file, img, card });
+        updateCard({ file, img, card });
       };
     };
     reader.readAsDataURL(file);
   });
 }
 
-/* LIVE KB UPDATE ON SLIDER */
+/* -------------------------
+   CARD CREATION (ONCE)
+------------------------- */
+
+function createCard(file) {
+  const card = document.createElement("div");
+  card.className = "result-card";
+  card.innerHTML = `
+    <img>
+    <div class="info">
+      <span class="orig">${(file.size / 1024).toFixed(1)} KB</span>
+      <span class="comp">—</span>
+    </div>
+    <a class="download-btn" style="display:none"></a>
+  `;
+  results.appendChild(card);
+  return card;
+}
+
+/* -------------------------
+   QUALITY CONTROLS
+------------------------- */
+
 qualityRange.oninput = () => {
   qualityInput.value = qualityRange.value;
   quality = qualityRange.value;
-  updatePreview();
+  applied = false;
+  updateAllCards();
 };
 
 qualityInput.oninput = () => {
@@ -60,28 +85,28 @@ qualityInput.oninput = () => {
   qualityInput.value = v;
   qualityRange.value = v;
   quality = v;
-  updatePreview();
+  applied = false;
+  updateAllCards();
 };
 
-/* UPDATE PREVIEW (NO DOWNLOAD YET) */
-function updatePreview() {
-  results.innerHTML = "";
+/* -------------------------
+   APPLY
+------------------------- */
 
-  previews.forEach(({ file, img }) => {
-    compressImage(img, file, false);
-  });
+applyBtn.onclick = () => {
+  applied = true;
+  updateAllCards();
+};
+
+/* -------------------------
+   UPDATE LOGIC (NO DUPLICATES)
+------------------------- */
+
+function updateAllCards() {
+  images.forEach(updateCard);
 }
 
-/* APPLY = SHOW DOWNLOAD */
-applyBtn.onclick = () => {
-  results.innerHTML = "";
-  previews.forEach(({ file, img }) => {
-    compressImage(img, file, true);
-  });
-};
-
-/* CORE COMPRESS */
-function compressImage(img, file, downloadable) {
+function updateCard({ file, img, card }) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
@@ -92,21 +117,20 @@ function compressImage(img, file, downloadable) {
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
 
-    const card = document.createElement("div");
-    card.className = "result-card";
-    card.innerHTML = `
-      <img src="${url}">
-      <div class="info">
-        <span>${(file.size / 1024).toFixed(1)} KB</span>
-        <span>${(blob.size / 1024).toFixed(1)} KB</span>
-      </div>
-      ${
-        downloadable
-          ? `<a class="download-btn" href="${url}" download="compressed-${file.name}">Download</a>`
-          : ``
-      }
-    `;
+    const imgEl = card.querySelector("img");
+    const compEl = card.querySelector(".comp");
+    const dl = card.querySelector(".download-btn");
 
-    results.appendChild(card);
+    imgEl.src = url;
+    compEl.textContent = `${(blob.size / 1024).toFixed(1)} KB`;
+
+    if (applied) {
+      dl.style.display = "block";
+      dl.textContent = "Download";
+      dl.href = url;
+      dl.download = `compressed-${file.name}`;
+    } else {
+      dl.style.display = "none";
+    }
   }, "image/jpeg", quality / 100);
 }
