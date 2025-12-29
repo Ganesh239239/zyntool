@@ -11,8 +11,8 @@ body {
 
 /* Header */
 .header {
-  background: #ffffff;
-  border-bottom: 1px solid #e3e3e3;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .header-inner {
@@ -27,6 +27,7 @@ body {
 .logo {
   font-size: 22px;
   font-weight: 800;
+  cursor: pointer;
 }
 
 .logo span {
@@ -34,7 +35,27 @@ body {
 }
 
 .menu {
-  font-size: 20px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Nav */
+.nav {
+  display: none;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.nav.active {
+  display: block;
+}
+
+.nav a {
+  display: block;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #111;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 /* Hero */
@@ -77,7 +98,7 @@ body {
   border-color: #111;
 }
 
-/* Tools grid */
+/* Tools Grid */
 .tools {
   max-width: 1080px;
   margin: auto;
@@ -86,105 +107,64 @@ body {
   gap: 16px;
 }
 
-/* Desktop: 4 columns */
 @media (min-width: 1024px) {
-  .tools {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  .tools { grid-template-columns: repeat(4, 1fr); }
 }
 
-/* Tablet: 2 columns */
 @media (min-width: 640px) and (max-width: 1023px) {
-  .tools {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .tools { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Mobile: 1 column */
 @media (max-width: 639px) {
-  .tools {
-    grid-template-columns: 1fr;
-  }
+  .tools { grid-template-columns: 1fr; }
 }
 
+/* Tool Card */
 .tool-card {
   background: #fff;
-  border: 1px solid #e3e3e3;
   border-radius: 14px;
   padding: 16px;
   display: flex;
   gap: 14px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 .tool-icon {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  color: #fff;
 }
 
 .tool-icon svg {
   width: 22px;
   height: 22px;
-  fill: currentColor;
 }
 
-.green { background: #6cc24a; }
-.blue { background: #4aa3df; }
-.cyan { background: #2bbcd6; }
-.yellow { background: #f2c94c; color: #333; }
-.purple { background: #9b59b6; }
-.gray { background: #95a5a6; }
-
 .tool-content h3 {
+  margin: 0 0 4px;
   font-size: 15px;
-  margin: 0 0 6px;
 }
 
 .tool-content p {
-  font-size: 14px;
-  color: #666;
   margin: 0;
+  font-size: 13px;
+  color: #6b7280;
 }
 
-
-/* =====================================================
-   DESKTOP CARD SPACING ADJUSTMENT (FINAL TUNE)
-   ===================================================== */
-@media (min-width: 900px) {
-
-  body .tools {
-    max-width: 1200px;
-    margin: 0 auto;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-
-  body .tool-card {
-    flex-direction: column;
-    align-items: flex-start;
-
-    padding: 18px;              /* reduced */
-    min-height: 210px;          /* reduced */
-    border-radius: 18px;
-  }
-
-  body .tool-icon {
-    margin-bottom: 12px;        /* tighter */
-  }
-
-  body .tool-content h3 {
-    font-size: 16px;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-
-  body .tool-content p {
-    font-size: 13.5px;
-    line-height: 1.35;          /* tighter text */
-  }
-}
+/* Colors */
+.green { background:#e6f9f0; color:#10b981 }
+.blue { background:#eef2ff; color:#3b82f6 }
+.purple { background:#f3e8ff; color:#8b5cf6 }
+.yellow { background:#fff7ed; color:#f59e0b }
+.gray { background:#f3f4f6; color:#6b7280 }
+.cyan { background:#ecfeff; color:#06b6d4 }
