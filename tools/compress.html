@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Compress Image – ZynTool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
@@ -26,15 +25,15 @@
 
   <!-- Quality Slider -->
   <div class="quality-panel">
-    <div class="quality-row">
+    <div class="quality-top">
       <span class="quality-label">Quality</span>
 
-      <div class="quality-input-wrap">
-        <input type="number" id="qualityInput" value="71" min="10" max="95">
-      </div>
+      <input type="number" id="qualityInput" value="71" min="10" max="95">
 
-      <input type="range" id="qualityRange" min="10" max="95" value="71">
+      <button id="applyBtn">APPLY</button>
     </div>
+
+    <input type="range" id="qualityRange" min="10" max="95" value="71">
   </div>
 
   <!-- Result -->
