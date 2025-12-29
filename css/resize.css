@@ -1,155 +1,143 @@
-/* Reset */
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
   background: #f6f7fb;
   color: #111;
 }
 
-/* Layout */
 .container {
-  max-width: 720px;
+  max-width: 760px;
   margin: auto;
-  padding: 28px 16px 60px;
+  padding: 24px 16px 60px;
 }
 
 .header h1 {
-  font-size: 34px;
+  font-size: 36px;
   margin-bottom: 6px;
 }
 
 .header p {
-  color: #6b7280;
+  color: #555;
   margin-bottom: 24px;
 }
 
 /* Upload */
 .upload {
-  background: #fff;
   border: 2px dashed #d1d5db;
   border-radius: 18px;
-  padding: 32px 20px;
+  padding: 36px 20px;
   text-align: center;
+  background: #fff;
   cursor: pointer;
-  margin-bottom: 22px;
 }
 
 .upload p {
   font-size: 16px;
-  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .upload span {
   display: block;
-  margin: 10px 0;
-  color: #9ca3af;
+  margin: 8px 0;
+  color: #777;
 }
 
 /* Card */
 .card {
   background: #fff;
-  border-radius: 20px;
-  padding: 22px;
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* Fields */
-.field {
-  margin-bottom: 14px;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 .field label {
-  display: block;
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 6px;
 }
 
 .field input {
   width: 100%;
-  height: 50px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  padding: 0 16px;
-  font-size: 16px;
+  height: 44px;
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 0 14px;
+  font-size: 15px;
 }
 
-.field input:focus {
-  outline: none;
-  border-color: #2563eb;
-}
-
-/* Checkbox */
-.checkbox {
+/* Lock */
+.lock {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 12px 0 20px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 10px;
+  margin: 16px 0;
   cursor: pointer;
 }
 
-.checkbox input {
+.lock input {
   display: none;
 }
 
-.checkbox span {
-  width: 22px;
-  height: 22px;
-  border-radius: 7px;
-  border: 2px solid #c7d2fe;
-  position: relative;
+.lock span {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.checkbox span::after {
+.lock span::after {
   content: "";
-  position: absolute;
-  inset: 4px;
-  background: #2563eb;
-  border-radius: 4px;
+  width: 10px;
+  height: 10px;
+  background: #3b82f6;
+  border-radius: 3px;
   opacity: 0;
-  transition: .2s;
 }
 
-.checkbox input:checked + span::after {
+.lock input:checked + span::after {
   opacity: 1;
 }
 
 /* Buttons */
 .btn {
-  height: 50px;
-  border-radius: 16px;
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   border: none;
 }
 
-.btn-small {
-  height: 44px;
-  padding: 0 26px;
-}
-
-.btn-full {
-  width: 100%;
+.btn-black {
+  background: #111;
+  color: #fff;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #fff;
-  box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+  margin-top: 12px;
 }
 
 .btn-secondary {
   background: #eef2ff;
   color: #1e40af;
-  border: 1px solid #dbeafe;
+  border: 1px solid #c7d2fe;
 }
 
 .btn-danger {
@@ -167,6 +155,7 @@ body {
 }
 
 @media (max-width: 640px) {
+  .grid,
   .actions {
     grid-template-columns: 1fr;
   }
@@ -174,35 +163,28 @@ body {
 
 /* Results */
 .results {
-  margin-top: 28px;
+  margin-top: 30px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 18px;
 }
 
 .result {
   background: #fff;
-  border-radius: 16px;
   padding: 14px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
 }
 
 .result img {
   width: 100%;
-  height: 160px;
-  object-fit: contain;
-  background: #f3f4f6;
   border-radius: 12px;
 }
 
 .result a {
   display: block;
-  margin-top: 10px;
-  background: #3b82f6;
-  color: #fff;
   text-align: center;
-  padding: 10px;
-  border-radius: 12px;
-  text-decoration: none;
+  margin-top: 10px;
   font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
 }
