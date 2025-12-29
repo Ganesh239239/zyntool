@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Resize Image</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../css/resize.css">
+<meta charset="UTF-8">
+<title>Resize Image</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/resize.css">
 </head>
 <body>
 
-<section class="tool-hero">
-  <h1>Resize IMAGE</h1>
-  <p>Resize images by changing width and height</p>
-</section>
+<div class="page">
 
-<section class="tool-wrapper">
+  <h1>Resize IMAGE</h1>
+  <p class="subtitle">Resize images by changing width and height</p>
 
   <!-- Upload -->
-  <div class="upload-area" id="uploadArea">
+  <div class="upload" id="uploadArea">
     <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
     <span>or</span>
-    <button class="primary-btn">Select Images</button>
+    <button class="btn primary small">Select Images</button>
   </div>
 
-  <!-- Resize Controls -->
-  <div class="resize-panel">
-    <div class="resize-row">
+  <!-- Resize Card -->
+  <div class="card">
+    <div class="field">
       <label>Width (px)</label>
       <input type="number" id="widthInput" placeholder="Auto">
     </div>
 
-    <div class="resize-row">
+    <div class="field">
       <label>Height (px)</label>
       <input type="number" id="heightInput" placeholder="Auto">
     </div>
 
-    <label class="lock-toggle">
-  <input type="checkbox" id="lockRatio" checked>
-  <span class="checkmark"></span>
-  Lock aspect ratio
+    <label class="checkbox">
+      <input type="checkbox" id="lockRatio" checked>
+      <span></span>
+      Lock aspect ratio
     </label>
 
-    <button id="resizeBtn" class="btn btn-primary">Resize</button>
+    <button id="resizeBtn" class="btn primary full">Resize</button>
   </div>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button id="downloadAll" class="btn btn-secondary">Download All</button>
-    <button id="clearAll" class="btn btn-danger">Clear Queue</button>
+  <!-- Actions -->
+  <div class="actions">
+    <button id="downloadAll" class="btn secondary">Download All</button>
+    <button id="clearAll" class="btn danger">Clear Queue</button>
   </div>
 
   <!-- Results -->
-  <div class="results" id="results"></div>
+  <div id="results" class="results"></div>
 
-</section>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="../js/tools/resize.js"></script>
