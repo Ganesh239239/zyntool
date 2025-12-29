@@ -4,67 +4,72 @@
   <meta charset="UTF-8">
   <title>Resize Image</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- CORRECT PATH (from /tools/) -->
   <link rel="stylesheet" href="../css/resize.css">
 </head>
 <body>
 
-<main class="container">
+<!-- ================= NAVIGATION ================= -->
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo" onclick="location.href='../index.html'">
+      Img<span>Tools</span>
+    </div>
 
-  <header class="header">
-    <h1>Resize IMAGE</h1>
-    <p>Resize images by changing width and height</p>
-  </header>
+    <nav class="menu">
+      <a href="../index.html">Home</a>
+      <a href="resize.html" class="active">Resize</a>
+      <a href="#">Compress</a>
+      <a href="#">Convert</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- Upload Box -->
-  <section class="upload" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
-    <p>Drag & drop images here</p>
-    <span>or</span>
-    <button id="selectBtn" class="btn btn-black">Select Images</button>
+<!-- ================= PAGE ================= -->
+<main class="page">
+
+  <section class="hero">
+    <h1>Resize Image</h1>
+    <p>Resize images to exact dimensions in seconds</p>
   </section>
 
-  <!-- Resize Controls -->
-  <section class="card">
-    <div class="grid">
-      <div class="field">
-        <label>Width (px)</label>
+  <!-- Upload -->
+  <section class="upload-card" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <h3>Drop images here</h3>
+    <p>or click to upload</p>
+    <button id="selectBtn">Select Images</button>
+  </section>
+
+  <!-- Controls -->
+  <section class="control-card">
+    <div class="inputs">
+      <div class="input-box">
+        <label>Width</label>
         <input type="number" id="widthInput" placeholder="Auto">
       </div>
-      <div class="field">
-        <label>Height (px)</label>
+
+      <div class="input-box">
+        <label>Height</label>
         <input type="number" id="heightInput" placeholder="Auto">
       </div>
     </div>
 
-    <label class="lock">
+    <label class="ratio-toggle">
       <input type="checkbox" id="lockRatio" checked>
       <span></span>
-      Lock aspect ratio
+      Keep aspect ratio
     </label>
 
-    <button id="resizeBtn" class="btn btn-primary">
-      Resize
-    </button>
-  </section>
-
-  <!-- Action Buttons -->
-  <section class="actions">
-    <button id="downloadAll" class="btn btn-secondary">
-      Download All
-    </button>
-    <button id="clearAll" class="btn btn-danger">
-      Clear Queue
+    <button id="resizeBtn" class="primary-btn">
+      Resize Images
     </button>
   </section>
 
   <!-- Results -->
-  <section id="results" class="results"></section>
+  <section class="results" id="results"></section>
 
 </main>
 
-<!-- CORRECT PATH -->
 <script src="../js/tools/resize.js"></script>
 </body>
 </html>
