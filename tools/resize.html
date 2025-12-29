@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Resize Image</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="resize.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CORRECT PATH (from /tools/) -->
+  <link rel="stylesheet" href="../css/resize.css">
 </head>
 <body>
 
@@ -15,38 +17,39 @@
     <p>Resize images by changing width and height</p>
   </header>
 
-  <!-- Upload -->
+  <!-- Upload Box -->
   <section class="upload" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden />
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
     <span>or</span>
-    <button class="btn btn-primary btn-small">Select Images</button>
+    <button id="selectBtn" class="btn btn-black">Select Images</button>
   </section>
 
-  <!-- Resize Settings -->
+  <!-- Resize Controls -->
   <section class="card">
-    <div class="field">
-      <label>Width (px)</label>
-      <input type="number" id="widthInput" />
+    <div class="grid">
+      <div class="field">
+        <label>Width (px)</label>
+        <input type="number" id="widthInput" placeholder="Auto">
+      </div>
+      <div class="field">
+        <label>Height (px)</label>
+        <input type="number" id="heightInput" placeholder="Auto">
+      </div>
     </div>
 
-    <div class="field">
-      <label>Height (px)</label>
-      <input type="number" id="heightInput" />
-    </div>
-
-    <label class="checkbox">
-      <input type="checkbox" id="lockRatio" checked />
+    <label class="lock">
+      <input type="checkbox" id="lockRatio" checked>
       <span></span>
       Lock aspect ratio
     </label>
 
-    <button id="resizeBtn" class="btn btn-primary btn-full">
+    <button id="resizeBtn" class="btn btn-primary">
       Resize
     </button>
   </section>
 
-  <!-- Actions -->
+  <!-- Action Buttons -->
   <section class="actions">
     <button id="downloadAll" class="btn btn-secondary">
       Download All
@@ -61,7 +64,7 @@
 
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="resize.js"></script>
+<!-- CORRECT PATH -->
+<script src="../js/tools/resize.js"></script>
 </body>
 </html>
