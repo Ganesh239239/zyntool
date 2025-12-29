@@ -17,11 +17,6 @@
     </div>
     <div class="menu" id="menuBtn">☰</div>
   </div>
-
-  <nav class="nav" id="navMenu">
-    <a href="../index.html">Home</a>
-    <a href="../index.html">All Tools</a>
-  </nav>
 </header>
 
 <section class="tool-hero">
@@ -31,34 +26,28 @@
 
 <section class="tool-wrapper">
 
-  <!-- Upload -->
-  <div class="upload-area" id="dropArea">
+  <!-- UPLOAD -->
+  <div class="upload-area" id="uploadArea">
     <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
     <span>or</span>
     <button id="uploadBtn">Select Images</button>
   </div>
 
-  <!-- QUALITY PANEL (EXACT DESIGN) -->
+  <!-- QUALITY PANEL -->
   <div class="quality-panel">
-
     <div class="quality-top">
       <span class="quality-label">Quality</span>
 
-      <div class="quality-input-wrap">
-        <input type="number" id="qualityInput" min="10" max="95" value="71">
-      </div>
+      <input type="number" id="qualityInput" value="71" min="10" max="95">
 
-      <button class="apply-btn" id="applyBtn">APPLY</button>
+      <button id="applyBtn">APPLY</button>
     </div>
 
-    <div class="quality-slider-wrap">
-      <input type="range" id="qualityRange" min="10" max="95" value="71">
-    </div>
-
+    <input type="range" id="qualityRange" min="10" max="95" value="71">
   </div>
 
-  <!-- Results -->
+  <!-- RESULTS -->
   <div class="results" id="results"></div>
 
 </section>
