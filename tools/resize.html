@@ -20,33 +20,33 @@
     <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
     <span>or</span>
-    <button>Select Images</button>
+    <button class="primary-btn">Select Images</button>
   </div>
 
   <!-- Resize Controls -->
   <div class="resize-panel">
     <div class="resize-row">
       <label>Width (px)</label>
-      <input type="number" id="widthInput" min="1">
+      <input type="number" id="widthInput" placeholder="Auto">
     </div>
 
     <div class="resize-row">
       <label>Height (px)</label>
-      <input type="number" id="heightInput" min="1">
+      <input type="number" id="heightInput" placeholder="Auto">
     </div>
 
-    <div class="resize-lock">
+    <label class="resize-lock">
       <input type="checkbox" id="lockRatio" checked>
-      <label for="lockRatio">Lock aspect ratio</label>
-    </div>
+      Lock aspect ratio
+    </label>
 
-    <button id="resizeBtn" class="resize-btn">RESIZE</button>
+    <button id="resizeBtn" class="primary-btn full">Resize</button>
   </div>
 
   <!-- Controls -->
   <div class="controls">
-    <button id="downloadAll">Download All</button>
-    <button id="clearAll">Clear Queue</button>
+    <button id="downloadAll" class="primary-btn">Download All</button>
+    <button id="clearAll" class="danger-btn">Clear Queue</button>
   </div>
 
   <!-- Results -->
