@@ -1,132 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Image Resizer - Professional Tool</title>
-    <link rel="stylesheet" href="../css/resize.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎨 Premium Image Resizer</h1>
-            <p>Professional-grade image resizing with advanced features</p>
-        </div>
+<!-- Resize Tool -->
+<div class="resize-tool">
 
-        <div class="content">
-            <div class="upload-area" id="uploadArea">
-                <span class="upload-icon">📤</span>
-                <div class="upload-text">Drag & Drop your image here</div>
-                <div class="upload-subtext">or click to browse (PNG, JPG, WEBP supported)</div>
-                <input type="file" id="fileInput" accept="image/*">
-            </div>
+  <!-- Upload -->
+  <div class="resize-upload" id="resizeUpload">
+    <input type="file" id="resizeInput" accept="image/*" multiple hidden>
+    <button type="button" id="resizeSelectBtn">
+      Select Images
+    </button>
+  </div>
 
-            <div class="controls" id="controls">
-                <div class="control-grid">
-                    <div class="control-group">
-                        <label>📏 Resize Method</label>
-                        <select id="resizeMethod">
-                            <option value="dimensions">Custom Dimensions</option>
-                            <option value="percentage">Percentage</option>
-                            <option value="preset">Platform Presets</option>
-                        </select>
-                    </div>
-
-                    <div class="control-group" id="dimensionsGroup">
-                        <label>Width (px)</label>
-                        <div class="input-group">
-                            <input type="number" id="widthInput" placeholder="Width">
-                            <button class="aspect-ratio-btn" id="lockAspectRatio" title="Lock Aspect Ratio">🔓</button>
-                        </div>
-                        <label style="margin-top: 15px;">Height (px)</label>
-                        <input type="number" id="heightInput" placeholder="Height">
-                    </div>
-
-                    <div class="control-group" id="percentageGroup" style="display: none;">
-                        <label>Scale Percentage: <span class="slider-value" id="percentValue">100%</span></label>
-                        <div class="slider-container">
-                            <input type="range" class="slider" id="percentSlider" min="10" max="200" value="100">
-                        </div>
-                    </div>
-
-                    <div class="control-group" id="presetGroup" style="display: none;">
-                        <label>Platform Presets</label>
-                        <div class="preset-buttons">
-                            <button class="preset-btn" data-width="1200" data-height="630">FB Post</button>
-                            <button class="preset-btn" data-width="1080" data-height="1080">IG Square</button>
-                            <button class="preset-btn" data-width="1080" data-height="1920">IG Story</button>
-                            <button class="preset-btn" data-width="1500" data-height="500">Twitter Header</button>
-                            <button class="preset-btn" data-width="1920" data-height="1080">HD</button>
-                            <button class="preset-btn" data-width="3840" data-height="2160">4K</button>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label>🎨 Output Format</label>
-                        <select id="formatSelect">
-                            <option value="png">PNG (Lossless)</option>
-                            <option value="jpeg">JPEG (Compressed)</option>
-                            <option value="webp">WEBP (Modern)</option>
-                        </select>
-                    </div>
-
-                    <div class="control-group">
-                        <label>⚡ Quality: <span class="slider-value" id="qualityValue">90%</span></label>
-                        <div class="slider-container">
-                            <input type="range" class="slider" id="qualitySlider" min="1" max="100" value="90">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="resizeBtn">✨ Resize Image</button>
-                    <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
-                </div>
-            </div>
-
-            <div class="preview-area" id="previewArea">
-                <div class="preview-grid">
-                    <div class="preview-box">
-                        <h3>📷 Original Image</h3>
-                        <img id="originalPreview" alt="Original">
-                        <div class="preview-info" id="originalInfo"></div>
-                    </div>
-                    <div class="preview-box">
-                        <h3>✨ Resized Image</h3>
-                        <canvas id="resizedCanvas"></canvas>
-                        <div class="preview-info" id="resizedInfo"></div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="downloadBtn">⬇️ Download Image</button>
-                </div>
-            </div>
-
-            <div class="features">
-                <div class="feature-item">
-                    <span class="feature-icon">🔒</span>
-                    <h4>Aspect Ratio Lock</h4>
-                    <p>Maintain proportions</p>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">🎯</span>
-                    <h4>Platform Presets</h4>
-                    <p>Social media sizes</p>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">⚙️</span>
-                    <h4>Quality Control</h4>
-                    <p>Adjust compression</p>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">🚀</span>
-                    <h4>Multiple Formats</h4>
-                    <p>PNG, JPEG, WebP</p>
-                </div>
-            </div>
-        </div>
+  <!-- Controls -->
+  <div class="resize-controls">
+    <div>
+      <label>Width (px)</label>
+      <input type="number" id="resizeWidth">
     </div>
 
-    <script src="../js/tools/resize.js"></script>
-</body>
-</html>
+    <div>
+      <label>Height (px)</label>
+      <input type="number" id="resizeHeight">
+    </div>
+
+    <label>
+      <input type="checkbox" id="resizeLock" checked>
+      Lock aspect ratio
+    </label>
+
+    <button type="button" id="resizeApplyBtn">
+      Resize
+    </button>
+  </div>
+
+  <!-- Results -->
+  <div class="resize-results" id="resizeResults"></div>
+
+</div>
