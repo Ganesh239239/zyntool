@@ -1,3 +1,4 @@
+/* Base */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
@@ -5,13 +6,23 @@ body {
   color: #111;
 }
 
+/* Hero */
 .tool-hero {
   text-align: center;
-  padding: 24px 16px;
+  padding: 28px 16px;
 }
 
+.tool-hero h1 {
+  font-size: 28px;
+}
+
+.tool-hero p {
+  color: #6b7280;
+}
+
+/* Wrapper */
 .tool-wrapper {
-  max-width: 900px;
+  max-width: 1100px;
   margin: auto;
   padding: 16px;
 }
@@ -20,57 +31,92 @@ body {
 .upload-area {
   background: #fff;
   border: 2px dashed #d1d5db;
-  border-radius: 18px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 32px;
   text-align: center;
   cursor: pointer;
+}
+
+.upload-area span {
+  display: block;
+  margin: 10px 0;
+  color: #9ca3af;
 }
 
 .upload-area button {
   background: #111;
   color: #fff;
-  padding: 12px 24px;
-  border-radius: 14px;
+  padding: 12px 26px;
+  border-radius: 16px;
   border: none;
+  font-size: 16px;
 }
 
-/* Quality */
-.quality-panel {
-  margin-top: 18px;
+/* Resize panel */
+.resize-panel {
+  margin-top: 20px;
   background: #fff;
-  border-radius: 18px;
-  padding: 14px;
+  border-radius: 20px;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
   display: grid;
-  grid-template-columns: auto 80px 1fr;
-  gap: 12px;
-  align-items: center;
+  gap: 14px;
 }
 
-.quality-panel input[type="number"] {
+.resize-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.resize-row label {
+  font-weight: 600;
+}
+
+.resize-row input {
+  height: 42px;
   border: 2px solid #3b82f6;
   border-radius: 10px;
-  height: 42px;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
 }
 
-.quality-panel input[type="range"] {
-  width: 100%;
+/* Lock */
+.resize-lock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Resize button */
+.resize-btn {
+  margin-top: 6px;
+  height: 44px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 /* Controls */
 .controls {
   display: flex;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .controls button {
   flex: 1;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   font-weight: 600;
+  font-size: 15px;
 }
 
 #downloadAll {
@@ -85,14 +131,15 @@ body {
 
 /* Results */
 .results {
-  margin-top: 20px;
+  margin-top: 24px;
   display: grid;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
 }
 
 .result-card {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 14px;
   border: 1px solid #e5e7eb;
 }
@@ -115,10 +162,71 @@ body {
 .download-btn {
   margin-top: 10px;
   display: block;
-  text-align: center;
   background: #3b82f6;
   color: #fff;
+  text-align: center;
   padding: 10px;
   border-radius: 10px;
   text-decoration: none;
+}
+
+/* ---------------------------
+   RESPONSIVE
+--------------------------- */
+
+/* Mobile */
+@media (max-width: 640px) {
+
+  .tool-wrapper {
+    padding: 12px;
+  }
+
+  .upload-area {
+    padding: 24px 16px;
+  }
+
+  .resize-panel {
+    padding: 14px;
+  }
+
+  .resize-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .resize-row label {
+    font-size: 14px;
+  }
+
+  .resize-row input {
+    width: 100%;
+  }
+
+  .resize-btn {
+    width: 100%;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls button {
+    width: 100%;
+  }
+
+  .results {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card img {
+    height: 160px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1023px) {
+
+  .results {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
