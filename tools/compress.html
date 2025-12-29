@@ -36,10 +36,18 @@
 
   <!-- SLIDER (OPTIONAL) -->
   <div class="quality-panel">
-    <span>Quality</span>
-    <input type="range" id="qualityRange" min="10" max="95" value="71">
-    <span id="qualityValue">71%</span>
+
+  <div class="quality-top">
+    <span class="quality-label">Quality</span>
+
+    <div class="quality-input-wrap">
+      <input type="number" id="qualityInput" value="71" min="10" max="95">
+    </div>
   </div>
+
+  <input type="range" id="qualityRange" min="10" max="95" value="71">
+
+</div>
 
   <!-- RESULT -->
   <div class="results" id="results"></div>
