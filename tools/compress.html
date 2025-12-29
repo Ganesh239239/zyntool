@@ -17,31 +17,31 @@
 
   <!-- Upload -->
   <div class="upload-area" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" hidden>
-    <p>Drag & drop image here</p>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <p>Drag & drop images here</p>
     <span>or</span>
-    <button id="uploadBtn">Select Image</button>
+    <button>Select Images</button>
   </div>
 
-  <!-- Quality Panel -->
+  <!-- Quality Slider -->
   <div class="quality-panel">
-    <div class="quality-top">
-      <span class="quality-label">Quality</span>
-
-      <input type="number" id="qualityInput" value="71" min="10" max="95">
-
-      <button id="applyBtn">APPLY</button>
-      <button id="clearBtn" class="clear-btn">CLEAR</button>
-    </div>
-
+    <span class="quality-label">Quality</span>
+    <input type="number" id="qualityInput" value="71" min="10" max="95">
     <input type="range" id="qualityRange" min="10" max="95" value="71">
   </div>
 
-  <!-- Result -->
+  <!-- Controls -->
+  <div class="controls">
+    <button id="downloadAll">Download All</button>
+    <button id="clearAll">Clear Queue</button>
+  </div>
+
+  <!-- Results -->
   <div class="results" id="results"></div>
 
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="../js/tools/compress.js"></script>
 </body>
 </html>
