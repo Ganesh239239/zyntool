@@ -8,11 +8,11 @@
 </head>
 <body>
 
-<!-- ================= NAVIGATION ================= -->
+<!-- NAVIGATION -->
 <header class="nav">
   <div class="nav-inner">
     <div class="logo" onclick="location.href='../index.html'">
-      Img<span>Tools</span>
+      IMG<span>TOOLS</span>
     </div>
 
     <nav class="menu">
@@ -24,49 +24,44 @@
   </div>
 </header>
 
-<!-- ================= PAGE ================= -->
 <main class="page">
 
   <section class="hero">
     <h1>Resize Image</h1>
-    <p>Resize images to exact dimensions in seconds</p>
+    <p>Resize images to exact dimensions</p>
   </section>
 
-  <!-- Upload -->
-  <section class="upload-card" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
-    <h3>Drop images here</h3>
-    <p>or click to upload</p>
-    <button id="selectBtn">Select Images</button>
+  <!-- UPLOAD -->
+  <section class="upload" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" multiple>
+    <p><strong>Drag & drop images here</strong></p>
+    <span>or click to upload</span>
   </section>
 
-  <!-- Controls -->
-  <section class="control-card">
+  <!-- CONTROLS -->
+  <section class="card">
     <div class="inputs">
-      <div class="input-box">
-        <label>Width</label>
-        <input type="number" id="widthInput" placeholder="Auto">
+      <div>
+        <label>Width (px)</label>
+        <input type="number" id="widthInput">
       </div>
-
-      <div class="input-box">
-        <label>Height</label>
-        <input type="number" id="heightInput" placeholder="Auto">
+      <div>
+        <label>Height (px)</label>
+        <input type="number" id="heightInput">
       </div>
     </div>
 
-    <label class="ratio-toggle">
+    <label class="lock">
       <input type="checkbox" id="lockRatio" checked>
       <span></span>
       Keep aspect ratio
     </label>
 
-    <button id="resizeBtn" class="primary-btn">
-      Resize Images
-    </button>
+    <button id="resizeBtn" class="primary-btn">Resize</button>
   </section>
 
-  <!-- Results -->
-  <section class="results" id="results"></section>
+  <!-- RESULTS -->
+  <section id="results" class="results"></section>
 
 </main>
 
