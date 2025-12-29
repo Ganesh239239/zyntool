@@ -5,6 +5,7 @@ const results = document.getElementById("results");
 const widthInput = document.getElementById("widthInput");
 const heightInput = document.getElementById("heightInput");
 const lockRatio = document.getElementById("lockRatio");
+const resizeBtn = document.getElementById("resizeBtn");
 
 const downloadAllBtn = document.getElementById("downloadAll");
 const clearAllBtn = document.getElementById("clearAll");
@@ -14,7 +15,6 @@ let aspectRatio = 1;
 
 /* Upload */
 uploadArea.onclick = () => fileInput.click();
-
 fileInput.onchange = () => handleFiles([...fileInput.files]);
 
 uploadArea.addEventListener("dragover", e => e.preventDefault());
@@ -25,6 +25,9 @@ uploadArea.addEventListener("drop", e => {
 
 /* Handle files */
 function handleFiles(files) {
+  images = [];
+  results.innerHTML = "";
+
   files.filter(f => f.type.startsWith("image/")).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
@@ -32,36 +35,36 @@ function handleFiles(files) {
       img.src = e.target.result;
       img.onload = () => {
         aspectRatio = img.width / img.height;
-        const item = { file, img, blob: null };
-        images.push(item);
-        render();
+        images.push({ file, img, blob: null });
+        widthInput.value = img.width;
+        heightInput.value = img.height;
       };
     };
     reader.readAsDataURL(file);
   });
 }
 
-/* Sync aspect ratio */
+/* Aspect ratio sync */
 widthInput.oninput = () => {
   if (lockRatio.checked) {
     heightInput.value = Math.round(widthInput.value / aspectRatio);
   }
-  render();
 };
 
 heightInput.oninput = () => {
   if (lockRatio.checked) {
     widthInput.value = Math.round(heightInput.value * aspectRatio);
   }
-  render();
 };
 
-/* Render */
-function render() {
+/* Resize action */
+resizeBtn.onclick = () => {
+  if (!images.length) return;
   results.innerHTML = "";
   images.forEach(item => resize(item));
-}
+};
 
+/* Resize */
 function resize(item) {
   const w = parseInt(widthInput.value);
   const h = parseInt(heightInput.value);
@@ -90,7 +93,7 @@ function resize(item) {
       </a>
     `;
     results.appendChild(card);
-  }, "image/jpeg", 0.9);
+  }, "image/jpeg", 0.95);
 }
 
 /* Download all */
