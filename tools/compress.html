@@ -5,9 +5,7 @@
   <title>Compress Image – ZynTool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Global styles -->
   <link rel="stylesheet" href="../css/style.css">
-  <!-- Tool styles -->
   <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
@@ -17,17 +15,12 @@
     <div class="logo" onclick="location.href='../index.html'">
       Zyn<span>Tool</span>
     </div>
-
-    <!-- MENU BUTTON (MISSING BEFORE) -->
     <div class="menu" id="menuBtn">☰</div>
   </div>
 
-  <!-- NAV MENU (MISSING BEFORE) -->
   <nav class="nav" id="navMenu">
     <a href="../index.html">Home</a>
-    <a href="../index.html#optimize">Optimize</a>
-    <a href="../index.html#edit">Edit</a>
-    <a href="../index.html#convert">Convert</a>
+    <a href="../index.html">All Tools</a>
   </nav>
 </header>
 
@@ -36,14 +29,17 @@
   <p>Reduce image file size while keeping quality</p>
 </section>
 
-<section class="tool-box">
-  <input type="file" id="fileInput" accept="image/*" multiple hidden>
+<section class="tool-wrapper">
 
-  <button class="upload-btn" id="uploadBtn">
-    Select Images
-  </button>
+  <div class="upload-area" id="dropArea">
+    <input type="file" id="fileInput" accept="image/*" hidden>
+    <p>Drag & drop images here</p>
+    <span>or</span>
+    <button id="uploadBtn">Select Images</button>
+  </div>
 
-  <div id="preview"></div>
+  <div class="results" id="results"></div>
+
 </section>
 
 <script src="../js/menu.js"></script>
