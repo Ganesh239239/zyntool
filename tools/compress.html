@@ -32,10 +32,18 @@
 <section class="tool-wrapper">
 
   <div class="upload-area" id="dropArea">
-    <input type="file" id="fileInput" accept="image/*" hidden>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
     <span>or</span>
     <button id="uploadBtn">Select Images</button>
+  </div>
+
+  <div class="controls">
+    <label>
+      Compression Quality:
+      <strong><span id="qualityValue">70</span>%</strong>
+    </label>
+    <input type="range" id="qualityRange" min="10" max="95" value="70">
   </div>
 
   <div class="results" id="results"></div>
