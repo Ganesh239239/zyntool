@@ -2,53 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Resize Image – Image Tools</title>
+  <title>Resize Image</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
 
-<header>
-  <h1>Image Tools</h1>
-  <nav>
-    <a href="../index.html">Home</a>
-    <a href="compress.html">Compress</a>
-    <a href="resize.html">Resize</a>
-    <a href="crop.html">Crop</a>
-  </nav>
-</header>
+<section class="tool-hero">
+  <h1>Resize IMAGE</h1>
+  <p>Resize images by changing width and height</p>
+</section>
 
-<main>
-  <h2>Resize Image</h2>
-  <p>Change image dimensions online quickly and easily.</p>
+<section class="tool-wrapper">
 
-  <div class="tool-box">
-    <input type="file" accept="image/*">
-    <br><br>
-
-    <label>
-      Width (px):
-      <input type="number" placeholder="e.g. 800">
-    </label>
-    <br><br>
-
-    <label>
-      Height (px):
-      <input type="number" placeholder="e.g. 600">
-    </label>
-    <br><br>
-
-    <button>Resize Image</button>
-
-    <p style="margin-top:15px;color:#666;">
-      (Resize logic will be added next)
-    </p>
+  <!-- Upload -->
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <p>Drag & drop images here</p>
+    <span>or</span>
+    <button>Select Images</button>
   </div>
-</main>
 
-<footer>
-  © 2025 Image Tools
-</footer>
+  <!-- Resize Controls -->
+  <div class="quality-panel">
+    <label>
+      Width (px)
+      <input type="number" id="widthInput" value="800">
+    </label>
 
+    <label>
+      Height (px)
+      <input type="number" id="heightInput" value="600">
+    </label>
+
+    <label class="lock">
+      <input type="checkbox" id="lockRatio" checked>
+      Lock aspect ratio
+    </label>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button id="downloadAll">Download All</button>
+    <button id="clearAll">Clear Queue</button>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results"></div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="../js/tools/resize.js"></script>
 </body>
 </html>
