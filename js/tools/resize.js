@@ -1,74 +1,73 @@
-const fileInput = document.getElementById("fileInput");
 const uploadArea = document.getElementById("uploadArea");
-const widthInput = document.getElementById("widthInput");
-const heightInput = document.getElementById("heightInput");
-const lockRatio = document.getElementById("lockRatio");
+const fileInput = document.getElementById("fileInput");
+const selectBtn = document.getElementById("selectBtn");
+const resizeBtn = document.getElementById("resizeBtn");
 const results = document.getElementById("results");
+const clearAll = document.getElementById("clearAll");
 
 let images = [];
-let ratio = 1;
 
-/* Upload */
+selectBtn.onclick = () => fileInput.click();
+
 uploadArea.onclick = () => fileInput.click();
-fileInput.onchange = () => loadFiles([...fileInput.files]);
 
-function loadFiles(files) {
+fileInput.onchange = (e) => {
+  images = [...e.target.files];
+};
+
+resizeBtn.onclick = () => {
+  results.innerHTML = "";
+  images.forEach(file => resizeImage(file));
+};
+
+clearAll.onclick = () => {
   images = [];
   results.innerHTML = "";
-
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.src = e.target.result;
-      img.onload = () => {
-        ratio = img.width / img.height;
-        widthInput.value = img.width;
-        heightInput.value = img.height;
-        images.push({ file, img });
-      };
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* Aspect ratio */
-widthInput.oninput = () => {
-  if (lockRatio.checked)
-    heightInput.value = Math.round(widthInput.value / ratio);
 };
 
-heightInput.oninput = () => {
-  if (lockRatio.checked)
-    widthInput.value = Math.round(heightInput.value * ratio);
-};
+function resizeImage(file) {
+  const img = new Image();
+  const reader = new FileReader();
 
-/* Resize */
-document.getElementById("resizeBtn").onclick = () => {
-  results.innerHTML = "";
-  images.forEach(imgObj => resize(imgObj));
-};
+  reader.onload = e => {
+    img.src = e.target.result;
+  };
 
-function resize(obj) {
-  const canvas = document.createElement("canvas");
-  canvas.width = widthInput.value;
-  canvas.height = heightInput.value;
+  img.onload = () => {
+    const widthInput = document.getElementById("widthInput").value;
+    const heightInput = document.getElementById("heightInput").value;
+    const lock = document.getElementById("lockRatio").checked;
 
-  canvas.getContext("2d").drawImage(
-    obj.img,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+    let w = widthInput ? +widthInput : img.width;
+    let h = heightInput ? +heightInput : img.height;
 
-  canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    results.innerHTML += `
-      <div class="result">
+    if (lock && widthInput && !heightInput) {
+      h = Math.round((w / img.width) * img.height);
+    }
+
+    if (lock && heightInput && !widthInput) {
+      w = Math.round((h / img.height) * img.width);
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const div = document.createElement("div");
+      div.className = "result";
+      div.innerHTML = `
         <img src="${url}">
-        <a href="${url}" download="resized-${obj.file.name}">Download</a>
-      </div>
-    `;
-  });
+        <a href="${url}" download="resized-${file.name}">
+          Download
+        </a>
+      `;
+      results.appendChild(div);
+    }, "image/jpeg", 0.95);
+  };
+
+  reader.readAsDataURL(file);
 }
