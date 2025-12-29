@@ -5,19 +5,9 @@
   <title>Compress Image – ZynTool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
-
-<header class="header">
-  <div class="header-inner">
-    <div class="logo" onclick="location.href='../index.html'">
-      Zyn<span>Tool</span>
-    </div>
-    <div class="menu">☰</div>
-  </div>
-</header>
 
 <section class="tool-hero">
   <h1>Compress IMAGE</h1>
@@ -26,7 +16,7 @@
 
 <section class="tool-wrapper">
 
-  <!-- UPLOAD -->
+  <!-- Upload -->
   <div class="upload-area" id="uploadArea">
     <input type="file" id="fileInput" accept="image/*" hidden>
     <p>Drag & drop image here</p>
@@ -34,22 +24,20 @@
     <button id="uploadBtn">Select Image</button>
   </div>
 
-  <!-- SLIDER (OPTIONAL) -->
+  <!-- Quality Slider -->
   <div class="quality-panel">
+    <div class="quality-row">
+      <span class="quality-label">Quality</span>
 
-  <div class="quality-top">
-    <span class="quality-label">Quality</span>
+      <div class="quality-input-wrap">
+        <input type="number" id="qualityInput" value="71" min="10" max="95">
+      </div>
 
-    <div class="quality-input-wrap">
-      <input type="number" id="qualityInput" value="71" min="10" max="95">
+      <input type="range" id="qualityRange" min="10" max="95" value="71">
     </div>
   </div>
 
-  <input type="range" id="qualityRange" min="10" max="95" value="71">
-
-</div>
-
-  <!-- RESULT -->
+  <!-- Result -->
   <div class="results" id="results"></div>
 
 </section>
