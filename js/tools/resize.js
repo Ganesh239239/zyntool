@@ -3,57 +3,46 @@ const fileInput = document.getElementById("fileInput");
 const selectBtn = document.getElementById("selectBtn");
 const resizeBtn = document.getElementById("resizeBtn");
 const results = document.getElementById("results");
-const clearAll = document.getElementById("clearAll");
 
-let images = [];
-
-selectBtn.onclick = () => fileInput.click();
+let files = [];
+let ratio = 1;
 
 uploadArea.onclick = () => fileInput.click();
+selectBtn.onclick = e => {
+  e.stopPropagation();
+  fileInput.click();
+};
 
-fileInput.onchange = (e) => {
-  images = [...e.target.files];
+fileInput.onchange = e => {
+  files = [...e.target.files];
 };
 
 resizeBtn.onclick = () => {
   results.innerHTML = "";
-  images.forEach(file => resizeImage(file));
-};
-
-clearAll.onclick = () => {
-  images = [];
-  results.innerHTML = "";
+  files.forEach(file => resizeImage(file));
 };
 
 function resizeImage(file) {
   const img = new Image();
   const reader = new FileReader();
 
-  reader.onload = e => {
-    img.src = e.target.result;
-  };
+  reader.onload = e => img.src = e.target.result;
 
   img.onload = () => {
-    const widthInput = document.getElementById("widthInput").value;
-    const heightInput = document.getElementById("heightInput").value;
+    const wInput = document.getElementById("widthInput").value;
+    const hInput = document.getElementById("heightInput").value;
     const lock = document.getElementById("lockRatio").checked;
 
-    let w = widthInput ? +widthInput : img.width;
-    let h = heightInput ? +heightInput : img.height;
+    let w = wInput || img.width;
+    let h = hInput || img.height;
 
-    if (lock && widthInput && !heightInput) {
-      h = Math.round((w / img.width) * img.height);
-    }
-
-    if (lock && heightInput && !widthInput) {
-      w = Math.round((h / img.height) * img.width);
-    }
+    if (lock && wInput && !hInput) h = Math.round(w * img.height / img.width);
+    if (lock && hInput && !wInput) w = Math.round(h * img.width / img.height);
 
     const canvas = document.createElement("canvas");
     canvas.width = w;
     canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, w, h);
+    canvas.getContext("2d").drawImage(img, 0, 0, w, h);
 
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
@@ -61,12 +50,10 @@ function resizeImage(file) {
       div.className = "result";
       div.innerHTML = `
         <img src="${url}">
-        <a href="${url}" download="resized-${file.name}">
-          Download
-        </a>
+        <a href="${url}" download="resized-${file.name}">Download</a>
       `;
       results.appendChild(div);
-    }, "image/jpeg", 0.95);
+    });
   };
 
   reader.readAsDataURL(file);
