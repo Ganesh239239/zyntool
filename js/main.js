@@ -65,7 +65,9 @@ function render(category) {
           <p>${t.desc}</p>
         </div>
       `;
-      card.onclick = () => alert(`Open tool: ${t.slug}`);
+      card.onclick = () => {
+  window.location.href = `tools/${t.slug}.html`;
+};
       tools.appendChild(card);
     });
 }
