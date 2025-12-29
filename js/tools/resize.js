@@ -1,115 +1,63 @@
 const fileInput = document.getElementById("fileInput");
 const uploadArea = document.getElementById("uploadArea");
 const results = document.getElementById("results");
-
 const widthInput = document.getElementById("widthInput");
 const heightInput = document.getElementById("heightInput");
 const lockRatio = document.getElementById("lockRatio");
-const resizeBtn = document.getElementById("resizeBtn");
-
-const downloadAllBtn = document.getElementById("downloadAll");
-const clearAllBtn = document.getElementById("clearAll");
 
 let images = [];
-let aspectRatio = 1;
+let ratio = 1;
 
-/* Upload */
 uploadArea.onclick = () => fileInput.click();
-fileInput.onchange = () => handleFiles([...fileInput.files]);
+fileInput.onchange = () => loadFiles([...fileInput.files]);
 
-uploadArea.addEventListener("dragover", e => e.preventDefault());
-uploadArea.addEventListener("drop", e => {
-  e.preventDefault();
-  handleFiles([...e.dataTransfer.files]);
-});
-
-/* Handle files */
-function handleFiles(files) {
+function loadFiles(files) {
   images = [];
   results.innerHTML = "";
-
-  files.filter(f => f.type.startsWith("image/")).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
+  files.forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
       const img = new Image();
       img.src = e.target.result;
       img.onload = () => {
-        aspectRatio = img.width / img.height;
-        images.push({ file, img, blob: null });
+        ratio = img.width / img.height;
         widthInput.value = img.width;
         heightInput.value = img.height;
+        images.push({ file: f, img });
       };
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(f);
   });
 }
 
-/* Aspect ratio sync */
 widthInput.oninput = () => {
-  if (lockRatio.checked) {
-    heightInput.value = Math.round(widthInput.value / aspectRatio);
-  }
+  if (lockRatio.checked)
+    heightInput.value = Math.round(widthInput.value / ratio);
 };
 
 heightInput.oninput = () => {
-  if (lockRatio.checked) {
-    widthInput.value = Math.round(heightInput.value * aspectRatio);
-  }
+  if (lockRatio.checked)
+    widthInput.value = Math.round(heightInput.value * ratio);
 };
 
-/* Resize action */
-resizeBtn.onclick = () => {
-  if (!images.length) return;
+document.getElementById("resizeBtn").onclick = () => {
   results.innerHTML = "";
-  images.forEach(item => resize(item));
+  images.forEach(i => resize(i));
 };
 
-/* Resize */
-function resize(item) {
-  const w = parseInt(widthInput.value);
-  const h = parseInt(heightInput.value);
-
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  canvas.width = w;
-  canvas.height = h;
-  ctx.drawImage(item.img, 0, 0, w, h);
-
-  canvas.toBlob(blob => {
-    item.blob = blob;
-    const url = URL.createObjectURL(blob);
-
-    const card = document.createElement("div");
-    card.className = "result-card";
-    card.innerHTML = `
-      <img src="${url}">
-      <div class="info">
-        <span>${item.img.width}×${item.img.height}</span>
-        <span>${w}×${h}</span>
-      </div>
-      <a class="download-btn" href="${url}" download="resized-${item.file.name}">
-        Download
-      </a>
-    `;
-    results.appendChild(card);
-  }, "image/jpeg", 0.95);
+function resize(i) {
+  const c = document.createElement("canvas");
+  const w = +widthInput.value;
+  const h = +heightInput.value;
+  c.width = w;
+  c.height = h;
+  c.getContext("2d").drawImage(i.img,0,0,w,h);
+  c.toBlob(b=>{
+    const url = URL.createObjectURL(b);
+    results.innerHTML += `
+      <div class="result-card">
+        <img src="${url}">
+        <a class="download" href="${url}" download="resized-${i.file.name}">Download</a>
+      </div>`;
+  });
 }
-
-/* Download all */
-downloadAllBtn.onclick = async () => {
-  const zip = new JSZip();
-  images.forEach(i => zip.file(`resized-${i.file.name}`, i.blob));
-  const blob = await zip.generateAsync({ type: "blob" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "resized-images.zip";
-  a.click();
-};
-
-/* Clear */
-clearAllBtn.onclick = () => {
-  images = [];
-  results.innerHTML = "";
-  fileInput.value = "";
-};
