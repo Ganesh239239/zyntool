@@ -4,7 +4,7 @@ const uploadArea = document.getElementById("uploadArea");
 const results = document.getElementById("results");
 
 const qualityRange = document.getElementById("qualityRange");
-const qualityValue = document.getElementById("qualityValue");
+const qualityInput = document.getElementById("qualityInput");
 
 let originalFile = null;
 let originalImg = null;
@@ -20,7 +20,7 @@ uploadArea.addEventListener("drop", e => {
   handleFile(e.dataTransfer.files[0]);
 });
 
-/* Handle image */
+/* Handle file */
 function handleFile(file) {
   if (!file || !file.type.startsWith("image/")) return;
 
@@ -36,13 +36,20 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-/* Slider */
+/* Slider sync */
 qualityRange.oninput = () => {
-  qualityValue.textContent = qualityRange.value + "%";
+  qualityInput.value = qualityRange.value;
   if (originalImg) compressAndRender();
 };
 
-/* Compress & show */
+qualityInput.oninput = () => {
+  let v = Math.min(95, Math.max(10, qualityInput.value));
+  qualityInput.value = v;
+  qualityRange.value = v;
+  if (originalImg) compressAndRender();
+};
+
+/* Compress & render */
 function compressAndRender() {
   const quality = qualityRange.value / 100;
 
@@ -63,7 +70,9 @@ function compressAndRender() {
           <span>${(originalFile.size / 1024).toFixed(1)} KB</span>
           <span>${(blob.size / 1024).toFixed(1)} KB</span>
         </div>
-        <a class="download-btn" href="${url}" download="compressed-${originalFile.name}">
+        <a class="download-btn"
+           href="${url}"
+           download="compressed-${originalFile.name}">
           Download
         </a>
       </div>
