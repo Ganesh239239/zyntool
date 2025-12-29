@@ -1,5 +1,6 @@
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
+const dropArea = document.getElementById("dropArea");
 const results = document.getElementById("results");
 
 const qualityRange = document.getElementById("qualityRange");
@@ -9,15 +10,41 @@ const applyBtn = document.getElementById("applyBtn");
 let files = [];
 let quality = qualityRange.value;
 
-/* Upload */
+/* --------------------
+   FILE UPLOAD
+-------------------- */
+
 uploadBtn.onclick = () => fileInput.click();
 
 fileInput.onchange = () => {
   files = [...fileInput.files];
-  results.innerHTML = "";
+  renderPlaceholders();
 };
 
-/* Slider fill */
+/* Drag & Drop */
+["dragenter", "dragover"].forEach(e =>
+  dropArea.addEventListener(e, ev => {
+    ev.preventDefault();
+    dropArea.classList.add("drag");
+  })
+);
+
+["dragleave", "drop"].forEach(e =>
+  dropArea.addEventListener(e, ev => {
+    ev.preventDefault();
+    dropArea.classList.remove("drag");
+  })
+);
+
+dropArea.addEventListener("drop", e => {
+  files = [...e.dataTransfer.files].filter(f => f.type.startsWith("image/"));
+  renderPlaceholders();
+});
+
+/* --------------------
+   QUALITY CONTROL
+-------------------- */
+
 function updateSlider(val) {
   qualityRange.style.background = `
     linear-gradient(
@@ -30,7 +57,6 @@ function updateSlider(val) {
   `;
 }
 
-/* Sync slider/input */
 qualityRange.oninput = () => {
   qualityInput.value = qualityRange.value;
   quality = qualityRange.value;
@@ -38,22 +64,61 @@ qualityRange.oninput = () => {
 };
 
 qualityInput.oninput = () => {
-  let v = Math.min(95, Math.max(10, qualityInput.value));
+  let v = Math.min(95, Math.max(10, qualityInput.value || 10));
   qualityInput.value = v;
   qualityRange.value = v;
   quality = v;
   updateSlider(v);
 };
 
-/* APPLY compression */
+/* --------------------
+   PLACEHOLDER PREVIEW
+-------------------- */
+
+function renderPlaceholders() {
+  results.innerHTML = "";
+
+  if (!files.length) return;
+
+  files.forEach(file => {
+    const card = document.createElement("div");
+    card.className = "result-card";
+    card.innerHTML = `
+      <div style="height:140px;background:#f3f4f6;border-radius:10px;
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:14px;color:#6b7280">
+        Ready to compress
+      </div>
+      <div class="info">
+        <span>${(file.size / 1024).toFixed(1)} KB</span>
+        <span>—</span>
+      </div>
+    `;
+    results.appendChild(card);
+  });
+}
+
+/* --------------------
+   APPLY COMPRESSION
+-------------------- */
+
 applyBtn.onclick = () => {
+  if (!files.length) {
+    alert("Please select images first.");
+    return;
+  }
+
   results.innerHTML = "";
   files.forEach(file => compress(file));
 };
 
-/* Compress logic */
+/* --------------------
+   COMPRESS FUNCTION
+-------------------- */
+
 function compress(file) {
   const reader = new FileReader();
+
   reader.onload = e => {
     const img = new Image();
     img.src = e.target.result;
@@ -74,10 +139,12 @@ function compress(file) {
         card.innerHTML = `
           <img src="${url}">
           <div class="info">
-            <span>${(file.size/1024).toFixed(1)} KB</span>
-            <span>${(blob.size/1024).toFixed(1)} KB</span>
+            <span>${(file.size / 1024).toFixed(1)} KB</span>
+            <span>${(blob.size / 1024).toFixed(1)} KB</span>
           </div>
-          <a class="download-btn" href="${url}" download="compressed-${file.name}">
+          <a class="download-btn"
+             href="${url}"
+             download="compressed-${file.name}">
             Download
           </a>
         `;
@@ -86,6 +153,7 @@ function compress(file) {
       }, "image/jpeg", quality / 100);
     };
   };
+
   reader.readAsDataURL(file);
 }
 
