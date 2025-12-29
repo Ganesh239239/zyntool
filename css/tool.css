@@ -1,0 +1,39 @@
+.tool-hero {
+  text-align: center;
+  padding: 30px 16px 10px;
+}
+
+.tool-hero h1 {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.tool-hero p {
+  color: #6b7280;
+}
+
+.tool-box {
+  max-width: 720px;
+  margin: 20px auto 60px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.upload-btn {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+#preview {
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+}
