@@ -31,6 +31,7 @@
 
 <section class="tool-wrapper">
 
+  <!-- Upload -->
   <div class="upload-area" id="dropArea">
     <input type="file" id="fileInput" accept="image/*" multiple hidden>
     <p>Drag & drop images here</p>
@@ -38,19 +39,26 @@
     <button id="uploadBtn">Select Images</button>
   </div>
 
-  <div class="controls">
-  <div class="controls-header">
-    <span>Compression Quality</span>
+  <!-- QUALITY PANEL (EXACT DESIGN) -->
+  <div class="quality-panel">
 
-    <div class="quality-box">
-      <input type="number" id="qualityInput" min="10" max="95" value="70">
-      <span>%</span>
+    <div class="quality-top">
+      <span class="quality-label">Quality</span>
+
+      <div class="quality-input-wrap">
+        <input type="number" id="qualityInput" min="10" max="95" value="71">
+      </div>
+
+      <button class="apply-btn" id="applyBtn">APPLY</button>
     </div>
+
+    <div class="quality-slider-wrap">
+      <input type="range" id="qualityRange" min="10" max="95" value="71">
+    </div>
+
   </div>
 
-  <input type="range" id="qualityRange" min="10" max="95" value="70">
-</div>
-
+  <!-- Results -->
   <div class="results" id="results"></div>
 
 </section>
