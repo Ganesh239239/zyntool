@@ -44,7 +44,63 @@
 }
 
 .controls {
-  margin-top: 18px;
+  margin-top: 20px;
   display: grid;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Mobile: stack buttons */
+@media (max-width: 640px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ===== PREMIUM CHECKBOX ===== */
+.lock-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.lock-toggle input {
+  display: none;
+}
+
+.lock-toggle .checkmark {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #c7d2fe;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.lock-toggle .checkmark::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #2563eb;
+  border-radius: 3px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.15s ease;
+}
+
+.lock-toggle input:checked + .checkmark {
+  border-color: #2563eb;
+  background: #eef2ff;
+}
+
+.lock-toggle input:checked + .checkmark::after {
+  opacity: 1;
+  transform: scale(1);
 }
