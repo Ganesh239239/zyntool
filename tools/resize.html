@@ -1,59 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Resize Image</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../css/resize.css">
+  <meta charset="UTF-8" />
+  <title>Resize Image</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="resize.css" />
 </head>
 <body>
 
-<div class="page">
+<main class="container">
 
-  <h1>Resize IMAGE</h1>
-  <p class="subtitle">Resize images by changing width and height</p>
+  <header class="header">
+    <h1>Resize IMAGE</h1>
+    <p>Resize images by changing width and height</p>
+  </header>
 
   <!-- Upload -->
-  <div class="upload" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  <section class="upload" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" multiple hidden />
     <p>Drag & drop images here</p>
     <span>or</span>
-    <button class="btn primary small">Select Images</button>
-  </div>
+    <button class="btn btn-primary btn-small">Select Images</button>
+  </section>
 
-  <!-- Resize Card -->
-  <div class="card">
+  <!-- Resize Settings -->
+  <section class="card">
     <div class="field">
       <label>Width (px)</label>
-      <input type="number" id="widthInput" placeholder="Auto">
+      <input type="number" id="widthInput" />
     </div>
 
     <div class="field">
       <label>Height (px)</label>
-      <input type="number" id="heightInput" placeholder="Auto">
+      <input type="number" id="heightInput" />
     </div>
 
     <label class="checkbox">
-      <input type="checkbox" id="lockRatio" checked>
+      <input type="checkbox" id="lockRatio" checked />
       <span></span>
       Lock aspect ratio
     </label>
 
-    <button id="resizeBtn" class="btn primary full">Resize</button>
-  </div>
+    <button id="resizeBtn" class="btn btn-primary btn-full">
+      Resize
+    </button>
+  </section>
 
   <!-- Actions -->
-  <div class="actions">
-    <button id="downloadAll" class="btn secondary">Download All</button>
-    <button id="clearAll" class="btn danger">Clear Queue</button>
-  </div>
+  <section class="actions">
+    <button id="downloadAll" class="btn btn-secondary">
+      Download All
+    </button>
+    <button id="clearAll" class="btn btn-danger">
+      Clear Queue
+    </button>
+  </section>
 
   <!-- Results -->
-  <div id="results" class="results"></div>
+  <section id="results" class="results"></section>
 
-</div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="../js/tools/resize.js"></script>
+<script src="resize.js"></script>
 </body>
 </html>
