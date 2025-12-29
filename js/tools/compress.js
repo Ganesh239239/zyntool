@@ -6,12 +6,19 @@ const results = document.getElementById("results");
 const qualityRange = document.getElementById("qualityRange");
 const qualityInput = document.getElementById("qualityInput");
 const applyBtn = document.getElementById("applyBtn");
+const clearBtn = document.getElementById("clearBtn");
 
 let originalFile = null;
 let originalImg = null;
 
-/* Upload */
+/* Upload actions */
 uploadBtn.onclick = () => fileInput.click();
+
+uploadArea.onclick = (e) => {
+  if (e.target.tagName !== "BUTTON") {
+    fileInput.click();
+  }
+};
 
 fileInput.onchange = () => handleFile(fileInput.files[0]);
 
@@ -37,17 +44,15 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-/* Sync slider & input (UI only) */
+/* Sync slider & input */
 qualityRange.oninput = () => {
   qualityInput.value = qualityRange.value;
-  updateSliderFill();
 };
 
 qualityInput.oninput = () => {
   let v = Math.min(95, Math.max(10, qualityInput.value));
   qualityInput.value = v;
   qualityRange.value = v;
-  updateSliderFill();
 };
 
 /* Apply compression */
@@ -55,19 +60,13 @@ applyBtn.onclick = () => {
   if (originalImg) compressAndRender();
 };
 
-/* Slider fill */
-function updateSliderFill() {
-  const v = qualityRange.value;
-  qualityRange.style.background = `
-    linear-gradient(
-      to right,
-      #cfe3ff 0%,
-      #cfe3ff ${v}%,
-      #e9edf2 ${v}%,
-      #e9edf2 100%
-    )
-  `;
-}
+/* Clear */
+clearBtn.onclick = () => {
+  results.innerHTML = "";
+  fileInput.value = "";
+  originalFile = null;
+  originalImg = null;
+};
 
 /* Compress & render */
 function compressAndRender() {
@@ -99,6 +98,3 @@ function compressAndRender() {
     `;
   }, "image/jpeg", quality);
 }
-
-/* Init */
-updateSliderFill();
