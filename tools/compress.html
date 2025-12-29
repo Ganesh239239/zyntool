@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Compress Image</title>
+  <title>Compress Image – ZynTool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Global styles -->
   <link rel="stylesheet" href="../css/style.css">
+  <!-- Tool styles -->
   <link rel="stylesheet" href="../css/tool.css">
 </head>
 <body>
@@ -14,7 +17,18 @@
     <div class="logo" onclick="location.href='../index.html'">
       Zyn<span>Tool</span>
     </div>
+
+    <!-- MENU BUTTON (MISSING BEFORE) -->
+    <div class="menu" id="menuBtn">☰</div>
   </div>
+
+  <!-- NAV MENU (MISSING BEFORE) -->
+  <nav class="nav" id="navMenu">
+    <a href="../index.html">Home</a>
+    <a href="../index.html#optimize">Optimize</a>
+    <a href="../index.html#edit">Edit</a>
+    <a href="../index.html#convert">Convert</a>
+  </nav>
 </header>
 
 <section class="tool-hero">
@@ -24,11 +38,15 @@
 
 <section class="tool-box">
   <input type="file" id="fileInput" accept="image/*" multiple hidden>
-  <button class="upload-btn" id="uploadBtn">Select Images</button>
+
+  <button class="upload-btn" id="uploadBtn">
+    Select Images
+  </button>
 
   <div id="preview"></div>
 </section>
 
+<script src="../js/menu.js"></script>
 <script src="../js/tools/compress.js"></script>
 </body>
 </html>
