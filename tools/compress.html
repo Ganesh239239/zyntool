@@ -39,12 +39,17 @@
   </div>
 
   <div class="controls">
-    <label>
-      Compression Quality:
-      <strong><span id="qualityValue">70</span>%</strong>
-    </label>
-    <input type="range" id="qualityRange" min="10" max="95" value="70">
+  <div class="controls-header">
+    <span>Compression Quality</span>
+
+    <div class="quality-box">
+      <input type="number" id="qualityInput" min="10" max="95" value="70">
+      <span>%</span>
+    </div>
   </div>
+
+  <input type="range" id="qualityRange" min="10" max="95" value="70">
+</div>
 
   <div class="results" id="results"></div>
 
