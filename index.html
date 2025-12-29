@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Image Tools</title>
+  <title>I♥IMG – Image Tools</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -10,9 +10,20 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">I<span>♥</span>IMG</div>
-    <div class="menu">⋮⋮⋮</div>
+    <div class="logo" onclick="location.href='index.html'">
+      I<span>♥</span>IMG
+    </div>
+    <div class="menu" id="menuBtn">☰</div>
   </div>
+
+  <nav class="nav" id="navMenu">
+    <a href="#" data-cat="All">All</a>
+    <a href="#" data-cat="Optimize">Optimize</a>
+    <a href="#" data-cat="Create">Create</a>
+    <a href="#" data-cat="Edit">Edit</a>
+    <a href="#" data-cat="Convert">Convert</a>
+    <a href="#" data-cat="Security">Security</a>
+  </nav>
 </header>
 
 <section class="hero">
