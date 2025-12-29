@@ -15,7 +15,7 @@
     <div class="logo" onclick="location.href='../index.html'">
       Zyn<span>Tool</span>
     </div>
-    <div class="menu" id="menuBtn">☰</div>
+    <div class="menu">☰</div>
   </div>
 </header>
 
@@ -28,29 +28,24 @@
 
   <!-- UPLOAD -->
   <div class="upload-area" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
-    <p>Drag & drop images here</p>
+    <input type="file" id="fileInput" accept="image/*" hidden>
+    <p>Drag & drop image here</p>
     <span>or</span>
-    <button id="uploadBtn">Select Images</button>
+    <button id="uploadBtn">Select Image</button>
   </div>
 
-  <!-- QUALITY -->
+  <!-- SLIDER (OPTIONAL) -->
   <div class="quality-panel">
-    <span class="quality-label">Quality</span>
-
-    <input type="number" id="qualityInput" value="71" min="10" max="95">
-
-    <button id="applyBtn">APPLY</button>
-
+    <span>Quality</span>
     <input type="range" id="qualityRange" min="10" max="95" value="71">
+    <span id="qualityValue">71%</span>
   </div>
 
-  <!-- RESULTS -->
+  <!-- RESULT -->
   <div class="results" id="results"></div>
 
 </section>
 
-<script src="../js/menu.js"></script>
 <script src="../js/tools/compress.js"></script>
 </body>
 </html>
