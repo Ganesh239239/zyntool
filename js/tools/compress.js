@@ -4,133 +4,69 @@ const uploadArea = document.getElementById("uploadArea");
 const results = document.getElementById("results");
 
 const qualityRange = document.getElementById("qualityRange");
-const qualityInput = document.getElementById("qualityInput");
-const applyBtn = document.getElementById("applyBtn");
+const qualityValue = document.getElementById("qualityValue");
 
-/* STATE */
-let images = []; // { file, img, card }
-let quality = qualityRange.value;
-let applied = false;
+let originalFile = null;
+let originalImg = null;
 
-/* -------------------------
-   UPLOAD
-------------------------- */
-
+/* Upload */
 uploadBtn.onclick = () => fileInput.click();
 
-fileInput.onchange = () => {
-  loadFiles([...fileInput.files]);
-};
+fileInput.onchange = () => handleFile(fileInput.files[0]);
 
 uploadArea.addEventListener("dragover", e => e.preventDefault());
-
 uploadArea.addEventListener("drop", e => {
   e.preventDefault();
-  loadFiles([...e.dataTransfer.files].filter(f => f.type.startsWith("image/")));
+  handleFile(e.dataTransfer.files[0]);
 });
 
-function loadFiles(files) {
-  results.innerHTML = "";
-  images = [];
-  applied = false;
+/* Handle image */
+function handleFile(file) {
+  if (!file || !file.type.startsWith("image/")) return;
 
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.src = e.target.result;
+  originalFile = file;
+  const reader = new FileReader();
 
-      img.onload = () => {
-        const card = createCard(file);
-        images.push({ file, img, card });
-        updateCard({ file, img, card });
-      };
-    };
-    reader.readAsDataURL(file);
-  });
+  reader.onload = e => {
+    originalImg = new Image();
+    originalImg.src = e.target.result;
+    originalImg.onload = () => compressAndRender();
+  };
+
+  reader.readAsDataURL(file);
 }
 
-/* -------------------------
-   CARD CREATION (ONCE)
-------------------------- */
-
-function createCard(file) {
-  const card = document.createElement("div");
-  card.className = "result-card";
-  card.innerHTML = `
-    <img>
-    <div class="info">
-      <span class="orig">${(file.size / 1024).toFixed(1)} KB</span>
-      <span class="comp">—</span>
-    </div>
-    <a class="download-btn" style="display:none"></a>
-  `;
-  results.appendChild(card);
-  return card;
-}
-
-/* -------------------------
-   QUALITY CONTROLS
-------------------------- */
-
+/* Slider */
 qualityRange.oninput = () => {
-  qualityInput.value = qualityRange.value;
-  quality = qualityRange.value;
-  applied = false;
-  updateAllCards();
+  qualityValue.textContent = qualityRange.value + "%";
+  if (originalImg) compressAndRender();
 };
 
-qualityInput.oninput = () => {
-  let v = Math.min(95, Math.max(10, qualityInput.value));
-  qualityInput.value = v;
-  qualityRange.value = v;
-  quality = v;
-  applied = false;
-  updateAllCards();
-};
+/* Compress & show */
+function compressAndRender() {
+  const quality = qualityRange.value / 100;
 
-/* -------------------------
-   APPLY
-------------------------- */
-
-applyBtn.onclick = () => {
-  applied = true;
-  updateAllCards();
-};
-
-/* -------------------------
-   UPDATE LOGIC (NO DUPLICATES)
-------------------------- */
-
-function updateAllCards() {
-  images.forEach(updateCard);
-}
-
-function updateCard({ file, img, card }) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = img.width;
-  canvas.height = img.height;
-  ctx.drawImage(img, 0, 0);
+  canvas.width = originalImg.width;
+  canvas.height = originalImg.height;
+  ctx.drawImage(originalImg, 0, 0);
 
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
 
-    const imgEl = card.querySelector("img");
-    const compEl = card.querySelector(".comp");
-    const dl = card.querySelector(".download-btn");
-
-    imgEl.src = url;
-    compEl.textContent = `${(blob.size / 1024).toFixed(1)} KB`;
-
-    if (applied) {
-      dl.style.display = "block";
-      dl.textContent = "Download";
-      dl.href = url;
-      dl.download = `compressed-${file.name}`;
-    } else {
-      dl.style.display = "none";
-    }
-  }, "image/jpeg", quality / 100);
+    results.innerHTML = `
+      <div class="result-card">
+        <img src="${url}">
+        <div class="info">
+          <span>${(originalFile.size / 1024).toFixed(1)} KB</span>
+          <span>${(blob.size / 1024).toFixed(1)} KB</span>
+        </div>
+        <a class="download-btn" href="${url}" download="compressed-${originalFile.name}">
+          Download
+        </a>
+      </div>
+    `;
+  }, "image/jpeg", quality);
 }
