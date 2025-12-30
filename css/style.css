@@ -141,13 +141,4 @@ footer { background: var(--footer-bg); padding: 40px 0; margin-top: auto; }
     box-shadow: none;
 }
 
-/* Footer mobile links adjustment */
-@media (max-width: 767px) {
-    .navbar-collapse {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        margin-top: 10px;
-    }
-}
+
