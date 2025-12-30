@@ -1,25 +1,24 @@
 /* assets/css/global.css */
-:root {
-    --brand-blue: #4285f4;
-    --text-dark: #33333b;
-    --nav-grey: #47474f;
-    --bg-light: #f3f6f7;
-    --footer-bg: #1e1e24;
-}
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+:root {
+    --brand-blue: #4285f4;
+    --text-dark: #33333b;
+    --nav-grey: #47474f;
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
+    background-color: #fff;
     color: var(--text-dark);
-    line-height: 1.5;
     overflow-x: hidden;
 }
 
+/* This stops the blue link look */
 a {
     text-decoration: none !important;
     color: inherit;
