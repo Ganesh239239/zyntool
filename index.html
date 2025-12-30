@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Mobile Layout</title>
-    <link rel="stylesheet" href="assets/css/global.css">
+    <title>iLoveIMG | Every tool you could want to edit images</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <!-- Mobile Header with Hamburger and Dots -->
     <header>
         <div style="font-size: 24px; cursor: pointer;">☰</div>
-        <a href="/" class="logo">iLove<span>IMG</span></a>
+        <a href="/" class="logo">💙 iLove<span>IMG</span></a>
         <div style="font-size: 20px; cursor: pointer;">⠿</div>
     </header>
 
@@ -20,48 +19,20 @@
         <p>Your online photo editor is here and forever free!</p>
     </section>
 
-    <div class="filter-bar">
-        <button class="filter-pill active">All</button>
-        <button class="filter-pill">Optimize</button>
-        <button class="filter-pill">Create</button>
-        <button class="filter-pill">Edit</button>
-        <button class="filter-pill">Convert</button>
-        <button class="filter-pill">Security</button>
+    <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-cat="all">All</button>
+        <button class="filter-btn" data-cat="optimize">Optimize</button>
+        <button class="filter-btn" data-cat="create">Create</button>
+        <button class="filter-btn" data-cat="edit">Edit</button>
+        <button class="filter-btn" data-cat="convert">Convert</button>
+        <button class="filter-btn" data-cat="security">Security</button>
     </div>
 
-    <div class="tool-grid">
-        <!-- Compress IMAGE -->
-        <a href="/tools/compress-image/" class="tool-card">
-            <div class="tool-icon">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="48" height="48" rx="8" fill="#8bc34a" fill-opacity="0.2"/>
-                    <path d="M14 14V20M14 14H20M14 14L22 22" stroke="#8bc34a" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M34 14V20M34 14H28M34 14L26 22" stroke="#8bc34a" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M14 34V28M14 34H20M14 34L22 26" stroke="#8bc34a" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M34 34V28M34 34H28M34 34L26 26" stroke="#8bc34a" stroke-width="3" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <div class="tool-content">
-                <h3>Compress IMAGE</h3>
-                <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
-            </div>
-        </a>
-
-        <!-- Resize IMAGE -->
-        <a href="/tools/resize-image/" class="tool-card">
-            <div class="tool-icon">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="48" height="48" rx="8" fill="#4fc3f7" fill-opacity="0.2"/>
-                    <path d="M14 26L18 22L14 18" stroke="#4fc3f7" stroke-width="3" stroke-linecap="round"/>
-                    <rect x="22" y="14" width="12" height="20" rx="1" stroke="#4fc3f7" stroke-width="3"/>
-                </svg>
-            </div>
-            <div class="tool-content">
-                <h3>Resize IMAGE</h3>
-                <p>Define your dimensions, by percent or pixel, and resize your JPG, PNG, SVG, and GIF images.</p>
-            </div>
-        </a>
+    <div class="tool-grid" id="tool-grid">
+        <!-- Tools will be injected here by main.js -->
     </div>
 
+    <script src="assets/js/tools-data.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
