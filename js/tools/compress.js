@@ -1,61 +1,73 @@
+// Mobile Menu Toggle (Since we are on a new page)
+const menuBtn = document.getElementById("menuBtn");
+const navMenu = document.getElementById("navMenu");
+if(menuBtn) {
+    menuBtn.onclick = () => navMenu.classList.toggle("active");
+}
+
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const settingsArea = document.getElementById('settingsArea');
-const qualityInput = document.getElementById('quality');
-const qualVal = document.getElementById('qualVal');
-const compressBtn = document.getElementById('compressBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const origInfo = document.getElementById('origInfo');
-const newInfo = document.getElementById('newInfo');
+const editorLayout = document.getElementById('editorLayout');
+const imagePreview = document.getElementById('imagePreview');
+const qRange = document.getElementById('qualityRange');
+const qLabel = document.getElementById('qLabel');
+const processBtn = document.getElementById('processBtn');
 
 let originalFile = null;
 
-// Trigger file input
+// File Upload Logic
 dropZone.onclick = () => fileInput.click();
-
-// Handle file selection
 fileInput.onchange = (e) => {
     const file = e.target.files[0];
     if (file) {
         originalFile = file;
-        settingsArea.style.display = 'block';
-        origInfo.innerText = (file.size / 1024).toFixed(2) + " KB";
-        downloadBtn.style.display = 'none';
-        compressBtn.style.display = 'inline-block';
+        dropZone.style.display = 'none';
+        editorLayout.style.display = 'grid';
+        document.getElementById('origSize').innerText = (file.size / 1024).toFixed(2) + " KB";
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.src = event.target.result;
+            updatePreviewStats();
+        };
+        reader.readAsDataURL(file);
     }
 };
 
-// Update quality label
-qualityInput.oninput = () => {
-    qualVal.innerText = qualityInput.value;
+// Update Stats Label
+qRange.oninput = () => {
+    qLabel.innerText = qRange.value + "%";
+    updatePreviewStats();
 };
 
-// Compression Logic
-compressBtn.onclick = () => {
-    const reader = new FileReader();
-    reader.readAsDataURL(originalFile);
-    reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+function updatePreviewStats() {
+    // Estimate size reduction
+    const estimated = originalFile.size * (qRange.value / 100);
+    document.getElementById('newSize').innerText = (estimated / 1024).toFixed(2) + " KB";
+    const saving = 100 - qRange.value;
+    document.getElementById('savePercent').innerText = saving + "%";
+}
 
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-
-            // Convert to blob
-            const quality = qualityInput.value / 100;
-            canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                newInfo.innerText = (blob.size / 1024).toFixed(2) + " KB";
-                
-                downloadBtn.href = url;
-                downloadBtn.download = `compressed_${originalFile.name}`;
-                downloadBtn.style.display = 'inline-block';
-                compressBtn.style.display = 'none';
-            }, 'image/jpeg', quality);
-        };
+// Processing
+processBtn.onclick = () => {
+    processBtn.innerText = "Processing...";
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = "ZynTool_" + originalFile.name;
+            link.click();
+            processBtn.innerText = "Compress & Download";
+        }, "image/jpeg", qRange.value / 100);
     };
+    img.src = imagePreview.src;
 };
