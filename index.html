@@ -4,53 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG Clone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/tools.css">
-    <link rel="stylesheet" href="assets/css/footer.css">
 </head>
 <body>
 
     <header class="site-header">
-        <div class="container header-flex">
+        <div class="container-fluid px-lg-5 header-flex">
             <div class="header-left">
-                <div class="hamburger" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
-                <a href="#" class="logo"><span>iLove</span>IMG</a>
-                <nav class="desktop-nav">
-                    <div class="mega-trigger">
-                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down ml-1"></i>
-                        <div class="mega-menu">
-                            <div class="menu-grid">
-                                <div class="menu-col">
-                                    <h6>OPTIMIZE</h6>
-                                    <a href="#"><i class="fa-solid fa-compress text-success"></i> Compress</a>
-                                </div>
-                                <!-- ... more columns ... -->
-                            </div>
+                <div class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
+                <a href="/" class="logo"><span>iLove</span>IMG</a>
+                <div class="desktop-only mega-trigger">
+                    ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down ml-1"></i>
+                    <div class="mega-menu">
+                        <!-- Dropdown content -->
+                        <div class="row">
+                            <div class="col-4"><h6>OPTIMIZE</h6><a href="#">Compress</a></div>
+                            <div class="col-4"><h6>MODIFY</h6><a href="#">Resize</a></div>
                         </div>
                     </div>
-                </nav>
+                </div>
             </div>
             <div class="header-right">
-                <a href="#" class="login-link">Login</a>
-                <a href="#" class="btn-signup">Sign up</a>
-                <i class="fa-solid fa-table-cells grid-icon"></i>
+                <a href="#" class="desktop-only font-weight-bold mr-3">Login</a>
+                <a href="#" class="btn btn-primary btn-signup font-weight-bold">Sign up</a>
             </div>
         </div>
     </header>
 
-    <!-- Hidden Mobile Sidebar -->
-    <div class="sidebar" id="sidebar">...links...</div>
+    <div class="sidebar" id="sidebar">
+        <nav class="d-flex flex-column">
+            <a href="#" class="py-3 font-weight-bold border-bottom">COMPRESS IMAGE</a>
+            <a href="#" class="py-3 font-weight-bold border-bottom">RESIZE IMAGE</a>
+        </nav>
+    </div>
     <div class="overlay" id="overlay"></div>
 
-    <main>
-        <!-- Hero, Filter Pills, and Tool Grid go here -->
-    </main>
+    <main class="container-custom">
+        <section class="hero">
+            <h1>Every tool you could want to edit images in bulk</h1>
+            <p>Modify your images at once with our online tools.</p>
+        </section>
 
-    <footer class="site-footer">...columns...</footer>
+        <div class="filter-bar" id="pill-container">
+            <button class="pill active" data-filter="all">All</button>
+            <button class="pill" data-filter="optimize">Optimize</button>
+            <button class="pill" data-filter="edit">Edit</button>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card" data-category="optimize">
+                <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
+                <div><h3>Compress IMAGE</h3><p>Best quality and compression.</p></div>
+            </div>
+            <!-- Add all 13 here -->
+        </div>
+    </main>
 
     <script src="assets/js/main.js"></script>
 </body>
