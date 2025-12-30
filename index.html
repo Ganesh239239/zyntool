@@ -1,78 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Clone | Every tool you need to edit images</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iLoveIMG – Image Tools</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://www.iloveimg.com/img/iloveimg.svg" alt="iLoveIMG Logo" width="130">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-bold text-uppercase" href="#">All Image Tools</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <a href="#" class="nav-link me-3">Login</a>
-                    <a href="#" class="btn btn-primary signup-btn">Sign up</a>
-                </div>
-            </div>
-        </div>
+<!-- HEADER -->
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <span>I</span><span class="heart">♥</span><span>IMG</span>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-dropdown">
+        ALL IMAGE TOOLS
+        <svg width="12" height="12" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="hero text-center">
-        <div class="container">
-            <h1 class="display-4 fw-bold">Every tool you need to edit images in bulk</h1>
-            <p class="lead text-muted">All the tools you need to efficiently edit your images for free. Compress, resize, crop, convert, and more!</p>
-        </div>
-    </header>
+    <div class="header-actions">
+      <button class="btn-text">Login</button>
+      <button class="btn-primary">Sign up</button>
+      <button class="icon-btn" id="menuToggle">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
 
-    <!-- Tools Grid -->
-    <section class="tools-grid container my-5">
-        <div class="row g-4">
-            <!-- Tool: Compress -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="tool-card p-4 text-center h-100 shadow-sm">
-                    <div class="icon-box mb-3">
-                        <img src="https://www.iloveimg.com/img/tools/compress-image.svg" alt="Compress">
-                    </div>
-                    <h3>Compress IMAGE</h3>
-                    <p class="text-muted small">Compress JPG, PNG, SVG or GIF with the best quality and compression.</p>
-                </div>
-            </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1>Every tool you could want to edit images in bulk</h1>
+    <p class="hero-sub">
+      Your online photo editor is here and forever free!
+    </p>
 
-            <!-- Tool: Resize -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="tool-card p-4 text-center h-100 shadow-sm">
-                    <div class="icon-box mb-3">
-                        <img src="https://www.iloveimg.com/img/tools/resize-image.svg" alt="Resize">
-                    </div>
-                    <h3>Resize IMAGE</h3>
-                    <p class="text-muted small">Define your dimensions, by pixels or percentage, and resize images.</p>
-                </div>
-            </div>
+    <div class="filter-tabs">
+      <button class="tab active">All</button>
+      <button class="tab">Optimize</button>
+      <button class="tab">Create</button>
+      <button class="tab">Edit</button>
+      <button class="tab">Convert</button>
+      <button class="tab">Security</button>
+    </div>
+  </div>
+</section>
 
-            <!-- More cards would follow here... -->
-        </div>
-    </section>
+<!-- TOOLS GRID -->
+<section class="tools">
+  <div class="container tools-grid">
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <div class="tool-card">
+      <div class="icon green">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+      </div>
+      <h3>Compress IMAGE</h3>
+      <p>Compress JPG, PNG, SVG and GIFs while saving space.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon blue">
+        <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 14h6v6h-6z"/></svg>
+      </div>
+      <h3>Resize IMAGE</h3>
+      <p>Define your dimensions, resize by pixels or percentage.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon cyan">
+        <svg viewBox="0 0 24 24"><path d="M4 4l16 16"/></svg>
+      </div>
+      <h3>Crop IMAGE</h3>
+      <p>Crop JPG, PNG or GIF with precision.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon yellow">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20"/></svg>
+      </div>
+      <h3>Convert to JPG</h3>
+      <p>Turn PNG, GIF, TIF, PSD into JPG.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- WORK YOUR WAY -->
+<section class="work">
+  <div class="container">
+    <h2>Work your way</h2>
+
+    <div class="work-grid">
+      <div class="work-card">
+        <h3>Switch to document mode</h3>
+        <p>Use iLovePDF to simplify PDF editing.</p>
+        <span class="arrow">→</span>
+      </div>
+
+      <div class="work-card">
+        <h3>Scan and edit on the go</h3>
+        <p>Access image tools from mobile app.</p>
+        <span class="arrow">→</span>
+      </div>
+
+      <div class="work-card">
+        <h3>Scale with the iLoveIMG API</h3>
+        <p>Automate image tasks at scale.</p>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREMIUM -->
+<section class="premium">
+  <div class="container premium-box">
+    <h2>Get more with Premium</h2>
+    <p>Advanced tools, batch processing and powerful AI features.</p>
+    <button class="btn-premium">👑 Get Premium</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>PRODUCT</h4>
+      <a href="#">Home</a>
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div>
+      <h4>RESOURCES</h4>
+      <a href="#">Blog</a>
+      <a href="#">Help</a>
+    </div>
+    <div>
+      <h4>LEGAL</h4>
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms</a>
+    </div>
+    <div>
+      <h4>COMPANY</h4>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
 </body>
 </html>
