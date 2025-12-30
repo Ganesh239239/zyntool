@@ -1,30 +1,51 @@
 // js/main.js
 
-// Import specific tool logic
-import compressTool from './tools/compress.js';
-import cropTool from './tools/crop.js';
-import resizeTool from './tools/resize.js';
+// Import Tool Modules
+import compress from './tools/compress.js';
+import resize from './tools/resize.js';
+import crop from './tools/crop.js';
+import convert from './tools/convert.js'; // Handles tojpg & fromjpg
+import editor from './tools/editor.js';
+import upscale from './tools/upscale.js';
+import removebg from './tools/removebg.js';
+import watermark from './tools/watermark.js';
+import meme from './tools/meme.js';
+import rotate from './tools/rotate.js';
+import html2image from './tools/html2image.js';
+import blur from './tools/blur.js';
 
-// Registry maps URL hash to the tool file
-const TOOL_REGISTRY = {
-    'compress': compressTool,
-    'crop': cropTool,
-    'resize': resizeTool
-    // Add others as you create files
+// Registry
+const TOOLS = {
+    'compress': compress,
+    'resize': resize,
+    'crop': crop,
+    'tojpg': convert,
+    'fromjpg': convert,
+    'editor': editor,
+    'upscale': upscale,
+    'removebg': removebg,
+    'watermark': watermark,
+    'meme': meme,
+    'rotate': rotate,
+    'html2image': html2image,
+    'blur': blur
 };
 
 const App = {
-    currentTool: null,
+    currentToolId: null,
+    currentToolModule: null,
     currentFile: null,
 
     init() {
         window.addEventListener('hashchange', () => this.router());
         window.addEventListener('load', () => this.router());
         
-        // Global File Listeners
-        document.getElementById('dropZone').onclick = () => document.getElementById('fileInput').click();
-        document.getElementById('fileInput').onchange = (e) => this.handleFile(e.target.files[0]);
-        document.getElementById('btnProcess').onclick = () => this.execute();
+        // Listeners
+        document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+        document.getElementById('fileInput').addEventListener('change', (e) => this.handleFile(e.target.files[0]));
+        document.getElementById('btnProcess').addEventListener('click', () => this.execute());
+        document.getElementById('btnRenderHtml').addEventListener('click', () => this.handleHtmlInput());
+        document.getElementById('btnReset').addEventListener('click', (e) => { e.preventDefault(); this.resetUI(); });
     },
 
     router() {
@@ -32,79 +53,119 @@ const App = {
         const home = document.getElementById('homeView');
         const workspace = document.getElementById('toolWorkspace');
 
-        if (!hash || !TOOL_REGISTRY[hash]) {
-            home.style.display = 'block';
-            workspace.style.display = 'none';
+        if (!hash || !TOOLS[hash]) {
+            home.classList.add('active');
+            workspace.classList.remove('active');
+            this.resetUI();
         } else {
-            home.style.display = 'none';
-            workspace.style.display = 'block';
-            this.loadTool(TOOL_REGISTRY[hash]);
+            home.classList.remove('active');
+            workspace.classList.add('active');
+            this.loadTool(hash);
         }
     },
 
-    loadTool(toolModule) {
-        this.currentTool = toolModule;
+    loadTool(toolId) {
+        this.currentToolId = toolId;
+        this.currentToolModule = TOOLS[toolId];
         this.resetUI();
-        document.getElementById('toolTitle').textContent = toolModule.title;
+
+        document.getElementById('workspaceTitle').innerText = this.currentToolModule.title;
         
-        // Tool specific initialization if needed
-        if (toolModule.onLoad) toolModule.onLoad();
+        if (toolId === 'html2image') {
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('htmlInputZone').style.display = 'block';
+        }
     },
 
     handleFile(file) {
-        if (!file) return;
+        if(!file) return;
         this.currentFile = file;
         
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.getElementById('imagePreview');
-            img.src = e.target.result;
-            
             img.onload = () => {
                 document.getElementById('dropZone').style.display = 'none';
                 document.getElementById('processingArea').style.display = 'block';
                 
-                // Load specific tool options UI
-                const container = document.getElementById('optionsPanel');
-                container.innerHTML = this.currentTool.renderUI(img.naturalWidth, img.naturalHeight);
-                
-                // Initialize specific tool logic (like Cropper)
-                if (this.currentTool.init) this.currentTool.init(img);
+                // Render Tool Options
+                const opts = document.getElementById('optionsPanel');
+                if(this.currentToolModule.renderUI) {
+                    opts.innerHTML = this.currentToolModule.renderUI(img.naturalWidth, img.naturalHeight);
+                } else {
+                    opts.innerHTML = '<div class="text-muted">Ready to process.</div>';
+                }
+
+                // Init Tool Logic (e.g. Cropper)
+                if(this.currentToolModule.init) {
+                    this.currentToolModule.init(img);
+                }
             };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     },
 
+    handleHtmlInput() {
+        const code = document.getElementById('htmlCode').value;
+        document.getElementById('htmlInputZone').style.display = 'none';
+        document.getElementById('processingArea').style.display = 'block';
+        document.getElementById('imagePreview').style.display = 'none';
+        const render = document.getElementById('htmlRender');
+        render.style.display = 'inline-block';
+        render.innerHTML = code;
+        // Tool has already been loaded by router, HTML is just the input method
+    },
+
     async execute() {
         const btn = document.getElementById('btnProcess');
-        btn.innerText = 'Processing...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
         btn.disabled = true;
 
         try {
             const img = document.getElementById('imagePreview');
-            // Execute the specific tool's logic
-            const blob = await this.currentTool.process(img, this.currentFile);
             
-            // Download Logic
+            // Execute Tool
+            let blob;
+            if(this.currentToolId === 'html2image') {
+                 // Special HTML handling passed to tool
+                 blob = await this.currentToolModule.process(document.getElementById('htmlRender'));
+            } else {
+                 blob = await this.currentToolModule.process(img, this.currentFile, this.currentToolId);
+            }
+
+            // Show Result
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `iloveimg-edited.png`;
-            a.click();
-        } catch (e) {
-            console.error(e);
-            alert('Error processing image');
+            document.getElementById('resultImage').src = url;
+            document.getElementById('downloadLink').href = url;
+            document.getElementById('downloadLink').download = `iloveimg-${this.currentToolId}.png`;
+            
+            document.getElementById('processingArea').style.display = 'none';
+            document.getElementById('resultArea').style.display = 'block';
+
+        } catch (error) {
+            console.error(error);
+            alert("Error processing image.");
         } finally {
-            btn.innerText = 'Process';
+            btn.innerHTML = 'Process Image';
             btn.disabled = false;
         }
     },
 
     resetUI() {
-        document.getElementById('dropZone').style.display = 'block';
-        document.getElementById('processingArea').style.display = 'none';
+        if(this.currentToolModule && this.currentToolModule.cleanup) {
+            this.currentToolModule.cleanup();
+        }
+        this.currentFile = null;
         document.getElementById('fileInput').value = '';
-        if (this.currentTool.cleanup) this.currentTool.cleanup();
+        document.getElementById('dropZone').style.display = 'block';
+        document.getElementById('htmlInputZone').style.display = 'none';
+        document.getElementById('processingArea').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'none';
+        document.getElementById('imagePreview').style.display = 'inline-block';
+        document.getElementById('imagePreview').style.filter = 'none';
+        document.getElementById('htmlRender').style.display = 'none';
+        document.getElementById('optionsPanel').innerHTML = '';
     }
 };
 
