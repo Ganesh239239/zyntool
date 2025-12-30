@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* CSS STYLES - EMBEDDED TO ENSURE IT WORKS IMMEDIATELY */
+        /* CSS VARIABLES & RESET */
         :root {
             --brand-blue: #4285f4;
             --text-dark: #33333b;
             --nav-grey: #47474f;
             --bg-light: #f3f6f7;
+            --footer-bg: #1e1e24;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,7 +24,7 @@
         a { text-decoration: none !important; color: inherit; }
         .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
 
-        /* Header */
+        /* --- HEADER --- */
         .site-header {
             height: 64px;
             background: #fff;
@@ -31,8 +32,6 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            display: flex;
-            align-items: center;
         }
 
         .header-container {
@@ -41,156 +40,95 @@
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            padding: 0 24px;
+            align-items: center;
+            height: 100%;
+            padding: 0 20px;
         }
 
-        .header-left { display: flex; align-items: center; gap: 30px; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .mobile-menu-icon { display: none; font-size: 20px; color: var(--nav-grey); cursor: pointer; }
+        
         .logo { font-size: 24px; font-weight: 700; color: #47474f; }
         .logo span { color: var(--brand-blue); }
 
-        .mega-menu-trigger {
-            position: relative;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--nav-grey);
-            cursor: pointer;
-            padding: 20px 0;
-        }
-
-        /* Mega Menu */
-        .mega-menu {
-            display: none; /* Hidden by default */
-            position: absolute;
-            top: 64px;
-            left: -100px;
-            width: 850px;
-            background: #fff;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            border-radius: 0 0 8px 8px;
-            padding: 40px;
-            z-index: 1001;
-            border-top: 1px solid #eee;
-        }
-
+        .mega-menu-trigger { font-size: 13px; font-weight: 700; color: var(--nav-grey); cursor: pointer; padding: 20px 0; position: relative; }
+        .mega-menu { display: none; position: absolute; top: 64px; left: -100px; width: 800px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 40px; border-radius: 0 0 8px 8px; border-top: 1px solid #eee; }
         .mega-menu-trigger:hover .mega-menu { display: block; }
 
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .menu-col h6 { font-size: 11px; color: #999; margin-bottom: 15px; letter-spacing: 1px; }
-        .menu-col a { 
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .btn-signup { background: var(--brand-blue); color: #fff !important; padding: 8px 18px; border-radius: 4px; font-weight: 700; font-size: 14px; }
+        .grid-icon { font-size: 20px; color: var(--nav-grey); cursor: pointer; }
+
+        /* --- HERO --- */
+        .hero { text-align: center; padding: 50px 20px 30px; }
+        .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        .hero p { color: #666; font-size: 16px; }
+
+        /* --- FILTER PILLS --- */
+        .filter-wrapper { padding: 10px 0; margin-bottom: 20px; }
+        .filter-pills { 
             display: flex; 
-            align-items: center; 
+            justify-content: center; 
             gap: 10px; 
-            padding: 8px 0; 
-            font-size: 14px; 
-            font-weight: 600; 
-            color: var(--text-dark);
+            overflow-x: auto; 
+            padding-bottom: 5px;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
         }
-        .menu-col a:hover { color: var(--brand-blue); }
+        .filter-pills::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
 
-        .header-right { display: flex; align-items: center; gap: 20px; }
-        .btn-signup { 
-            background: var(--brand-blue); 
-            color: #fff !important; 
-            padding: 8px 20px; 
-            border-radius: 4px; 
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        /* Hero */
-        .hero { text-align: center; padding: 70px 20px 40px; }
-        .hero h1 { font-size: 48px; font-weight: 700; color: #47474f; margin-bottom: 10px; }
-        .hero p { font-size: 20px; color: #666; }
-
-        /* Filter Bar */
-        .filter-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 50px; }
         .pill { 
-            padding: 8px 24px; 
-            border-radius: 20px; 
-            border: 1px solid #ddd; 
-            background: #fff; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 14px;
-            transition: 0.2s;
+            padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: #fff; 
+            font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 14px; 
         }
         .pill.active { background: #333; color: #fff; border-color: #333; }
 
-        /* Tools Grid */
-        .tools-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 24px; 
-            padding-bottom: 80px; 
-        }
+        /* --- TOOL CARDS --- */
+        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding-bottom: 50px; }
+        .tool-card { background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 12px; transition: 0.3s; position: relative; cursor: pointer; }
+        .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
 
-        .tool-card {
-            background: #fff;
-            border: 1px solid #eee;
-            padding: 35px 25px;
-            border-radius: 12px;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .tool-card:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 12px 30px rgba(0,0,0,0.06); 
-        }
-
-        .tool-icon { 
-            width: 44px; height: 44px; 
-            border-radius: 8px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: #fff; font-size: 22px; margin-bottom: 20px; 
-        }
-
+        .tool-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; margin-bottom: 15px; }
         .bg-green { background: #81c784; }
         .bg-blue { background: #64b5f6; }
         .bg-cyan { background: #4dd0e1; }
         .bg-yellow { background: #ffd54f; }
-        .bg-purple { background: #ba68c8; }
 
-        .tool-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #333; }
-        .tool-card p { font-size: 14px; color: #777; line-height: 1.6; }
-        .badge-new { 
-            position: absolute; top: 15px; right: 15px; 
-            background: #e3f2fd; color: var(--brand-blue); 
-            padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; 
+        .tool-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .tool-card p { font-size: 13px; color: #777; line-height: 1.4; }
+
+        /* --- MOBILE SPECIFIC CSS (The "Perfect Match" logic) --- */
+        @media (max-width: 768px) {
+            .mobile-menu-icon { display: block; }
+            .mega-menu-trigger, .header-right a:not(.grid-icon) { display: none; }
+            
+            .hero h1 { font-size: 26px; }
+            .hero p { font-size: 14px; }
+
+            .filter-pills { justify-content: flex-start; padding: 0 20px; }
+
+            .tools-grid { grid-template-columns: 1fr; padding: 0 15px 40px; gap: 12px; }
+
+            /* Switch cards to "Bar" style for mobile */
+            .tool-card { 
+                display: flex; 
+                align-items: center; 
+                padding: 15px; 
+                text-align: left;
+            }
+            .tool-icon { margin-bottom: 0; margin-right: 15px; min-width: 44px; }
+            .tool-card h3 { font-size: 16px; margin-bottom: 2px; }
+            .tool-card p { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         }
 
-        /* Work Section */
-        .work-section { padding-bottom: 100px; }
-        .section-title { text-align: center; font-size: 42px; font-weight: 700; margin-bottom: 50px; }
-        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .feature-card { 
-            border-radius: 16px; 
-            border: 1px solid #f0f0f0; 
-            overflow: hidden; 
-            position: relative;
-            background: #fff;
-            transition: 0.3s;
+        /* --- FOOTER --- */
+        .site-footer { background: var(--footer-bg); color: #fff; padding: 50px 20px; margin-top: 30px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .footer-col h6 { color: #777; font-size: 12px; margin-bottom: 20px; }
+        .footer-col a { display: block; color: #999; font-size: 13px; margin-bottom: 10px; }
+        
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
         }
-        .feat-img { height: 180px; background: #f8f9fa; }
-        .feat-blue .feat-img { background-color: #e3f2fd; }
-        .feat-purple .feat-img { background-color: #f3e5f5; }
-        .feat-green .feat-img { background-color: #e8f5e9; }
-        .feat-body { padding: 30px; position: relative; }
-        .feat-body h3 { font-size: 22px; margin-bottom: 15px; }
-        .feat-body p { color: #666; font-size: 15px; line-height: 1.6; padding-right: 20px; }
-        .arrow-corner { position: absolute; bottom: 30px; right: 30px; color: #ccc; font-size: 18px; }
-
-        /* Footer */
-        .site-footer { background: #1e1e24; color: #fff; padding: 80px 0 40px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 60px; }
-        .footer-col h6 { font-size: 13px; color: #777; margin-bottom: 25px; letter-spacing: 1px; }
-        .footer-col a { display: block; color: #999; margin-bottom: 12px; font-size: 14px; }
-        .footer-col a:hover { color: #fff; }
-        .footer-bottom { border-top: 1px solid #333; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .socials i { font-size: 20px; color: #999; margin-left: 20px; cursor: pointer; }
-        .socials i:hover { color: #fff; }
     </style>
 </head>
 <body>
@@ -198,39 +136,14 @@
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
+                <i class="fa-solid fa-bars mobile-menu-icon"></i>
                 <a href="#" class="logo"><span>iLove</span>IMG</a>
-                <div class="mega-menu-trigger">
-                    ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i>
-                    <div class="mega-menu">
-                        <div class="menu-grid">
-                            <div class="menu-col">
-                                <h6>OPTIMIZE IMAGE</h6>
-                                <a href="#"><i class="fa-solid fa-compress" style="color:#81c784"></i> Compress IMAGE</a>
-                            </div>
-                            <div class="menu-col">
-                                <h6>MODIFY IMAGE</h6>
-                                <a href="#"><i class="fa-solid fa-expand" style="color:#64b5f6"></i> Resize IMAGE</a>
-                                <a href="#"><i class="fa-solid fa-crop" style="color:#4dd0e1"></i> Crop IMAGE</a>
-                                <a href="#"><i class="fa-solid fa-repeat" style="color:#ffd54f"></i> Convert to JPG</a>
-                            </div>
-                            <div class="menu-col">
-                                <h6>CREATE IMAGE</h6>
-                                <a href="#"><i class="fa-solid fa-face-smile" style="color:#ba68c8"></i> Meme generator</a>
-                                <a href="#"><i class="fa-solid fa-stamp" style="color:#64b5f6"></i> Watermark</a>
-                            </div>
-                            <div class="menu-col">
-                                <h6>AI TOOLS</h6>
-                                <a href="#"><i class="fa-solid fa-wand-magic-sparkles" style="color:#64b5f6"></i> Upscale Image</a>
-                                <a href="#"><i class="fa-solid fa-user-slash" style="color:#81c784"></i> Remove BG</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="mega-menu-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i></div>
             </div>
             <div class="header-right">
-                <a href="#" style="font-weight:600; font-size: 14px; margin-right:20px;">Login</a>
+                <a href="#">Login</a>
                 <a href="#" class="btn-signup">Sign up</a>
-                <i class="fa-solid fa-table-cells" style="font-size: 20px; color: #47474f; margin-left: 15px; cursor: pointer;"></i>
+                <i class="fa-solid fa-table-cells grid-icon"></i>
             </div>
         </div>
     </header>
@@ -238,124 +151,67 @@
     <main>
         <section class="hero">
             <h1>Every tool you could want to edit images in bulk</h1>
-            <p>Your online photo editor is here and forever free!</p>
+            <p>Modify your images at once with our online tools.</p>
         </section>
 
-        <div class="filter-bar">
-            <button class="pill active" onclick="filter('all')">All</button>
-            <button class="pill" onclick="filter('optimize')">Optimize</button>
-            <button class="pill" onclick="filter('create')">Create</button>
-            <button class="pill" onclick="filter('edit')">Edit</button>
-            <button class="pill" onclick="filter('convert')">Convert</button>
+        <div class="filter-wrapper">
+            <div class="filter-pills">
+                <button class="pill active">All</button>
+                <button class="pill">Optimize</button>
+                <button class="pill">Resize</button>
+                <button class="pill">Edit</button>
+                <button class="pill">Convert</button>
+                <button class="pill">Security</button>
+            </div>
         </div>
 
-        <section class="container">
+        <div class="container">
             <div class="tools-grid">
-                <!-- Tool Cards -->
-                <div class="tool-card" data-cat="optimize">
+                <div class="tool-card">
                     <div class="tool-icon bg-green"><i class="fa-solid fa-compress"></i></div>
-                    <h3>Compress IMAGE</h3>
-                    <p>Compress JPG, PNG, SVG and GIFs while saving space and maintaining quality.</p>
+                    <div>
+                        <h3>Compress IMAGE</h3>
+                        <p>Compress JPG, PNG, SVG and GIFs with best quality.</p>
+                    </div>
                 </div>
-
-                <div class="tool-card" data-cat="optimize">
+                <div class="tool-card">
                     <div class="tool-icon bg-blue"><i class="fa-solid fa-expand"></i></div>
-                    <h3>Resize IMAGE</h3>
-                    <p>Define your dimensions, by percent or pixel, and resize your images.</p>
+                    <div>
+                        <h3>Resize IMAGE</h3>
+                        <p>Define dimensions by pixels or percentage.</p>
+                    </div>
                 </div>
-
-                <div class="tool-card" data-cat="edit">
-                    <span class="badge-new">New!</span>
+                <div class="tool-card">
                     <div class="tool-icon bg-cyan"><i class="fa-solid fa-crop"></i></div>
-                    <h3>Crop IMAGE</h3>
-                    <p>Crop JPG, PNG or GIFs with ease; choose pixels or use our visual editor.</p>
+                    <div>
+                        <h3>Crop IMAGE</h3>
+                        <p>Crop JPG, PNG or GIFs with ease.</p>
+                    </div>
                 </div>
-
-                <div class="tool-card" data-cat="convert">
+                <div class="tool-card">
                     <div class="tool-icon bg-yellow"><i class="fa-solid fa-repeat"></i></div>
-                    <h3>Convert to JPG</h3>
-                    <p>Turn PNG, GIF, TIF, PSD, SVG, WEBP, HEIC or RAW to JPG format.</p>
+                    <div>
+                        <h3>Convert to JPG</h3>
+                        <p>Turn most image formats into JPG.</p>
+                    </div>
                 </div>
+                <!-- Repeat for other tools... -->
             </div>
-        </section>
-
-        <section class="work-section container">
-            <h2 class="section-title">Work your way</h2>
-            <div class="feature-grid">
-                <div class="feature-card feat-blue">
-                    <div class="feat-img"></div>
-                    <div class="feat-body">
-                        <h3>Switch to document mode</h3>
-                        <p>Use iLovePDF to simplify PDF editing when your work goes beyond images.</p>
-                        <i class="fa-solid fa-arrow-up-right-from-square arrow-corner"></i>
-                    </div>
-                </div>
-                <div class="feature-card feat-purple">
-                    <div class="feat-img"></div>
-                    <div class="feat-body">
-                        <h3>Scan and edit on the go</h3>
-                        <p>Scan paper documents and access quick image tools anytime with our mobile app.</p>
-                        <i class="fa-solid fa-arrow-up-right-from-square arrow-corner"></i>
-                    </div>
-                </div>
-                <div class="feature-card feat-green">
-                    <div class="feat-img"></div>
-                    <div class="feat-body">
-                        <h3>Scale with iLoveIMG API</h3>
-                        <p>Automate image tasks at scale by integrating tools into your own product.</p>
-                        <i class="fa-solid fa-arrow-up-right-from-square arrow-corner"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
 
     <footer class="site-footer">
         <div class="container footer-grid">
             <div class="footer-col">
                 <h6>PRODUCT</h6>
-                <a href="#">Home</a><a href="#">Features</a><a href="#">Pricing</a>
-            </div>
-            <div class="footer-col">
-                <h6>RESOURCES</h6>
-                <a href="#">iLoveSign</a><a href="#">iLoveAPI</a><a href="#">iLovePDF</a>
-            </div>
-            <div class="footer-col">
-                <h6>LEGAL</h6>
-                <a href="#">Privacy policy</a><a href="#">Terms & conditions</a>
+                <a href="#">Compress IMAGE</a><a href="#">Resize IMAGE</a>
             </div>
             <div class="footer-col">
                 <h6>COMPANY</h6>
-                <a href="#">About us</a><a href="#">Contact</a><a href="#">Blog</a>
-            </div>
-        </div>
-        <div class="container footer-bottom">
-            <p>© iLoveIMG 2025 ® - Your Image Editor</p>
-            <div class="socials">
-                <i class="fa-brands fa-x-twitter"></i>
-                <i class="fa-brands fa-facebook"></i>
-                <i class="fa-brands fa-linkedin"></i>
+                <a href="#">About us</a><a href="#">Contact</a>
             </div>
         </div>
     </footer>
 
-    <script>
-        function filter(category) {
-            // Update Active Pill
-            const pills = document.querySelectorAll('.pill');
-            pills.forEach(p => p.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Filter cards
-            const cards = document.querySelectorAll('.tool-card');
-            cards.forEach(card => {
-                if (category === 'all' || card.getAttribute('data-cat') === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-    </script>
 </body>
 </html>
