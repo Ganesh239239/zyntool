@@ -5,78 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Photo Editor</title>
     
-    <!-- CSS -->
+    <!-- External CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Libraries -->
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <!-- Navbar (Same as before) -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#/">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
-            <!-- ... Navbar content ... -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mt-3 mt-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" data-bs-toggle="dropdown">ALL IMAGE TOOLS</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#/compress">Compress</a></li>
+                            <li><a class="dropdown-item" href="#/resize">Resize</a></li>
+                            <li><a class="dropdown-item" href="#/crop">Crop</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#/editor">Photo Editor</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <!-- HOME VIEW -->
-    <div id="homeView" class="view-section active">
-        <!-- ... Hero and Grid ... -->
-         <div class="container mt-5">
-            <div class="row g-4">
-                <!-- Links now point to Hash URLs -->
-                <div class="col-md-3">
-                    <a href="#/compress" class="tool-card">...Compress Content...</a>
+    <!-- HOME PAGE -->
+    <div id="homeView">
+        <section class="hero">
+            <div class="container">
+                <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
+                <p>Your online photo editor is here and forever free!</p>
+                <!-- Filters are visual only in this version for simplicity, logic can be added easily -->
+                <div class="filter-pills mt-4">
+                    <button class="btn active">All</button>
+                    <button class="btn">Optimize</button>
+                    <button class="btn">Create</button>
+                    <button class="btn">Edit</button>
+                    <button class="btn">Convert</button>
                 </div>
-                <div class="col-md-3">
-                    <a href="#/crop" class="tool-card">...Crop Content...</a>
-                </div>
-                <!-- Add other tools -->
             </div>
-         </div>
+        </section>
+
+        <section class="tools-section">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/compress" class="tool-card"><div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div><h5>Compress IMAGE</h5><p>Compress JPG, PNG, GIF.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/resize" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div><h5>Resize IMAGE</h5><p>Define dimensions.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/crop" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div><h5>Crop IMAGE</h5><p>Crop JPG, PNG, GIFs.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/tojpg" class="tool-card"><div class="icon-box ic-yellow"><i class="fa-solid fa-file-image"></i></div><h5>Convert to JPG</h5><p>PNG/GIF to JPG.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/fromjpg" class="tool-card"><div class="icon-box ic-yellow"><i class="fa-solid fa-images"></i></div><h5>Convert from JPG</h5><p>JPG to PNG/GIF.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/editor" class="tool-card"><div class="icon-box ic-purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h5>Photo Editor</h5><p>Filters and Effects.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/upscale" class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-green"><i class="fa-solid fa-arrow-up-right-dots"></i></div><h5>Upscale Image</h5><p>Enlarge resolution.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/removebg" class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-green"><i class="fa-solid fa-eraser"></i></div><h5>Remove BG</h5><p>Remove backgrounds.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/watermark" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-stamp"></i></div><h5>Watermark</h5><p>Add text stamps.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/meme" class="tool-card"><div class="icon-box ic-purple"><i class="fa-regular fa-face-laugh-squint"></i></div><h5>Meme Generator</h5><p>Caption images.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/rotate" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-rotate-right"></i></div><h5>Rotate IMAGE</h5><p>Rotate JPG/PNG.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/html2image" class="tool-card"><div class="icon-box ic-yellow"><i class="fa-brands fa-html5"></i></div><h5>HTML to IMAGE</h5><p>Code to JPG.</p></a></div>
+                    <div class="col-12 col-md-4 col-lg-3"><a href="#/blur" class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-blue"><i class="fa-solid fa-user-secret"></i></div><h5>Blur Image</h5><p>Privacy blur.</p></a></div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- TOOL WORKSPACE (Dynamic) -->
-    <div id="toolWorkspace" class="view-section">
+    <!-- TOOL WORKSPACE -->
+    <div id="toolWorkspace">
         <div class="container">
             <div class="workspace-header">
-                <a href="#/" class="btn btn-outline-secondary btn-sm mb-3">Back</a>
+                <a href="#/" class="btn btn-outline-secondary btn-sm mb-3"><i class="fa-solid fa-arrow-left me-1"></i> Back</a>
                 <div class="text-center">
-                    <h2 class="fw-bold" id="toolTitle">Tool</h2>
+                    <h2 class="fw-bold" id="workspaceTitle">Tool</h2>
                 </div>
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-lg-8">
+                    <!-- Standard Upload -->
                     <div class="uploader-zone" id="dropZone">
+                        <div class="mb-4"><i class="fa-solid fa-cloud-arrow-up fa-5x text-primary"></i></div>
                         <h3>Select images</h3>
+                        <p class="text-muted">or drop them here</p>
                         <input type="file" id="fileInput" accept="image/*" hidden>
                     </div>
 
+                    <!-- HTML Tool Input -->
+                    <div id="htmlInputZone" style="display:none;" class="mb-4">
+                        <div class="card p-4 shadow-sm border-0 bg-light">
+                            <label class="form-label fw-bold">Enter HTML Code</label>
+                            <textarea id="htmlCode" class="form-control font-monospace" rows="5" placeholder="<h1 style='color:blue'>Hello World</h1>"></textarea>
+                            <button class="btn btn-primary mt-3 w-100 py-2" id="btnRenderHtml">Render HTML</button>
+                        </div>
+                    </div>
+
+                    <!-- Processing UI -->
                     <div id="processingArea" style="display:none;">
                         <div class="preview-container">
                             <img id="imagePreview" src="">
+                            <div id="htmlRender" style="background:white; padding:40px; display:inline-block; text-align:left;"></div>
                         </div>
-                        
-                        <!-- DYNAMIC OPTIONS LOAD HERE -->
-                        <div class="options-panel" id="optionsPanel"></div>
 
-                        <button class="btn btn-primary w-100" id="btnProcess">Process</button>
+                        <!-- Dynamic Options Loaded Here -->
+                        <div class="options-panel shadow-sm" id="optionsPanel"></div>
+
+                        <button class="btn btn-action shadow" id="btnProcess">
+                            <i class="fa-solid fa-gear me-2"></i> Process Image
+                        </button>
+                    </div>
+
+                    <!-- Result UI -->
+                    <div id="resultArea" style="display:none;" class="text-center mt-4">
+                         <div class="text-success mb-3"><i class="fa-solid fa-circle-check fa-4x"></i></div>
+                        <h3 class="fw-bold">Success!</h3>
+                        <div class="my-3"><img id="resultImage" class="img-fluid border rounded" style="max-height: 250px;"></div>
+                        <a id="downloadLink" class="btn btn-dark btn-lg">Download</a>
+                        <br>
+                        <a href="" class="btn btn-link text-muted mt-3" id="btnReset">Process another</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN MODULE SCRIPT -->
+    <footer>
+        <div class="container text-center">
+            <span class="small text-muted">© iLoveIMG Clone 2025</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- MAIN APP MODULE -->
     <script type="module" src="js/main.js"></script>
+
 </body>
 </html>
