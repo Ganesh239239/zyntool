@@ -5,135 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Image Editor</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/tools.css">
+    <link rel="stylesheet" href="assets/css/sections.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="navbar">
-        <div class="nav-left">
-            <i class="fa-solid fa-bars menu-toggle"></i>
-            <a href="#" class="logo"><span>iLove</span>IMG</a>
-        </div>
-        <div class="nav-right">
-            <i class="fa-solid fa-grid-view app-icon"></i>
+    <header class="site-header">
+        <div class="container-header">
+            <div class="header-left">
+                <a href="#" class="logo"><span>iLove</span>IMG</a>
+                <div class="mega-menu-trigger">
+                    ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="#" class="nav-link">Login</a>
+                <a href="#" class="btn-signup">Sign up</a>
+                <div class="grid-icon"><i class="fa-solid fa-table-cells"></i></div>
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Every tool you could want to edit images in bulk</h1>
-        <p>Modify your images at once with our online tools.</p>
-    </section>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Every tool you could want to edit images in bulk</h1>
+            <p>Your online photo editor is here and forever free!</p>
+        </section>
 
-    <!-- Category Pills -->
-    <div class="filters-container">
-        <button class="pill active">All</button>
-        <button class="pill">Optimize</button>
-        <button class="pill">Resize</button>
-        <button class="pill">Edit</button>
-        <button class="pill">Convert</button>
-        <button class="pill">Security</button>
-    </div>
-
-    <!-- Tools List -->
-    <main class="tools-list">
-        <!-- Compress -->
-        <div class="tool-item">
-            <div class="tool-icon-bg icon-compress">
-                <i class="fa-solid fa-compress"></i>
-            </div>
-            <div class="tool-text">
-                <h3>Compress IMAGE</h3>
-                <p>Compress JPG, PNG, SVG or GIF with the best quality.</p>
-            </div>
+        <!-- Filter Pills -->
+        <div class="filter-container">
+            <button class="pill active" data-filter="all">All</button>
+            <button class="pill" data-filter="optimize">Optimize</button>
+            <button class="pill" data-filter="create">Create</button>
+            <button class="pill" data-filter="edit">Edit</button>
+            <button class="pill" data-filter="convert">Convert</button>
+            <button class="pill" data-filter="security">Security</button>
         </div>
 
-        <!-- Resize -->
-        <div class="tool-item">
-            <div class="tool-icon-bg icon-resize">
-                <i class="fa-solid fa-expand"></i>
-            </div>
-            <div class="tool-text">
-                <h3>Resize IMAGE</h3>
-                <p>Define your dimensions by pixels or percentage.</p>
-            </div>
-        </div>
+        <!-- Tools Grid -->
+        <section class="tools-grid-section">
+            <div class="container">
+                <div class="tools-grid" id="tools-container">
+                    <!-- Tool: Compress -->
+                    <div class="tool-card" data-category="optimize">
+                        <div class="tool-icon icon-green">
+                            <i class="fa-solid fa-compress"></i>
+                        </div>
+                        <h3>Compress IMAGE</h3>
+                        <p>Compress JPG, PNG, SVG and GIFs while saving space and maintaining quality.</p>
+                    </div>
 
-        <!-- Crop -->
-        <div class="tool-item">
-            <div class="tool-icon-bg icon-crop">
-                <i class="fa-solid fa-crop-simple"></i>
+                    <!-- Tool: Resize -->
+                    <div class="tool-card" data-category="optimize">
+                        <div class="tool-icon icon-blue">
+                            <i class="fa-solid fa-expand"></i>
+                        </div>
+                        <h3>Resize IMAGE</h3>
+                        <p>Define your dimensions, by percent or pixel, and resize your images.</p>
+                    </div>
+
+                    <!-- Tool: Remove Background -->
+                    <div class="tool-card" data-category="edit">
+                        <span class="badge-new">New!</span>
+                        <div class="tool-icon icon-lightgreen">
+                            <i class="fa-solid fa-image-portrait"></i>
+                        </div>
+                        <h3>Remove background</h3>
+                        <p>Quickly remove image backgrounds with high accuracy. Instantly detect objects.</p>
+                    </div>
+
+                    <!-- Add more tool cards here based on image -->
+                </div>
             </div>
-            <div class="tool-text">
-                <h3>Crop IMAGE</h3>
-                <p>Crop JPG, PNG or GIFs with ease.</p>
+        </section>
+
+        <!-- Work Your Way -->
+        <section class="work-way container">
+            <h2 class="sec-title">Work your way</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-img img-doc"></div>
+                    <div class="feature-body">
+                        <h3>Switch to document mode</h3>
+                        <p>Use iLovePDF to simplify PDF editing when your work goes beyond images.</p>
+                        <i class="fa-solid fa-arrow-up-right-from-square arrow-corner"></i>
+                    </div>
+                </div>
+                <!-- Repeat for other 2 feature cards -->
             </div>
-        </div>
-        
-        <!-- ... (Add all 13 items similarly) ... -->
+        </section>
+
+        <!-- Premium Section -->
+        <section class="premium-cta">
+            <div class="premium-box">
+                <h2>Get more with Premium</h2>
+                <p>Work faster and smarter with advanced editing tools, batch processing, and powerful AI features.</p>
+                <button class="btn-premium"><i class="fa-solid fa-crown"></i> Get Premium</button>
+            </div>
+        </section>
     </main>
 
-    <!-- Work Your Way Section -->
-    <section class="features">
-        <h2 class="section-title">Work your way</h2>
-        
-        <div class="feature-card">
-            <img src="https://via.placeholder.com/300x150" alt="Extension">
-            <div class="feature-content">
-                <h3>Go HTML with our extension</h3>
-                <p>Get the tool directly in your browser with our Chrome extension.</p>
-            </div>
-        </div>
-
-        <div class="feature-card">
-            <img src="https://via.placeholder.com/300x150" alt="Mobile">
-            <div class="feature-content">
-                <h3>iLoveIMG Mobile App</h3>
-                <p>Edit images on the go with our Android and iOS apps.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Premium CTA -->
-    <section class="premium-banner">
-        <div class="premium-card">
-            <h2>Get more with Premium</h2>
-            <p>Modify more files at once, larger file sizes, and more tools.</p>
-            <button class="btn-premium">Go Premium</button>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-grid">
+    <footer class="site-footer">
+        <div class="container footer-grid">
             <div class="footer-col">
                 <h4>PRODUCT</h4>
-                <a href="#">Compress IMAGE</a>
-                <a href="#">Resize IMAGE</a>
-                <a href="#">Crop IMAGE</a>
+                <a href="#">Home</a>
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
             </div>
-            <div class="footer-col">
-                <h4>SOLUTIONS</h4>
-                <a href="#">Business</a>
-                <a href="#">Education</a>
-            </div>
-            <div class="footer-col">
-                <h4>COMPANY</h4>
-                <a href="#">Our Story</a>
-                <a href="#">Blog</a>
-                <a href="#">Contact</a>
-            </div>
+            <!-- More columns: RESOURCES, LEGAL, COMPANY -->
         </div>
         <div class="footer-bottom">
-            <div class="app-badges">
-                <img src="https://via.placeholder.com/120x40?text=App+Store" alt="App Store">
-                <img src="https://via.placeholder.com/120x40?text=Play+Store" alt="Play Store">
+            <div class="lang-selector">
+                <button class="btn-lang"><i class="fa-solid fa-globe"></i> English <i class="fa-solid fa-chevron-down"></i></button>
             </div>
-            <p>&copy; iLoveIMG 2025 ® - Your Image Editor</p>
+            <div class="social-links">
+                <i class="fa-brands fa-x-twitter"></i>
+                <i class="fa-brands fa-facebook"></i>
+                <i class="fa-brands fa-linkedin"></i>
+            </div>
+            <div class="copy">© iLoveIMG 2025 ® - Your Image Editor</div>
         </div>
     </footer>
 
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/filter.js"></script>
 </body>
 </html>
