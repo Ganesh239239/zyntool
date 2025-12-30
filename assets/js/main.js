@@ -1,33 +1,23 @@
-async function loadComponent(id, file) {
-    const res = await fetch(`./components/${file}`);
-    const html = await res.text();
-    document.getElementById(id).innerHTML = html;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Load Parts
-    Promise.all([
-        loadComponent('header-part', 'header.html'),
-        loadComponent('sidebar-part', 'sidebar.html'),
-        loadComponent('footer-part', 'footer.html')
-    ]).then(() => {
-        initApp();
+    // 1. Sidebar Control
+    const ham = document.getElementById('hamBtn'), side = document.getElementById('sidebar'), over = document.getElementById('overlay');
+    
+    ham.onclick = () => { side.classList.add('active'); over.style.display = 'block'; };
+    over.onclick = () => { side.classList.remove('active'); over.style.display = 'none'; };
+
+    // 2. Filter Pills Control
+    const pills = document.querySelectorAll('.pill'), cards = document.querySelectorAll('.tool-card');
+    pills.forEach(p => {
+        p.onclick = () => {
+            pills.forEach(x => x.classList.remove('active')); p.classList.add('active');
+            const f = p.dataset.filter;
+            cards.forEach(c => {
+                if(f === 'all' || c.dataset.category === f) {
+                    c.style.display = window.innerWidth <= 768 ? 'flex' : 'block';
+                } else {
+                    c.style.display = 'none';
+                }
+            });
+        };
     });
 });
-
-function initApp() {
-    // Sidebar Logic
-    const ham = document.getElementById('hamBtn'), side = document.getElementById('sidebar'), over = document.getElementById('overlay');
-    if(ham) ham.onclick = () => { side.classList.add('active'); over.style.display = 'block'; };
-    if(over) over.onclick = () => { side.classList.remove('active'); over.style.display = 'none'; };
-
-    // Filter Logic
-    const pills = document.querySelectorAll('.pill'), wrappers = document.querySelectorAll('.tool-wrapper');
-    pills.forEach(p => p.onclick = () => {
-        pills.forEach(x => x.classList.remove('active')); p.classList.add('active');
-        const f = p.dataset.f;
-        wrappers.forEach(w => {
-            w.style.display = (f === 'all' || w.dataset.c === f) ? 'block' : 'none';
-        });
-    });
-}
