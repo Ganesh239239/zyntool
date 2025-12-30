@@ -4,42 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG Clone</title>
-    <!-- External Resources -->
+    <!-- Fonts/Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Modular CSS -->
-    <link rel="stylesheet" href="assets/css/global.css">
-    <link rel="stylesheet" href="assets/css/header.css">
+    <!-- Modular CSS - CHECK THESE PATHS CAREFULLY -->
+    <link rel="stylesheet" href="./assets/css/global.css">
+    <link rel="stylesheet" href="./assets/css/header.css">
 </head>
 <body>
 
     <header class="site-header">
-        <div class="header-container">
-            
+        <div class="container header-container">
             <div class="header-left">
-                <!-- Hamburger (Mobile Only) -->
-                <div class="menu-toggle" id="menuToggle">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-
-                <a href="/" class="logo"><span>iLove</span>IMG</a>
-
-                <!-- Desktop Nav -->
+                <div class="menu-toggle"><i class="fa-solid fa-bars"></i></div>
+                <a href="#" class="logo"><span>iLove</span>IMG</a>
+                
                 <nav class="desktop-nav">
                     <div class="mega-trigger">
-                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i>
-                        <!-- Mega Menu -->
+                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down" style="margin-left:5px"></i>
                         <div class="mega-menu">
                             <div class="mega-grid">
                                 <div class="mega-col">
-                                    <h6>OPTIMIZE IMAGE</h6>
+                                    <h6>OPTIMIZE</h6>
                                     <a href="#"><i class="fa-solid fa-compress" style="color:#81c784"></i> Compress IMAGE</a>
                                 </div>
                                 <div class="mega-col">
-                                    <h6>MODIFY IMAGE</h6>
+                                    <h6>MODIFY</h6>
                                     <a href="#"><i class="fa-solid fa-expand" style="color:#64b5f6"></i> Resize IMAGE</a>
-                                    <a href="#"><i class="fa-solid fa-crop" style="color:#4dd0e1"></i> Crop IMAGE</a>
+                                </div>
+                                <div class="mega-col">
+                                    <h6>CONVERT</h6>
+                                    <a href="#"><i class="fa-solid fa-repeat" style="color:#ffd54f"></i> To JPG</a>
                                 </div>
                             </div>
                         </div>
@@ -48,27 +44,11 @@
             </div>
 
             <div class="header-right">
-                <a href="#" class="login-link">Login</a>
+                <a href="#" style="font-weight:600">Login</a>
                 <a href="#" class="signup-btn">Sign up</a>
-                <div class="apps-icon"><i class="fa-solid fa-table-cells"></i></div>
             </div>
-
         </div>
     </header>
 
-    <!-- Mobile Sidebar -->
-    <aside class="mobile-sidebar" id="mobileSidebar">
-        <nav>
-            <a href="#">CONVERT TO JPG</a>
-            <a href="#">RESIZE IMAGE</a>
-            <a href="#">EDIT IMAGE</a>
-            <hr>
-            <a href="#" class="blue-text">Login</a>
-            <a href="#">Sign up</a>
-        </nav>
-    </aside>
-    <div class="overlay" id="overlay"></div>
-
-    <script src="assets/js/header.js"></script>
 </body>
 </html>
