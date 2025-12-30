@@ -1,31 +1,26 @@
 /* assets/css/global.css */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --brand-blue: #4285f4;
-    --text-dark: #33333b;
-    --nav-grey: #47474f;
-}
-
 body {
     font-family: 'Open Sans', sans-serif;
     background-color: #fff;
-    color: var(--text-dark);
-    overflow-x: hidden;
+    color: #33333b;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* This stops the blue link look */
-a {
+/* Match iLoveIMG Brand Blue */
+:root {
+    --primary-blue: #4285f4;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+}
+
+/* Remove default link styles that cause the "blue link" look */
+a, a:hover {
     text-decoration: none !important;
-    color: inherit;
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
+.navbar {
+    height: 64px;
 }
