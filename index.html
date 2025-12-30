@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Image Editor</title>
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Modular CSS -->
     <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/tools.css">
@@ -16,62 +18,20 @@
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
-                <!-- Hamburger Menu Icon (Mobile Only) -->
-                <div class="mobile-menu-toggle" id="mobileToggle">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                
+                <div class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
                 <a href="index.html" class="logo"><span>iLove</span>IMG</a>
-                
                 <nav class="desktop-nav">
-                    <div class="mega-trigger">
-                        ALL IMAGE TOOLS <i class="fas fa-chevron-down ml-1"></i>
-                        <div class="mega-menu">
-                            <div class="menu-grid">
-                                <div class="menu-col">
-                                    <h6>OPTIMIZE IMAGE</h6>
-                                    <a href="#"><i class="fas fa-compress" style="color:#81c784"></i> Compress IMAGE</a>
-                                    <a href="#"><i class="fas fa-expand" style="color:#64b5f6"></i> Resize IMAGE</a>
-                                </div>
-                                <div class="menu-col">
-                                    <h6>CONVERT IMAGE</h6>
-                                    <a href="#"><i class="fas fa-sync-alt" style="color:#ffd54f"></i> To JPG</a>
-                                    <a href="#"><i class="fas fa-image" style="color:#ba68c8"></i> From JPG</a>
-                                </div>
-                                <div class="menu-col">
-                                    <h6>EDIT IMAGE</h6>
-                                    <a href="#"><i class="fas fa-crop" style="color:#4dd0e1"></i> Crop IMAGE</a>
-                                    <a href="#"><i class="fas fa-face-smile" style="color:#ba68c8"></i> Meme generator</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" class="nav-link-item">CONVERT TO JPG</a>
-                    <a href="#" class="nav-link-item">RESIZE IMAGE</a>
-                    <a href="#" class="nav-link-item">EDIT IMAGE</a>
+                    <div class="mega-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i></div>
+                    <a href="#" class="nav-item">CONVERT TO JPG</a>
+                    <a href="#" class="nav-item">RESIZE IMAGE</a>
                 </nav>
             </div>
-
             <div class="header-right">
                 <a href="#" class="login-link">Login</a>
                 <a href="#" class="btn-signup">Sign up</a>
-                <div class="grid-icon"><i class="fas fa-th"></i></div>
+                <div class="grid-icon"><i class="fa-solid fa-table-cells"></i></div>
             </div>
         </div>
-
-        <!-- Mobile Side Menu -->
-        <div class="mobile-sidebar" id="mobileSidebar">
-            <nav>
-                <a href="#">COMPRESS IMAGE</a>
-                <a href="#">RESIZE IMAGE</a>
-                <a href="#">CROP IMAGE</a>
-                <a href="#">CONVERT TO JPG</a>
-                <hr>
-                <a href="#" class="blue-text">Login</a>
-                <a href="#">Sign up</a>
-            </nav>
-        </div>
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
     </header>
 
     <main>
@@ -80,92 +40,120 @@
             <p>Modify your images at once with our online tools.</p>
         </section>
 
+        <!-- Category Pills (Hero Section Menus) -->
         <div class="filter-bar">
-            <button class="pill active" data-cat="all">All</button>
-            <button class="pill" data-cat="optimize">Optimize</button>
-            <button class="pill" data-cat="edit">Edit</button>
-            <button class="pill" data-cat="convert">Convert</button>
+            <button class="pill active" data-filter="all">All</button>
+            <button class="pill" data-filter="optimize">Optimize</button>
+            <button class="pill" data-filter="edit">Edit</button>
+            <button class="pill" data-filter="convert">Convert</button>
+            <button class="pill" data-filter="create">Create</button>
         </div>
 
         <section class="container">
-            <div class="tools-grid">
+            <div class="tools-grid" id="toolsGrid">
                 <!-- 1. Compress -->
                 <div class="tool-card" data-category="optimize">
                     <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
-                    <h3>Compress IMAGE</h3>
-                    <p>Compress JPG, PNG, SVG or GIF with the best quality.</p>
+                    <div class="tool-content">
+                        <h3>Compress IMAGE</h3>
+                        <p>Compress JPG, PNG, SVG or GIF with the best quality.</p>
+                    </div>
                 </div>
                 <!-- 2. Resize -->
                 <div class="tool-card" data-category="optimize">
                     <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
-                    <h3>Resize IMAGE</h3>
-                    <p>Define dimensions by pixels or percentage.</p>
+                    <div class="tool-content">
+                        <h3>Resize IMAGE</h3>
+                        <p>Define dimensions by pixels or percentage.</p>
+                    </div>
                 </div>
                 <!-- 3. Crop -->
                 <div class="tool-card" data-category="edit">
                     <div class="icon-box bg-cyan"><i class="fa-solid fa-crop"></i></div>
-                    <h3>Crop IMAGE</h3>
-                    <p>Crop JPG, PNG or GIFs with ease.</p>
+                    <div class="tool-content">
+                        <h3>Crop IMAGE</h3>
+                        <p>Crop JPG, PNG or GIFs with ease.</p>
+                    </div>
                 </div>
                 <!-- 4. Convert to JPG -->
                 <div class="tool-card" data-category="convert">
                     <div class="icon-box bg-yellow"><i class="fa-solid fa-repeat"></i></div>
-                    <h3>Convert to JPG</h3>
-                    <p>Turn PNG, GIF, TIF, PSD, SVG, WEBP or RAW to JPG.</p>
+                    <div class="tool-content">
+                        <h3>Convert to JPG</h3>
+                        <p>Turn PNG, GIF, SVG, WEBP or RAW to JPG.</p>
+                    </div>
                 </div>
                 <!-- 5. Convert from JPG -->
                 <div class="tool-card" data-category="convert">
                     <div class="icon-box bg-purple"><i class="fa-solid fa-image"></i></div>
-                    <h3>Convert from JPG</h3>
-                    <p>Transform JPG images to PNG and GIF.</p>
+                    <div class="tool-content">
+                        <h3>Convert from JPG</h3>
+                        <p>Transform JPG images to PNG and GIF.</p>
+                    </div>
                 </div>
-                <!-- 6. Watermark -->
-                <div class="tool-card" data-category="edit">
-                    <div class="icon-box bg-blue"><i class="fa-solid fa-stamp"></i></div>
-                    <h3>Watermark IMAGE</h3>
-                    <p>Stamp an image or text over your images.</p>
-                </div>
-                <!-- 7. Meme -->
-                <div class="tool-card" data-category="create">
-                    <div class="icon-box bg-purple"><i class="fa-solid fa-face-smile"></i></div>
-                    <h3>Meme generator</h3>
-                    <p>Caption images or upload your own templates.</p>
-                </div>
-                <!-- 8. Rotate -->
-                <div class="tool-card" data-category="edit">
-                    <div class="icon-box bg-cyan"><i class="fa-solid fa-rotate"></i></div>
-                    <h3>Rotate IMAGE</h3>
-                    <p>Rotate your JPG, PNG or GIFs at once.</p>
-                </div>
-                <!-- 9. HTML to IMAGE -->
-                <div class="tool-card" data-category="convert">
-                    <div class="icon-box bg-blue"><i class="fa-solid fa-code"></i></div>
-                    <h3>HTML to IMAGE</h3>
-                    <p>Convert web pages to JPG or SVG.</p>
-                </div>
-                <!-- 10. Blur Face -->
-                <div class="tool-card" data-category="edit">
-                    <div class="icon-box bg-grey"><i class="fa-solid fa-eye-slash"></i></div>
-                    <h3>Blur face</h3>
-                    <p>Easily blur faces in photos or objects.</p>
-                </div>
-                <!-- 11. Upscale -->
-                <div class="tool-card" data-category="optimize">
-                    <div class="icon-box bg-blue"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                    <h3>Upscale IMAGE</h3>
-                    <p>Enlarge your images with high resolution using AI.</p>
-                </div>
-                <!-- 12. Remove Background -->
-                <div class="tool-card" data-category="edit">
-                    <div class="icon-box bg-green"><i class="fa-solid fa-user-slash"></i></div>
-                    <h3>Remove background</h3>
-                    <p>Remove image backgrounds with high accuracy using AI.</p>
-                </div>
-                <!-- 13. Photo Editor -->
+                <!-- 6. Photo Editor -->
                 <div class="tool-card" data-category="edit">
                     <div class="icon-box bg-purple"><i class="fa-solid fa-pen-nib"></i></div>
-                    <h3>Photo Editor</h3>
-                    <p>Add text, stickers, and effects to your photos.</p>
+                    <div class="tool-content">
+                        <h3>Photo Editor</h3>
+                        <p>Add text, stickers, and effects to photos.</p>
+                    </div>
+                </div>
+                <!-- 7. Upscale -->
+                <div class="tool-card" data-category="optimize">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="tool-content">
+                        <h3>Upscale IMAGE</h3>
+                        <p>Enlarge images with high resolution using AI.</p>
+                    </div>
+                </div>
+                <!-- 8. Remove BG -->
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-user-slash"></i></div>
+                    <div class="tool-content">
+                        <h3>Remove background</h3>
+                        <p>Remove backgrounds with high accuracy using AI.</p>
+                    </div>
+                </div>
+                <!-- 9. Watermark -->
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-stamp"></i></div>
+                    <div class="tool-content">
+                        <h3>Watermark IMAGE</h3>
+                        <p>Stamp an image or text over your images.</p>
+                    </div>
+                </div>
+                <!-- 10. Meme -->
+                <div class="tool-card" data-category="create">
+                    <div class="icon-box bg-purple"><i class="fa-solid fa-face-smile"></i></div>
+                    <div class="tool-content">
+                        <h3>Meme generator</h3>
+                        <p>Caption images or upload your own templates.</p>
+                    </div>
+                </div>
+                <!-- 11. Rotate -->
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-cyan"><i class="fa-solid fa-rotate"></i></div>
+                    <div class="tool-content">
+                        <h3>Rotate IMAGE</h3>
+                        <p>Rotate your JPG, PNG or GIFs at once.</p>
+                    </div>
+                </div>
+                <!-- 12. HTML to IMAGE -->
+                <div class="tool-card" data-category="convert">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-code"></i></div>
+                    <div class="tool-content">
+                        <h3>HTML to IMAGE</h3>
+                        <p>Convert web pages to JPG or SVG.</p>
+                    </div>
+                </div>
+                <!-- 13. Blur Face -->
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-grey"><i class="fa-solid fa-eye-slash"></i></div>
+                    <div class="tool-content">
+                        <h3>Blur face</h3>
+                        <p>Easily blur faces in photos to protect privacy.</p>
+                    </div>
                 </div>
             </div>
         </section>
