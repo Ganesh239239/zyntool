@@ -2,6 +2,7 @@ const toolGrid = document.getElementById('tool-grid');
 const filterBtns = document.querySelectorAll('.filter-btn');
 
 function renderTools(category = 'all') {
+    const toolGrid = document.getElementById('tool-grid');
     if (!toolGrid) return;
     toolGrid.innerHTML = '';
 
@@ -14,9 +15,9 @@ function renderTools(category = 'all') {
         card.href = tool.link;
         card.className = 'tool-card';
         
+        // Note the "tool-info" wrapper - this is required for the mobile layout
         card.innerHTML = `
-            ${tool.isNew ? '<span class="badge-new">New!</span>' : ''}
-            <div class="icon-box" style="background:${tool.color}15; color:${tool.color}">
+            <div class="tool-icon-box" style="background:${tool.color}15; color:${tool.color}">
                 ${tool.svg}
             </div>
             <div class="tool-info">
