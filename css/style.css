@@ -1,43 +1,165 @@
-/* Premium Layout */
-.tool-page { background: #f8fafc; }
-.premium-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; min-height: 70vh; }
-.tool-intro { text-align: center; margin-bottom: 40px; }
-.tool-intro h1 { font-size: 36px; font-weight: 800; margin-bottom: 10px; }
-
-/* Workspace Container */
-.workspace { background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); padding: 30px; border: 1px solid #e2e8f0; }
-
-/* Upload Area */
-.upload-container { 
-    border: 2px dashed #cbd5e1; border-radius: 20px; padding: 80px 20px; text-align: center; 
-    transition: all 0.3s ease; cursor: pointer;
+{
+box-sizing: border-box;
 }
-.upload-container:hover { border-color: #3b82f6; background: #f0f7ff; }
-.icon-circle { 
-    width: 80px; height: 80px; background: #eef2ff; color: #3b82f6; 
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-    font-size: 32px; margin: 0 auto 20px; 
+
+body {
+margin: 0;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+background: #f6f7fb;
+color: #222;
 }
-.btn-primary { background: #3b82f6; color: white; padding: 12px 30px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; }
 
-/* Editor Layout (Side-by-side) */
-.editor-layout { display: grid; grid-template-columns: 1fr 320px; gap: 40px; }
-
-.image-box { position: relative; background: #f1f5f9; border-radius: 12px; overflow: hidden; display: flex; justify-content: center; }
-.image-box img { max-height: 400px; }
-.badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
-
-.stats-row { display: flex; justify-content: space-around; margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 12px; }
-.text-blue { color: #3b82f6; }
-.text-green { color: #10b981; }
-
-.settings-panel { border-left: 1px solid #f1f5f9; padding-left: 20px; }
-.setting-group { margin: 25px 0; }
-.info-box { background: #fff7ed; color: #9a3412; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; }
-
-.btn-action { width: 100%; background: #111; color: white; padding: 16px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
-.btn-secondary { width: 100%; background: none; border: 1px solid #ddd; padding: 10px; border-radius: 12px; cursor: pointer; }
-
-@media (max-width: 768px) {
-    .editor-layout { grid-template-columns: 1fr; }
+/* Header */
+.header {
+background: #fff;
+border-bottom: 1px solid #e5e7eb;
 }
+
+.header-inner {
+max-width: 1080px;
+margin: auto;
+padding: 14px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.logo {
+font-size: 22px;
+font-weight: 800;
+cursor: pointer;
+}
+
+.logo span {
+color: #3b82f6;
+}
+
+.menu {
+font-size: 22px;
+cursor: pointer;
+}
+
+/* Nav menu */
+.nav {
+display: none;
+background: #fff;
+border-top: 1px solid #e5e7eb;
+}
+
+.nav.active {
+display: block;
+}
+
+.nav a {
+display: block;
+padding: 14px 16px;
+text-decoration: none;
+color: #111;
+border-bottom: 1px solid #f1f1f1;
+}
+
+/* Hero */
+.hero {
+text-align: center;
+padding: 36px 16px 20px;
+}
+
+.hero h1 {
+font-size: 28px;
+margin-bottom: 8px;
+}
+
+.hero p {
+font-size: 15px;
+color: #666;
+}
+
+/* Categories */
+.categories {
+display: flex;
+justify-content: center;
+gap: 10px;
+flex-wrap: wrap;
+padding: 10px 16px 20px;
+}
+
+.cat {
+padding: 8px 18px;
+border-radius: 20px;
+border: 1px solid #ddd;
+background: #fff;
+font-size: 14px;
+cursor: pointer;
+}
+
+.cat.active {
+background: #111;
+color: #fff;
+border-color: #111;
+}
+
+/* Tools Grid */
+.tools {
+max-width: 1080px;
+margin: auto;
+padding: 10px 16px 60px;
+display: grid;
+gap: 16px;
+}
+
+@media (min-width: 1024px) {
+.tools { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+.tools { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 639px) {
+.tools { grid-template-columns: 1fr; }
+}
+
+/* Tool Card */
+.tool-card {
+background: #fff;
+border-radius: 16px;
+padding: 16px;
+display: flex;
+gap: 14px;
+border: 1px solid #e5e7eb;
+cursor: pointer;
+}
+
+.tool-icon {
+width: 44px;
+height: 44px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.tool-icon svg {
+width: 22px;
+height: 22px;
+display: block;
+}
+
+.tool-content h3 {
+margin: 0 0 4px;
+font-size: 16px;
+}
+
+.tool-content p {
+margin: 0;
+font-size: 14px;
+color: #6b7280;
+}
+
+/* Colors (IMPORTANT FOR SVG VISIBILITY) */
+.green  { background:#e6f9f0; color:#10b981 }
+.blue   { background:#eef2ff; color:#3b82f6 }
+.cyan   { background:#ecfeff; color:#06b6d4 }
+.yellow { background:#fff7ed; color:#f59e0b }
+.gray   { background:#f3f4f6; color:#6b7280 }
+.purple { background:#f3e8ff; color:#8b5cf6 }
