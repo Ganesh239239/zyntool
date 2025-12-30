@@ -1,47 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Compress Image</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../css/tool.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compress Image - ZynTool</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Tool Specific Styles */
+    .tool-main { max-width: 800px; margin: 40px auto; padding: 0 16px; text-align: center; }
+    .upload-box { 
+      background: #fff; border: 2px dashed #3b82f6; border-radius: 16px; 
+      padding: 60px 20px; cursor: pointer; transition: 0.3s;
+    }
+    .upload-box:hover { background: #f0f7ff; }
+    .upload-box h2 { margin: 0; color: #3b82f6; }
+    
+    .settings { margin-top: 30px; background: #fff; padding: 20px; border-radius: 12px; display: none; }
+    .preview-container { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .preview-card img { max-width: 100%; border-radius: 8px; border: 1px solid #ddd; }
+    
+    .btn-compress { 
+      background: #3b82f6; color: white; border: none; padding: 15px 40px; 
+      font-size: 18px; border-radius: 8px; cursor: pointer; margin-top: 20px; 
+    }
+    .download-link { 
+      display: none; background: #10b981; color: white; text-decoration: none; 
+      padding: 15px 40px; border-radius: 8px; margin-top: 20px; font-weight: bold;
+    }
+    input[type="range"] { width: 100%; margin: 10px 0; }
+  </style>
 </head>
 <body>
 
-<section class="tool-hero">
+<header class="header">
+  <div class="header-inner">
+    <div class="logo" onclick="location.href='../index.html'">Zyn<span>Tool</span></div>
+  </div>
+</header>
+
+<main class="tool-main">
   <h1>Compress IMAGE</h1>
-  <p>Reduce image file size while keeping quality</p>
-</section>
+  <p>Reduce the file size of your images without losing quality.</p>
 
-<section class="tool-wrapper">
-
-  <!-- Upload -->
-  <div class="upload-area" id="uploadArea">
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
-    <p>Drag & drop images here</p>
-    <span>or</span>
-    <button>Select Images</button>
+  <!-- Step 1: Upload -->
+  <div class="upload-box" id="dropZone">
+    <h2>Select Images</h2>
+    <p>or drop images here</p>
+    <input type="file" id="fileInput" hidden accept="image/jpeg, image/png">
   </div>
 
-  <!-- Quality Slider -->
-  <div class="quality-panel">
-    <span class="quality-label">Quality</span>
-    <input type="number" id="qualityInput" value="71" min="10" max="95">
-    <input type="range" id="qualityRange" min="10" max="95" value="71">
+  <!-- Step 2: Settings & Preview -->
+  <div class="settings" id="settingsArea">
+    <label>Compression Quality: <span id="qualVal">70</span>%</label>
+    <input type="range" id="quality" min="10" max="100" value="70">
+    
+    <div class="preview-container">
+      <div class="preview-card">
+        <p>Original</p>
+        <div id="origInfo">--</div>
+      </div>
+      <div class="preview-card">
+        <p>Compressed</p>
+        <div id="newInfo">--</div>
+      </div>
+    </div>
+
+    <button class="btn-compress" id="compressBtn">Compress Now</button>
+    <a href="#" id="downloadBtn" class="download-link">Download Compressed Image</a>
   </div>
+</main>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button id="downloadAll">Download All</button>
-    <button id="clearAll">Clear Queue</button>
-  </div>
-
-  <!-- Results -->
-  <div class="results" id="results"></div>
-
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="../js/tools/compress.js"></script>
 </body>
 </html>
