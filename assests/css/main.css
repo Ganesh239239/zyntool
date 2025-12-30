@@ -1,0 +1,28 @@
+:root {
+    --brand-blue: #4285f4;
+    --text-dark: #33333b;
+    --bg-gray: #f2f3f8;
+    --footer-bg: #1e1e24;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #fff;
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+}
+
+.hero h1 { font-size: 48px; font-weight: 700; color: #47474f; }
+.hero p { font-size: 20px; color: #666; margin-top: 10px; }
