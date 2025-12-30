@@ -3,70 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG | Every tool you need to edit images in bulk</title>
+    <title>iLoveIMG | Every tool you need to edit images</title>
     <link rel="stylesheet" href="assets/css/global.css">
 </head>
 <body>
 
     <header>
-        <div style="display:flex; align-items:center; gap:40px;">
-            <a href="/" class="logo">💙 iLove<span>IMG</span></a>
-            <nav class="nav-links">
+        <div style="display:flex; align-items:center; gap:30px;">
+            <a href="/" class="logo">iLove<span>IMG</span></a>
+            <nav class="nav-center">
                 <a href="#">Compress Image</a>
                 <a href="#">Resize Image</a>
                 <a href="#">Crop Image</a>
                 <a href="#">Convert to JPG</a>
             </nav>
         </div>
-        <div class="auth-btns">
-            <a href="#" style="text-decoration:none; color:#333; font-weight:500;">Login</a>
+        <div class="nav-right">
+            <a href="#" style="text-decoration:none; color:#333; font-size:14px; font-weight:500;">Login</a>
             <button class="btn-signup">Sign up</button>
         </div>
     </header>
 
     <section class="hero">
-        <h1>Every tool you could want to edit images in bulk</h1>
-        <p>Your online photo editor is here and forever free!</p>
+        <h1>Every tool you need to edit images</h1>
+        <p>100% Free and Easy to use.</p>
     </section>
 
     <div class="filter-bar">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Optimize</button>
-        <button class="filter-btn">Create</button>
-        <button class="filter-btn">Edit</button>
-        <button class="filter-btn">Convert</button>
-        <button class="filter-btn">Security</button>
+        <button class="filter-pill active">All</button>
+        <button class="filter-pill">Optimize</button>
+        <button class="filter-pill">Create</button>
+        <button class="filter-pill">Edit</button>
+        <button class="filter-pill">Convert</button>
     </div>
 
     <div class="tool-grid">
-        <!-- Compress -->
+        <!-- Compress IMAGE -->
         <a href="/tools/compress-image/" class="tool-card">
-            <div class="tool-icon bg-compress">📉</div>
+            <div class="tool-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" rx="8" fill="#8bc34a"/>
+                    <path d="M14 14L21 21M14 14V19M14 14H19" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M34 34L27 27M34 34V29M34 34H29" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M34 14L27 21M34 14V19M34 14H29" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 34L21 27M14 34V29M14 34H19" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <h3>Compress IMAGE</h3>
             <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
         </a>
 
-        <!-- Resize -->
+        <!-- Resize IMAGE -->
         <a href="/tools/resize-image/" class="tool-card">
-            <div class="tool-icon bg-resize">📏</div>
+            <div class="tool-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" rx="8" fill="#4fc3f7"/>
+                    <path d="M16 16H32V32H16V16Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 12V16M12 12H16M36 36V32M36 36H32" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <h3>Resize IMAGE</h3>
             <p>Define your dimensions, by percent or pixel, and resize your JPG, PNG, SVG and GIF images.</p>
         </a>
 
-        <!-- Upscale (New Badge example) -->
-        <a href="#" class="tool-card">
-            <span class="badge-new">New!</span>
-            <div class="tool-icon bg-resize" style="background:#81c784;">✨</div>
-            <h3>Upscale Image</h3>
-            <p>Enlarge your images with high resolution. Easily increase the size of your JPG and PNG images.</p>
-        </a>
-
-        <!-- Remove BG -->
-        <a href="#" class="tool-card">
-            <span class="badge-new">New!</span>
-            <div class="tool-icon bg-editor" style="background:#ba68c8;">👤</div>
-            <h3>Remove background</h3>
-            <p>Quickly remove image backgrounds with high accuracy. Instantly detect objects and cut out backgrounds.</p>
+        <!-- Convert to JPG -->
+        <a href="/tools/convert-to-jpg/" class="tool-card">
+            <div class="tool-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" rx="8" fill="#ffca28"/>
+                    <rect x="12" y="16" width="24" height="16" rx="2" fill="white"/>
+                    <text x="14" y="27" fill="#ffca28" font-family="Arial" font-weight="bold" font-size="8">JPG</text>
+                </svg>
+            </div>
+            <h3>Convert to JPG</h3>
+            <p>Turn PNG, GIF, TIF, PSD, SVG, WEBP or RAW to JPG format with ease.</p>
         </a>
     </div>
 
