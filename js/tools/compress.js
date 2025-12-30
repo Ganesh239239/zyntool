@@ -1,56 +1,43 @@
-// Mobile Menu Toggle (Since we are on a new page)
+// Navigation logic
 const menuBtn = document.getElementById("menuBtn");
 const navMenu = document.getElementById("navMenu");
-if(menuBtn) {
-    menuBtn.onclick = () => navMenu.classList.toggle("active");
-}
+if(menuBtn) menuBtn.onclick = () => navMenu.classList.toggle("active");
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const editorLayout = document.getElementById('editorLayout');
-const imagePreview = document.getElementById('imagePreview');
 const qRange = document.getElementById('qualityRange');
 const qLabel = document.getElementById('qLabel');
 const processBtn = document.getElementById('processBtn');
 
 let originalFile = null;
 
-// File Upload Logic
 dropZone.onclick = () => fileInput.click();
+
 fileInput.onchange = (e) => {
     const file = e.target.files[0];
     if (file) {
         originalFile = file;
+        document.getElementById('editorLayout').style.display = 'grid';
         dropZone.style.display = 'none';
-        editorLayout.style.display = 'grid';
         document.getElementById('origSize').innerText = (file.size / 1024).toFixed(2) + " KB";
         
         const reader = new FileReader();
         reader.onload = (event) => {
-            imagePreview.src = event.target.result;
-            updatePreviewStats();
+            document.getElementById('imagePreview').src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
 };
 
-// Update Stats Label
 qRange.oninput = () => {
-    qLabel.innerText = qRange.value + "%";
-    updatePreviewStats();
+    let val = qRange.value;
+    if(val < 30) qLabel.innerText = "Extreme";
+    else if(val < 60) qLabel.innerText = "Recommended";
+    else qLabel.innerText = "Low";
 };
 
-function updatePreviewStats() {
-    // Estimate size reduction
-    const estimated = originalFile.size * (qRange.value / 100);
-    document.getElementById('newSize').innerText = (estimated / 1024).toFixed(2) + " KB";
-    const saving = 100 - qRange.value;
-    document.getElementById('savePercent').innerText = saving + "%";
-}
-
-// Processing
 processBtn.onclick = () => {
-    processBtn.innerText = "Processing...";
+    processBtn.innerText = "Compressing...";
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const img = new Image();
@@ -60,14 +47,20 @@ processBtn.onclick = () => {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
         
+        // Quality from range (reversed logic for UX: lower range = higher compression)
+        const quality = qRange.value / 100;
+        
+        // We use 'image/jpeg' even for PNGs to ensure STRONG compression
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = "ZynTool_" + originalFile.name;
+            link.download = "ZynTool_Compressed_" + originalFile.name.split('.')[0] + ".jpg";
             link.click();
+            
+            document.getElementById('newSize').innerText = (blob.size / 1024).toFixed(2) + " KB";
             processBtn.innerText = "Compress & Download";
-        }, "image/jpeg", qRange.value / 100);
+        }, "image/jpeg", quality);
     };
-    img.src = imagePreview.src;
+    img.src = document.getElementById('imagePreview').src;
 };
