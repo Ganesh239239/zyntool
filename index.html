@@ -2,143 +2,194 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>iLoveIMG Clone – Client-Side Image Tools</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iLoveIMG – Image Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- Tailwind -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#046bd2',
-            primaryHover: '#0056b3',
-            action: '#ff914d',
-            bg: '#f8f9fa',
-            borderGray: '#e9ecef'
-          },
-          boxShadow: {
-            sm: '0 1px 2px rgba(0,0,0,0.05)',
-            lg: '0 10px 20px rgba(0,0,0,0.12)'
-          }
-        }
-      }
-    }
-  </script>
 
-  <!-- FontAwesome -->
+  <!-- Font Awesome 6 -->
   <link
-    rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-..."
-    crossorigin="anonymous"
+    rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="global.css">
+  <!-- Custom iLoveIMG Styles -->
+  <style>
+    :root {
+      --brand-blue: #046bd2;
+      --brand-blue-hover: #0056b3;
+      --bg-main: #f2f5f8;
+      --bg-card: #ffffff;
+      --text-header: #333333;
+      --text-sub: #474747;
+      --action-orange: #ff914d;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-sub);
+    }
+
+    .card-shadow {
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,.08);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+
+    .transition-standard {
+      transition: all 0.25s ease;
+    }
+
+    .tool-card {
+      border-top: 4px solid var(--brand-blue);
+      border-radius: 8px;
+      background-color: var(--bg-card);
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+  </style>
 </head>
 
-<body class="bg-bg font-inter text-gray-800">
+<body class="antialiased">
 
-  <!-- NAVBAR -->
-  <header class="bg-white border-b border-borderGray">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="text-xl font-semibold text-primary">iLoveIMG</div>
-      <nav class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="#" class="hover:text-primary">Tools</a>
-        <a href="#" class="hover:text-primary">Features</a>
-        <a href="#" class="hover:text-primary">About</a>
-      </nav>
+  <!-- HEADER -->
+  <header class="fixed top-0 w-full bg-white z-50 shadow-sm">
+    <div class="max-w-[1200px] mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <div class="flex items-baseline space-x-0.5">
+          <span class="text-xl font-bold text-black">iLove</span>
+          <span class="text-xl font-light text-[#046bd2]">IMG</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold text-[#333333]">
+          <a href="#" class="hover:text-[#046bd2]">CONVERT TO JPG</a>
+          <a href="#" class="hover:text-[#046bd2]">RESIZE IMAGE</a>
+          <a href="#" class="hover:text-[#046bd2]">EDIT PHOTO</a>
+
+          <!-- Dropdown -->
+          <div class="relative dropdown">
+            <button class="hover:text-[#046bd2] flex items-center gap-1">
+              VIEW ALL TOOLS
+              <i class="fa-solid fa-chevron-down text-xs"></i>
+            </button>
+            <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-md card-shadow">
+              <ul class="py-2 text-sm">
+                <li><a class="block px-4 py-2 hover:bg-gray-100" href="#">Compress Image</a></li>
+                <li><a class="block px-4 py-2 hover:bg-gray-100" href="#">Crop Image</a></li>
+                <li><a class="block px-4 py-2 hover:bg-gray-100" href="#">Watermark</a></li>
+                <li><a class="block px-4 py-2 hover:bg-gray-100" href="#">Remove BG</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Mobile Menu Icon -->
+        <div class="md:hidden">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </div>
+
+      </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="text-center py-14 px-4 fade-in">
-    <h1 class="text-3xl md:text-4xl font-semibold mb-4">
-      Every image tool you need — 100% in your browser
-    </h1>
-    <p class="text-gray-600 max-w-2xl mx-auto">
-      Compress, resize, edit, convert, and enhance images securely with zero uploads.
-    </p>
-  </section>
+  <!-- MAIN CONTENT -->
+  <main class="pt-24 pb-16">
+    <div class="max-w-[1200px] mx-auto px-4">
 
-  <!-- TOOL GRID -->
-  <main class="max-w-7xl mx-auto px-4 pb-20">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Tool Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-      <!-- TOOL CARD TEMPLATE -->
-      <!-- Duplicate pattern for all 13 tools -->
+        <!-- Tool Card Template -->
+        <!-- Repeat for all tools -->
 
-      <a href="compress.html" class="tool-card">
-        <i class="fa-solid fa-file-zipper tool-icon"></i>
-        <h3>Compress Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-compress text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">COMPRESS IMAGE</h3>
+          <p class="text-sm">Reduce image file size without losing quality.</p>
+        </div>
 
-      <a href="resize.html" class="tool-card">
-        <i class="fa-solid fa-up-right-and-down-left-from-center tool-icon"></i>
-        <h3>Resize Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-up-down-left-right text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">RESIZE IMAGE</h3>
+          <p class="text-sm">Resize images by pixels or percentage.</p>
+        </div>
 
-      <a href="crop.html" class="tool-card">
-        <i class="fa-solid fa-crop-simple tool-icon"></i>
-        <h3>Crop Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-crop-simple text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">CROP IMAGE</h3>
+          <p class="text-sm">Crop images to remove unwanted areas.</p>
+        </div>
 
-      <a href="jpg.html" class="tool-card">
-        <i class="fa-solid fa-file-image tool-icon"></i>
-        <h3>Convert to JPG</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-file-image text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">CONVERT TO JPG</h3>
+          <p class="text-sm">Convert PNG, GIF, TIFF to JPG.</p>
+        </div>
 
-      <a href="from-jpg.html" class="tool-card">
-        <i class="fa-solid fa-file-export tool-icon"></i>
-        <h3>Convert from JPG</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-repeat text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">CONVERT FROM JPG</h3>
+          <p class="text-sm">Convert JPG images to other formats.</p>
+        </div>
 
-      <a href="editor.html" class="tool-card">
-        <i class="fa-solid fa-pen-ruler tool-icon"></i>
-        <h3>Photo Editor</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-pen-nib text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">PHOTO EDITOR</h3>
+          <p class="text-sm">Edit photos directly in your browser.</p>
+        </div>
 
-      <a href="meme.html" class="tool-card">
-        <i class="fa-solid fa-face-laugh tool-icon"></i>
-        <h3>Meme Generator</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-copyright text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">WATERMARK</h3>
+          <p class="text-sm">Add text or image watermarks.</p>
+        </div>
 
-      <a href="rotate.html" class="tool-card">
-        <i class="fa-solid fa-rotate tool-icon"></i>
-        <h3>Rotate Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-face-laugh text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">MEME GENERATOR</h3>
+          <p class="text-sm">Create memes online easily.</p>
+        </div>
 
-      <a href="watermark.html" class="tool-card">
-        <i class="fa-solid fa-droplet tool-icon"></i>
-        <h3>Watermark</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-rotate-right text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">ROTATE IMAGE</h3>
+          <p class="text-sm">Rotate images in the correct orientation.</p>
+        </div>
 
-      <a href="html-image.html" class="tool-card">
-        <i class="fa-solid fa-code tool-icon"></i>
-        <h3>HTML to Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-code text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">HTML TO IMAGE</h3>
+          <p class="text-sm">Convert HTML into image files.</p>
+        </div>
 
-      <a href="blur-face.html" class="tool-card">
-        <i class="fa-solid fa-user-secret tool-icon"></i>
-        <h3>Blur Face</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-user-secret text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">BLUR FACE</h3>
+          <p class="text-sm">Automatically blur faces in photos.</p>
+        </div>
 
-      <a href="upscale.html" class="tool-card">
-        <i class="fa-solid fa-wand-magic-sparkles tool-icon"></i>
-        <h3>Upscale Image</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-up-right-and-down-left-from-center text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">UPSCALE IMAGE</h3>
+          <p class="text-sm">Increase image resolution with AI.</p>
+        </div>
 
-      <a href="remove-bg.html" class="tool-card">
-        <i class="fa-solid fa-scissors tool-icon"></i>
-        <h3>Remove Background</h3>
-      </a>
+        <div class="tool-card card-shadow card-hover transition-standard p-6 text-center">
+          <i class="fa-solid fa-scissors text-4xl text-[#046bd2] mb-4"></i>
+          <h3 class="font-bold text-[#333333] text-sm mb-2">REMOVE BACKGROUND</h3>
+          <p class="text-sm">Remove image backgrounds automatically.</p>
+        </div>
 
+      </div>
     </div>
   </main>
 
