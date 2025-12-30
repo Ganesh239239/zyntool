@@ -113,3 +113,41 @@ footer {
 }
 
 footer { background: var(--footer-bg); padding: 40px 0; margin-top: auto; }
+
+/* Update Navbar styles in css/style.css */
+
+.navbar { 
+    padding: 10px 0; 
+    background: #fff; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    height: 80px; 
+}
+
+/* Make nav links look like main items */
+.nav-link {
+    font-size: 1rem;
+    padding: 10px 15px !important;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #f4f7fa;
+    color: var(--primary-blue) !important;
+}
+
+/* Remove the blue focus outline from svg button */
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* Footer mobile links adjustment */
+@media (max-width: 767px) {
+    .navbar-collapse {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+}
