@@ -1,59 +1,71 @@
 :root {
-    --primary-blue: #4285f4;
-    --dark-bg: #161616;
-    --card-hover: #f8f9fa;
+    --primary-blue: #006DFF;
+    --dark-text: #161616;
+    --muted-text: #666;
+    --bg-light: #f2f3f5;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: var(--bg-light);
 }
 
-/* Header Adjustments */
-.navbar-brand img {
-    height: 40px;
-}
-
-.signup-btn {
+.btn-primary, .btn-signup {
     background-color: var(--primary-blue);
     border: none;
-    padding: 10px 20px;
-    font-weight: 500;
+    font-weight: 700;
+    padding: 10px 25px;
 }
 
-/* Hero Section */
-.hero {
-    padding: 60px 0 40px;
+.navbar {
+    height: 70px;
 }
 
-.hero h1 {
-    color: var(--dark-bg);
-}
-
-/* Tool Cards */
 .tool-card {
-    background: white;
-    border-radius: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
+    background: #fff;
+    border-radius: 12px;
+    height: 100%;
+    transition: all 0.3s ease;
     border: 1px solid transparent;
 }
 
 .tool-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    background-color: var(--card-hover);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+    background-color: #fcfcfc;
 }
 
-.tool-card h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+.icon-wrapper img {
+    width: 65px;
+    height: 65px;
 }
 
-.icon-box img {
-    width: 60px;
-    height: 60px;
+/* Tool Page Specifics */
+.tool-work-area {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+.editor-main {
+    flex-grow: 1;
+    background: #e8eaed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.editor-sidebar {
+    width: 350px;
+    background: white;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+}
+
+.upload-box {
+    border: 3px dashed var(--primary-blue);
+    background: white;
+    padding: 60px;
+    border-radius: 20px;
+    cursor: pointer;
 }
