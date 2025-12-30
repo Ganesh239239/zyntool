@@ -1,1 +1,51 @@
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
 
+.pill {
+    padding: 8px 24px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pill.active { background: #333; color: white; border-color: #333; }
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.tool-card {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 30px 20px;
+    border-radius: 12px;
+    position: relative;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.tool-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+.tool-icon {
+    width: 44px; height: 44px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 15px; color: white; font-size: 20px;
+}
+
+.icon-green { background: #81c784; }
+.icon-blue { background: #64b5f6; }
+.icon-lightgreen { background: #aed581; }
+
+.badge-new {
+    position: absolute; top: 15px; right: 15px;
+    background: #e3f2fd; color: var(--brand-blue);
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+}
