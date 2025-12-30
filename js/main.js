@@ -1,10 +1,9 @@
 // js/main.js
 
-// Import Tool Modules
 import compress from './tools/compress.js';
 import resize from './tools/resize.js';
 import crop from './tools/crop.js';
-import convert from './tools/convert.js'; // Handles tojpg & fromjpg
+import convert from './tools/convert.js';
 import editor from './tools/editor.js';
 import upscale from './tools/upscale.js';
 import removebg from './tools/removebg.js';
@@ -14,7 +13,6 @@ import rotate from './tools/rotate.js';
 import html2image from './tools/html2image.js';
 import blur from './tools/blur.js';
 
-// Registry
 const TOOLS = {
     'compress': compress,
     'resize': resize,
@@ -40,12 +38,37 @@ const App = {
         window.addEventListener('hashchange', () => this.router());
         window.addEventListener('load', () => this.router());
         
-        // Listeners
+        // Listeners for Tools
         document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
         document.getElementById('fileInput').addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         document.getElementById('btnProcess').addEventListener('click', () => this.execute());
         document.getElementById('btnRenderHtml').addEventListener('click', () => this.handleHtmlInput());
         document.getElementById('btnReset').addEventListener('click', (e) => { e.preventDefault(); this.resetUI(); });
+
+        // Initialize Filter Logic
+        this.initFilters();
+    },
+
+    // --- NEW FILTER LOGIC ---
+    initFilters() {
+        const buttons = document.querySelectorAll('#filterContainer .btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // 1. UI Update
+                buttons.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                // 2. Filter Grid
+                const category = e.target.dataset.filter;
+                document.querySelectorAll('.tool-item').forEach(item => {
+                    if (category === 'all' || item.dataset.category.includes(category)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
     },
 
     router() {
@@ -57,6 +80,9 @@ const App = {
             home.classList.add('active');
             workspace.classList.remove('active');
             this.resetUI();
+            
+            // Re-run filter logic to show all tools when returning home
+            document.querySelector('[data-filter="all"]').click();
         } else {
             home.classList.remove('active');
             workspace.classList.add('active');
@@ -68,7 +94,6 @@ const App = {
         this.currentToolId = toolId;
         this.currentToolModule = TOOLS[toolId];
         this.resetUI();
-
         document.getElementById('workspaceTitle').innerText = this.currentToolModule.title;
         
         if (toolId === 'html2image') {
@@ -80,26 +105,19 @@ const App = {
     handleFile(file) {
         if(!file) return;
         this.currentFile = file;
-        
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.getElementById('imagePreview');
             img.onload = () => {
                 document.getElementById('dropZone').style.display = 'none';
                 document.getElementById('processingArea').style.display = 'block';
-                
-                // Render Tool Options
                 const opts = document.getElementById('optionsPanel');
                 if(this.currentToolModule.renderUI) {
                     opts.innerHTML = this.currentToolModule.renderUI(img.naturalWidth, img.naturalHeight);
                 } else {
                     opts.innerHTML = '<div class="text-muted">Ready to process.</div>';
                 }
-
-                // Init Tool Logic (e.g. Cropper)
-                if(this.currentToolModule.init) {
-                    this.currentToolModule.init(img);
-                }
+                if(this.currentToolModule.init) this.currentToolModule.init(img);
             };
             img.src = e.target.result;
         };
@@ -114,7 +132,6 @@ const App = {
         const render = document.getElementById('htmlRender');
         render.style.display = 'inline-block';
         render.innerHTML = code;
-        // Tool has already been loaded by router, HTML is just the input method
     },
 
     async execute() {
@@ -124,17 +141,13 @@ const App = {
 
         try {
             const img = document.getElementById('imagePreview');
-            
-            // Execute Tool
             let blob;
             if(this.currentToolId === 'html2image') {
-                 // Special HTML handling passed to tool
                  blob = await this.currentToolModule.process(document.getElementById('htmlRender'));
             } else {
                  blob = await this.currentToolModule.process(img, this.currentFile, this.currentToolId);
             }
 
-            // Show Result
             const url = URL.createObjectURL(blob);
             document.getElementById('resultImage').src = url;
             document.getElementById('downloadLink').href = url;
@@ -142,7 +155,6 @@ const App = {
             
             document.getElementById('processingArea').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
-
         } catch (error) {
             console.error(error);
             alert("Error processing image.");
@@ -153,9 +165,7 @@ const App = {
     },
 
     resetUI() {
-        if(this.currentToolModule && this.currentToolModule.cleanup) {
-            this.currentToolModule.cleanup();
-        }
+        if(this.currentToolModule && this.currentToolModule.cleanup) this.currentToolModule.cleanup();
         this.currentFile = null;
         document.getElementById('fileInput').value = '';
         document.getElementById('dropZone').style.display = 'block';
