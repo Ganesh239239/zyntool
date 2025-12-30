@@ -64,7 +64,7 @@
             border-radius: 12px;
             padding: 10px;
             margin-top: 15px;
-            right: 0; /* Aligns dropdown to the right edge */
+            right: 0; 
             left: auto;
         }
         .dropdown-item {
@@ -120,7 +120,6 @@
         }
         .filter-pills .btn:hover { background-color: #f8f9fa; }
         
-        /* Active State for Filters */
         .filter-pills .btn.active {
             background-color: #2d3e50;
             color: white;
@@ -207,38 +206,28 @@
         footer {
             background-color: var(--footer-bg);
             color: #b0b3b8;
-            padding-top: 60px;
-            padding-bottom: 30px;
+            padding: 40px 0;
             font-size: 0.9rem;
             margin-top: auto;
         }
-        footer h5 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        footer ul { list-style: none; padding: 0; }
-        footer ul li { margin-bottom: 12px; }
-        footer ul li a { color: #b0b3b8; text-decoration: none; transition: 0.2s; }
-        footer ul li a:hover { color: white; }
         
-        /* Centered Company Section specific style */
-        .footer-company-col {
+        /* Footer Links */
+        .footer-links {
+            padding: 0;
+            margin: 0;
+            list-style: none;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            gap: 20px;
         }
-
-        .store-btn {
-            border: 1px solid #555;
-            border-radius: 8px;
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            color: white;
+        .footer-links li a {
+            color: #b0b3b8;
             text-decoration: none;
-            margin-bottom: 12px;
-            width: fit-content;
             transition: 0.2s;
-            text-align: left;
+            font-weight: 500;
         }
-        .store-btn:hover { border-color: white; background: rgba(255,255,255,0.05); }
+        .footer-links li a:hover {
+            color: white;
+        }
 
         /* --- MOBILE SPECIFIC --- */
         @media (max-width: 767px) {
@@ -249,7 +238,6 @@
             .hero h1 { font-size: 1.75rem; }
             .hero p { font-size: 1rem; margin-bottom: 20px; }
             
-            /* Stack filter pills */
             .filter-pills { 
                 display: flex; 
                 flex-wrap: wrap; 
@@ -266,8 +254,16 @@
                 display: block; 
             }
             
-            footer h5 { margin-top: 20px; }
-            .store-btn { width: 100%; justify-content: center; }
+            /* Center Footer on Mobile */
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
@@ -455,54 +451,21 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <!-- Main Content: Only Company Section -->
-            <div class="row justify-content-center text-center">
-                <div class="col-12 footer-company-col">
-                    <h5>Company</h5>
-                    <ul class="d-flex gap-3 justify-content-center flex-wrap mb-4">
-                        <li><a href="#">About us</a></li>
-                        <li><a href="#">Contact us</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Press</a></li>
-                    </ul>
+            <div class="d-flex justify-content-between align-items-center footer-content">
+                
+                <!-- Left Side: Company Menus -->
+                <ul class="footer-links">
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contact us</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
 
-                    <div class="d-flex gap-3 flex-wrap justify-content-center">
-                        <a href="#" class="store-btn">
-                            <i class="fa-brands fa-google-play fa-lg me-3"></i>
-                            <div class="store-text">
-                                <span class="d-block" style="font-size: 0.7rem">GET IT ON</span>
-                                <strong>Google Play</strong>
-                            </div>
-                        </a>
-                        <a href="#" class="store-btn">
-                            <i class="fa-brands fa-apple fa-lg me-3"></i>
-                            <div class="store-text">
-                                <span class="d-block" style="font-size: 0.7rem">Download on the</span>
-                                <strong>App Store</strong>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <hr class="border-secondary my-5">
-            
-            <!-- Copyright / Language Section -->
-            <div class="d-flex justify-content-between flex-wrap align-items-center flex-column-reverse flex-md-row gap-3">
-                <div class="dropdown w-100 w-md-auto text-center text-md-start">
-                    <button class="btn btn-outline-secondary dropdown-toggle text-light border-secondary btn-sm" type="button">
-                        <i class="fa-solid fa-globe"></i> English
-                    </button>
-                </div>
-                <div class="text-center text-md-end w-100 w-md-auto">
+                <!-- Right Side: Copyright -->
+                <div class="text-md-end">
                     <span class="small">© iLoveIMG 2025 ® - Your Image Editor</span>
                 </div>
-            </div>
-            
-             <div class="text-center mt-4 d-md-none">
-                <a href="#" class="text-secondary mx-2"><i class="fa-brands fa-twitter fa-lg"></i></a>
-                <a href="#" class="text-secondary mx-2"><i class="fa-brands fa-facebook fa-lg"></i></a>
-                <a href="#" class="text-secondary mx-2"><i class="fa-brands fa-linkedin fa-lg"></i></a>
+                
             </div>
         </div>
     </footer>
