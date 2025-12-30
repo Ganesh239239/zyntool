@@ -1,0 +1,32 @@
+.site-header {
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #e1e4e8;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.container-header {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
+    padding: 0 24px;
+}
+
+.logo { font-size: 24px; font-weight: 700; text-decoration: none; color: #47474f; }
+.logo span { color: var(--brand-blue); }
+
+.btn-signup {
+    background: var(--brand-blue);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.grid-icon { font-size: 20px; color: #47474f; cursor: pointer; margin-left: 20px; }
