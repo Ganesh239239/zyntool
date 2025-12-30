@@ -4,71 +4,100 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Compress Image - ZynTool</title>
+  
+  <!-- Main Styles (Header/Footer) -->
   <link rel="stylesheet" href="../css/style.css">
-  <style>
-    /* Tool Specific Styles */
-    .tool-main { max-width: 800px; margin: 40px auto; padding: 0 16px; text-align: center; }
-    .upload-box { 
-      background: #fff; border: 2px dashed #3b82f6; border-radius: 16px; 
-      padding: 60px 20px; cursor: pointer; transition: 0.3s;
-    }
-    .upload-box:hover { background: #f0f7ff; }
-    .upload-box h2 { margin: 0; color: #3b82f6; }
-    
-    .settings { margin-top: 30px; background: #fff; padding: 20px; border-radius: 12px; display: none; }
-    .preview-container { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .preview-card img { max-width: 100%; border-radius: 8px; border: 1px solid #ddd; }
-    
-    .btn-compress { 
-      background: #3b82f6; color: white; border: none; padding: 15px 40px; 
-      font-size: 18px; border-radius: 8px; cursor: pointer; margin-top: 20px; 
-    }
-    .download-link { 
-      display: none; background: #10b981; color: white; text-decoration: none; 
-      padding: 15px 40px; border-radius: 8px; margin-top: 20px; font-weight: bold;
-    }
-    input[type="range"] { width: 100%; margin: 10px 0; }
-  </style>
+  <!-- Tool Specific Styles -->
+  <link rel="stylesheet" href="../css/tool-layout.css">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="tool-page">
 
 <header class="header">
   <div class="header-inner">
     <div class="logo" onclick="location.href='../index.html'">Zyn<span>Tool</span></div>
+    <div class="menu" id="menuBtn">☰</div>
   </div>
+  <nav class="nav" id="navMenu">
+    <a href="../index.html">Home</a>
+    <a href="#">Optimize</a>
+    <a href="#">Edit</a>
+    <a href="#">Convert</a>
+  </nav>
 </header>
 
-<main class="tool-main">
-  <h1>Compress IMAGE</h1>
-  <p>Reduce the file size of your images without losing quality.</p>
-
-  <!-- Step 1: Upload -->
-  <div class="upload-box" id="dropZone">
-    <h2>Select Images</h2>
-    <p>or drop images here</p>
-    <input type="file" id="fileInput" hidden accept="image/jpeg, image/png">
+<main class="premium-wrapper">
+  <div class="tool-intro">
+    <h1>Compress IMAGE</h1>
+    <p>The most advanced browser-based compression. Faster, safer, and 100% free.</p>
   </div>
 
-  <!-- Step 2: Settings & Preview -->
-  <div class="settings" id="settingsArea">
-    <label>Compression Quality: <span id="qualVal">70</span>%</label>
-    <input type="range" id="quality" min="10" max="100" value="70">
-    
-    <div class="preview-container">
-      <div class="preview-card">
-        <p>Original</p>
-        <div id="origInfo">--</div>
-      </div>
-      <div class="preview-card">
-        <p>Compressed</p>
-        <div id="newInfo">--</div>
-      </div>
+  <div class="workspace">
+    <!-- 1. Upload Section -->
+    <div class="upload-container" id="dropZone">
+      <div class="icon-circle"><i class="fa-solid fa-file-image"></i></div>
+      <h2>Choose your Image</h2>
+      <p>Drag and drop or click to browse</p>
+      <button class="btn-primary">Select File</button>
+      <input type="file" id="fileInput" hidden accept="image/*">
     </div>
 
-    <button class="btn-compress" id="compressBtn">Compress Now</button>
-    <a href="#" id="downloadBtn" class="download-link">Download Compressed Image</a>
+    <!-- 2. Editor Section (Hidden by default) -->
+    <div class="editor-layout" id="editorLayout" style="display: none;">
+      <div class="preview-panel">
+        <div class="image-box">
+           <img id="imagePreview" src="" alt="Preview">
+           <div class="badge">Original Image</div>
+        </div>
+        <div class="stats-row">
+            <div class="stat"><span>Original</span> <b id="origSize">0 KB</b></div>
+            <div class="stat"><span>New Size</span> <b id="newSize" class="text-blue">0 KB</b></div>
+            <div class="stat"><span>Saving</span> <b id="savePercent" class="text-green">0%</b></div>
+        </div>
+      </div>
+
+      <div class="settings-panel">
+        <h3>Compression Settings</h3>
+        <div class="setting-group">
+          <label>Quality: <span id="qLabel" class="text-blue">75%</span></label>
+          <input type="range" id="qualityRange" min="5" max="100" value="75" style="width:100%">
+        </div>
+        <button class="btn-action" id="processBtn">Compress & Download</button>
+        <button style="width:100%; background:none; border:none; color:#666; margin-top:15px; cursor:pointer;" onclick="location.reload()">← Cancel</button>
+      </div>
+    </div>
   </div>
 </main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-col">
+      <div class="logo">Zyn<span>Tool</span></div>
+      <p class="footer-desc">Professional image tools for everyone.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Optimize</h4>
+      <ul>
+        <li><a href="compress.html">Compress Image</a></li>
+        <li><a href="#">Resize Image</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <p>&copy; 2024 ZynTool. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
 
 <script src="../js/tools/compress.js"></script>
 </body>
