@@ -3,77 +3,46 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
-    padding-bottom: 80px;
+    padding: 40px 0 80px;
 }
 
 .tool-card {
     background: #fff;
     border: 1px solid #eee;
-    padding: 35px 20px;
     border-radius: 12px;
+    padding: 30px;
     text-align: center;
-    transition: 0.3s ease;
-    text-decoration: none !important;
+    transition: 0.3s;
+    display: block; /* Essential for Desktop */
 }
 
-.tool-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-}
-
-.icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    margin: 0 auto 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 22px;
-}
-
-/* MOBILE LIST LAYOUT - FIXED ALIGNMENT (Image 21) */
+/* MOBILE OVERLAP FIX */
 @media (max-width: 768px) {
     .tools-grid {
         grid-template-columns: 1fr;
-        gap: 12px; /* Spacing between bars */
-        padding: 0 15px 40px;
+        gap: 12px;
+        padding: 20px 15px;
     }
 
     .tool-card {
-        display: flex !important;
+        display: flex !important; /* Forces List Bar style */
         align-items: center;
         text-align: left;
-        padding: 20px;
+        padding: 15px 20px;
         min-height: 90px;
     }
 
     .icon-box {
-        margin: 0 20px 0 0 !important; /* Fixed gap between icon and text */
-        min-width: 52px; /* Prevent icon from shrinking */
+        flex-shrink: 0; /* CRITICAL: Stops the overlap */
+        margin: 0 20px 0 0 !important;
+        width: 52px;
         height: 52px;
     }
 
-    .tool-text {
-        flex: 1; /* Makes text take up remaining space */
+    .tool-info {
+        flex-grow: 1;
     }
 
-    .tool-text h3 {
-        font-size: 17px;
-        font-weight: 700;
-        margin-bottom: 4px;
-        line-height: 1.2;
-    }
-
-    .tool-text p {
-        font-size: 13px;
-        color: #777;
-        line-height: 1.4;
-        margin: 0;
-    }
+    .tool-info h3 { font-size: 16px; margin-bottom: 2px; }
+    .tool-info p { font-size: 12px; line-height: 1.3; margin: 0; }
 }
-
-/* Colors */
-.bg-green { background: #81c784; } .bg-blue { background: #64b5f6; } 
-.bg-cyan { background: #4dd0e1; } .bg-yellow { background: #ffd54f; }
