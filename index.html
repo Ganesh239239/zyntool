@@ -12,12 +12,11 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Cropper.js CSS (For Crop Tool) -->
+    <!-- Cropper.js -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 
     <!-- LIBRARIES -->
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -27,6 +26,7 @@
             --dark-text: #2c3e50;
             --light-bg: #f4f7fa;
             --footer-bg: #1f2227;
+            --premium-gold: #FFC107;
         }
 
         body {
@@ -40,74 +40,78 @@
         }
 
         /* --- Navbar --- */
-        .navbar { padding: 12px 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; }
-        .navbar-brand { font-weight: 800; font-size: 1.6rem; color: #333; letter-spacing: -1px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .navbar-brand i { color: #4B90FF; font-size: 1.4rem; } 
-        .navbar-toggler { border: none; font-size: 1.5rem; color: #333; padding-right: 0; }
-        .dropdown-menu { border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; padding: 10px; margin-top: 15px; right: 0; left: auto; }
+        .navbar { padding: 15px 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; }
+        .navbar-brand { font-weight: 800; font-size: 1.8rem; color: #333; letter-spacing: -1px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .navbar-brand i { color: #4B90FF; font-size: 1.5rem; } 
+        .dropdown-menu { border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; padding: 10px; right: 0; left: auto; }
         .dropdown-item { font-weight: 500; padding: 10px 20px; border-radius: 8px; color: #555; }
         .dropdown-item:hover { background-color: #f4f7fa; color: var(--primary-blue); }
 
         /* --- Hero --- */
-        .hero { background-color: var(--light-bg); padding: 40px 0 30px; text-align: center; }
-        .hero h1 { font-weight: 800; color: #333; font-size: 2.8rem; margin-bottom: 15px; line-height: 1.2; }
-        .hero p { font-size: 1.3rem; color: #666; margin-bottom: 25px; font-weight: 400; }
-        .filter-pills { gap: 10px; padding-bottom: 20px; }
-        .filter-pills .btn { border-radius: 50px; padding: 8px 24px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #555; transition: 0.2s; }
+        .hero { background-color: var(--light-bg); padding: 60px 0 40px; text-align: center; }
+        .hero h1 { font-weight: 800; color: #333; font-size: 3rem; margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: 1.3rem; color: #666; margin-bottom: 30px; font-weight: 400; }
+        .filter-pills .btn { border-radius: 50px; padding: 8px 24px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #555; margin: 0 5px; transition: 0.2s; }
         .filter-pills .btn.active { background-color: #2d3e50; color: white; border-color: #2d3e50; }
 
         /* --- Tools Grid --- */
         .tools-section { background-color: var(--light-bg); padding-bottom: 80px; flex-grow: 1; }
-        .tool-card { background: white; border-radius: 12px; padding: 24px; height: 100%; transition: transform 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; text-align: left; }
+        .tool-card { background: white; border-radius: 12px; padding: 30px 24px; height: 100%; transition: transform 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; text-align: left; border: 1px solid transparent; }
         .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--primary-blue); z-index: 2; }
         .icon-box { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 18px; font-size: 1.8rem; }
         .tool-card h5 { font-weight: 700; margin-bottom: 8px; font-size: 1.2rem; color: #333; }
         .tool-card p { font-size: 0.95rem; color: #666; line-height: 1.5; margin-bottom: 0; }
         .badge-new { position: absolute; top: 15px; right: 15px; background-color: #E3F2FD; color: #2196F3; font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
 
-        /* Colors */
         .ic-green { background-color: #E8F5E9; color: #4CAF50; }
         .ic-blue { background-color: #E3F2FD; color: #2196F3; }
         .ic-yellow { background-color: #FFF8E1; color: #FFC107; }
         .ic-purple { background-color: #F3E5F5; color: #9C27B0; }
 
         /* --- Workspace --- */
-        #toolWorkspace { display: none; background: #fff; min-height: 80vh; padding: 40px 0; animation: slideUp 0.3s ease-out; }
+        #toolWorkspace { display: none; background: #fff; min-height: 85vh; padding-top: 60px; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .uploader-zone { border: 3px dashed #e0e0e0; border-radius: 20px; padding: 60px 20px; text-align: center; background: #fafafa; transition: 0.3s; cursor: pointer; margin-bottom: 30px; }
+        /* Fixed: Spacing for Back Button */
+        .workspace-header { margin-bottom: 40px; margin-top: 20px; }
+
+        .uploader-zone { border: 3px dashed #e0e0e0; border-radius: 20px; padding: 80px 20px; text-align: center; background: #fafafa; transition: 0.3s; cursor: pointer; margin-bottom: 30px; }
         .uploader-zone:hover { border-color: var(--primary-blue); background: #f0f7ff; }
         
         .preview-container { 
-            background: #eee; 
+            background: #2c3e50; /* Dark background for better contrast */
             padding: 20px; 
             border-radius: 12px; 
             margin-bottom: 20px; 
             overflow: hidden; 
             text-align: center; 
-            max-height: 500px;
+            min-height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .preview-container img { max-width: 100%; max-height: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .preview-container img { max-width: 100%; max-height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
-        .options-panel { background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: left; }
-        .btn-action { background-color: var(--primary-blue); color: white; font-weight: 700; padding: 15px 40px; border-radius: 12px; border: none; transition: 0.2s; width: 100%; }
+        /* Premium Options Styling */
+        .options-panel { background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 12px; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .premium-badge { background-color: var(--premium-gold); color: #333; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
+        
+        .btn-action { background-color: var(--primary-blue); color: white; font-weight: 700; padding: 15px 40px; border-radius: 12px; border: none; transition: 0.2s; width: 100%; font-size: 1.1rem; }
         .btn-action:hover { background-color: #3a7bd5; }
-        .btn-action:disabled { background-color: #ccc; }
+        .btn-action:disabled { background-color: #ccc; cursor: not-allowed; }
 
         /* --- Footer --- */
-        footer { background-color: var(--footer-bg); color: #b0b3b8; padding: 40px 0; font-size: 0.9rem; margin-top: auto; }
-        .footer-links { list-style: none; display: flex; gap: 20px; padding: 0; }
-        .footer-links a { color: #b0b3b8; text-decoration: none; }
+        footer { background-color: var(--footer-bg); color: #b0b3b8; padding: 50px 0; font-size: 0.9rem; margin-top: auto; }
+        .footer-links { list-style: none; display: flex; gap: 25px; padding: 0; margin: 0; }
+        .footer-links a { color: #b0b3b8; text-decoration: none; transition: 0.2s; }
         .footer-links a:hover { color: white; }
 
         @media (max-width: 767px) {
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { font-size: 2rem; }
             .filter-pills { justify-content: center; flex-wrap: wrap; }
             .footer-content { flex-direction: column; text-align: center; gap: 20px; }
-            .footer-links { justify-content: center; }
+            .footer-links { justify-content: center; flex-wrap: wrap; }
+            .tool-card { padding: 20px; }
         }
     </style>
 </head>
@@ -135,11 +139,11 @@
 
     <!-- MAIN HOME VIEW -->
     <div id="homeView">
-        <section class="hero mt-5 pt-5">
+        <section class="hero mt-5">
             <div class="container">
                 <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
                 <p>Your online photo editor is here and forever free!</p>
-                <div class="d-flex justify-content-center filter-pills mt-3">
+                <div class="d-flex justify-content-center filter-pills mt-4">
                     <button class="btn active" onclick="filterTools('all', this)">All</button>
                     <button class="btn" onclick="filterTools('optimize', this)">Optimize</button>
                     <button class="btn" onclick="filterTools('create', this)">Create</button>
@@ -152,8 +156,8 @@
 
         <section class="tools-section">
             <div class="container">
-                <div class="row g-3" id="toolsGrid">
-                    <!-- Tools List -->
+                <div class="row g-4" id="toolsGrid">
+                    <!-- Optimized Tools List -->
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('compress')">
                         <div class="tool-card"><div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div><h5>Compress IMAGE</h5><p>Compress JPG, PNG, SVG, GIF.</p></div>
                     </div>
@@ -199,66 +203,77 @@
     </div>
 
     <!-- WORKSPACE VIEW -->
-    <div id="toolWorkspace" class="mt-5 pt-4">
+    <div id="toolWorkspace">
         <div class="container">
-            <div class="mb-4">
-                <button class="btn btn-outline-secondary btn-sm" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> Back to tools</button>
-            </div>
-
-            <div class="text-center mb-4">
-                <h2 class="fw-bold display-6" id="workspaceTitle">Tool</h2>
+            <!-- Fixed Margin Layout -->
+            <div class="workspace-header">
+                <button class="btn btn-outline-secondary btn-sm mb-3" onclick="goHome()">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to tools
+                </button>
+                <div class="text-center">
+                    <h2 class="fw-bold display-6 mb-1" id="workspaceTitle">Tool</h2>
+                    <p class="text-muted" id="workspaceDesc">Process your images easily</p>
+                </div>
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     
-                    <!-- 1. Upload -->
+                    <!-- 1. Upload Zone -->
                     <div class="uploader-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                        <i class="fa-solid fa-cloud-arrow-up fa-4x text-primary mb-3"></i>
-                        <h3>Select an image</h3>
-                        <p class="text-muted">or drop it here</p>
-                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <div class="mb-4"><i class="fa-solid fa-cloud-arrow-up fa-5x text-primary"></i></div>
+                        <h3 class="fw-bold">Select images</h3>
+                        <p class="text-muted">or drop them here</p>
+                        <!-- Added 'multiple' for premium feel -->
+                        <input type="file" id="fileInput" accept="image/*" multiple hidden>
                     </div>
 
                     <!-- 1a. HTML Input Special Case -->
                     <div id="htmlInputZone" style="display:none;" class="mb-4">
-                        <label class="form-label fw-bold">Enter HTML Code</label>
-                        <textarea id="htmlCode" class="form-control" rows="5" placeholder="<h1>Hello World</h1><p>Type html here...</p>"></textarea>
-                        <button class="btn btn-primary mt-3 w-100" onclick="processHtml()">Render HTML</button>
+                        <div class="card p-4 shadow-sm border-0 bg-light">
+                            <label class="form-label fw-bold">Enter HTML Code</label>
+                            <textarea id="htmlCode" class="form-control font-monospace" rows="5" placeholder="<div style='color:red; font-size:40px;'>Hello World</div>"></textarea>
+                            <button class="btn btn-primary mt-3 w-100 py-2" onclick="processHtml()">
+                                <i class="fa-solid fa-code me-2"></i> Render HTML
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 2. Processing Area -->
                     <div id="processingArea" style="display: none;" class="fade-in">
                         
-                        <!-- Preview -->
+                        <!-- Main Preview -->
                         <div class="preview-container">
                             <img id="imagePreview" src="">
-                            <!-- Hidden HTML Render Container -->
-                            <div id="htmlRender" style="background:white; padding:20px; display:inline-block; text-align:left;"></div>
+                            <div id="htmlRender" style="background:white; padding:40px; display:inline-block; text-align:left; min-width: 300px;"></div>
                         </div>
 
                         <!-- Dynamic Options Panel -->
-                        <div class="options-panel" id="optionsPanel">
+                        <div class="options-panel shadow-sm" id="optionsPanel">
                             <!-- Injected via JS -->
                         </div>
 
                         <!-- Action Button -->
-                        <button class="btn btn-action" id="btnProcess" onclick="executeTool()">
+                        <button class="btn btn-action shadow" id="btnProcess" onclick="executeTool()">
                             <i class="fa-solid fa-gear me-2"></i> <span id="btnProcessText">Process Image</span>
                         </button>
                     </div>
 
-                    <!-- 3. Result -->
-                    <div id="resultArea" class="text-center" style="display:none; background: #fff; border-radius:12px; padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
-                        <h4 class="text-success"><i class="fa-solid fa-circle-check"></i> Success!</h4>
-                        <div class="my-3">
-                            <img id="resultImage" class="img-fluid rounded border" style="max-height:300px;">
+                    <!-- 3. Result Area -->
+                    <div id="resultArea" class="text-center" style="display:none; background: #fff; border-radius:12px; padding:40px; box-shadow:0 15px 40px rgba(0,0,0,0.1); margin-top: 20px;">
+                        <div class="text-success mb-3"><i class="fa-solid fa-circle-check fa-4x"></i></div>
+                        <h3 class="fw-bold mb-3">Image Processed!</h3>
+                        <div class="my-4 p-2 bg-light rounded d-inline-block">
+                            <img id="resultImage" class="img-fluid rounded border" style="max-height:250px;">
                         </div>
-                        <a id="downloadLink" class="btn btn-dark btn-lg">
-                            <i class="fa-solid fa-download me-2"></i> Download
-                        </a>
-                        <br>
-                        <button class="btn btn-link text-muted mt-3" onclick="resetWorkspace()">Start Over</button>
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <a id="downloadLink" class="btn btn-dark btn-lg px-5">
+                                <i class="fa-solid fa-download me-2"></i> Download
+                            </a>
+                        </div>
+                        <button class="btn btn-link text-muted mt-4 text-decoration-none" onclick="resetWorkspace()">
+                            <i class="fa-solid fa-rotate-right me-1"></i> Process another image
+                        </button>
                     </div>
 
                 </div>
@@ -286,9 +301,9 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- LOGIC -->
+    <!-- APP LOGIC -->
     <script>
-        // --- VARIABLES ---
+        // --- GLOBAL VARIABLES ---
         const homeView = document.getElementById('homeView');
         const toolWorkspace = document.getElementById('toolWorkspace');
         const fileInput = document.getElementById('fileInput');
@@ -298,13 +313,15 @@
         const optionsPanel = document.getElementById('optionsPanel');
         const imagePreview = document.getElementById('imagePreview');
         const htmlRender = document.getElementById('htmlRender');
+        const resultArea = document.getElementById('resultArea');
 
         let currentTool = '';
         let currentFile = null;
-        let cropper = null; // For crop tool
-        let rotation = 0; // For rotate tool
+        let cropper = null;
+        let rotation = 0; 
+        let originalW = 0, originalH = 0;
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION & INIT ---
         function openTool(tool) {
             currentTool = tool;
             homeView.style.display = 'none';
@@ -319,21 +336,21 @@
                 'fromjpg': 'Convert from JPG',
                 'editor': 'Photo Editor',
                 'upscale': 'Upscale Image',
-                'removebg': 'Remove Background (White)',
+                'removebg': 'Remove Background',
                 'watermark': 'Watermark IMAGE',
                 'meme': 'Meme Generator',
                 'rotate': 'Rotate IMAGE',
                 'html2image': 'HTML to IMAGE',
                 'blur': 'Blur Image'
             };
-            document.getElementById('workspaceTitle').textContent = titles[tool];
-            document.getElementById('btnProcessText').textContent = tool === 'compress' ? 'Compress' : 'Process Image';
+            document.getElementById('workspaceTitle').textContent = titles[tool] || 'Image Tool';
+            document.getElementById('btnProcessText').textContent = tool === 'compress' ? 'Compress Images' : 'Process Image';
 
-            // HTML Tool Special Handling
             if(tool === 'html2image') {
                 dropZone.style.display = 'none';
                 htmlInputZone.style.display = 'block';
             }
+            window.scrollTo(0,0);
         }
 
         function goHome() {
@@ -350,10 +367,10 @@
             dropZone.style.display = 'block';
             htmlInputZone.style.display = 'none';
             processingArea.style.display = 'none';
-            document.getElementById('resultArea').style.display = 'none';
+            resultArea.style.display = 'none';
             imagePreview.style.display = 'inline-block';
             htmlRender.style.display = 'none';
-            optionsPanel.innerHTML = ''; // Clear options
+            optionsPanel.innerHTML = '';
         }
 
         // --- FILE HANDLING ---
@@ -364,10 +381,16 @@
             currentFile = file;
             const reader = new FileReader();
             reader.onload = (e) => {
-                imagePreview.src = e.target.result;
-                dropZone.style.display = 'none';
-                processingArea.style.display = 'block';
-                setupToolOptions();
+                const img = new Image();
+                img.onload = () => {
+                    originalW = img.width;
+                    originalH = img.height;
+                    imagePreview.src = e.target.result;
+                    dropZone.style.display = 'none';
+                    processingArea.style.display = 'block';
+                    setupToolOptions();
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -376,74 +399,118 @@
             const code = document.getElementById('htmlCode').value;
             htmlInputZone.style.display = 'none';
             processingArea.style.display = 'block';
-            imagePreview.style.display = 'none'; // Hide img tag
-            htmlRender.style.display = 'inline-block'; // Show div
+            imagePreview.style.display = 'none';
+            htmlRender.style.display = 'inline-block';
             htmlRender.innerHTML = code;
             setupToolOptions();
         }
 
-        // --- DYNAMIC OPTIONS UI ---
+        // --- DYNAMIC PREMIUM OPTIONS ---
         function setupToolOptions() {
             let html = '';
+            
+            // 1. COMPRESS
             if (currentTool === 'compress') {
-                html = `<label class="form-label">Compression Level</label>
+                html = `<h5 class="mb-3"><i class="fa-solid fa-sliders me-2"></i> Compression Settings</h5>
+                        <label class="form-label">Compression Level</label>
                         <input type="range" class="form-range" id="qualityRange" min="0.1" max="1" step="0.1" value="0.6">
-                        <div class="text-end text-muted small">Lower is smaller file size</div>`;
+                        <div class="d-flex justify-content-between text-muted small mb-3">
+                            <span>Extreme</span><span>Recommended</span><span>High Quality</span>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="keepExif" checked>
+                            <label class="form-check-label">Preserve EXIF Data <span class="premium-badge">PREMIUM</span></label>
+                        </div>`;
             } 
+            // 2. RESIZE & UPSCALE
             else if (currentTool === 'resize' || currentTool === 'upscale') {
-                html = `<div class="row">
-                            <div class="col-6"><label>Width (px)</label><input type="number" id="resizeW" class="form-control" value="800"></div>
-                            <div class="col-6"><label>Height (px)</label><input type="number" id="resizeH" class="form-control" value="600"></div>
+                const mult = currentTool === 'upscale' ? 2 : 1;
+                html = `<h5 class="mb-3"><i class="fa-solid fa-ruler-combined me-2"></i> Resize Options</h5>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label">Width (px)</label>
+                                <input type="number" id="resizeW" class="form-control" value="${originalW * mult}" onchange="maintainRatio('w')">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Height (px)</label>
+                                <input type="number" id="resizeH" class="form-control" value="${originalH * mult}" onchange="maintainRatio('h')">
+                            </div>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" id="ratioCheck" checked>
+                            <label class="form-check-label">Maintain Aspect Ratio <span class="premium-badge">PRO</span></label>
                         </div>`;
             }
+            // 3. REMOVE BG
+            else if (currentTool === 'removebg') {
+                html = `<h5 class="mb-3"><i class="fa-solid fa-wand-magic-sparkles me-2"></i> Magic Removal</h5>
+                        <label class="form-label">Color Tolerance</label>
+                        <input type="range" class="form-range" id="tolerance" min="0" max="100" value="20">
+                        <p class="text-muted small">Adjust to remove more or less similar colors (e.g. shades of white).</p>`;
+            }
+            // 4. EDITOR
             else if (currentTool === 'editor') {
-                html = `<label>Brightness</label><input type="range" class="form-range" id="editBright" min="0" max="200" value="100">
-                        <label>Contrast</label><input type="range" class="form-range" id="editCont" min="0" max="200" value="100">
-                        <label>Grayscale</label><input type="checkbox" class="form-check-input" id="editGray">`;
+                html = `<h5 class="mb-3"><i class="fa-solid fa-palette me-2"></i> Filters</h5>
+                        <div class="mb-3 d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('none')">None</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('vintage')">Vintage</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('lomo')">Lomo</button>
+                        </div>
+                        <label>Brightness</label><input type="range" class="form-range" id="editBright" min="0" max="200" value="100">
+                        <label>Contrast</label><input type="range" class="form-range" id="editCont" min="0" max="200" value="100">`;
             }
-            else if (currentTool === 'rotate') {
-                html = `<button class="btn btn-outline-secondary me-2" onclick="rotatePreview(-90)"><i class="fa-solid fa-rotate-left"></i> Left</button>
-                        <button class="btn btn-outline-secondary" onclick="rotatePreview(90)"><i class="fa-solid fa-rotate-right"></i> Right</button>`;
-            }
-            else if (currentTool === 'watermark') {
-                html = `<label>Watermark Text</label><input type="text" id="wmText" class="form-control" value="© Copyright">
-                        <label class="mt-2">Color</label><input type="color" id="wmColor" class="form-control form-control-color" value="#ff0000">`;
-            }
-            else if (currentTool === 'meme') {
-                html = `<label>Top Text</label><input type="text" id="memeTop" class="form-control mb-2" value="WHEN YOU CODE">
-                        <label>Bottom Text</label><input type="text" id="memeBot" class="form-control" value="WITHOUT ERRORS">`;
-            }
-            else if (currentTool === 'blur') {
-                html = `<label>Blur Intensity</label><input type="range" class="form-range" id="blurVal" min="0" max="20" value="5">`;
-            }
+            // 5. CROP
             else if (currentTool === 'crop') {
-                // Init Cropper
-                if(imagePreview.complete) initCropper();
-                else imagePreview.onload = initCropper;
-                html = `<div class="alert alert-info py-2 small">Drag on image to crop</div>`;
+                if(imagePreview.complete) initCropper(); else imagePreview.onload = initCropper;
+                html = `<div class="alert alert-info py-2 small"><i class="fa-solid fa-crop me-2"></i> Drag the frame on image to crop</div>`;
+            }
+            // 6. ROTATE
+            else if (currentTool === 'rotate') {
+                html = `<div class="text-center">
+                            <button class="btn btn-outline-secondary me-3" onclick="rotatePreview(-90)"><i class="fa-solid fa-rotate-left fa-lg"></i></button>
+                            <button class="btn btn-outline-secondary" onclick="rotatePreview(90)"><i class="fa-solid fa-rotate-right fa-lg"></i></button>
+                        </div>`;
+            }
+            // Default
+            else {
+                html = `<div class="text-muted"><i class="fa-solid fa-check me-2"></i> Ready to process. No extra settings needed.</div>`;
             }
             
-            optionsPanel.innerHTML = html || '<p class="text-muted mb-0">No extra options required.</p>';
-
-            // Listeners for live preview (Editor)
+            optionsPanel.innerHTML = html;
+            
+            // Listeners for live preview
             if(currentTool === 'editor') {
-                const inputs = optionsPanel.querySelectorAll('input');
-                inputs.forEach(i => i.addEventListener('input', updateEditorPreview));
+                optionsPanel.querySelectorAll('input').forEach(i => i.addEventListener('input', updateEditorPreview));
             }
         }
 
-        // Helper for Rotate
-        function rotatePreview(deg) {
-            rotation += deg;
-            imagePreview.style.transform = `rotate(${rotation}deg)`;
+        // --- HELPER FUNCTIONS ---
+        function maintainRatio(changed) {
+            if(!document.getElementById('ratioCheck').checked) return;
+            const ratio = originalW / originalH;
+            const wInput = document.getElementById('resizeW');
+            const hInput = document.getElementById('resizeH');
+            
+            if(changed === 'w') hInput.value = Math.round(wInput.value / ratio);
+            else wInput.value = Math.round(hInput.value * ratio);
         }
 
-        // Helper for Editor
+        function applyPreset(type) {
+            const img = imagePreview;
+            if(type === 'vintage') img.style.filter = 'sepia(0.5) contrast(1.2)';
+            else if(type === 'lomo') img.style.filter = 'contrast(1.5) saturate(1.2)';
+            else img.style.filter = 'none';
+        }
+
         function updateEditorPreview() {
             const b = document.getElementById('editBright').value;
             const c = document.getElementById('editCont').value;
-            const g = document.getElementById('editGray').checked ? 1 : 0;
-            imagePreview.style.filter = `brightness(${b}%) contrast(${c}%) grayscale(${g})`;
+            imagePreview.style.filter = `brightness(${b}%) contrast(${c}%)`;
+        }
+
+        function rotatePreview(deg) {
+            rotation += deg;
+            imagePreview.style.transform = `rotate(${rotation}deg)`;
         }
 
         function initCropper() {
@@ -451,7 +518,7 @@
             cropper = new Cropper(imagePreview, { viewMode: 1 });
         }
 
-        // --- EXECUTE TOOL LOGIC ---
+        // --- MAIN EXECUTION LOGIC ---
         async function executeTool() {
             const btn = document.getElementById('btnProcess');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
@@ -459,53 +526,43 @@
 
             try {
                 let resultBlob = null;
-
-                // 1. COMPRESS
-                if (currentTool === 'compress') {
-                    const quality = parseFloat(document.getElementById('qualityRange').value);
-                    resultBlob = await imageCompression(currentFile, { maxSizeMB: 1, initialQuality: quality });
-                }
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
                 
-                // 2. CROP
+                // HTML2IMAGE
+                if (currentTool === 'html2image') {
+                    const c = await html2canvas(htmlRender);
+                    resultBlob = await new Promise(r => c.toBlob(r, 'image/jpeg'));
+                }
+                // COMPRESS
+                else if (currentTool === 'compress') {
+                    const q = parseFloat(document.getElementById('qualityRange').value);
+                    resultBlob = await imageCompression(currentFile, { maxSizeMB: 1, initialQuality: q, useWebWorker: true });
+                }
+                // CROP
                 else if (currentTool === 'crop') {
-                    const canvas = cropper.getCroppedCanvas();
-                    resultBlob = await new Promise(r => canvas.toBlob(r));
+                    const c = cropper.getCroppedCanvas();
+                    resultBlob = await new Promise(r => c.toBlob(r));
                 }
-
-                // 3. HTML TO IMAGE
-                else if (currentTool === 'html2image') {
-                    const canvas = await html2canvas(htmlRender);
-                    resultBlob = await new Promise(r => canvas.toBlob(r));
-                }
-
-                // 4. CANVAS MANIPULATION (Resize, Edit, Rotate, etc.)
+                // CANVAS BASED TOOLS
                 else {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const img = new Image();
                     img.src = imagePreview.src;
-                    
                     await new Promise(r => img.onload = r);
 
-                    // Setup Canvas
+                    // Setup Dimensions
                     if (currentTool === 'resize' || currentTool === 'upscale') {
                         canvas.width = parseInt(document.getElementById('resizeW').value);
                         canvas.height = parseInt(document.getElementById('resizeH').value);
                     } else if (currentTool === 'rotate') {
-                         // Swap dimensions for 90/270 deg
-                        if (Math.abs(rotation / 90) % 2 === 1) {
-                            canvas.width = img.height;
-                            canvas.height = img.width;
-                        } else {
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                        }
+                         if (Math.abs(rotation / 90) % 2 === 1) { canvas.width = img.height; canvas.height = img.width; } 
+                         else { canvas.width = img.width; canvas.height = img.height; }
                     } else {
                         canvas.width = img.width;
                         canvas.height = img.height;
                     }
 
-                    // Draw Operations
+                    // Apply Operations
                     if (currentTool === 'rotate') {
                         ctx.translate(canvas.width/2, canvas.height/2);
                         ctx.rotate(rotation * Math.PI / 180);
@@ -514,62 +571,33 @@
                     else if (currentTool === 'editor') {
                         const b = document.getElementById('editBright').value;
                         const c = document.getElementById('editCont').value;
-                        const g = document.getElementById('editGray').checked ? 1 : 0;
-                        ctx.filter = `brightness(${b}%) contrast(${c}%) grayscale(${g})`;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    } 
-                    else if (currentTool === 'blur') {
-                        const val = document.getElementById('blurVal').value;
-                        ctx.filter = `blur(${val}px)`;
+                        ctx.filter = `brightness(${b}%) contrast(${c}%)`;
+                        if(imagePreview.style.filter.includes('sepia')) ctx.filter += ' sepia(0.5)'; // basic check for preset
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     }
                     else if (currentTool === 'removebg') {
-                        // Draw image
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        // Get Pixel Data
                         const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const l = frame.data.length;
-                        // Simple "White Removal" (R>240, G>240, B>240)
-                        for (let i = 0; i < l; i += 4) {
-                            if (frame.data[i] > 240 && frame.data[i+1] > 240 && frame.data[i+2] > 240) {
-                                frame.data[i+3] = 0; // Alpha 0
+                        const tol = parseInt(document.getElementById('tolerance').value);
+                        const limit = 255 - tol; 
+                        for (let i = 0; i < frame.data.length; i += 4) {
+                            // Remove pixels brighter than limit
+                            if (frame.data[i] > limit && frame.data[i+1] > limit && frame.data[i+2] > limit) {
+                                frame.data[i+3] = 0; 
                             }
                         }
                         ctx.putImageData(frame, 0, 0);
                     }
-                    else if (currentTool === 'watermark') {
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const text = document.getElementById('wmText').value;
-                        ctx.font = `bold ${canvas.width/10}px Arial`;
-                        ctx.fillStyle = document.getElementById('wmColor').value;
-                        ctx.globalAlpha = 0.5;
-                        ctx.textAlign = 'center';
-                        ctx.fillText(text, canvas.width/2, canvas.height/2);
-                    }
-                    else if (currentTool === 'meme') {
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        ctx.font = `bold ${canvas.width/10}px Impact`;
-                        ctx.fillStyle = 'white';
-                        ctx.strokeStyle = 'black';
-                        ctx.lineWidth = canvas.width/200;
-                        ctx.textAlign = 'center';
-                        
-                        const top = document.getElementById('memeTop').value.toUpperCase();
-                        const bot = document.getElementById('memeBot').value.toUpperCase();
-                        
-                        ctx.fillText(top, canvas.width/2, canvas.height*0.15);
-                        ctx.strokeText(top, canvas.width/2, canvas.height*0.15);
-                        
-                        ctx.fillText(bot, canvas.width/2, canvas.height*0.9);
-                        ctx.strokeText(bot, canvas.width/2, canvas.height*0.9);
+                    else if (currentTool === 'blur') {
+                         ctx.filter = `blur(10px)`;
+                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     }
                     else {
-                        // Standard Draw (Resize, Convert)
+                        // Default Draw
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     }
 
-                    // Export Format
-                    const type = (currentTool === 'tojpg' || currentTool === 'html2image') ? 'image/jpeg' : 'image/png';
+                    const type = (currentTool === 'tojpg') ? 'image/jpeg' : 'image/png';
                     resultBlob = await new Promise(r => canvas.toBlob(r, type));
                 }
 
@@ -577,7 +605,7 @@
 
             } catch(e) {
                 console.error(e);
-                alert("Processing failed. Please try a simpler image.");
+                alert("Processing failed. Try a different image.");
             } finally {
                 btn.innerHTML = document.getElementById('btnProcessText').textContent;
                 btn.disabled = false;
@@ -587,16 +615,15 @@
         function showResult(blob) {
             const url = URL.createObjectURL(blob);
             document.getElementById('resultImage').src = url;
-            
             const dl = document.getElementById('downloadLink');
             dl.href = url;
-            dl.download = `iloveimg-edited.${currentTool === 'tojpg' ? 'jpg' : 'png'}`;
+            dl.download = `iloveimg-edited.${blob.type === 'image/jpeg' ? 'jpg' : 'png'}`;
 
             processingArea.style.display = 'none';
-            document.getElementById('resultArea').style.display = 'block';
+            resultArea.style.display = 'block';
         }
 
-        // --- FILTER PILLS ---
+        // --- FILTER PILLS LOGIC ---
         function filterTools(category, btn) {
             document.querySelectorAll('.filter-pills .btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
