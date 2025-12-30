@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>iLoveIMG – Image Tools</title>
 
-  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -19,23 +17,21 @@
 <header class="header">
   <div class="container header-inner">
     <div class="logo">
-      <span>I</span><span class="heart">♥</span><span>IMG</span>
+      I<span>♥</span>IMG
     </div>
 
-    <nav class="nav">
+    <nav class="nav-desktop">
       <button class="nav-dropdown">
         ALL IMAGE TOOLS
-        <svg width="12" height="12" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
       </button>
     </nav>
 
     <div class="header-actions">
-      <button class="btn-text">Login</button>
+      <button class="btn-link">Login</button>
       <button class="btn-primary">Sign up</button>
-      <button class="icon-btn" id="menuToggle">
-        <svg width="22" height="22" viewBox="0 0 24 24">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
+      <button class="btn-icon" id="menuBtn">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </div>
@@ -45,17 +41,15 @@
 <section class="hero">
   <div class="container">
     <h1>Every tool you could want to edit images in bulk</h1>
-    <p class="hero-sub">
-      Your online photo editor is here and forever free!
-    </p>
+    <p>Your online photo editor is here and forever free!</p>
 
-    <div class="filter-tabs">
-      <button class="tab active">All</button>
-      <button class="tab">Optimize</button>
-      <button class="tab">Create</button>
-      <button class="tab">Edit</button>
-      <button class="tab">Convert</button>
-      <button class="tab">Security</button>
+    <div class="filters">
+      <button class="filter active">All</button>
+      <button class="filter">Optimize</button>
+      <button class="filter">Create</button>
+      <button class="filter">Edit</button>
+      <button class="filter">Convert</button>
+      <button class="filter">Security</button>
     </div>
   </div>
 </section>
@@ -64,42 +58,83 @@
 <section class="tools">
   <div class="container tools-grid">
 
+    <!-- CARD -->
     <div class="tool-card">
-      <div class="icon green">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
-      </div>
+      <div class="icon green">📉</div>
       <h3>Compress IMAGE</h3>
       <p>Compress JPG, PNG, SVG and GIFs while saving space.</p>
     </div>
 
     <div class="tool-card">
-      <div class="icon blue">
-        <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 14h6v6h-6z"/></svg>
-      </div>
+      <div class="icon blue">📐</div>
       <h3>Resize IMAGE</h3>
-      <p>Define your dimensions, resize by pixels or percentage.</p>
+      <p>Resize images by pixels or percentage.</p>
     </div>
 
     <div class="tool-card">
-      <div class="icon cyan">
-        <svg viewBox="0 0 24 24"><path d="M4 4l16 16"/></svg>
-      </div>
+      <div class="icon cyan">✂️</div>
       <h3>Crop IMAGE</h3>
       <p>Crop JPG, PNG or GIF with precision.</p>
     </div>
 
     <div class="tool-card">
-      <div class="icon yellow">
-        <svg viewBox="0 0 24 24"><path d="M12 2v20"/></svg>
-      </div>
+      <div class="icon yellow">🔁</div>
       <h3>Convert to JPG</h3>
-      <p>Turn PNG, GIF, TIF, PSD into JPG.</p>
+      <p>Turn PNG, GIF, TIF or PSD into JPG.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon pink">🖊️</div>
+      <h3>Photo Editor</h3>
+      <p>Add text, effects, stickers and frames.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon lime">🔍</div>
+      <h3>Upscale Image</h3>
+      <p>Increase image resolution using AI.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon emerald">🧹</div>
+      <h3>Remove Background</h3>
+      <p>Automatically remove image backgrounds.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon violet">💧</div>
+      <h3>Watermark IMAGE</h3>
+      <p>Stamp images or text over your images.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon orange">😂</div>
+      <h3>Meme Generator</h3>
+      <p>Create memes online with ease.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon sky">🔄</div>
+      <h3>Rotate IMAGE</h3>
+      <p>Rotate images horizontally or vertically.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon amber">🌐</div>
+      <h3>HTML to IMAGE</h3>
+      <p>Convert HTML webpages into images.</p>
+    </div>
+
+    <div class="tool-card">
+      <div class="icon slate">👤</div>
+      <h3>Blur Face</h3>
+      <p>Blur faces or sensitive areas automatically.</p>
     </div>
 
   </div>
 </section>
 
-<!-- WORK YOUR WAY -->
+<!-- WORK -->
 <section class="work">
   <div class="container">
     <h2>Work your way</h2>
@@ -108,19 +143,19 @@
       <div class="work-card">
         <h3>Switch to document mode</h3>
         <p>Use iLovePDF to simplify PDF editing.</p>
-        <span class="arrow">→</span>
+        <span>→</span>
       </div>
 
       <div class="work-card">
         <h3>Scan and edit on the go</h3>
-        <p>Access image tools from mobile app.</p>
-        <span class="arrow">→</span>
+        <p>Access tools from your mobile phone.</p>
+        <span>→</span>
       </div>
 
       <div class="work-card">
         <h3>Scale with the iLoveIMG API</h3>
         <p>Automate image tasks at scale.</p>
-        <span class="arrow">→</span>
+        <span>→</span>
       </div>
     </div>
   </div>
@@ -131,7 +166,7 @@
   <div class="container premium-box">
     <h2>Get more with Premium</h2>
     <p>Advanced tools, batch processing and powerful AI features.</p>
-    <button class="btn-premium">👑 Get Premium</button>
+    <button>👑 Get Premium</button>
   </div>
 </section>
 
@@ -140,24 +175,19 @@
   <div class="container footer-grid">
     <div>
       <h4>PRODUCT</h4>
-      <a href="#">Home</a>
-      <a href="#">Features</a>
-      <a href="#">Pricing</a>
+      <a>Home</a><a>Features</a><a>Pricing</a>
     </div>
     <div>
       <h4>RESOURCES</h4>
-      <a href="#">Blog</a>
-      <a href="#">Help</a>
+      <a>Blog</a><a>Help</a>
     </div>
     <div>
       <h4>LEGAL</h4>
-      <a href="#">Privacy policy</a>
-      <a href="#">Terms</a>
+      <a>Privacy</a><a>Terms</a>
     </div>
     <div>
       <h4>COMPANY</h4>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
+      <a>About</a><a>Contact</a>
     </div>
   </div>
 </footer>
