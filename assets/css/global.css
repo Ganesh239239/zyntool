@@ -4,7 +4,6 @@
     --text-dark: #33333b;
     --nav-grey: #47474f;
     --bg-light: #f3f6f7;
-    --footer-dark: #1e1e24;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,12 +13,8 @@ body {
     background-color: #fff;
     color: var(--text-dark);
     line-height: 1.5;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
-
-main { flex: 1 0 auto; } /* Pushes footer to bottom */
 
 a { text-decoration: none !important; color: inherit; transition: 0.2s; }
 
@@ -27,5 +22,4 @@ a { text-decoration: none !important; color: inherit; transition: 0.2s; }
     max-width: 1240px;
     margin: 0 auto;
     padding: 0 20px;
-    width: 100%;
 }
