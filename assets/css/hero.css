@@ -1,0 +1,59 @@
+/* assets/css/hero.css */
+.hero {
+    text-align: center;
+    padding: 70px 20px 40px;
+    background-color: #fff;
+}
+
+.hero h1 {
+    font-size: 45px;
+    font-weight: 800;
+    color: #33333b;
+    line-height: 1.1;
+    max-width: 800px;
+    margin: 0 auto 15px;
+    letter-spacing: -1px;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+/* Perfect Pill Scroll for Mobile */
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 15px 15px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filter-bar::-webkit-scrollbar { display: none; }
+
+.pill {
+    padding: 10px 24px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pill.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+@media (max-width: 768px) {
+    .hero { padding: 40px 15px 25px; }
+    .hero h1 { font-size: 28px; letter-spacing: -0.5px; }
+    .hero p { font-size: 15px; }
+    .filter-bar { justify-content: flex-start; }
+}
