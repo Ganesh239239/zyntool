@@ -3,34 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Clone | Free Online Image Editor</title>
+    <title>iLoveIMG | Every tool you need to edit images in bulk</title>
     <link rel="stylesheet" href="assets/css/global.css">
 </head>
 <body>
+
     <header>
-        <a href="/" class="logo">iLove<span>IMG</span></a>
-        <nav style="display:flex; gap:20px;">
-            <a href="/tools/compress-image/" style="text-decoration:none; color:#444; font-weight:600;">COMPRESS</a>
-            <a href="/tools/resize-image/" style="text-decoration:none; color:#444; font-weight:600;">RESIZE</a>
-        </nav>
+        <div style="display:flex; align-items:center; gap:40px;">
+            <a href="/" class="logo">💙 iLove<span>IMG</span></a>
+            <nav class="nav-links">
+                <a href="#">Compress Image</a>
+                <a href="#">Resize Image</a>
+                <a href="#">Crop Image</a>
+                <a href="#">Convert to JPG</a>
+            </nav>
+        </div>
+        <div class="auth-btns">
+            <a href="#" style="text-decoration:none; color:#333; font-weight:500;">Login</a>
+            <button class="btn-signup">Sign up</button>
+        </div>
     </header>
 
     <section class="hero">
-        <h1>Every tool you need to edit images</h1>
-        <p>100% Free and Easy to use.</p>
+        <h1>Every tool you could want to edit images in bulk</h1>
+        <p>Your online photo editor is here and forever free!</p>
     </section>
 
+    <div class="filter-bar">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Optimize</button>
+        <button class="filter-btn">Create</button>
+        <button class="filter-btn">Edit</button>
+        <button class="filter-btn">Convert</button>
+        <button class="filter-btn">Security</button>
+    </div>
+
     <div class="tool-grid">
-        <a href="/tools/compress-image/" class="tool-card compress">
-            <div style="font-size:40px;">📉</div>
+        <!-- Compress -->
+        <a href="/tools/compress-image/" class="tool-card">
+            <div class="tool-icon bg-compress">📉</div>
             <h3>Compress IMAGE</h3>
-            <p>Reduce file size with the best quality.</p>
+            <p>Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.</p>
         </a>
-        <a href="/tools/resize-image/" class="tool-card resize">
-            <div style="font-size:40px;">📏</div>
+
+        <!-- Resize -->
+        <a href="/tools/resize-image/" class="tool-card">
+            <div class="tool-icon bg-resize">📏</div>
             <h3>Resize IMAGE</h3>
-            <p>Define dimensions by pixels or percentage.</p>
+            <p>Define your dimensions, by percent or pixel, and resize your JPG, PNG, SVG and GIF images.</p>
+        </a>
+
+        <!-- Upscale (New Badge example) -->
+        <a href="#" class="tool-card">
+            <span class="badge-new">New!</span>
+            <div class="tool-icon bg-resize" style="background:#81c784;">✨</div>
+            <h3>Upscale Image</h3>
+            <p>Enlarge your images with high resolution. Easily increase the size of your JPG and PNG images.</p>
+        </a>
+
+        <!-- Remove BG -->
+        <a href="#" class="tool-card">
+            <span class="badge-new">New!</span>
+            <div class="tool-icon bg-editor" style="background:#ba68c8;">👤</div>
+            <h3>Remove background</h3>
+            <p>Quickly remove image backgrounds with high accuracy. Instantly detect objects and cut out backgrounds.</p>
         </a>
     </div>
+
 </body>
 </html>
