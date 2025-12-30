@@ -45,6 +45,19 @@ const App = {
         document.getElementById('btnRenderHtml').addEventListener('click', () => this.handleHtmlInput());
         document.getElementById('btnReset').addEventListener('click', (e) => { e.preventDefault(); this.resetUI(); });
 
+         // NEW: Close mobile menu when a link is clicked
+    const navLinks = document.querySelectorAll('.nav-link');
+    const menuToggle = document.getElementById('navbarNav');
+    const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle: false});
+    
+    navLinks.forEach((l) => {
+        l.addEventListener('click', () => {
+            if(menuToggle.classList.contains('show')) {
+                bsCollapse.hide();
+            }
+        });
+    });
+        
         // Initialize Filter Logic
         this.initFilters();
     },
@@ -180,3 +193,5 @@ const App = {
 };
 
 App.init();
+
+
