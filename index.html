@@ -3,38 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Clone | Every tool to edit images in bulk</title>
-    <meta name="description" content="Free online tools to compress, resize, crop and convert images.">
+    <title>iLoveIMG | Every tool you need to edit images in bulk</title>
+    <meta name="description" content="Free online image editor. Compress, resize, crop, and convert images in seconds.">
+    
+    <!-- External CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header>
-        <div style="font-size: 24px; color: #555;">☰</div>
-        <a href="/" class="logo"><span class="logo-icon">💙</span> iLove<span>IMG</span></a>
-        <div style="font-size: 22px; color: #555;">⠿</div>
-    </header>
+    <!-- Header will be injected here -->
+    <header id="header-placeholder"></header>
 
     <main>
+        <!-- Hero Section -->
         <section class="hero">
-            <h1>Every tool you could want to edit images in bulk</h1>
-            <p>Your online photo editor is here and forever free!</p>
+            <h1>Every tool you need to edit images</h1>
+            <p>100% Free and Easy to use.</p>
         </section>
 
-        <nav class="filter-bar" id="filter-bar">
+        <!-- Filter Bar -->
+        <nav class="filter-bar">
             <button class="filter-btn active" data-cat="all">All</button>
             <button class="filter-btn" data-cat="optimize">Optimize</button>
-            <button class="filter-btn" data-cat="create">Create</button>
             <button class="filter-btn" data-cat="edit">Edit</button>
             <button class="filter-btn" data-cat="convert">Convert</button>
+            <button class="filter-btn" data-cat="create">Create</button>
             <button class="filter-btn" data-cat="security">Security</button>
         </nav>
 
+        <!-- Tool Grid (Dynamic) -->
         <div class="tool-grid" id="tool-grid">
-            <!-- JavaScript will inject tools here -->
+            <!-- Tools injected by assets/js/main.js -->
         </div>
     </main>
 
+    <!-- Footer will be injected here -->
+    <footer id="footer-placeholder"></footer>
+
+    <!-- Essential Scripts -->
     <script src="assets/js/tools-data.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
