@@ -1,0 +1,12 @@
+/* assets/css/sections.css */
+.work-way { padding: 80px 0; text-align: center; }
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+.feat-card { border-radius: 16px; border: 1px solid #f0f0f0; overflow: hidden; background: #fff; text-align: left; position: relative; }
+.feat-img { height: 180px; background: #e3f2fd; }
+.feat-body { padding: 25px; }
+
+.premium-cta {
+    background: #fff9e6; padding: 60px 40px; border-radius: 16px; 
+    margin: 60px auto; text-align: center; border: 1px solid #ffeeba;
+}
+.btn-premium { background: #ffc107; border: none; padding: 15px 40px; border-radius: 8px; font-weight: 700; margin-top: 20px; cursor: pointer; }
