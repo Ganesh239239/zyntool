@@ -3,38 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Clone</title>
-    <!-- Dependencies -->
+    <title>iLoveIMG | Online Image Editor</title>
+    
+    <!-- External Dependencies (CDNs are reliable) -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Component CSS -->
-    <link rel="stylesheet" href="./assets/css/header.css">
+
     <style>
-        /* Global Reset to prevent leaking */
+        /* --- 1. GLOBAL & RESET --- */
+        :root {
+            --blue: #4285f4;
+            --dark: #33333b;
+            --grey: #47474f;
+            --border: #e1e4e8;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Open Sans', sans-serif; background: #fff; }
+        body { font-family: 'Open Sans', sans-serif; background-color: #fff; color: var(--dark); line-height: 1.5; overflow-x: hidden; }
+        a { text-decoration: none !important; color: inherit; }
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+        /* --- 2. HEADER (Fixed & Floating) --- */
+        .site-header { height: 64px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; display: flex; align-items: center; }
+        .header-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 20px; position: relative; }
+        
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--grey); }
+        .logo span { color: var(--blue); }
+
+        .desktop-nav { display: flex; align-items: center; gap: 15px; }
+        .mega-trigger { font-size: 13px; font-weight: 700; cursor: pointer; height: 64px; display: flex; align-items: center; position: relative; text-transform: uppercase; }
+
+        /* Mega Menu Overlay */
+        .mega-menu {
+            display: none; position: absolute; top: 64px; left: 0; width: 850px; 
+            background: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.1); padding: 40px; 
+            z-index: 6000; border-top: 1px solid #f0f0f0; border-radius: 0 0 8px 8px;
+        }
+        .mega-trigger:hover .mega-menu { display: block; }
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .menu-col h6 { font-size: 11px; color: #999; margin-bottom: 15px; }
+        .menu-col a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; font-weight: 600; }
+
+        .signup-btn { background: var(--blue); color: #fff !important; padding: 10px 22px; border-radius: 4px; font-weight: 700; font-size: 14px; }
+        .hamburger { display: none; font-size: 22px; cursor: pointer; }
+
+        /* --- 3. HERO & FILTER PILLS --- */
+        .hero { text-align: center; padding: 60px 20px 30px; }
+        .hero h1 { font-size: 45px; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -1px; }
+        .filter-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 50px; overflow-x: auto; padding: 10px; scrollbar-width: none; }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .pill { padding: 10px 25px; border-radius: 25px; border: 1px solid #ddd; background: #fff; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .pill.active { background: #333; color: #fff; border-color: #333; }
+
+        /* --- 4. TOOL GRID (Desktop) --- */
+        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-bottom: 80px; }
+        .tool-card { background: #fff; border: 1px solid #eee; padding: 35px 25px; border-radius: 12px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.06); }
+        
+        .icon-box { width: 52px; height: 52px; border-radius: 8px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; flex-shrink: 0; }
+        .bg-green { background: #81c784; } .bg-blue { background: #64b5f6; } .bg-cyan { background: #4dd0e1; } .bg-yellow { background: #ffd54f; } .bg-purple { background: #ba68c8; }
+
+        .tool-text h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; color: #333; }
+        .tool-text p { font-size: 14px; color: #777; line-height: 1.4; }
+
+        /* --- 5. MOBILE RESPONSIVE FIXES (Match Image 19/21/22) --- */
+        @media (max-width: 991px) {
+            .desktop-nav, .hide-mobile, .signup-btn { display: none !important; }
+            .hamburger { display: block; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .filter-bar { justify-content: flex-start; padding-left: 20px; }
+            .tools-grid { grid-template-columns: 1fr; gap: 12px; padding: 0 15px; }
+            /* Force horizontal bar style on mobile */
+            .tool-card { display: flex !important; align-items: center; text-align: left; padding: 15px 20px; }
+            .icon-box { margin: 0 20px 0 0 !important; }
+            .tool-text h3 { font-size: 17px; margin-bottom: 2px; }
+        }
+
+        /* Mobile Sidebar */
+        .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: #fff; z-index: 9000; transition: 0.4s ease; padding: 40px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .sidebar.active { left: 0; }
+        .sidebar a { display: block; padding: 15px 0; font-weight: 700; border-bottom: 1px solid #f5f5f5; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 8000; }
     </style>
 </head>
 <body>
 
-    <div id="header-part"></div>
+    <header class="site-header">
+        <div class="header-container">
+            <div class="header-left">
+                <div class="hamburger" id="hamBtn"><i class="fa-solid fa-bars"></i></div>
+                <a href="#" class="logo"><span>iLove</span>IMG</a>
+                <nav class="desktop-nav">
+                    <div class="mega-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down ml-1"></i>
+                        <div class="mega-menu">
+                            <div class="menu-grid">
+                                <div class="menu-col"><h6>OPTIMIZE</h6><a href="#"><i class="fa-solid fa-compress text-success"></i> Compress</a></div>
+                                <div class="menu-col"><h6>MODIFY</h6><a href="#"><i class="fa-solid fa-expand text-primary"></i> Resize</a></div>
+                                <div class="menu-col"><h6>CONVERT</h6><a href="#"><i class="fa-solid fa-repeat text-warning"></i> To JPG</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="nav-item" style="font-size:13px; font-weight:700; color:var(--grey);">CONVERT TO JPG</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <a href="#" class="signup-btn">Sign up</a>
+                <i class="fa-solid fa-table-cells" style="font-size:20px; color:var(--grey); cursor:pointer;"></i>
+            </div>
+        </div>
+    </header>
 
-    <main style="padding: 100px 20px; text-align: center;">
-        <h1>Header is loading...</h1>
-        <p>Phase 1: Component splitting test.</p>
+    <div class="sidebar" id="sidebar">
+        <nav><a href="#">COMPRESS IMAGE</a><a href="#">RESIZE IMAGE</a><hr><a href="#" style="color:var(--blue)">Login</a><a href="#">Sign up</a></nav>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Every tool you could want to edit images in bulk</h1>
+                <p>Modify your images at once with our online tools.</p>
+                <div class="filter-bar">
+                    <button class="pill active" data-f="all">All</button>
+                    <button class="pill" data-f="opt">Optimize</button>
+                    <button class="pill" data-f="edit">Edit</button>
+                    <button class="pill" data-f="conv">Convert</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="tools-grid">
+                <!-- 1 -->
+                <div class="tool-card" data-c="opt">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
+                    <div class="tool-text"><h3>Compress IMAGE</h3><p>Saving space while maintaining quality.</p></div>
+                </div>
+                <!-- 2 -->
+                <div class="tool-card" data-c="opt">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
+                    <div class="tool-text"><h3>Resize IMAGE</h3><p>Define dimensions by pixels or percentage.</p></div>
+                </div>
+                <!-- 3 -->
+                <div class="tool-card" data-c="edit">
+                    <div class="icon-box bg-cyan"><i class="fa-solid fa-crop"></i></div>
+                    <div class="tool-text"><h3>Crop IMAGE</h3><p>Crop JPG, PNG or GIFs with ease.</p></div>
+                </div>
+                <!-- 4 -->
+                <div class="tool-card" data-c="conv">
+                    <div class="icon-box bg-yellow"><i class="fa-solid fa-repeat"></i></div>
+                    <div class="tool-text"><h3>Convert to JPG</h3><p>Turn images to JPG in bulk with ease.</p></div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Component Loader -->
     <script>
-        fetch('./components/header.html')
-            .then(res => res.text())
-            .then(data => {
-                document.getElementById('header-part').innerHTML = data;
-                // Load header logic AFTER HTML is injected
-                const script = document.createElement('script');
-                script.src = './assets/js/header.js';
-                document.body.appendChild(script);
+        // Sidebar Toggle Logic
+        const ham = document.getElementById('hamBtn'), side = document.getElementById('sidebar'), over = document.getElementById('overlay');
+        ham.onclick = () => { side.classList.add('active'); over.style.display = 'block'; };
+        over.onclick = () => { side.classList.remove('active'); over.style.display = 'none'; };
+
+        // Filtering Logic
+        const pills = document.querySelectorAll('.pill'), cards = document.querySelectorAll('.tool-card');
+        pills.forEach(p => p.onclick = () => {
+            pills.forEach(x => x.classList.remove('active')); p.classList.add('active');
+            const filter = p.dataset.f;
+            cards.forEach(c => {
+                if(filter === 'all' || c.dataset.c === filter) {
+                    c.style.display = window.innerWidth <= 768 ? 'flex' : 'block';
+                } else {
+                    c.style.display = 'none';
+                }
             });
+        });
     </script>
 </body>
 </html>
