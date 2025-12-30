@@ -1,25 +1,6 @@
-/* assets/css/global.css */
-:root {
-    --brand-blue: #4285f4;
-    --text-dark: #33333b;
-    --nav-grey: #47474f;
-    --bg-light: #f3f6f7;
-}
-
+:root { --blue: #4285f4; --dark: #33333b; --grey: #47474f; --light: #f3f6f7; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #fff;
-    color: var(--text-dark);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-}
-
-a { text-decoration: none !important; color: inherit; transition: 0.2s; }
-
-.container {
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+body { font-family: 'Open Sans', sans-serif; background: #fff; color: var(--dark); line-height: 1.5; }
+a { text-decoration: none !important; color: inherit; }
+.container { max-width: 1240px; margin: 0 auto; padding: 0 20px; width: 100%; }
+.text-success { color: #81c784; } .text-primary { color: #64b5f6; } .text-info { color: #4dd0e1; } .text-warning { color: #ffd54f; } .text-purple { color: #ba68c8; }
