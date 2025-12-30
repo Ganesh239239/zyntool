@@ -1,0 +1,72 @@
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
+  background-color: #ffffff;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+}
+
+.tool-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  height: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+}
+
+.tool-card h6 {
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.tool-card p {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #fff;
+}
+
+.icon.green { background: #4caf50; }
+.icon.blue { background: #2196f3; }
+.icon.cyan { background: #00bcd4; }
+.icon.yellow { background: #ffc107; color: #000; }
+
+.work-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  height: 100%;
+}
+
+.premium-box {
+  background: #fff3cd;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: left;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer ul li {
+  font-size: 0.9rem;
+  color: #adb5bd;
+  margin-bottom: 6px;
+}
