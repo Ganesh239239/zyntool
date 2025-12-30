@@ -8,9 +8,9 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Roboto', sans-serif; background: var(--bg-body); color: var(--text-dark); }
+body { font-family: 'Roboto', sans-serif; background: var(--bg-body); color: var(--text-dark); overflow-x: hidden; }
 
-/* Header - Navigation on the Right */
+/* Header */
 header {
     background: #fff; height: 65px; display: flex; align-items: center;
     justify-content: space-between; padding: 0 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
@@ -19,65 +19,66 @@ header {
 .logo { font-size: 24px; font-weight: 900; color: #000; text-decoration: none; display: flex; align-items: center; }
 .logo span { color: var(--brand-blue); }
 
-.nav-container { display: flex; align-items: center; gap: 20px; }
-.nav-menu { display: flex; list-style: none; gap: 25px; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-menu { display: flex; list-style: none; gap: 20px; align-items: center; }
 .nav-menu a { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 13px; text-transform: uppercase; }
-.menu-toggle { display: none; font-size: 24px; cursor: pointer; }
 
 /* Hero */
-.hero { text-align: center; padding: 60px 20px 30px; }
-.hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 12px; }
+.hero { text-align: center; padding: 60px 20px 20px; }
+.hero h1 { font-size: 48px; font-weight: 700; color: #333; margin-bottom: 10px; }
 .hero p { font-size: 20px; color: var(--text-light); font-weight: 300; }
 
-/* Tool Grid - Desktop Grid */
+/* Filter Pill Bar - Matches iloveimg */
+.filter-bar { display: flex; justify-content: center; gap: 10px; margin: 20px 0 40px; }
+.filter-btn { 
+    background: #fff; border: 1px solid #ddd; padding: 8px 24px; 
+    border-radius: 20px; cursor: pointer; font-size: 15px; font-weight: 500;
+    transition: 0.2s; color: #333;
+}
+.filter-btn.active { background: #333; color: #fff; border-color: #333; }
+
+/* Grid */
 .tool-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    padding: 20px 40px 60px;
-    max-width: 1400px;
-    margin: 0 auto;
+    gap: 15px; padding: 0 40px 60px; max-width: 1400px; margin: 0 auto;
 }
 
 .tool-card {
-    background: #fff; padding: 30px; border-radius: 12px; text-decoration: none; color: inherit;
-    border: 1px solid #e1e8f0; transition: transform 0.2s; display: flex; flex-direction: column;
+    background: #fff; padding: 30px; border-radius: 15px; text-decoration: none; color: inherit;
+    border: 1px solid #e1e8f0; transition: 0.2s; position: relative;
+    display: flex; flex-direction: column;
 }
-.tool-card:hover { transform: translateY(-5px); border-color: var(--brand-blue); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.tool-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--brand-blue); }
 
-/* Icon Container */
 .icon-box {
-    width: 48px; height: 48px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 20px; flex-shrink: 0;
+    width: 48px; height: 48px; border-radius: 10px; display: flex; 
+    align-items: center; justify-content: center; margin-bottom: 20px;
 }
-.icon-box svg { width: 30px; height: 30px; }
+.icon-box svg { width: 28px; height: 28px; }
 
-.tool-card h3 { font-size: 20px; margin-bottom: 10px; font-weight: 700; }
+.tool-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #333; }
 .tool-card p { font-size: 14px; color: var(--text-light); line-height: 1.5; }
 
+.badge-new { 
+    position: absolute; top: 15px; right: 15px; background: #e3f2fd; color: var(--brand-blue);
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+}
+
 /* Footer */
-footer { background: #fff; padding: 60px 40px 20px; border-top: 1px solid #eee; }
+footer { background: #fff; padding: 60px 40px; border-top: 1px solid #eee; }
 .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0 auto; gap: 30px; }
-.footer-col h4 { color: var(--brand-blue); margin-bottom: 15px; font-size: 15px; }
+.footer-col h4 { color: var(--brand-blue); font-size: 14px; margin-bottom: 20px; text-transform: uppercase; }
 .footer-col ul { list-style: none; }
 .footer-col li { margin-bottom: 10px; }
-.footer-col a { color: #666; text-decoration: none; font-size: 14px; }
-.copyright { text-align: center; padding-top: 40px; border-top: 1px solid #eee; margin-top: 40px; color: #999; font-size: 12px; }
+.footer-col a { text-decoration: none; color: #666; font-size: 14px; }
+.footer-col a:hover { color: var(--brand-blue); }
 
-/* Mobile Layout - Horizontal Cards */
+/* Responsive Mobile */
 @media (max-width: 768px) {
-    header { padding: 0 20px; }
-    .nav-menu { 
-        display: none; position: absolute; top: 65px; left: 0; width: 100%; 
-        background: #fff; flex-direction: column; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); 
-    }
-    .nav-menu.active { display: flex; }
-    .menu-toggle { display: block; order: 2; }
-    .logo { order: 1; }
-    
-    .tool-grid { grid-template-columns: 1fr; padding: 0 15px 40px; }
-    .tool-card { flex-direction: row; align-items: flex-start; padding: 20px; }
+    .tool-grid { grid-template-columns: 1fr; padding: 0 15px; }
+    .tool-card { flex-direction: row; padding: 20px; align-items: flex-start; }
     .icon-box { margin-bottom: 0; margin-right: 15px; }
+    .hero h1 { font-size: 32px; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
