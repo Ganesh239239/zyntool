@@ -10,43 +10,11 @@
 </head>
 <body>
 
-    <header class="site-header">
-        <div class="header-container">
-            <div class="header-left">
-                <div class="hamburger" id="hamBtn"><i class="fa-solid fa-bars"></i></div>
-                <a href="#" class="logo"><span>iLove</span>IMG</a>
-                <nav class="desktop-nav">
-                    <div class="mega-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down" style="font-size:10px; margin-left:5px;"></i>
-                        <div class="mega-menu">
-                            <!-- Mega Menu Content -->
-                            <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:20px;">
-                                <div><h6 style="font-size:11px; color:#999;">OPTIMIZE</h6><a href="#" style="display:block; padding:10px 0; font-weight:600;">Compress IMAGE</a></div>
-                                <div><h6 style="font-size:11px; color:#999;">MODIFY</h6><a href="#" style="display:block; padding:10px 0; font-weight:600;">Resize IMAGE</a></div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div class="header-right">
-                <a href="#" class="signup-link" style="background:var(--blue); color:#fff; padding:8px 20px; border-radius:4px; font-weight:700;">Sign up</a>
-                <i class="fa-solid fa-table-cells" style="font-size:20px; margin-left:15px; cursor:pointer;"></i>
-            </div>
-        </div>
-    </header>
+    <!-- Containers for the split parts -->
+    <div id="header-part"></div>
+    <div id="sidebar-part"></div>
 
-    <!-- SIDEBAR OUTSIDE HEADER -->
-    <div class="sidebar" id="sidebar">
-        <nav>
-            <a href="#">COMPRESS IMAGE</a>
-            <a href="#">RESIZE IMAGE</a>
-            <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
-            <a href="#" style="color:var(--blue)">Login</a>
-            <a href="#">Sign up</a>
-        </nav>
-    </div>
-    <div class="overlay" id="overlay"></div>
-
-    <main class="container">
+    <main>
         <section class="hero">
             <h1>Every tool you could want to edit images in bulk</h1>
             <p>Modify your images at once with our online tools.</p>
@@ -57,21 +25,26 @@
             </div>
         </section>
 
-        <div class="tools-grid">
-            <!-- Tool 1 -->
-            <div class="tool-card" data-cat="opt">
-                <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
-                <div class="tool-text"><h3>Compress IMAGE</h3><p>Saving space while maintaining quality.</p></div>
+        <section class="container">
+            <div class="tools-grid">
+                <!-- Tool 1 -->
+                <div class="tool-card" data-cat="opt">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
+                    <div class="tool-text"><h3>Compress IMAGE</h3><p>Saving space while maintaining quality.</p></div>
+                </div>
+                <!-- Tool 2 -->
+                <div class="tool-card" data-cat="opt">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
+                    <div class="tool-text"><h3>Resize IMAGE</h3><p>Define dimensions by pixels or percentage.</p></div>
+                </div>
             </div>
-            <!-- Tool 2 -->
-            <div class="tool-card" data-cat="opt">
-                <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
-                <div class="tool-text"><h3>Resize IMAGE</h3><p>Define dimensions by pixels or percentage.</p></div>
-            </div>
-            <!-- Add other tools here -->
-        </div>
+        </section>
     </main>
 
+    <div id="footer-part"></div>
+
+    <!-- SCRIPTS -->
+    <script src="assets/js/loader.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>
