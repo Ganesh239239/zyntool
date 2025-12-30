@@ -1,8 +1,22 @@
-window.addEventListener('scroll', () => {
-    const header = document.querySelector('.site-header');
-    if (window.scrollY > 10) {
-        header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-    } else {
-        header.style.boxShadow = 'none';
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.pill');
+    const cards = document.querySelectorAll('.tool-card');
+
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            // Pill Active state
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            // Filtering logic
+            const category = pill.getAttribute('data-cat');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
 });
