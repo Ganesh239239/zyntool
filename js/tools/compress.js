@@ -1,8 +1,9 @@
-// Nav Toggle
-document.getElementById("menuBtn").onclick = () => {
-    document.getElementById("navMenu").classList.toggle("active");
-};
+// Navigation Toggle
+const menuBtn = document.getElementById("menuBtn");
+const navMenu = document.getElementById("navMenu");
+menuBtn.onclick = () => navMenu.classList.toggle("active");
 
+// Tool Logic
 const fileInput = document.getElementById('fileInput');
 const dropZone = document.getElementById('dropZone');
 const editorLayout = document.getElementById('editorLayout');
@@ -13,42 +14,42 @@ const processBtn = document.getElementById('processBtn');
 
 let originalFile = null;
 
-// Handle File Selection
+// Trigger upload
 dropZone.onclick = () => fileInput.click();
 
-dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = "#3b82f6"; };
-dropZone.ondragleave = () => { dropZone.style.borderColor = "#cbd5e1"; };
-dropZone.ondrop = (e) => {
-    e.preventDefault();
-    handleFile(e.dataTransfer.files[0]);
+fileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        originalFile = file;
+        dropZone.style.display = 'none';
+        editorLayout.style.display = 'grid';
+        document.getElementById('origSize').innerText = (file.size / 1024).toFixed(2) + " KB";
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.src = event.target.result;
+            updateEstimate();
+        };
+        reader.readAsDataURL(file);
+    }
 };
 
-fileInput.onchange = (e) => handleFile(e.target.files[0]);
-
-function handleFile(file) {
-    if (!file || !file.type.startsWith('image/')) {
-        alert("Please upload a valid image file.");
-        return;
-    }
-    originalFile = file;
-    dropZone.style.display = 'none';
-    editorLayout.style.display = 'grid';
-    document.getElementById('origSize').innerText = (file.size / 1024).toFixed(2) + " KB";
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        imagePreview.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-}
-
-// Range Label Update
+// UI Feedback
 qRange.oninput = () => {
     const val = qRange.value;
-    qLabel.innerText = val < 30 ? "Extreme" : (val < 70 ? "Recommended" : "Low");
+    if (val < 30) qLabel.innerText = "Extreme (Smallest)";
+    else if (val < 70) qLabel.innerText = "Good (Balanced)";
+    else qLabel.innerText = "Best (High Quality)";
+    updateEstimate();
 };
 
-// Compression Logic
+function updateEstimate() {
+    // Visual estimate for the user
+    const estimate = originalFile.size * (qRange.value / 100) * 0.8;
+    document.getElementById('newSize').innerText = "~" + (estimate / 1024).toFixed(2) + " KB";
+}
+
+// Compression Engine
 processBtn.onclick = () => {
     processBtn.innerText = "Processing...";
     processBtn.disabled = true;
@@ -61,26 +62,23 @@ processBtn.onclick = () => {
         canvas.width = img.width;
         canvas.height = img.height;
 
-        // FIXED: Set white background for transparent PNGs
+        // Draw white background (prevents black background on PNGs)
         ctx.fillStyle = "#fff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
 
+        // Quality slider conversion (Lower = stronger compression)
         const quality = qRange.value / 100;
-        
+
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = "ZynTool_" + originalFile.name.split('.')[0] + ".jpg";
+            link.download = "ZynTool_Compressed_" + originalFile.name.split('.')[0] + ".jpg";
             link.click();
 
-            document.getElementById('newSize').innerText = (blob.size / 1024).toFixed(2) + " KB";
             processBtn.innerText = "Compress & Download";
             processBtn.disabled = false;
-            
-            // Clean memory
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }, "image/jpeg", quality);
     };
     img.src = imagePreview.src;
