@@ -1,0 +1,22 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.pill');
+    const cards = document.querySelectorAll('.tool-card');
+
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            // Update Active Pill
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            // Filter Tool Cards
+            const filter = pill.getAttribute('data-filter');
+            cards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-cat') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
