@@ -5,127 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Image Editor</title>
     
-    <!-- Google Fonts & Icons -->
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* CSS VARIABLES & RESET */
+        /* --- 1. GLOBAL SETTINGS --- */
         :root {
             --brand-blue: #4285f4;
             --text-dark: #33333b;
             --nav-grey: #47474f;
-            --bg-light: #f3f6f7;
             --footer-bg: #1e1e24;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Open Sans', sans-serif; background-color: #fff; color: var(--text-dark); line-height: 1.5; }
+        body { font-family: 'Open Sans', sans-serif; background-color: #fff; color: var(--text-dark); overflow-x: hidden; }
         a { text-decoration: none !important; color: inherit; }
         .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
 
-        /* --- HEADER --- */
-        .site-header {
-            height: 64px;
-            background: #fff;
-            border-bottom: 1px solid #e1e4e8;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            padding: 0 20px;
-        }
-
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .mobile-menu-icon { display: none; font-size: 20px; color: var(--nav-grey); cursor: pointer; }
+        /* --- 2. HEADER (Desktop First) --- */
+        .site-header { height: 64px; background: #fff; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 2000; display: flex; align-items: center; }
+        .header-container { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; }
         
+        .header-left { display: flex; align-items: center; gap: 30px; }
         .logo { font-size: 24px; font-weight: 700; color: #47474f; }
         .logo span { color: var(--brand-blue); }
 
-        .mega-menu-trigger { font-size: 13px; font-weight: 700; color: var(--nav-grey); cursor: pointer; padding: 20px 0; position: relative; }
-        .mega-menu { display: none; position: absolute; top: 64px; left: -100px; width: 800px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 40px; border-radius: 0 0 8px 8px; border-top: 1px solid #eee; }
-        .mega-menu-trigger:hover .mega-menu { display: block; }
+        .desktop-nav { display: flex; align-items: center; gap: 20px; }
+        .nav-item { font-size: 13px; font-weight: 700; color: var(--nav-grey); cursor: pointer; text-transform: uppercase; }
 
-        .header-right { display: flex; align-items: center; gap: 15px; }
-        .btn-signup { background: var(--brand-blue); color: #fff !important; padding: 8px 18px; border-radius: 4px; font-weight: 700; font-size: 14px; }
-        .grid-icon { font-size: 20px; color: var(--nav-grey); cursor: pointer; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { font-weight: 600; font-size: 14px; display: block; }
+        .signup-btn { background: var(--brand-blue); color: #fff !important; padding: 8px 20px; border-radius: 4px; font-weight: 700; font-size: 14px; }
+        
+        .hamburger, .mobile-menu { display: none; } /* Hidden on Desktop */
 
-        /* --- HERO --- */
-        .hero { text-align: center; padding: 50px 20px 30px; }
-        .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
-        .hero p { color: #666; font-size: 16px; }
+        /* --- 3. HERO & FILTERS --- */
+        .hero { text-align: center; padding: 60px 20px 30px; }
+        .hero h1 { font-size: 42px; font-weight: 700; color: #47474f; }
+        .hero p { font-size: 18px; color: #666; margin-top: 10px; }
 
-        /* --- FILTER PILLS --- */
-        .filter-wrapper { padding: 10px 0; margin-bottom: 20px; }
-        .filter-pills { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            overflow-x: auto; 
-            padding-bottom: 5px;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .filter-pills::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
-
-        .pill { 
-            padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: #fff; 
-            font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 14px; 
-        }
+        .filter-bar { display: flex; justify-content: center; gap: 10px; margin: 30px 0 50px; }
+        .pill { padding: 8px 22px; border: 1px solid #ddd; border-radius: 20px; background: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .pill.active { background: #333; color: #fff; border-color: #333; }
 
-        /* --- TOOL CARDS --- */
-        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding-bottom: 50px; }
-        .tool-card { background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 12px; transition: 0.3s; position: relative; cursor: pointer; }
-        .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
-
+        /* --- 4. TOOLS GRID (Desktop) --- */
+        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-bottom: 80px; }
+        .tool-card { background: #fff; border: 1px solid #eee; padding: 30px 20px; border-radius: 12px; transition: 0.3s; position: relative; }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+        
         .tool-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; margin-bottom: 15px; }
         .bg-green { background: #81c784; }
         .bg-blue { background: #64b5f6; }
         .bg-cyan { background: #4dd0e1; }
         .bg-yellow { background: #ffd54f; }
 
-        .tool-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-        .tool-card p { font-size: 13px; color: #777; line-height: 1.4; }
+        .tool-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+        .tool-card p { font-size: 14px; color: #777; line-height: 1.5; }
 
-        /* --- MOBILE SPECIFIC CSS (The "Perfect Match" logic) --- */
-        @media (max-width: 768px) {
-            .mobile-menu-icon { display: block; }
-            .mega-menu-trigger, .header-right a:not(.grid-icon) { display: none; }
-            
-            .hero h1 { font-size: 26px; }
-            .hero p { font-size: 14px; }
-
-            .filter-pills { justify-content: flex-start; padding: 0 20px; }
-
-            .tools-grid { grid-template-columns: 1fr; padding: 0 15px 40px; gap: 12px; }
-
-            /* Switch cards to "Bar" style for mobile */
-            .tool-card { 
-                display: flex; 
-                align-items: center; 
-                padding: 15px; 
-                text-align: left;
-            }
-            .tool-icon { margin-bottom: 0; margin-right: 15px; min-width: 44px; }
-            .tool-card h3 { font-size: 16px; margin-bottom: 2px; }
-            .tool-card p { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* --- 5. MOBILE OVERRIDES (Responsive Fixes) --- */
+        @media (max-width: 1024px) {
+            .tools-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* --- FOOTER --- */
-        .site-footer { background: var(--footer-bg); color: #fff; padding: 50px 20px; margin-top: 30px; }
+        @media (max-width: 768px) {
+            /* Header Fixes */
+            .desktop-nav, .login-btn, .signup-btn { display: none; }
+            .hamburger { display: block; font-size: 22px; color: var(--nav-grey); cursor: pointer; }
+            
+            /* Mobile Navigation Menu */
+            .mobile-menu { 
+                display: block; position: fixed; top: 64px; left: -100%; width: 80%; height: 100vh; 
+                background: #fff; z-index: 1500; transition: 0.4s; padding: 30px; box-shadow: 10px 0 20px rgba(0,0,0,0.1); 
+            }
+            .mobile-menu.active { left: 0; }
+            .mobile-menu a { display: block; font-size: 18px; font-weight: 700; margin-bottom: 25px; color: var(--nav-grey); }
+
+            /* Hero Fixes */
+            .hero h1 { font-size: 28px; }
+            .hero p { font-size: 14px; }
+
+            /* Filter Pill Scroll */
+            .filter-bar { justify-content: flex-start; overflow-x: auto; padding: 0 20px; padding-bottom: 10px; }
+            .pill { white-space: nowrap; }
+
+            /* Tool Card List Style (Per your screenshot) */
+            .tools-grid { grid-template-columns: 1fr; padding: 0 15px; gap: 12px; }
+            .tool-card { display: flex; align-items: center; padding: 15px; text-align: left; }
+            .tool-icon { margin-bottom: 0; margin-right: 15px; min-width: 44px; }
+            .tool-card p { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        }
+
+        /* --- 6. FOOTER --- */
+        .site-footer { background: var(--footer-bg); color: #fff; padding: 60px 20px; }
         .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
-        .footer-col h6 { color: #777; font-size: 12px; margin-bottom: 20px; }
-        .footer-col a { display: block; color: #999; font-size: 13px; margin-bottom: 10px; }
-        
+        .footer-col h6 { color: #666; font-size: 12px; margin-bottom: 20px; }
+        .footer-col a { display: block; color: #999; font-size: 14px; margin-bottom: 10px; }
+
         @media (max-width: 768px) {
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
         }
@@ -133,20 +108,39 @@
 </head>
 <body>
 
+    <!-- Overlay for mobile menu -->
+    <div id="overlay" style="display:none; position:fixed; top:64px; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1400;" onclick="toggleMenu()"></div>
+
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
-                <i class="fa-solid fa-bars mobile-menu-icon"></i>
+                <!-- Hamburger Icon -->
+                <div class="hamburger" onclick="toggleMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
                 <a href="#" class="logo"><span>iLove</span>IMG</a>
-                <div class="mega-menu-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="desktop-nav">
+                    <div class="nav-item">All Image Tools <i class="fa-solid fa-chevron-down"></i></div>
+                </div>
             </div>
             <div class="header-right">
-                <a href="#">Login</a>
-                <a href="#" class="btn-signup">Sign up</a>
-                <i class="fa-solid fa-table-cells grid-icon"></i>
+                <a href="#" class="login-btn">Login</a>
+                <a href="#" class="signup-btn">Sign up</a>
+                <i class="fa-solid fa-table-cells" style="font-size: 20px; color: #47474f; cursor: pointer;"></i>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Side Menu -->
+    <nav class="mobile-menu" id="mobileMenu">
+        <a href="#">CONVERT TO JPG</a>
+        <a href="#">RESIZE IMAGE</a>
+        <a href="#">COMPRESS IMAGE</a>
+        <a href="#">EDIT IMAGE</a>
+        <hr style="margin-bottom: 25px; border: 0; border-top: 1px solid #eee;">
+        <a href="#" style="color: var(--brand-blue);">Login</a>
+        <a href="#">Sign up</a>
+    </nav>
 
     <main>
         <section class="hero">
@@ -154,33 +148,34 @@
             <p>Modify your images at once with our online tools.</p>
         </section>
 
-        <div class="filter-wrapper">
-            <div class="filter-pills">
-                <button class="pill active">All</button>
-                <button class="pill">Optimize</button>
-                <button class="pill">Resize</button>
-                <button class="pill">Edit</button>
-                <button class="pill">Convert</button>
-                <button class="pill">Security</button>
-            </div>
+        <div class="filter-bar">
+            <button class="pill active">All</button>
+            <button class="pill">Optimize</button>
+            <button class="pill">Resize</button>
+            <button class="pill">Edit</button>
+            <button class="pill">Convert</button>
+            <button class="pill">Security</button>
         </div>
 
-        <div class="container">
+        <section class="container">
             <div class="tools-grid">
+                <!-- Card 1 -->
                 <div class="tool-card">
                     <div class="tool-icon bg-green"><i class="fa-solid fa-compress"></i></div>
                     <div>
                         <h3>Compress IMAGE</h3>
-                        <p>Compress JPG, PNG, SVG and GIFs with best quality.</p>
+                        <p>Compress JPG, PNG, SVG or GIF with the best quality.</p>
                     </div>
                 </div>
+                <!-- Card 2 -->
                 <div class="tool-card">
                     <div class="tool-icon bg-blue"><i class="fa-solid fa-expand"></i></div>
                     <div>
                         <h3>Resize IMAGE</h3>
-                        <p>Define dimensions by pixels or percentage.</p>
+                        <p>Define your dimensions by pixels or percentage.</p>
                     </div>
                 </div>
+                <!-- Card 3 -->
                 <div class="tool-card">
                     <div class="tool-icon bg-cyan"><i class="fa-solid fa-crop"></i></div>
                     <div>
@@ -188,16 +183,16 @@
                         <p>Crop JPG, PNG or GIFs with ease.</p>
                     </div>
                 </div>
+                <!-- Card 4 -->
                 <div class="tool-card">
                     <div class="tool-icon bg-yellow"><i class="fa-solid fa-repeat"></i></div>
                     <div>
                         <h3>Convert to JPG</h3>
-                        <p>Turn most image formats into JPG.</p>
+                        <p>Turn most formats like PNG or WEBP into JPG.</p>
                     </div>
                 </div>
-                <!-- Repeat for other tools... -->
             </div>
-        </div>
+        </section>
     </main>
 
     <footer class="site-footer">
@@ -213,5 +208,27 @@
         </div>
     </footer>
 
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('overlay');
+            const icon = document.querySelector('.hamburger i');
+
+            // Toggle active class on menu
+            menu.classList.toggle('active');
+
+            // Toggle overlay display
+            if (menu.classList.contains('active')) {
+                overlay.style.display = 'block';
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                overlay.style.display = 'none';
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+    </script>
 </body>
 </html>
