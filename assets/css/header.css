@@ -1,11 +1,11 @@
-/* assets/css/header.css */
+/* HEADER & NAVIGATION */
 .site-header {
     height: 64px;
     background: #fff;
     border-bottom: 1px solid #e1e4e8;
     position: sticky;
     top: 0;
-    z-index: 2000;
+    z-index: 1050; /* Above Bootstrap's defaults */
 }
 
 .header-flex {
@@ -15,21 +15,19 @@
     height: 100%;
 }
 
-.header-left { display: flex; align-items: center; gap: 30px; height: 100%; }
 .logo { font-size: 24px; font-weight: 800; color: #47474f; }
 .logo span { color: var(--brand-blue); }
 
-/* Desktop Nav */
-.desktop-nav { display: flex; align-items: center; gap: 20px; height: 100%; }
+/* Mega Menu Logic */
 .mega-trigger {
-    height: 100%;
+    height: 64px;
     display: flex;
     align-items: center;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     position: relative;
-    text-transform: uppercase;
+    padding: 0 15px;
 }
 
 .mega-menu {
@@ -37,22 +35,28 @@
     position: absolute;
     top: 64px;
     left: -100px;
-    width: 850px;
+    width: 800px;
     background: #fff;
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    padding: 40px;
-    border-radius: 0 0 8px 8px;
-    z-index: 3000;
+    padding: 30px;
+    z-index: 2000;
     border-top: 1px solid #eee;
 }
 
 .mega-trigger:hover .mega-menu { display: block; }
-.menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
-/* Mobile Menu Button */
-.hamburger { display: none; font-size: 22px; cursor: pointer; }
+/* Mobile UI Elements */
+.mobile-toggle { display: none; font-size: 22px; cursor: pointer; }
 
 @media (max-width: 991px) {
-    .desktop-nav, .header-right .login-link { display: none; }
-    .hamburger { display: block; }
+    .desktop-only { display: none !important; }
+    .mobile-toggle { display: block; }
 }
+
+/* Sidebar */
+.sidebar {
+    position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+    background: #fff; z-index: 3000; transition: 0.4s; padding: 40px 20px;
+}
+.sidebar.active { left: 0; }
+.overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
