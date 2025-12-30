@@ -1,30 +1,16 @@
-// js/tools/crop.js
-
-let cropperInstance = null;
-
+let cropper = null;
 export default {
     title: 'Crop IMAGE',
-
-    renderUI: () => `
-        <div class="alert alert-info">Drag the box to crop your image</div>
-    `,
-
-    // Called when image is loaded
-    init: (imgElement) => {
-        cropperInstance = new Cropper(imgElement, { viewMode: 1 });
+    renderUI: () => `<div class="alert alert-info py-1">Drag on image to crop</div>`,
+    init: (img) => {
+        if(cropper) cropper.destroy();
+        cropper = new Cropper(img, { viewMode: 1, minContainerHeight: 300 });
     },
-
     process: async () => {
-        if (!cropperInstance) return null;
-        const canvas = cropperInstance.getCroppedCanvas();
-        return new Promise(resolve => canvas.toBlob(resolve));
+        const cvs = cropper.getCroppedCanvas();
+        return new Promise(r => cvs.toBlob(r));
     },
-
-    // Clean up when leaving page
     cleanup: () => {
-        if (cropperInstance) {
-            cropperInstance.destroy();
-            cropperInstance = null;
-        }
+        if(cropper) { cropper.destroy(); cropper = null; }
     }
 };
