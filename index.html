@@ -3,62 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG | Online Image Editor</title>
+    <title>iLoveIMG | Online Image Editor and Tools</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Using FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header>
-        <nav class="navbar">
+    <header class="header">
+        <div class="header__container">
             <div class="logo">
-                <a href="index.html"><span>iLove</span>IMG</a>
+                <a href="/">
+                    <span class="logo__ilove">iLove</span><span class="logo__img">IMG</span>
+                </a>
             </div>
-            <ul class="nav-links">
-                <li><a href="#">CONVERT TO JPG</a></li>
-                <li><a href="#">RESIZE IMAGE</a></li>
-                <li><a href="#">EDIT IMAGE</a></li>
-                <li class="login-btn"><a href="#">Login</a></li>
-                <li class="signup-btn"><a href="#">Sign up</a></li>
-            </ul>
-        </nav>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="#">CONVERT TO JPG</a></li>
+                    <li><a href="#">RESIZE IMAGE</a></li>
+                    <li><a href="#">EDIT IMAGE</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <a href="#" class="btn-login">Login</a>
+                    <a href="#" class="btn-signup">Sign up</a>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Every tool you could want to edit images in bulk</h1>
-        <p>Modify your images at once with our online tools.</p>
-    </section>
+    <main class="main-content">
+        <section class="hero">
+            <h1>Every tool you could want to edit images in bulk</h1>
+            <p>Modify your images at once with our online tools.</p>
+        </section>
 
-    <!-- Tools Grid -->
-    <main class="tools-container">
-        <div class="tool-card">
-            <i class="fas fa-compress-arrows-alt"></i>
-            <h3>Compress IMAGE</h3>
-            <p>Compress JPG, PNG, SVG or GIF with the best quality and compression.</p>
-        </div>
+        <section class="tools-grid">
+            <!-- Tool 1: Compress -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <svg viewBox="0 0 100 100"><path fill="#4285f4" d="M30 40h40L50 60 30 40zM30 20h40v5H30v-5zm0 55h40v5H30v-5z"/></svg>
+                </div>
+                <h3>Compress IMAGE</h3>
+                <p>Compress JPG, PNG, SVG or GIF with the best quality and compression.</p>
+            </div>
 
-        <div class="tool-card">
-            <i class="fas fa-expand-arrows-alt"></i>
-            <h3>Resize IMAGE</h3>
-            <p>Define your dimensions, by pixels or percentage, and resize your images.</p>
-        </div>
+            <!-- Tool 2: Resize -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <svg viewBox="0 0 100 100"><path fill="#4285f4" d="M20 20h20v10H30v10H20V20zm40 0h20v20h-10v-10h-10V20zM20 60h10v10h10v10H20V60zm60 20H60v-10h10v-10h10v20z"/></svg>
+                </div>
+                <h3>Resize IMAGE</h3>
+                <p>Define your dimensions, by pixels or percentage, and resize your images.</p>
+            </div>
 
-        <div class="tool-card">
-            <i class="fas fa-crop-alt"></i>
-            <h3>Crop IMAGE</h3>
-            <p>Crop JPG, PNG or GIFs with ease; choose pixels or use our visual editor.</p>
-        </div>
+            <!-- Tool 3: Crop -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <svg viewBox="0 0 100 100"><path fill="#4285f4" d="M30 10v60h60v10H70v10H60V80H10V30h10V20H10V10h20zm40 20v30H40V30h30z"/></svg>
+                </div>
+                <h3>Crop IMAGE</h3>
+                <p>Crop JPG, PNG or GIFs with ease; choose pixels or use our visual editor.</p>
+            </div>
 
-        <div class="tool-card">
-            <i class="fas fa-sync-alt"></i>
-            <h3>Convert to JPG</h3>
-            <p>Turn PNG, GIF, TIF, PSD, SVG, WEBP, HEIC or RAW to JPG format.</p>
-        </div>
+            <!-- Tool 4: Convert to JPG -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <svg viewBox="0 0 100 100"><path fill="#4285f4" d="M50 20c-16.5 0-30 13.5-30 30h10c0-11 9-20 20-20s20 9 20 20h10c0-16.5-13.5-30-30-30zm0 60c16.5 0 30-13.5 30-30H70c0 11-9 20-20 20s-20-9-20-20H20c0 16.5 13.5 30 30 30z"/></svg>
+                </div>
+                <h3>Convert to JPG</h3>
+                <p>Turn PNG, GIF, TIF, PSD, SVG, WEBP, HEIC or RAW to JPG format.</p>
+            </div>
+
+            <!-- Additional tools (Replicating the grid for 13 items) -->
+            <div class="tool-card"><h3>Convert from JPG</h3><p>Transform JPG images to PNG and GIF. Choose multiple JPGs.</p></div>
+            <div class="tool-card"><h3>Watermark IMAGE</h3><p>Stamp an image or text over your images in bulk.</p></div>
+            <div class="tool-card"><h3>Meme generator</h3><p>Create memes online. Caption images or upload your own templates.</p></div>
+            <div class="tool-card"><h3>Rotate IMAGE</h3><p>Rotate your JPG, PNG or GIFs at once.</p></div>
+            <div class="tool-card"><h3>HTML to IMAGE</h3><p>Convert web pages to JPG or SVG with visual fidelity.</p></div>
+            <div class="tool-card"><h3>Blur face</h3><p>Easily blur faces in photos. You can also blur objects.</p></div>
+            <div class="tool-card"><h3>Upscale IMAGE</h3><p>Enlarge your images with high resolution using AI.</p></div>
+            <div class="tool-card"><h3>Remove Background</h3><p>Remove image backgrounds with high accuracy using AI.</p></div>
+            <div class="tool-card"><h3>Photo Editor</h3><p>Add text, stickers, effects and filters to your photos.</p></div>
+
+        </section>
     </main>
 
-    <script src="script.js"></script>
 </body>
 </html>
