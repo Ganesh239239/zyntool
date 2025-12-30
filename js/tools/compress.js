@@ -1,101 +1,61 @@
-const fileInput = document.getElementById("fileInput");
-const uploadArea = document.getElementById("uploadArea");
-const results = document.getElementById("results");
-const qualityRange = document.getElementById("qualityRange");
-const qualityInput = document.getElementById("qualityInput");
-const downloadAllBtn = document.getElementById("downloadAll");
-const clearAllBtn = document.getElementById("clearAll");
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const settingsArea = document.getElementById('settingsArea');
+const qualityInput = document.getElementById('quality');
+const qualVal = document.getElementById('qualVal');
+const compressBtn = document.getElementById('compressBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const origInfo = document.getElementById('origInfo');
+const newInfo = document.getElementById('newInfo');
 
-let images = [];
+let originalFile = null;
 
-/* Upload */
-uploadArea.onclick = () => fileInput.click();
-fileInput.onchange = () => handleFiles([...fileInput.files]);
+// Trigger file input
+dropZone.onclick = () => fileInput.click();
 
-uploadArea.addEventListener("dragover", e => e.preventDefault());
-uploadArea.addEventListener("drop", e => {
-  e.preventDefault();
-  handleFiles([...e.dataTransfer.files]);
-});
-
-/* Handle files */
-function handleFiles(files) {
-  files.filter(f => f.type.startsWith("image/")).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.src = e.target.result;
-      img.onload = () => {
-        const item = { file, img, blob: null };
-        images.push(item);
-        render();
-      };
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* Quality sync */
-qualityRange.oninput = () => {
-  qualityInput.value = qualityRange.value;
-  render();
+// Handle file selection
+fileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        originalFile = file;
+        settingsArea.style.display = 'block';
+        origInfo.innerText = (file.size / 1024).toFixed(2) + " KB";
+        downloadBtn.style.display = 'none';
+        compressBtn.style.display = 'inline-block';
+    }
 };
 
+// Update quality label
 qualityInput.oninput = () => {
-  const v = Math.min(95, Math.max(10, qualityInput.value));
-  qualityInput.value = v;
-  qualityRange.value = v;
-  render();
+    qualVal.innerText = qualityInput.value;
 };
 
-/* Render all */
-function render() {
-  results.innerHTML = "";
-  images.forEach(item => compress(item));
-}
+// Compression Logic
+compressBtn.onclick = () => {
+    const reader = new FileReader();
+    reader.readAsDataURL(originalFile);
+    reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-function compress(item) {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = item.img.width;
-  canvas.height = item.img.height;
-  ctx.drawImage(item.img, 0, 0);
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
 
-  canvas.toBlob(blob => {
-    item.blob = blob;
-    const url = URL.createObjectURL(blob);
-    const saved = 100 - (blob.size / item.file.size * 100);
-
-    const card = document.createElement("div");
-    card.className = "result-card";
-    card.innerHTML = `
-      <img src="${url}">
-      <div class="info">
-        <span>${(item.file.size/1024).toFixed(1)} KB</span>
-        <span>${(blob.size/1024).toFixed(1)} KB (-${saved.toFixed(0)}%)</span>
-      </div>
-      <a class="download-btn" href="${url}" download="compressed-${item.file.name}">
-        Download
-      </a>
-    `;
-    results.appendChild(card);
-  }, "image/jpeg", qualityRange.value / 100);
-}
-
-/* Download all */
-downloadAllBtn.onclick = async () => {
-  const zip = new JSZip();
-  images.forEach(i => zip.file(`compressed-${i.file.name}`, i.blob));
-  const blob = await zip.generateAsync({ type: "blob" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "compressed-images.zip";
-  a.click();
-};
-
-/* Clear */
-clearAllBtn.onclick = () => {
-  images = [];
-  results.innerHTML = "";
-  fileInput.value = "";
+            // Convert to blob
+            const quality = qualityInput.value / 100;
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                newInfo.innerText = (blob.size / 1024).toFixed(2) + " KB";
+                
+                downloadBtn.href = url;
+                downloadBtn.download = `compressed_${originalFile.name}`;
+                downloadBtn.style.display = 'inline-block';
+                compressBtn.style.display = 'none';
+            }, 'image/jpeg', quality);
+        };
+    };
 };
