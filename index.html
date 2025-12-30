@@ -44,7 +44,7 @@
             align-items: center;
             gap: 5px;
         }
-        .navbar-brand i { color: #4B90FF; font-size: 1.4rem; } /* Heart is blue/red in logo, simplified here */
+        .navbar-brand i { color: #4B90FF; font-size: 1.4rem; } 
         
         .navbar-toggler {
             border: none;
@@ -64,6 +64,29 @@
             padding: 8px 20px;
         }
         .btn-signup:hover { background-color: #3a7bd5; color: white; }
+
+        /* Dropdown Menu Styling */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 15px;
+        }
+        .dropdown-item {
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #555;
+        }
+        .dropdown-item:hover {
+            background-color: #f4f7fa;
+            color: var(--primary-blue);
+        }
+        .nav-link.dropdown-toggle::after {
+            margin-left: 0.5em;
+            vertical-align: 0.15em;
+        }
 
         /* --- Hero Section --- */
         .hero {
@@ -99,8 +122,11 @@
             color: #555;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             font-size: 0.95rem;
+            transition: all 0.2s ease;
         }
         .filter-pills .btn:hover { background-color: #f8f9fa; }
+        
+        /* Active State for Filters */
         .filter-pills .btn.active {
             background-color: #2d3e50;
             color: white;
@@ -111,9 +137,9 @@
         .tools-section {
             background-color: var(--light-bg);
             padding-bottom: 60px;
+            min-height: 600px; /* Prevent jump when filtering */
         }
         
-        /* CARD STYLING */
         .tool-card {
             background: white;
             border-radius: 12px;
@@ -122,8 +148,8 @@
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
             cursor: pointer;
-            border: 1px solid transparent; /* Cleaner look */
-            text-align: left; /* Align left specifically */
+            border: 1px solid transparent;
+            text-align: left;
         }
         .tool-card:hover {
             transform: translateY(-5px);
@@ -132,7 +158,6 @@
             z-index: 2;
         }
 
-        /* Icons */
         .icon-box {
             width: 55px;
             height: 55px;
@@ -157,7 +182,6 @@
             margin-bottom: 0;
         }
 
-        /* New Badge */
         .badge-new {
             position: absolute;
             top: 15px;
@@ -175,6 +199,15 @@
         .ic-blue { background-color: #E3F2FD; color: #2196F3; }
         .ic-yellow { background-color: #FFF8E1; color: #FFC107; }
         .ic-purple { background-color: #F3E5F5; color: #9C27B0; }
+
+        /* Animation for Filtering */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* --- Work Section --- */
         .work-section { padding: 60px 0; background: white; }
@@ -250,19 +283,17 @@
         }
         .store-btn:hover { border-color: white; background: rgba(255,255,255,0.05); }
 
-        /* --- MOBILE SPECIFIC TWEAKS --- */
+        /* --- MOBILE SPECIFIC --- */
         @media (max-width: 767px) {
-            /* Navbar */
             .navbar-brand { font-size: 1.4rem; }
-            .btn-signup, .nav-link { display: none; } /* Hide buttons on mobile header initially like screenshot */
-            .navbar-toggler { display: block; } /* Ensure burger is visible */
+            .btn-signup { display: none; }
+            .navbar-toggler { display: block; }
 
-            /* Hero */
             .hero { padding: 30px 15px; }
-            .hero h1 { font-size: 1.75rem; } /* Match mobile header size */
+            .hero h1 { font-size: 1.75rem; }
             .hero p { font-size: 1rem; margin-bottom: 20px; }
             
-            /* Filter Pills - Stack them cleanly */
+            /* Stack filter pills */
             .filter-pills { 
                 display: flex; 
                 flex-wrap: wrap; 
@@ -274,21 +305,14 @@
                 margin: 2px;
             }
 
-            /* Tool Grid - CRITICAL FIX: STACKED (col-12) */
             .tool-card {
                 padding: 20px;
                 display: block; 
-                /* Ensures text wraps correctly inside the vertical card */
             }
             
-            /* Work Section */
             .work-card h4 { font-size: 1.2rem; }
-            
-            /* Footer */
             footer h5 { margin-top: 20px; }
             .store-btn { width: 100%; justify-content: center; }
-            
-            /* Trusted Section */
             .trusted-header h2 { font-size: 1.5rem; }
             .trusted-header .d-flex { flex-direction: column; align-items: center; gap: 15px !important; }
         }
@@ -300,23 +324,34 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <!-- Heart icon simulated with text/icon -->
                 I <i class="fa-solid fa-heart text-danger"></i> IMG
             </a>
             
-            <!-- Mobile Menu Toggle (Right Aligned) -->
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa-solid fa-bars"></i>
             </button>
 
             <!-- Menu Items -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto ms-lg-3 mt-3 mt-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark fw-bold" href="#">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down ms-1 fs-6"></i></a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            ALL IMAGE TOOLS
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
+                            <li><a class="dropdown-item" href="#">Compress IMAGE</a></li>
+                            <li><a class="dropdown-item" href="#">Resize IMAGE</a></li>
+                            <li><a class="dropdown-item" href="#">Crop IMAGE</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Convert to JPG</a></li>
+                            <li><a class="dropdown-item" href="#">Convert from JPG</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Photo Editor</a></li>
+                            <li><a class="dropdown-item" href="#">Meme Generator</a></li>
+                        </ul>
                     </li>
                 </ul>
-                <!-- Desktop Buttons (Hidden on mobile via CSS adjustments above if needed, strictly Bootstrap handles this via collapse) -->
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 mt-3 mt-lg-0">
                     <a href="#" class="nav-link text-dark fw-bold ps-0">Login</a>
                     <a href="#" class="btn btn-signup w-100 w-lg-auto text-center">Sign up</a>
@@ -331,14 +366,14 @@
             <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
             <p>Your online photo editor is here and forever free!</p>
             
-            <!-- Filters -->
-            <div class="d-flex justify-content-center filter-pills mt-3">
-                <button class="btn active">All</button>
-                <button class="btn">Optimize</button>
-                <button class="btn">Create</button>
-                <button class="btn">Edit</button>
-                <button class="btn">Convert</button>
-                <button class="btn">Security</button>
+            <!-- Interactive Filters -->
+            <div class="d-flex justify-content-center filter-pills mt-3" id="toolFilters">
+                <button class="btn active" onclick="filterTools('all', this)">All</button>
+                <button class="btn" onclick="filterTools('optimize', this)">Optimize</button>
+                <button class="btn" onclick="filterTools('create', this)">Create</button>
+                <button class="btn" onclick="filterTools('edit', this)">Edit</button>
+                <button class="btn" onclick="filterTools('convert', this)">Convert</button>
+                <button class="btn" onclick="filterTools('security', this)">Security</button>
             </div>
         </div>
     </section>
@@ -346,12 +381,9 @@
     <!-- Tools Grid -->
     <section class="tools-section">
         <div class="container">
-            <!-- CHANGE: g-3 for tighter mobile spacing -->
-            <div class="row g-3">
-                <!-- IMPORTANT: col-12 for mobile (stacked), col-md-4 for tablet, col-lg-3 for desktop -->
-                
-                <!-- Card 1 -->
-                <div class="col-12 col-md-4 col-lg-3">
+            <div class="row g-3" id="toolsGrid">
+                <!-- Optimize Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
                     <div class="tool-card">
                         <div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div>
                         <h5>Compress IMAGE</h5>
@@ -359,8 +391,7 @@
                     </div>
                 </div>
 
-                <!-- Card 2 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
                     <div class="tool-card">
                         <div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div>
                         <h5>Resize IMAGE</h5>
@@ -368,8 +399,8 @@
                     </div>
                 </div>
 
-                <!-- Card 3 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Edit Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
                     <div class="tool-card">
                         <div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div>
                         <h5>Crop IMAGE</h5>
@@ -377,8 +408,8 @@
                     </div>
                 </div>
 
-                <!-- Card 4 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Convert Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
                     <div class="tool-card">
                         <div class="icon-box ic-yellow"><i class="fa-solid fa-file-image"></i></div>
                         <h5>Convert to JPG</h5>
@@ -386,8 +417,7 @@
                     </div>
                 </div>
 
-                <!-- Card 5 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
                     <div class="tool-card">
                         <div class="icon-box ic-yellow"><i class="fa-solid fa-images"></i></div>
                         <h5>Convert from JPG</h5>
@@ -395,8 +425,8 @@
                     </div>
                 </div>
 
-                <!-- Card 6 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Edit Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
                     <div class="tool-card">
                         <div class="icon-box ic-purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                         <h5>Photo editor</h5>
@@ -404,8 +434,8 @@
                     </div>
                 </div>
 
-                <!-- Card 7 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Optimize/New Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
                     <div class="tool-card">
                         <span class="badge-new">New!</span>
                         <div class="icon-box ic-green"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
@@ -414,8 +444,8 @@
                     </div>
                 </div>
 
-                <!-- Card 8 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Edit Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
                     <div class="tool-card">
                         <span class="badge-new">New!</span>
                         <div class="icon-box ic-green"><i class="fa-solid fa-eraser"></i></div>
@@ -424,8 +454,7 @@
                     </div>
                 </div>
 
-                <!-- Card 9 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security edit">
                     <div class="tool-card">
                         <div class="icon-box ic-blue"><i class="fa-solid fa-stamp"></i></div>
                         <h5>Watermark IMAGE</h5>
@@ -433,8 +462,8 @@
                     </div>
                 </div>
 
-                <!-- Card 10 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Create Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="create">
                     <div class="tool-card">
                         <div class="icon-box ic-purple"><i class="fa-regular fa-face-laugh-squint"></i></div>
                         <h5>Meme generator</h5>
@@ -442,8 +471,8 @@
                     </div>
                 </div>
 
-                <!-- Card 11 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Edit Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
                     <div class="tool-card">
                         <div class="icon-box ic-blue"><i class="fa-solid fa-rotate-right"></i></div>
                         <h5>Rotate IMAGE</h5>
@@ -451,8 +480,8 @@
                     </div>
                 </div>
 
-                <!-- Card 12 -->
-                <div class="col-12 col-md-4 col-lg-3">
+                <!-- Convert Tools -->
+                <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
                     <div class="tool-card">
                         <div class="icon-box ic-yellow"><i class="fa-brands fa-html5"></i></div>
                         <h5>HTML to IMAGE</h5>
@@ -460,8 +489,8 @@
                     </div>
                 </div>
                 
-                 <!-- Card 13 -->
-                 <div class="col-12 col-md-4 col-lg-3">
+                 <!-- Security Tools -->
+                 <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security">
                     <div class="tool-card">
                         <span class="badge-new">New!</span>
                         <div class="icon-box ic-blue"><i class="fa-solid fa-user-secret"></i></div>
@@ -521,9 +550,7 @@
                     <p class="fs-5 text-secondary">Work faster and smarter with advanced editing tools, batch processing, and powerful AI features.</p>
                     <button class="btn btn-premium w-100 w-md-auto"><i class="fa-solid fa-crown me-2"></i> Get Premium</button>
                 </div>
-                <!-- Hidden on mobile as per standard practice for these layouts, or keep if crucial -->
-                <div class="col-md-5 d-none d-md-block">
-                </div>
+                <div class="col-md-5 d-none d-md-block"></div>
             </div>
         </div>
     </div>
@@ -616,7 +643,6 @@
                 </div>
             </div>
             
-            <!-- Social Icons (Mobile Centered) -->
              <div class="text-center mt-4 d-md-none">
                 <a href="#" class="text-secondary mx-2"><i class="fa-brands fa-twitter fa-lg"></i></a>
                 <a href="#" class="text-secondary mx-2"><i class="fa-brands fa-facebook fa-lg"></i></a>
@@ -625,7 +651,41 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS Bundle (Includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Interactive Scripts -->
+    <script>
+        function filterTools(category, btnElement) {
+            // 1. Update Buttons Active State
+            const buttons = document.querySelectorAll('.filter-pills .btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // 2. Filter Cards
+            const tools = document.querySelectorAll('.tool-item');
+            
+            tools.forEach(tool => {
+                // Remove fade animation to reset
+                tool.classList.remove('fade-in');
+                
+                if (category === 'all') {
+                    tool.style.display = 'block';
+                    // Trigger reflow to restart animation
+                    void tool.offsetWidth; 
+                    tool.classList.add('fade-in');
+                } else {
+                    const toolCategories = tool.getAttribute('data-category');
+                    if (toolCategories && toolCategories.includes(category)) {
+                        tool.style.display = 'block';
+                        void tool.offsetWidth;
+                        tool.classList.add('fade-in');
+                    } else {
+                        tool.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
