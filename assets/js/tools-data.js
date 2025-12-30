@@ -1,39 +1,21 @@
 const tools = [
-    {
-        id: "compress",
-        name: "Compress IMAGE",
-        desc: "Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.",
-        category: "optimize",
-        color: "#8bc34a",
-        icon: `<path d="M12 12L19 19M12 12V18M12 12H18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M36 36L29 29M36 36V30M36 36H30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M36 12L29 19M36 12V18M36 12H30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M12 36L19 29M12 36V30M12 36H18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
-        link: "/tools/compress-image/"
-    },
-    {
-        id: "resize",
-        name: "Resize IMAGE",
-        desc: "Define your dimensions, by percent or pixel, and resize your images.",
-        category: "edit",
-        color: "#4fc3f7",
-        icon: `<rect x="14" y="14" width="20" height="20" rx="2" stroke="currentColor" stroke-width="3"/><path d="M10 10L14 14M38 38L34 34" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
-        link: "/tools/resize-image/"
-    },
-    {
-        id: "crop",
-        name: "Crop IMAGE",
-        desc: "Crop JPG, PNG or GIFs with ease; Choose pixels or use our editor.",
-        category: "edit",
-        color: "#29b6f6",
-        icon: `<path d="M15 10V33H38" stroke="currentColor" stroke-width="3"/><path d="M10 15H33V38" stroke="currentColor" stroke-width="3"/>`,
-        link: "#"
-    },
-    {
-        id: "convert-to-jpg",
-        name: "Convert to JPG",
-        desc: "Turn PNG, GIF, WEBP or RAW to JPG format with ease.",
-        category: "convert",
-        color: "#ffca28",
-        icon: `<path d="M12 12H36V36H12V12Z" stroke="currentColor" stroke-width="3"/><path d="M18 24H30" stroke="currentColor" stroke-width="3"/>`,
-        link: "#"
-    }
-    // Add all other 15+ tools here in the same format
+    // OPTIMIZE
+    { id: "compress", name: "Compress IMAGE", desc: "Compress JPG, PNG, SVG, or GIF with the best quality.", category: "optimize", color: "#8bc34a", icon: "📉", link: "/tools/compress-image/" },
+    { id: "upscale", name: "Upscale Image", desc: "Enlarge your images with high resolution using AI.", category: "optimize", color: "#81c784", icon: "✨", isNew: true, link: "#" },
+    { id: "remove-bg", name: "Remove background", desc: "Quickly remove image backgrounds with high accuracy.", category: "optimize", color: "#ba68c8", icon: "👤", isNew: true, link: "#" },
+    
+    // MODIFY / EDIT
+    { id: "resize", name: "Resize IMAGE", desc: "Define dimensions by percent or pixel and resize images.", category: "edit", color: "#4fc3f7", icon: "📏", link: "/tools/resize-image/" },
+    { id: "crop", name: "Crop IMAGE", desc: "Crop JPG, PNG or GIFs with ease; Choose pixels or use editor.", category: "edit", color: "#29b6f6", icon: "✂️", link: "#" },
+    { id: "rotate", name: "Rotate IMAGE", desc: "Rotate your images in bulk at once easily.", category: "edit", color: "#03a9f4", icon: "🔄", link: "#" },
+    
+    // CONVERT
+    { id: "to-jpg", name: "Convert to JPG", desc: "Turn PNG, GIF, WEBP or RAW to JPG format with ease.", category: "convert", color: "#ffca28", icon: "🖼️", link: "#" },
+    { id: "from-jpg", name: "Convert from JPG", desc: "Convert JPG images to PNG or GIF easily.", category: "convert", color: "#ff9800", icon: "🔃", link: "#" },
+    { id: "html-to-img", name: "HTML to IMAGE", desc: "Convert web pages to JPG or SVG with high quality.", category: "convert", color: "#f44336", icon: "🌐", link: "#" },
+    
+    // CREATE / SECURITY
+    { id: "meme", name: "Meme generator", desc: "Create your memes online. Caption images or upload yours.", category: "create", color: "#f06292", icon: "🎭", link: "#" },
+    { id: "editor", name: "Photo editor", desc: "Spice up pictures with text, effects, frames or stickers.", category: "create", color: "#e91e63", icon: "🎨", isNew: true, link: "#" },
+    { id: "watermark", name: "Watermark IMAGE", desc: "Stamp an image or text over your images in seconds.", category: "security", color: "#90a4ae", icon: "🛡️", link: "#" }
 ];
