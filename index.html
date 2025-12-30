@@ -13,9 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- PROFESSIONAL DEV TOOLS: Libraries for Image Processing -->
-    <!-- Library for Image Compression -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-    <!-- Library for Saving Files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
@@ -64,7 +62,6 @@
 
         /* --- Hero Section --- */
         .hero { background-color: var(--light-bg); padding: 40px 0 30px; text-align: center; transition: all 0.3s ease; }
-        .hero.hidden { display: none; }
         .hero h1 { font-weight: 800; color: #333; font-size: 2.8rem; margin-bottom: 15px; line-height: 1.2; }
         .hero p { font-size: 1.3rem; color: #666; margin-bottom: 25px; font-weight: 400; }
 
@@ -75,7 +72,6 @@
 
         /* --- Tools Grid --- */
         .tools-section { background-color: var(--light-bg); padding-bottom: 80px; flex-grow: 1; transition: all 0.3s ease; }
-        .tools-section.hidden { display: none; }
         
         .tool-card { background: white; border-radius: 12px; padding: 24px; height: 100%; transition: transform 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; border: 1px solid transparent; text-align: left; }
         .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--primary-blue); z-index: 2; }
@@ -93,7 +89,7 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- NEW: TOOL WORKSPACE (Hidden by default) --- */
+        /* --- TOOL WORKSPACE --- */
         #toolWorkspace {
             display: none;
             background: #fff;
@@ -137,7 +133,7 @@
             padding: 20px;
             margin-top: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            display: none; /* Hidden until processed */
+            display: none;
         }
 
         /* --- Footer --- */
@@ -172,7 +168,10 @@
                         <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" data-bs-toggle="dropdown">ALL IMAGE TOOLS</a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#" onclick="openTool('compress')">Compress IMAGE</a></li>
-                            <li><a class="dropdown-item" href="#">Resize IMAGE</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="openTool('resize')">Resize IMAGE</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="openTool('crop')">Crop IMAGE</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="openTool('convert')">Convert to JPG</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -192,6 +191,7 @@
                     <button class="btn" onclick="filterTools('create', this)">Create</button>
                     <button class="btn" onclick="filterTools('edit', this)">Edit</button>
                     <button class="btn" onclick="filterTools('convert', this)">Convert</button>
+                    <button class="btn" onclick="filterTools('security', this)">Security</button>
                 </div>
             </div>
         </section>
@@ -199,37 +199,124 @@
         <section class="tools-section">
             <div class="container">
                 <div class="row g-3" id="toolsGrid">
-                    <!-- Tool 1: Compress (Functional) -->
+                    
+                    <!-- 1. Compress -->
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('compress')">
                         <div class="tool-card">
                             <div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div>
                             <h5>Compress IMAGE</h5>
-                            <p>Compress <strong>JPG</strong>, <strong>PNG</strong> while saving space.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 2: Resize (Visual Only for Demo) -->
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
-                        <div class="tool-card">
-                            <div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div>
-                            <h5>Resize IMAGE</h5>
-                            <p>Define your dimensions and resize images.</p>
+                            <p>Compress <strong>JPG</strong>, <strong>PNG</strong>, <strong>SVG</strong>, and <strong>GIFs</strong> while saving space and maintaining quality.</p>
                         </div>
                     </div>
 
-                    <!-- Filler Tools for UI -->
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
+                    <!-- 2. Resize -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('resize')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div>
+                            <h5>Resize IMAGE</h5>
+                            <p>Define your dimensions, by percent or pixel, and resize your <strong>JPG</strong>, <strong>PNG</strong>, <strong>SVG</strong>, and <strong>GIF</strong> images.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Crop -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('crop')">
                         <div class="tool-card">
                             <div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div>
                             <h5>Crop IMAGE</h5>
-                            <p>Crop JPG, PNG, or GIFs with ease.</p>
+                            <p>Crop <strong>JPG</strong>, <strong>PNG</strong>, or <strong>GIFs</strong> with ease; Choose pixels to define your rectangle.</p>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
+
+                    <!-- 4. Convert to JPG -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('tojpg')">
                         <div class="tool-card">
                             <div class="icon-box ic-yellow"><i class="fa-solid fa-file-image"></i></div>
                             <h5>Convert to JPG</h5>
-                            <p>Turn PNG, GIF, TIF, PSD images to JPG.</p>
+                            <p>Turn <strong>PNG</strong>, <strong>GIF</strong>, <strong>TIF</strong>, <strong>PSD</strong>, <strong>SVG</strong>, <strong>WEBP</strong>, or <strong>RAW</strong> format images to JPG in bulk.</p>
+                        </div>
+                    </div>
+
+                    <!-- 5. Convert from JPG -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('fromjpg')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-yellow"><i class="fa-solid fa-images"></i></div>
+                            <h5>Convert from JPG</h5>
+                            <p>Turn <strong>JPG</strong> images to <strong>PNG</strong> and <strong>GIF</strong>. Choose several <strong>JPGs</strong> to create an <strong>animated GIF</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- 6. Photo Editor -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('editor')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h5>Photo editor</h5>
+                            <p>Spice up your pictures with text, effects, frames or stickers. Simple editing tools for your image needs.</p>
+                        </div>
+                    </div>
+
+                    <!-- 7. Upscale -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('upscale')">
+                        <div class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-green"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                            <h5>Upscale Image</h5>
+                            <p>Enlarge your images with high resolution. Easily increase size of your JPG and PNG images.</p>
+                        </div>
+                    </div>
+
+                    <!-- 8. Remove Background -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('removebg')">
+                        <div class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-green"><i class="fa-solid fa-eraser"></i></div>
+                            <h5>Remove background</h5>
+                            <p>Quickly remove image backgrounds with high accuracy. Instantly detect objects and cut out backgrounds.</p>
+                        </div>
+                    </div>
+
+                    <!-- 9. Watermark -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit security" onclick="openTool('watermark')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-stamp"></i></div>
+                            <h5>Watermark IMAGE</h5>
+                            <p>Stamp an image or text over your images in seconds. Choose the typography, transparency and position.</p>
+                        </div>
+                    </div>
+
+                    <!-- 10. Meme Generator -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="create" onclick="openTool('meme')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-purple"><i class="fa-regular fa-face-laugh-squint"></i></div>
+                            <h5>Meme generator</h5>
+                            <p>Create your memes online with ease. Caption meme images or upload your pictures to make custom memes.</p>
+                        </div>
+                    </div>
+
+                    <!-- 11. Rotate -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('rotate')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-rotate-right"></i></div>
+                            <h5>Rotate IMAGE</h5>
+                            <p>Rotate many images <strong>JPG</strong>, <strong>PNG</strong> or <strong>GIF</strong> at same time. Choose landscape or portrait.</p>
+                        </div>
+                    </div>
+
+                    <!-- 12. HTML to IMAGE -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('html2image')">
+                        <div class="tool-card">
+                            <div class="icon-box ic-yellow"><i class="fa-brands fa-html5"></i></div>
+                            <h5>HTML to IMAGE</h5>
+                            <p>Convert webpages in HTML to JPG or SVG. Copy and paste the URL of the page you want and convert it.</p>
+                        </div>
+                    </div>
+                    
+                     <!-- 13. Blur Face -->
+                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security" onclick="openTool('blur')">
+                        <div class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-user-secret"></i></div>
+                            <h5>Blur face</h5>
+                            <p>Easily blur out faces in photos. You can also blur licence plates and other objects to hide private information.</p>
                         </div>
                     </div>
                 </div>
@@ -237,7 +324,7 @@
         </section>
     </div>
 
-    <!-- WORKSPACE VIEW (The Functional Part) -->
+    <!-- WORKSPACE VIEW -->
     <div id="toolWorkspace" class="mt-5 pt-4">
         <div class="container">
             <!-- Breadcrumb -->
@@ -262,7 +349,7 @@
                         <input type="file" id="fileInput" accept="image/*" hidden>
                     </div>
 
-                    <!-- 2. Preview & Options (Hidden initially) -->
+                    <!-- 2. Preview & Options -->
                     <div id="processingArea" style="display: none;" class="text-center fade-in">
                         <div class="card p-3 mb-4 shadow-sm d-inline-block">
                             <img id="imagePreview" src="" alt="Preview" style="max-height: 300px; max-width: 100%; border-radius: 8px;">
@@ -270,23 +357,28 @@
                         </div>
                         
                         <!-- Options for Compression -->
-                        <div id="compressOptions" class="mb-4">
+                        <div id="compressOptions" class="mb-4" style="display:none;">
                             <label class="form-label fw-bold">Compression Level</label>
                             <input type="range" class="form-range w-50 mx-auto d-block" id="qualityRange" min="0.1" max="1" step="0.1" value="0.6">
                             <span id="qualityValue" class="text-primary fw-bold">60% Quality</span>
                         </div>
+                        
+                        <!-- Options for Other tools -->
+                        <div id="genericOptions" class="mb-4 text-warning" style="display:none;">
+                            <i class="fa-solid fa-person-digging me-2"></i> This tool is currently in demo mode. 
+                        </div>
 
                         <div>
                             <button class="btn btn-action" id="btnProcess" onclick="processImage()">
-                                <i class="fa-solid fa-gear me-2"></i> Compress Image
+                                <i class="fa-solid fa-gear me-2"></i> <span id="btnProcessText">Process Image</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- 3. Result (Hidden initially) -->
+                    <!-- 3. Result -->
                     <div id="resultArea" class="result-card text-center">
                         <h4 class="text-success"><i class="fa-solid fa-circle-check"></i> Success!</h4>
-                        <p id="savingsInfo">Your image is smaller by X%</p>
+                        <p id="savingsInfo">Task completed.</p>
                         <a id="downloadLink" class="btn btn-dark btn-lg mt-2">
                             <i class="fa-solid fa-download me-2"></i> Download Image
                         </a>
@@ -321,34 +413,55 @@
 
     <!-- APP LOGIC -->
     <script>
-        // --- 1. NAVIGATION LOGIC ---
+        // --- 1. NAVIGATION & DATA ---
         const homeView = document.getElementById('homeView');
         const toolWorkspace = document.getElementById('toolWorkspace');
         let currentTool = '';
         let currentFile = null;
 
-        function openTool(toolName) {
+        // Tool Definitions
+        const toolsData = {
+            'compress': { title: 'Compress IMAGE', desc: 'Reduce the file size of your images while maintaining the best quality.', btn: 'Compress Image' },
+            'resize': { title: 'Resize IMAGE', desc: 'Define your dimensions, by percent or pixel, and resize your images.', btn: 'Resize Image' },
+            'crop': { title: 'Crop IMAGE', desc: 'Crop JPG, PNG, or GIFs with ease; Choose pixels to define your rectangle.', btn: 'Crop Image' },
+            'tojpg': { title: 'Convert to JPG', desc: 'Turn PNG, GIF, TIF, PSD, SVG, WEBP, or RAW format images to JPG.', btn: 'Convert Image' },
+            'fromjpg': { title: 'Convert from JPG', desc: 'Turn JPG images to PNG and GIF.', btn: 'Convert Image' },
+            'editor': { title: 'Photo Editor', desc: 'Spice up your pictures with text, effects, frames or stickers.', btn: 'Edit Image' },
+            'upscale': { title: 'Upscale Image', desc: 'Enlarge your images with high resolution.', btn: 'Upscale Image' },
+            'removebg': { title: 'Remove Background', desc: 'Quickly remove image backgrounds with high accuracy.', btn: 'Remove Background' },
+            'watermark': { title: 'Watermark IMAGE', desc: 'Stamp an image or text over your images in seconds.', btn: 'Add Watermark' },
+            'meme': { title: 'Meme Generator', desc: 'Create your memes online with ease.', btn: 'Generate Meme' },
+            'rotate': { title: 'Rotate IMAGE', desc: 'Rotate many images JPG, PNG or GIF at same time.', btn: 'Rotate Image' },
+            'html2image': { title: 'HTML to IMAGE', desc: 'Convert webpages in HTML to JPG or SVG.', btn: 'Convert HTML' },
+            'blur': { title: 'Blur Face', desc: 'Easily blur out faces in photos.', btn: 'Blur Faces' }
+        };
+
+        function openTool(toolKey) {
             // Hide Home, Show Workspace
             homeView.style.display = 'none';
             toolWorkspace.style.display = 'block';
             resetWorkspace();
 
-            // Set content based on tool
-            const title = document.getElementById('workspaceTitle');
-            const desc = document.getElementById('workspaceDesc');
-            const options = document.getElementById('compressOptions');
+            currentTool = toolKey;
+            const data = toolsData[toolKey] || { title: 'Image Tool', desc: 'Edit your image', btn: 'Process' };
 
-            currentTool = toolName;
+            // Update Text
+            document.getElementById('workspaceTitle').textContent = data.title;
+            document.getElementById('workspaceDesc').textContent = data.desc;
+            document.getElementById('btnProcessText').textContent = data.btn;
 
-            if (toolName === 'compress') {
-                title.textContent = 'Compress IMAGE';
-                desc.textContent = 'Reduce the file size of your images while maintaining the best quality.';
-                options.style.display = 'block'; // Show compress slider
+            // Toggle Options based on tool
+            const compressOpts = document.getElementById('compressOptions');
+            const genericOpts = document.getElementById('genericOptions');
+            
+            if (toolKey === 'compress') {
+                compressOpts.style.display = 'block';
+                genericOpts.style.display = 'none';
             } else {
-                title.textContent = 'Tool Under Construction';
-                desc.textContent = 'This demo focuses on the Compression tool functionality.';
-                options.style.display = 'none';
+                compressOpts.style.display = 'none';
+                genericOpts.style.display = 'block';
             }
+            
             window.scrollTo(0, 0);
         }
 
@@ -365,12 +478,10 @@
         const imagePreview = document.getElementById('imagePreview');
         const fileInfo = document.getElementById('fileInfo');
 
-        // Handle File Select
         fileInput.addEventListener('change', function(e) {
             handleFile(e.target.files[0]);
         });
 
-        // Handle Drag & Drop
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
@@ -389,23 +500,19 @@
             }
             currentFile = file;
             
-            // Show preview
             const reader = new FileReader();
             reader.onload = (e) => {
                 imagePreview.src = e.target.result;
                 processingArea.style.display = 'block';
                 dropZone.style.display = 'none';
                 
-                // Show info (Size in KB/MB)
                 const sizeStr = (file.size / 1024).toFixed(2) + ' KB';
                 fileInfo.innerHTML = `<strong>${file.name}</strong> (${sizeStr})`;
             };
             reader.readAsDataURL(file);
         }
 
-        // --- 3. IMAGE PROCESSING LOGIC (The Professional Part) ---
-        
-        // Update slider UI
+        // --- 3. PROCESSING LOGIC ---
         const range = document.getElementById('qualityRange');
         const valDisplay = document.getElementById('qualityValue');
         range.addEventListener('input', (e) => {
@@ -418,60 +525,56 @@
 
             const btn = document.getElementById('btnProcess');
             const originalText = btn.innerHTML;
-            
-            // Loading State
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
 
             try {
                 if (currentTool === 'compress') {
-                    // --- COMPRESSION LOGIC using browser-image-compression ---
+                    // REAL COMPRESSION
                     const options = {
-                        maxSizeMB: 1, // Attempt to get under 1MB
+                        maxSizeMB: 1, 
                         maxWidthOrHeight: 1920,
                         useWebWorker: true,
-                        initialQuality: parseFloat(range.value) // Get value from slider
+                        initialQuality: parseFloat(range.value)
                     };
-
                     const compressedFile = await imageCompression(currentFile, options);
-                    
-                    showResult(compressedFile);
+                    showResult(compressedFile, true);
+                } else {
+                    // SIMULATED PROCESS FOR OTHER TOOLS
+                    setTimeout(() => {
+                        // Just return original file for demo
+                        showResult(currentFile, false);
+                    }, 1500);
                 }
             } catch (error) {
                 console.error(error);
-                alert('Something went wrong during processing.');
+                alert('Error processing image.');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
 
-        function showResult(newFile) {
+        function showResult(newFile, isCompressed) {
             const resultArea = document.getElementById('resultArea');
             const processingArea = document.getElementById('processingArea');
             const downloadLink = document.getElementById('downloadLink');
             const savingsInfo = document.getElementById('savingsInfo');
 
-            // Calculate savings
-            const originalSize = currentFile.size;
-            const newSize = newFile.size;
-            const savedBytes = originalSize - newSize;
-            const savedPercent = ((savedBytes / originalSize) * 100).toFixed(1);
-            
-            // Logic: If file got bigger (rare but possible with settings), handle it
-            if(savedPercent < 0) {
-                 savingsInfo.innerHTML = `New size: ${(newSize/1024).toFixed(2)} KB`;
-            } else {
-                 savingsInfo.innerHTML = `Compressed by <strong>${savedPercent}%</strong>! New size: ${(newSize/1024).toFixed(2)} KB`;
-            }
-
-            // Create Download Link
-            // We use URL.createObjectURL for client-side blob downloading
             const url = URL.createObjectURL(newFile);
             downloadLink.href = url;
-            downloadLink.download = "compressed-image.jpg";
+            downloadLink.download = "processed-image.jpg";
 
-            // UI Switch
+            if (isCompressed) {
+                const originalSize = currentFile.size;
+                const newSize = newFile.size;
+                const savedPercent = (((originalSize - newSize) / originalSize) * 100).toFixed(1);
+                if(savedPercent < 0) savingsInfo.innerHTML = `New size: ${(newSize/1024).toFixed(2)} KB`;
+                else savingsInfo.innerHTML = `Compressed by <strong>${savedPercent}%</strong>! New size: ${(newSize/1024).toFixed(2)} KB`;
+            } else {
+                savingsInfo.innerHTML = "Image processed successfully (Demo Mode).";
+            }
+
             processingArea.style.display = 'none';
             resultArea.style.display = 'block';
         }
@@ -484,7 +587,7 @@
             document.getElementById('fileInput').value = '';
         }
 
-        // --- 4. FILTER UI LOGIC ---
+        // --- 4. FILTER LOGIC ---
         function filterTools(category, btnElement) {
             const buttons = document.querySelectorAll('.filter-pills .btn');
             buttons.forEach(btn => btn.classList.remove('active'));
