@@ -4,64 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Image Editor</title>
-    <!-- 1. Bootstrap 4 (Critical for Grid) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css">
-    <!-- 2. Fonts & Icons -->
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 3. Our Brand CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
 
-    <div id="header-part"></div>
-    <div id="sidebar-part"></div>
+    <!-- OVERLAYS (Hidden by default) -->
+    <div class="sidebar-overlay" id="overlay"></div>
+    <div class="mobile-sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <a href="#">COMPRESS IMAGE</a>
+            <a href="#">RESIZE IMAGE</a>
+            <a href="#">CROP IMAGE</a>
+            <a href="#">CONVERT TO JPG</a>
+            <hr>
+            <a href="#" style="color: #4285f4;">Login</a>
+            <a href="#">Sign up</a>
+        </div>
+    </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero text-center">
-            <div class="container">
-                <h1>Every tool you could want to edit images in bulk</h1>
-                <p class="lead">Your online photo editor is here and forever free!</p>
-                <div class="filter-bar d-flex justify-content-center">
-                    <button class="pill active" data-f="all">All</button>
-                    <button class="pill" data-f="opt">Optimize</button>
-                    <button class="pill" data-f="edit">Edit</button>
-                    <button class="pill" data-f="conv">Convert</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tools Grid (All 13 Tools) -->
-        <section class="container mb-5">
-            <div class="row" id="toolsGrid">
-                <!-- Tool Card Template -->
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-4 tool-wrapper" data-c="opt">
-                    <div class="tool-card">
-                        <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
-                        <div class="tool-text">
-                            <h3>Compress IMAGE</h3>
-                            <p>Saving space while maintaining quality.</p>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="header-left">
+                <div class="hamburger" id="hamBtn"><i class="fa-solid fa-bars"></i></div>
+                <a href="index.html" class="logo"><span>iLove</span>IMG</a>
+                
+                <nav class="desktop-nav">
+                    <div class="mega-trigger">
+                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+                        <div class="mega-menu">
+                            <div class="menu-grid">
+                                <div class="menu-col">
+                                    <h6>OPTIMIZE IMAGE</h6>
+                                    <a href="#"><i class="fa-solid fa-compress text-success"></i> Compress IMAGE</a>
+                                    <a href="#"><i class="fa-solid fa-expand text-primary"></i> Resize IMAGE</a>
+                                </div>
+                                <div class="menu-col">
+                                    <h6>MODIFY IMAGE</h6>
+                                    <a href="#"><i class="fa-solid fa-crop text-info"></i> Crop IMAGE</a>
+                                    <a href="#"><i class="fa-solid fa-repeat text-warning"></i> Convert to JPG</a>
+                                </div>
+                                <div class="menu-col">
+                                    <h6>AI TOOLS</h6>
+                                    <a href="#"><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Upscale Image</a>
+                                    <a href="#"><i class="fa-solid fa-user-slash text-success"></i> Remove background</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <a href="#" class="nav-item">CONVERT TO JPG</a>
+                    <a href="#" class="nav-item">RESIZE IMAGE</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <a href="#" class="login-link hide-mobile">Login</a>
+                <a href="#" class="signup-btn">Sign up</a>
+                <div class="grid-btn"><i class="fa-solid fa-table-cells"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+                <h1>Every tool you could want to edit images in bulk</h1>
+                <p>Modify your images at once with our online tools.</p>
+                <div class="filter-bar">
+                    <button class="pill active" data-filter="all">All</button>
+                    <button class="pill" data-filter="opt">Optimize</button>
+                    <button class="pill" data-filter="edit">Edit</button>
+                    <button class="pill" data-filter="conv">Convert</button>
                 </div>
-                <!-- ... Repeat for all tools ... -->
             </div>
         </section>
 
-        <!-- Premium Section -->
-        <section class="container mb-5">
-            <div class="premium-box text-center">
-                <h2>Get more with Premium</h2>
-                <p>Work faster and smarter with advanced editing tools and AI.</p>
-                <button class="btn btn-warning font-weight-bold px-5 py-3">Get Premium</button>
+        <!-- TOOLS GRID -->
+        <section class="container">
+            <div class="tools-grid">
+                <!-- Tool 1 -->
+                <div class="tool-card" data-category="opt">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
+                    <div class="tool-text">
+                        <h3>Compress IMAGE</h3>
+                        <p>Saving space while maintaining quality.</p>
+                    </div>
+                </div>
+                <!-- Tool 2 -->
+                <div class="tool-card" data-category="opt">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
+                    <div class="tool-text">
+                        <h3>Resize IMAGE</h3>
+                        <p>Define dimensions by pixels or percentage.</p>
+                    </div>
+                </div>
+                <!-- Tool 3 -->
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-cyan"><i class="fa-solid fa-crop"></i></div>
+                    <div class="tool-text">
+                        <h3>Crop IMAGE</h3>
+                        <p>Crop JPG, PNG or GIFs with ease.</p>
+                    </div>
+                </div>
+                <!-- Tool 4 -->
+                <div class="tool-card" data-category="conv">
+                    <div class="icon-box bg-yellow"><i class="fa-solid fa-repeat"></i></div>
+                    <div class="tool-text">
+                        <h3>Convert to JPG</h3>
+                        <p>Turn images to JPG in bulk with ease.</p>
+                    </div>
+                </div>
+                <!-- ... Add remaining tools here ... -->
             </div>
         </section>
     </main>
 
-    <div id="footer-part"></div>
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="f-col"><h6>PRODUCT</h6><a href="#">Home</a><a href="#">Features</a></div>
+            <div class="f-col"><h6>RESOURCES</h6><a href="#">iLoveSign</a><a href="#">iLoveAPI</a></div>
+            <div class="f-col"><h6>COMPANY</h6><a href="#">About us</a><a href="#">Contact</a></div>
+        </div>
+    </footer>
 
-    <!-- Scripts -->
-    <script src="assets/js/main.js"></script>
+    <script src="./assets/js/main.js"></script>
 </body>
 </html>
