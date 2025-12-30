@@ -3,44 +3,32 @@
     height: 64px; background: #fff; border-bottom: 1px solid #e1e4e8;
     position: sticky; top: 0; z-index: 3000;
 }
-
 .header-container {
     max-width: 1400px; margin: 0 auto; height: 100%;
     display: flex; justify-content: space-between; align-items: center; padding: 0 24px;
 }
-
 .header-left { display: flex; align-items: center; gap: 30px; }
-.logo { font-size: 24px; font-weight: 800; color: #47474f; }
-.logo span { color: var(--brand-blue); }
+.logo { font-size: 24px; font-weight: 800; }
+.logo .dark { color: #47474f; }
+.logo .blue { color: #4285f4; }
 
-/* Desktop Navigation */
-.desktop-nav { display: flex; align-items: center; gap: 20px; }
 .mega-trigger {
     height: 64px; display: flex; align-items: center;
-    font-size: 13px; font-weight: 700; color: var(--nav-grey);
-    cursor: pointer; position: relative; text-transform: uppercase;
+    font-size: 13px; font-weight: 700; color: #47474f; cursor: pointer;
 }
-
-/* THE MEGA MENU FIX */
 .mega-menu {
-    display: none; position: absolute; top: 64px; left: -100px;
-    width: 850px; background: #fff; border-top: 1px solid #eee;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1); padding: 40px;
-    z-index: 4000; border-radius: 0 0 8px 8px;
+    display: none; position: absolute; top: 64px; left: 0; width: 100%;
+    background: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.1); padding: 40px 0;
+    z-index: 4000; border-top: 1px solid #eee;
 }
 .mega-trigger:hover .mega-menu { display: block; }
-
-.menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.menu-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
 .menu-col h6 { font-size: 11px; color: #999; margin-bottom: 15px; }
-.menu-col a { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; font-weight: 600; }
+.menu-col a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; font-weight: 600; }
 
-.header-right { display: flex; align-items: center; gap: 15px; }
-.signup-btn { background: var(--brand-blue); color: #fff !important; padding: 8px 20px; border-radius: 4px; font-weight: 700; font-size: 14px; }
-
-/* Mobile UI Elements */
-.mobile-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--nav-grey); }
+.signup-btn { background: #4285f4; color: #fff !important; padding: 10px 22px; border-radius: 4px; font-weight: 700; }
 
 @media (max-width: 991px) {
     .desktop-nav, .header-right a:not(.signup-btn) { display: none; }
-    .mobile-toggle { display: block; }
+    .hamburger { display: block; font-size: 22px; cursor: pointer; }
 }
