@@ -3,49 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG | Every tool you need to edit images in bulk</title>
-    <meta name="description" content="Free online image editor. Compress, resize, crop, and convert images in seconds.">
-    
-    <!-- External CSS -->
+    <title>iLoveIMG | Professional Image Tools</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Header will be injected here -->
     <header id="header-placeholder"></header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero">
             <h1>Every tool you need to edit images</h1>
             <p>100% Free and Easy to use.</p>
         </section>
 
-        <!-- Filter Bar -->
-        <nav class="filter-bar">
+        <div class="filter-bar" style="display:flex; justify-content:center; gap:10px; margin-bottom:30px;">
             <button class="filter-btn active" data-cat="all">All</button>
             <button class="filter-btn" data-cat="optimize">Optimize</button>
             <button class="filter-btn" data-cat="edit">Edit</button>
-            <button class="filter-btn" data-cat="convert">Convert</button>
-            <button class="filter-btn" data-cat="create">Create</button>
-            <button class="filter-btn" data-cat="security">Security</button>
-        </nav>
-
-        <!-- Tool Grid (Dynamic) -->
-        <div class="tool-grid" id="tool-grid">
-            <!-- Tools injected by assets/js/main.js -->
         </div>
+
+        <div class="tool-grid" id="tool-grid"></div>
     </main>
 
-    <!-- Footer will be injected here -->
     <footer id="footer-placeholder"></footer>
 
-    <!-- Essential Scripts -->
     <script src="assets/js/tools-data.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
