@@ -20,44 +20,56 @@
 </head>
 <body>
 
-    <header class="header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
-            <div class="container-fluid px-lg-5">
-                
-                <!-- Hamburger for Mobile -->
-                <button class="navbar-toggler border-0" type="button" onclick="toggleMobileMenu()">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Logo -->
-                <a class="navbar-brand logo" href="#">
-                    <span class="logo__ilove">iLove</span><span class="logo__img">IMG</span>
-                </a>
-
-                <!-- Desktop Menu -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item dropdown mega-dropdown">
-                            <a class="nav-link dropdown-toggle font-weight-bold text-uppercase" href="#" id="allTools">
-                                ALL IMAGE TOOLS
-                            </a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link text-uppercase" href="#">CONVERT TO JPG</a></li>
-                        <li class="nav-item"><a class="nav-link text-uppercase" href="#">RESIZE IMAGE</a></li>
-                        <li class="nav-item"><a class="nav-link text-uppercase" href="#">EDIT IMAGE</a></li>
-                    </ul>
-                    
-                    <div class="auth-btns d-flex align-items-center">
-                        <a href="#" class="nav-link font-weight-bold text-dark">Login</a>
-                        <a href="#" class="btn btn-primary btn-signup ml-2">Sign up</a>
-                        <div class="grid-icon ml-3 d-none d-lg-block">
-                            <i class="fas fa-th"></i>
+   <header class="site-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="/" class="logo">
+                <span class="logo-ilove">iLove</span><span class="logo-img">IMG</span>
+            </a>
+            
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <!-- MEGA MENU START -->
+                    <li class="nav-item has-mega-menu">
+                        <a href="#" class="nav-link">ALL IMAGE TOOLS <i class="fas fa-chevron-down ml-1"></i></a>
+                        
+                        <div class="mega-menu">
+                            <div class="mega-menu-content">
+                                <div class="menu-column">
+                                    <h6>OPTIMIZE IMAGE</h6>
+                                    <a href="#"><i class="fas fa-compress-arrows-alt"></i> Compress IMAGE</a>
+                                </div>
+                                <div class="menu-column">
+                                    <h6>MODIFY IMAGE</h6>
+                                    <a href="#"><i class="fas fa-expand-arrows-alt"></i> Resize IMAGE</a>
+                                    <a href="#"><i class="fas fa-crop-alt"></i> Crop IMAGE</a>
+                                    <a href="#"><i class="fas fa-sync-alt"></i> Convert to JPG</a>
+                                </div>
+                                <div class="menu-column">
+                                    <h6>AI TOOLS</h6>
+                                    <a href="#"><i class="fas fa-magic"></i> Upscale Image</a>
+                                    <a href="#"><i class="fas fa-user-slash"></i> Remove background</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                    <!-- MEGA MENU END -->
+                    <li class="nav-item"><a href="#" class="nav-link">CONVERT TO JPG</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">RESIZE IMAGE</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">EDIT IMAGE</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="header-right">
+            <a href="#" class="login-link">Login</a>
+            <a href="#" class="signup-btn">Sign up</a>
+            <div class="grid-icon">
+                <i class="fas fa-th"></i>
             </div>
-        </nav>
-    </header>
+        </div>
+    </div>
+</header>
 
     <!-- Placeholder for next section -->
     <div style="margin-top: 100px;"></div>
