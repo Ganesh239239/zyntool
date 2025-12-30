@@ -9,31 +9,32 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-light bg-white border-bottom py-3">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="#">I❤️IMG</a>
-    <div class="d-flex gap-3">
-      <a href="#" class="text-decoration-none text-muted">Login</a>
-      <a href="#" class="btn btn-primary btn-sm">Sign up</a>
+<nav class="navbar bg-white border-bottom">
+  <div class="container py-2">
+    <div class="fw-bold fs-5">I❤️IMG</div>
+    <div class="d-flex gap-3 align-items-center">
+      <a href="#" class="text-muted text-decoration-none">Login</a>
+      <button class="btn btn-primary btn-sm">Sign up</button>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero text-center py-5">
+<section class="text-center py-5">
   <div class="container">
-    <h1 class="fw-bold">Every tool you could want to edit images in bulk</h1>
-    <p class="text-muted mt-2">
+    <h1 class="fw-bold mb-2">
+      Every tool you could want to edit images in bulk
+    </h1>
+    <p class="text-muted mb-4">
       Your online photo editor is here and forever free!
     </p>
 
-    <!-- FILTER TABS -->
-    <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+    <div class="d-flex justify-content-center flex-wrap gap-2">
       <button class="btn btn-dark btn-sm">All</button>
       <button class="btn btn-outline-secondary btn-sm">Optimize</button>
       <button class="btn btn-outline-secondary btn-sm">Create</button>
@@ -44,57 +45,77 @@
   </div>
 </section>
 
-<!-- TOOLS GRID -->
-<section class="tools py-5">
+<!-- TOOLS -->
+<section class="pb-5">
   <div class="container">
     <div class="row g-4">
 
-      <!-- TOOL CARD -->
-      <div class="col-lg-3 col-md-4 col-sm-6">
+      <!-- Compress -->
+      <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="tool-card">
-          <div class="icon green">⬇</div>
+          <div class="icon bg-green">
+            <!-- Heroicon: arrows-in -->
+            <svg viewBox="0 0 24 24">
+              <path d="M8 3v3H5l4 4 4-4H10V3H8zm8 18v-3h3l-4-4-4 4h3v3h2z"/>
+            </svg>
+          </div>
           <h6>Compress IMAGE</h6>
-          <p>Compress JPG, PNG, SVG, and GIFs while saving space.</p>
+          <p>Compress JPG, PNG, SVG and GIFs while saving space.</p>
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6">
+      <!-- Resize -->
+      <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="tool-card">
-          <div class="icon blue">↔</div>
+          <div class="icon bg-blue">
+            <!-- Heroicon: arrows-expand -->
+            <svg viewBox="0 0 24 24">
+              <path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/>
+            </svg>
+          </div>
           <h6>Resize IMAGE</h6>
           <p>Define your dimensions and resize your images.</p>
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6">
+      <!-- Crop -->
+      <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="tool-card">
-          <div class="icon cyan">✂</div>
+          <div class="icon bg-cyan">
+            <!-- Heroicon: crop -->
+            <svg viewBox="0 0 24 24">
+              <path d="M6 2v14a2 2 0 002 2h14M2 6h14a2 2 0 012 2v14"/>
+            </svg>
+          </div>
           <h6>Crop IMAGE</h6>
           <p>Crop JPG, PNG or GIF by defining a rectangle.</p>
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6">
+      <!-- Convert -->
+      <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="tool-card">
-          <div class="icon yellow">JPG</div>
+          <div class="icon bg-yellow">
+            <!-- Heroicon: refresh -->
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0114-7M19 5a9 9 0 01-14 7"/>
+            </svg>
+          </div>
           <h6>Convert to JPG</h6>
           <p>Turn PNG, GIF, TIFF, WEBP, HEIC to JPG.</p>
         </div>
       </div>
-
-      <!-- Duplicate cards as needed -->
-      <!-- Follow same structure for all tools -->
 
     </div>
   </div>
 </section>
 
 <!-- WORK YOUR WAY -->
-<section class="work py-5 bg-light">
+<section class="bg-light py-5">
   <div class="container">
-    <h3 class="text-center fw-bold mb-5">Work your way</h3>
-
+    <h3 class="fw-bold text-center mb-5">Work your way</h3>
     <div class="row g-4">
+
       <div class="col-md-4">
         <div class="work-card">
           <h6>Switch to document mode</h6>
@@ -115,23 +136,26 @@
           <p>Automate image tasks at scale.</p>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- PREMIUM -->
-<section class="premium py-5">
+<section class="py-5">
   <div class="container">
     <div class="premium-box">
-      <h4 class="fw-bold">Get more with Premium</h4>
-      <p>Advanced tools, batch processing, and AI features.</p>
+      <h4 class="fw-bold mb-2">Get more with Premium</h4>
+      <p class="mb-3">
+        Work faster and smarter with advanced tools and batch processing.
+      </p>
       <button class="btn btn-warning fw-bold">Get Premium</button>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="footer bg-dark text-white pt-5 pb-3">
+<footer class="bg-dark text-white pt-5 pb-3">
   <div class="container">
     <div class="row">
 
@@ -156,7 +180,7 @@
       <div class="col-md-3">
         <h6>LEGAL</h6>
         <ul>
-          <li>Privacy policy</li>
+          <li>Privacy Policy</li>
           <li>Terms & Conditions</li>
           <li>Cookies</li>
         </ul>
@@ -165,7 +189,7 @@
       <div class="col-md-3">
         <h6>COMPANY</h6>
         <ul>
-          <li>About us</li>
+          <li>About</li>
           <li>Contact</li>
           <li>Blog</li>
         </ul>
@@ -178,6 +202,5 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
