@@ -3,71 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG Clone</title>
-    <!-- External Fonts & Icons -->
+    <title>iLoveIMG | Online Image Editor</title>
+    <!-- External Resources -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Modular CSS -->
-    <!-- Ensure these files exist in assets/css/ -->
+    <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/tools.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
 </head>
 <body>
 
+    <!-- Header -->
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
-                <a href="index.html" class="logo">
-                    <span class="logo-ilove">iLove</span><span class="logo-img">IMG</span>
-                </a>
+                <div class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
+                <a href="/" class="logo"><span>iLove</span>IMG</a>
                 
-                <nav class="main-nav">
-                    <ul class="nav-list">
-                        <!-- Mega Menu Trigger -->
-                        <li class="nav-item mega-trigger" id="megaTrigger">
-                            <a href="javascript:void(0)" class="nav-link">
-                                ALL IMAGE TOOLS <i class="fas fa-chevron-down ml-1"></i>
-                            </a>
-                            
-                            <!-- The Mega Menu -->
-                            <div class="mega-menu" id="megaMenu">
-                                <div class="mega-menu-content">
-                                    <div class="menu-column">
-                                        <h6>OPTIMIZE IMAGE</h6>
-                                        <a href="#"><i class="fas fa-compress-arrows-alt" style="color: #4caf50;"></i> Compress IMAGE</a>
-                                    </div>
-                                    <div class="menu-column">
-                                        <h6>MODIFY IMAGE</h6>
-                                        <a href="#"><i class="fas fa-expand-arrows-alt" style="color: #2196f3;"></i> Resize IMAGE</a>
-                                        <a href="#"><i class="fas fa-crop-alt" style="color: #00bcd4;"></i> Crop IMAGE</a>
-                                        <a href="#"><i class="fas fa-sync-alt" style="color: #ff9800;"></i> Convert to JPG</a>
-                                    </div>
-                                    <div class="menu-column">
-                                        <h6>AI TOOLS</h6>
-                                        <a href="#"><i class="fas fa-magic" style="color: #ba68c8;"></i> Upscale Image</a>
-                                        <a href="#"><i class="fas fa-user-slash" style="color: #f44336;"></i> Remove background</a>
-                                    </div>
+                <nav class="desktop-nav">
+                    <div class="mega-trigger">
+                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i>
+                        <div class="mega-menu">
+                            <div class="menu-grid">
+                                <div class="menu-col">
+                                    <h6>OPTIMIZE</h6>
+                                    <a href="#"><i class="fa-solid fa-compress text-success"></i> Compress</a>
+                                </div>
+                                <div class="menu-col">
+                                    <h6>MODIFY</h6>
+                                    <a href="#"><i class="fa-solid fa-expand text-primary"></i> Resize</a>
+                                    <a href="#"><i class="fa-solid fa-crop text-info"></i> Crop</a>
+                                </div>
+                                <div class="menu-col">
+                                    <h6>CONVERT</h6>
+                                    <a href="#"><i class="fa-solid fa-repeat text-warning"></i> To JPG</a>
                                 </div>
                             </div>
-                        </li>
-                        <li class="nav-item d-none-mobile"><a href="#" class="nav-link">CONVERT TO JPG</a></li>
-                        <li class="nav-item d-none-mobile"><a href="#" class="nav-link">RESIZE IMAGE</a></li>
-                        <li class="nav-item d-none-mobile"><a href="#" class="nav-link">EDIT IMAGE</a></li>
-                    </ul>
+                        </div>
+                    </div>
                 </nav>
             </div>
-
             <div class="header-right">
-                <a href="#" class="login-link">Login</a>
-                <a href="#" class="signup-btn">Sign up</a>
-                <div class="grid-icon">
-                    <i class="fas fa-th"></i>
-                </div>
+                <a href="#" class="nav-link hide-mobile">Login</a>
+                <a href="#" class="btn-signup">Sign up</a>
+                <div class="grid-icon"><i class="fa-solid fa-table-cells"></i></div>
             </div>
         </div>
     </header>
 
-    <!-- Modular JS -->
-    <script src="assets/js/header.js"></script>
+    <!-- Mobile Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <nav>
+            <a href="#">COMPRESS IMAGE</a>
+            <a href="#">RESIZE IMAGE</a>
+            <a href="#">EDIT IMAGE</a>
+            <hr>
+            <a href="#" style="color:#4285f4">Login</a>
+            <a href="#">Sign up</a>
+        </nav>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Every tool you could want to edit images in bulk</h1>
+            <p>Modify your images at once with our online tools.</p>
+        </section>
+
+        <!-- Filter Pills -->
+        <div class="filter-bar">
+            <button class="pill active" data-cat="all">All</button>
+            <button class="pill" data-cat="optimize">Optimize</button>
+            <button class="pill" data-cat="edit">Edit</button>
+            <button class="pill" data-cat="convert">Convert</button>
+        </div>
+
+        <!-- Tool Grid -->
+        <section class="container">
+            <div class="tools-grid">
+                <div class="tool-card" data-category="optimize">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
+                    <div class="tool-text">
+                        <h3>Compress IMAGE</h3>
+                        <p>Compress JPG, PNG, SVG or GIF with the best quality.</p>
+                    </div>
+                </div>
+                <div class="tool-card" data-category="optimize">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
+                    <div class="tool-text">
+                        <h3>Resize IMAGE</h3>
+                        <p>Define dimensions by pixels or percentage.</p>
+                    </div>
+                </div>
+                <div class="tool-card" data-category="edit">
+                    <div class="icon-box bg-cyan"><i class="fa-solid fa-crop"></i></div>
+                    <div class="tool-text">
+                        <h3>Crop IMAGE</h3>
+                        <p>Crop JPG, PNG or GIFs with ease.</p>
+                    </div>
+                </div>
+                <div class="tool-card" data-category="convert">
+                    <div class="icon-box bg-yellow"><i class="fa-solid fa-repeat"></i></div>
+                    <div class="tool-text">
+                        <h3>Convert to JPG</h3>
+                        <p>Turn most image formats into JPG.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="f-col"><h6>PRODUCT</h6><a href="#">Compress</a><a href="#">Resize</a></div>
+            <div class="f-col"><h6>COMPANY</h6><a href="#">About</a><a href="#">Contact</a></div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
