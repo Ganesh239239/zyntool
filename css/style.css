@@ -142,3 +142,34 @@ footer { background: var(--footer-bg); padding: 40px 0; margin-top: auto; }
 }
 
 
+/* FOOTER FIXES */
+footer {
+    background-color: #1f2227; /* Dark Background */
+    color: #b0b3b8;            /* Light Grey Text */
+    padding: 40px 0;
+    margin-top: auto;          /* Pushes footer to bottom */
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Subtle top border */
+}
+
+/* Fix Links (Remove Blue Color) */
+footer a {
+    color: #b0b3b8 !important; /* Force Light Grey */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #ffffff !important; /* White on Hover */
+}
+
+/* Fix Copyright Text Visibility */
+footer .small {
+    color: #6c757d; /* Standard grey */
+}
+
+/* Override Bootstrap's text-muted if it's too dark */
+footer .text-muted {
+    color: #8f959e !important; /* Lighter grey for readability */
+}
+
