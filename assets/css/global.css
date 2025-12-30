@@ -1,22 +1,31 @@
 /* assets/css/global.css */
+:root {
+    --brand-blue: #4285f4;
+    --text-dark: #33333b;
+    --nav-grey: #47474f;
+    --bg-light: #f3f6f7;
+    --footer-dark: #1e1e24;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Open Sans', sans-serif;
-    background-color: #f8f9fa; /* Light grey background like original */
-    color: #33333b;
+    background-color: #fff;
+    color: var(--text-dark);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-a { text-decoration: none !important; color: inherit; }
+main { flex: 1 0 auto; } /* Pushes footer to bottom */
 
-/* Ensure the main content starts after the sticky header */
-main {
-    display: block;
-    width: 100%;
-}
+a { text-decoration: none !important; color: inherit; transition: 0.2s; }
 
 .container {
     max-width: 1240px;
     margin: 0 auto;
     padding: 0 20px;
+    width: 100%;
 }
