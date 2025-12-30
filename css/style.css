@@ -65,54 +65,7 @@ body {
 .btn-action:disabled { background: #ccc; }
 
 
-/* css/style.css - Add/Verify these lines */
 
-footer { 
-    background-color: var(--footer-bg); 
-    color: #b0b3b8; /* Light grey text */
-    padding: 50px 0; 
-    margin-top: auto;
-    position: relative;
-    z-index: 10;
-}
-
-.footer-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links a {
-    color: #b0b3b8; /* Make sure links are light grey */
-    text-decoration: none;
-    transition: 0.2s;
-    font-weight: 500;
-}
-
-.footer-links a:hover {
-    color: white; /* White on hover */
-}
-
-/* Fix for dark text on dark background issue */
-.text-light-gray {
-    color: #b0b3b8 !important;
-}
-
-@media (max-width: 767px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    .footer-links {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-}
-
-footer { background: var(--footer-bg); padding: 40px 0; margin-top: auto; }
 
 /* Update Navbar styles in css/style.css */
 
