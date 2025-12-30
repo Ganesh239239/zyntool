@@ -39,3 +39,64 @@ filterButtons.forEach(btn => {
 
 // Load everything on start
 document.addEventListener('DOMContentLoaded', () => renderTools());
+
+
+// Load Header and Footer on all pages
+async function loadLayout() {
+    try {
+        const headerEl = document.getElementById('header-placeholder');
+        const footerEl = document.getElementById('footer-placeholder');
+        
+        if (headerEl) {
+            const hRes = await fetch('/components/header.html');
+            headerEl.innerHTML = await hRes.text();
+        }
+        if (footerEl) {
+            const fRes = await fetch('/components/footer.html');
+            footerEl.innerHTML = await fRes.text();
+        }
+    } catch (e) { console.error("Error loading layout", e); }
+}
+
+// Toggle Mobile Menu
+function toggleMenu() {
+    const menu = document.getElementById('nav-menu');
+    menu.classList.toggle('active');
+}
+
+// Render Tools on Home
+function renderTools(cat = 'all') {
+    const grid = document.getElementById('tool-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    const list = cat === 'all' ? tools : tools.filter(t => t.category === cat);
+    list.forEach(tool => {
+        grid.innerHTML += `
+            <a href="${tool.link}" class="tool-card">
+                ${tool.isNew ? '<span class="badge-new">New!</span>' : ''}
+                <div class="tool-icon-box" style="background:${tool.color}15; color:${tool.color}">
+                    <span style="font-size:32px">${tool.icon}</span>
+                </div>
+                <div class="tool-info">
+                    <h3>${tool.name}</h3>
+                    <p>${tool.desc}</p>
+                </div>
+            </a>`;
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    loadLayout();
+    renderTools();
+    
+    // Add filtering logic to buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTools(btn.dataset.cat);
+        });
+    });
+});
