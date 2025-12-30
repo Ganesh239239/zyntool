@@ -1,8 +1,10 @@
 :root {
-    --primary-blue: #4285f4;
-    --text-dark: #33333b;
-    --text-light: #666;
-    --bg-light: #f3f6f7;
+    --blue: #4285f4;
+    --dark-grey: #33333b;
+    --nav-grey: #47474f;
+    --light-bg: #fff;
+    --card-shadow: 0 1px 2px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.1);
+    --card-shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
 }
 
 * {
@@ -13,133 +15,129 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-    -webkit-font-smoothing: antialiased;
+    background-color: #fff;
+    color: var(--dark-grey);
+    line-height: 1.5;
 }
 
-/* Header & Nav */
-.header {
+.container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.main-header {
     background: #fff;
     border-bottom: 1px solid #e1e4e8;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
-.header__container {
-    max-width: 1400px;
-    margin: 0 auto;
+.header-flex {
+    height: 64px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px;
+}
+
+.header-left, .desktop-nav ul {
+    display: flex;
+    align-items: center;
 }
 
 .logo a {
     text-decoration: none;
     font-size: 22px;
     font-weight: 700;
+    color: var(--dark-grey);
+    margin-right: 30px;
 }
 
-.logo__ilove { color: #47474f; }
-.logo__img { color: var(--primary-blue); }
+.logo span { color: var(--blue); }
 
-.nav {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
+.desktop-nav ul { list-style: none; gap: 24px; }
 
-.nav__list {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
-
-.nav__list a {
+.desktop-nav a {
     text-decoration: none;
-    color: #47474f;
+    color: var(--nav-grey);
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
 }
 
-.auth-buttons {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.btn-login {
+.header-right .login {
     text-decoration: none;
-    color: #333;
-    font-size: 14px;
+    color: var(--dark-grey);
     font-weight: 600;
+    margin-right: 20px;
+    font-size: 14px;
 }
 
-.btn-signup {
+.header-right .signup {
     text-decoration: none;
-    color: #333;
-    font-size: 14px;
+    color: var(--dark-grey);
+    padding: 8px 16px;
+    border: 1px solid transparent;
     font-weight: 600;
-    padding: 10px 18px;
+    font-size: 14px;
 }
 
-/* Hero Section */
+/* Hero */
 .hero {
+    padding: 60px 0 40px;
     text-align: center;
-    padding: 60px 20px 40px;
 }
 
 .hero h1 {
     font-size: 42px;
     font-weight: 700;
-    margin-bottom: 15px;
-    color: #33333b;
+    margin-bottom: 16px;
+    color: var(--dark-grey);
 }
 
-.hero p {
+.hero h2 {
     font-size: 18px;
+    font-weight: 400;
     color: #666;
 }
 
-/* Tools Grid */
+/* Grid */
 .tools-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns as per image */
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding-bottom: 60px;
 }
 
 .tool-card {
     background: #fff;
-    padding: 30px 20px;
     border-radius: 8px;
+    padding: 32px 24px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    border: 1px solid transparent;
+    text-decoration: none;
+    box-shadow: var(--card-shadow);
+    transition: all 0.2s ease;
+    border: 1px solid #f0f0f0;
 }
 
 .tool-card:hover {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
 }
 
-.tool-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 15px;
+.tool-card .icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
 }
 
 .tool-card h3 {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 700;
     margin-bottom: 12px;
-    color: #333;
+    color: var(--dark-grey);
 }
 
 .tool-card p {
@@ -148,11 +146,12 @@ body {
     line-height: 1.6;
 }
 
-/* Responsive */
-@media (max-width: 1100px) {
+/* Tablet/Mobile */
+@media (max-width: 1024px) {
     .tools-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 768px) {
     .tools-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero h1 { font-size: 30px; }
+    .hero h1 { font-size: 32px; }
+    .desktop-nav { display: none; }
 }
