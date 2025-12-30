@@ -1,12 +1,10 @@
-/* assets/css/header.css */
-
 .site-header {
     height: 64px;
     background: #fff;
     border-bottom: 1px solid #e1e4e8;
     position: sticky;
     top: 0;
-    z-index: 2000; /* High z-index to stay on top */
+    z-index: 2000;
 }
 
 .header-container {
@@ -16,113 +14,49 @@
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    padding: 0 24px;
-    position: relative; /* Base for Mega Menu positioning */
+    padding: 0 20px;
 }
 
-/* Left Section: Logo + Nav */
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
+.header-left { display: flex; align-items: center; gap: 20px; height: 100%; }
 
-.logo {
-    font-size: 24px;
-    font-weight: 800;
+/* Mobile Hamburger Style */
+.mobile-menu-toggle {
+    display: none;
+    font-size: 22px;
+    cursor: pointer;
     color: #47474f;
-    display: flex;
 }
+
+.logo { font-size: 24px; font-weight: 800; color: #47474f; }
 .logo span { color: #4285f4; }
 
-/* Desktop Navigation */
-.desktop-nav {
-    display: flex;
-    align-items: center;
-    height: 64px;
-}
+.desktop-nav { display: flex; align-items: center; gap: 15px; height: 100%; }
+.nav-link-item { font-size: 13px; font-weight: 700; color: #47474f; text-transform: uppercase; }
 
-.mega-trigger {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: #47474f;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-/* THE FIX: Mega Menu Positioning */
-.mega-menu {
-    display: none; 
-    position: absolute;
-    top: 64px; /* Exactly below header */
-    left: 0;
-    width: 100%; /* Spans full width of the header-container */
-    background: #fff;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    border-top: 1px solid #f0f0f0;
-    padding: 40px;
-    z-index: 3000;
-    border-radius: 0 0 8px 8px;
-}
-
-/* Show on Hover */
-.mega-trigger:hover .mega-menu {
-    display: block;
-}
-
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    max-width: 1000px;
-}
-
-.menu-col h6 {
-    font-size: 11px;
-    color: #999;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
-}
-
-.menu-col a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-}
-
-.menu-col a:hover { color: #4285f4; }
+/* Mega Menu */
+.mega-trigger { position: relative; height: 100%; display: flex; align-items: center; font-size: 13px; font-weight: 700; cursor: pointer; }
+.mega-menu { display: none; position: absolute; top: 64px; left: -100px; width: 800px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; border-radius: 0 0 8px 8px; }
+.mega-trigger:hover .mega-menu { display: block; }
+.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.menu-col h6 { font-size: 11px; color: #999; margin-bottom: 10px; }
+.menu-col a { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 14px; font-weight: 600; color: #333; }
 
 /* Right Section */
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+.header-right { display: flex; align-items: center; gap: 15px; }
+.login-link { font-size: 14px; font-weight: 700; }
+.btn-signup { background: #4285f4; color: #fff !important; padding: 10px 20px; border-radius: 4px; font-weight: 700; font-size: 14px; }
 
-.login-link {
-    font-size: 14px;
-    font-weight: 700;
-    color: #333;
+/* MOBILE SIDEBAR */
+.mobile-sidebar {
+    position: fixed; top: 64px; left: -100%; width: 80%; height: 100vh;
+    background: #fff; z-index: 3000; transition: 0.3s; padding: 20px;
 }
+.mobile-sidebar.active { left: 0; }
+.mobile-sidebar a { display: block; padding: 15px 0; font-weight: 700; border-bottom: 1px solid #f5f5f5; }
+.sidebar-overlay { display: none; position: fixed; top: 64px; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
 
-.btn-signup {
-    background: #4285f4;
-    color: #fff !important;
-    padding: 10px 22px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-.grid-icon {
-    font-size: 20px;
-    color: #47474f;
-    cursor: pointer;
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 991px) {
+    .desktop-nav, .header-right .login-link { display: none; }
+    .mobile-menu-toggle { display: block; }
 }
