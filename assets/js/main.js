@@ -1,17 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Sidebar
-    const toggle = document.getElementById('hamToggle'), side = document.getElementById('sidebar'), over = document.getElementById('overlay');
-    toggle.onclick = () => { side.classList.add('active'); over.style.display = 'block'; };
-    over.onclick = () => { side.classList.remove('active'); over.style.display = 'none'; };
+    const pills = document.querySelectorAll('.pill');
+    const cards = document.querySelectorAll('.tool-card');
 
-    // Tool Filtering
-    const pills = document.querySelectorAll('.pill'), cards = document.querySelectorAll('.tool-card');
-    pills.forEach(p => p.onclick = () => {
-        pills.forEach(x => x.classList.remove('active')); p.classList.add('active');
-        const f = p.dataset.filter;
-        cards.forEach(c => {
-            if(f === 'all' || c.dataset.cat === f) c.style.display = window.innerWidth <= 768 ? 'flex' : 'block';
-            else c.style.display = 'none';
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            const filter = pill.getAttribute('data-filter');
+            
+            cards.forEach(card => {
+                const cat = card.getAttribute('data-category');
+                if (filter === 'all' || cat === filter) {
+                    // This logic ensures mobile stays as a list and desktop stays as a grid
+                    if (window.innerWidth <= 768) {
+                        card.style.setProperty('display', 'flex', 'important');
+                    } else {
+                        card.style.display = 'block';
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     });
 });
