@@ -1,126 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Image Tools UI Clone</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iLoveIMG Clone | Every tool you need to edit images</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<header class="site-header" role="banner">
-  <div class="container header-inner">
-    <div class="logo">iLoveIMG</div>
 
-    <nav class="main-nav" aria-label="Primary Navigation">
-      <ul>
-        <li><a href="#">Compress</a></li>
-        <li><a href="#">Resize</a></li>
-        <li><a href="#">Crop</a></li>
-        <li><a href="#">Convert</a></li>
-        <li><a href="#">All Tools</a></li>
-      </ul>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://www.iloveimg.com/img/iloveimg.svg" alt="iLoveIMG Logo" width="130">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-bold text-uppercase" href="#">All Image Tools</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="#" class="nav-link me-3">Login</a>
+                    <a href="#" class="btn btn-primary signup-btn">Sign up</a>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <div class="header-actions">
-      <button class="lang-toggle" aria-haspopup="true">EN</button>
-      <a class="btn-outline" href="#">Login</a>
-      <a class="btn-primary" href="#">Sign Up</a>
-      <button class="menu-toggle" aria-label="Open Menu">
-        <img src="assets/icons/menu.svg" alt="">
-      </button>
-    </div>
-  </div>
-</header>
+    <!-- Hero Section -->
+    <header class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Every tool you need to edit images in bulk</h1>
+            <p class="lead text-muted">All the tools you need to efficiently edit your images for free. Compress, resize, crop, convert, and more!</p>
+        </div>
+    </header>
 
-<main>
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero-content">
-      <h1>Every tool you need to work with images in one place</h1>
-      <p>Compress, resize, crop, convert images — fast, secure, and free.</p>
+    <!-- Tools Grid -->
+    <section class="tools-grid container my-5">
+        <div class="row g-4">
+            <!-- Tool: Compress -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="tool-card p-4 text-center h-100 shadow-sm">
+                    <div class="icon-box mb-3">
+                        <img src="https://www.iloveimg.com/img/tools/compress-image.svg" alt="Compress">
+                    </div>
+                    <h3>Compress IMAGE</h3>
+                    <p class="text-muted small">Compress JPG, PNG, SVG or GIF with the best quality and compression.</p>
+                </div>
+            </div>
 
-      <div class="upload-box" tabindex="0">
-        <img src="assets/icons/upload.svg" alt="">
-        <button class="btn-primary btn-lg">Select Images</button>
-        <span class="formats">JPG, PNG, SVG, GIF</span>
-      </div>
-    </div>
-  </section>
+            <!-- Tool: Resize -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="tool-card p-4 text-center h-100 shadow-sm">
+                    <div class="icon-box mb-3">
+                        <img src="https://www.iloveimg.com/img/tools/resize-image.svg" alt="Resize">
+                    </div>
+                    <h3>Resize IMAGE</h3>
+                    <p class="text-muted small">Define your dimensions, by pixels or percentage, and resize images.</p>
+                </div>
+            </div>
 
-  <!-- TOOLS -->
-  <section class="tools">
-    <div class="container tools-grid">
-      <article class="tool-card">
-        <img src="assets/icons/compress.svg" alt="">
-        <h3>Compress Image</h3>
-        <p>Reduce image file size without losing quality.</p>
-      </article>
+            <!-- More cards would follow here... -->
+        </div>
+    </section>
 
-      <article class="tool-card">
-        <img src="assets/icons/resize.svg" alt="">
-        <h3>Resize Image</h3>
-        <p>Adjust image dimensions instantly.</p>
-      </article>
-
-      <article class="tool-card">
-        <img src="assets/icons/crop.svg" alt="">
-        <h3>Crop Image</h3>
-        <p>Crop images to the perfect frame.</p>
-      </article>
-
-      <article class="tool-card">
-        <img src="assets/icons/convert.svg" alt="">
-        <h3>Convert Image</h3>
-        <p>Convert images between formats.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section class="features">
-    <div class="container features-grid">
-      <div class="features-text">
-        <h2>Why choose our image tools?</h2>
-        <ul>
-          <li><img src="assets/icons/check.svg" alt=""> Fast and secure</li>
-          <li><img src="assets/icons/check.svg" alt=""> No installation required</li>
-          <li><img src="assets/icons/check.svg" alt=""> Works on any device</li>
-        </ul>
-      </div>
-      <div class="features-visual" aria-hidden="true"></div>
-    </div>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <h4>Product</h4>
-      <a href="#">Tools</a>
-      <a href="#">Pricing</a>
-    </div>
-    <div>
-      <h4>Company</h4>
-      <a href="#">About</a>
-      <a href="#">Careers</a>
-    </div>
-    <div>
-      <h4>Legal</h4>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-    </div>
-  </div>
-  <p class="copyright">© 2025 Image Tools UI Clone</p>
-</footer>
-
-<script src="assets/js/main.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
