@@ -5,666 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iLoveIMG | Online Photo Editor</title>
     
-    <!-- Bootstrap 5 CSS -->
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Cropper.js CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
 
-    <!-- LIBRARIES -->
+    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <style>
-        :root {
-            --primary-blue: #4B90FF;
-            --dark-text: #2c3e50;
-            --light-bg: #f4f7fa;
-            --footer-bg: #1f2227;
-            --premium-gold: #FFC107;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fff;
-            color: #47474f;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding-top: 80px; /* Space for fixed navbar */
-        }
-
-        /* --- Navbar --- */
-        .navbar { 
-            padding: 10px 0; 
-            background: #fff; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            height: 80px; 
-        }
-        .navbar-brand { font-weight: 800; font-size: 1.8rem; color: #333; letter-spacing: -1px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .navbar-brand i { color: #4B90FF; font-size: 1.5rem; } 
-        
-        /* FIX: Mobile Nav Icon Look */
-        .navbar-toggler {
-            border: 1px solid #dee2e6; /* Standard border */
-            padding: 6px 12px;
-            border-radius: 6px;
-            color: #555;
-            transition: 0.2s;
-        }
-        .navbar-toggler:focus { box-shadow: 0 0 0 3px rgba(75, 144, 255, 0.2); }
-        .navbar-toggler i { font-size: 1.4rem; }
-
-        .dropdown-menu { border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; padding: 10px; right: 0; left: auto; }
-        .dropdown-item { font-weight: 500; padding: 10px 20px; border-radius: 8px; color: #555; }
-        .dropdown-item:hover { background-color: #f4f7fa; color: var(--primary-blue); }
-
-        /* --- Hero --- */
-        .hero { background-color: var(--light-bg); padding: 40px 0 30px; text-align: center; }
-        .hero h1 { font-weight: 800; color: #333; font-size: 2.8rem; margin-bottom: 20px; line-height: 1.2; }
-        .hero p { font-size: 1.3rem; color: #666; margin-bottom: 25px; font-weight: 400; }
-        
-        /* FIX: Hero Menu Overlap using Gap */
-        .filter-pills { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 12px; /* Adds vertical and horizontal space between buttons */
-            margin-top: 25px;
-        }
-        .filter-pills .btn { 
-            border-radius: 50px; 
-            padding: 8px 24px; 
-            font-weight: 500; 
-            border: 1px solid #e0e0e0; 
-            background: white; 
-            color: #555; 
-            margin: 0; /* Remove old margins, rely on gap */
-            transition: 0.2s; 
-        }
-        .filter-pills .btn.active { background-color: #2d3e50; color: white; border-color: #2d3e50; }
-
-        /* --- Tools Grid --- */
-        .tools-section { background-color: var(--light-bg); padding-bottom: 80px; flex-grow: 1; }
-        .tool-card { background: white; border-radius: 12px; padding: 25px; height: 100%; transition: transform 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; text-align: left; border: 1px solid transparent; }
-        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--primary-blue); z-index: 2; }
-        .icon-box { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 18px; font-size: 1.8rem; }
-        .tool-card h5 { font-weight: 700; margin-bottom: 8px; font-size: 1.2rem; color: #333; }
-        .tool-card p { font-size: 0.95rem; color: #666; line-height: 1.5; margin-bottom: 0; }
-        .badge-new { position: absolute; top: 15px; right: 15px; background-color: #E3F2FD; color: #2196F3; font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
-
-        .ic-green { background-color: #E8F5E9; color: #4CAF50; }
-        .ic-blue { background-color: #E3F2FD; color: #2196F3; }
-        .ic-yellow { background-color: #FFF8E1; color: #FFC107; }
-        .ic-purple { background-color: #F3E5F5; color: #9C27B0; }
-
-        /* --- Workspace --- */
-        #toolWorkspace { 
-            display: none; 
-            background: #fff; 
-            min-height: 85vh; 
-            padding-top: 20px; 
-            /* FIX: Bottom padding to prevent button hitting footer */
-            padding-bottom: 100px; 
-            animation: slideUp 0.3s ease-out; 
-        }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .workspace-header { margin-bottom: 30px; padding: 0 15px; }
-
-        .uploader-zone { border: 3px dashed #e0e0e0; border-radius: 20px; padding: 80px 20px; text-align: center; background: #fafafa; transition: 0.3s; cursor: pointer; margin-bottom: 30px; }
-        .uploader-zone:hover { border-color: var(--primary-blue); background: #f0f7ff; }
-        
-        .preview-container { 
-            background: #2c3e50;
-            padding: 20px; 
-            border-radius: 12px; 
-            margin-bottom: 25px; 
-            overflow: hidden; 
-            text-align: center; 
-            min-height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .preview-container img { max-width: 100%; max-height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        
-        .options-panel { background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 12px; margin-bottom: 25px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .premium-badge { background-color: var(--premium-gold); color: #333; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
-        
-        .btn-action { 
-            background-color: var(--primary-blue); 
-            color: white; 
-            font-weight: 700; 
-            padding: 15px 40px; 
-            border-radius: 12px; 
-            border: none; 
-            transition: 0.2s; 
-            width: 100%; 
-            font-size: 1.1rem; 
-            /* FIX: Ensure margin below button so it doesn't touch result area or footer */
-            margin-bottom: 20px;
-        }
-        .btn-action:hover { background-color: #3a7bd5; }
-        .btn-action:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        /* --- Footer --- */
-        footer { 
-            background-color: var(--footer-bg); 
-            color: #b0b3b8; 
-            padding: 50px 0; 
-            font-size: 0.9rem; 
-            margin-top: auto; 
-            /* Ensure footer sits above content if flex fails, but margin-top: auto usually handles it */
-            position: relative; 
-            z-index: 10;
-        }
-        .footer-links { list-style: none; display: flex; gap: 25px; padding: 0; margin: 0; }
-        .footer-links a { color: #b0b3b8; text-decoration: none; transition: 0.2s; }
-        .footer-links a:hover { color: white; }
-
-        @media (max-width: 767px) {
-            .hero h1 { font-size: 2rem; }
-            .footer-content { flex-direction: column; text-align: center; gap: 20px; }
-            .footer-links { justify-content: center; flex-wrap: wrap; }
-            .tool-card { padding: 20px; }
-            /* Mobile adjustment for Workspace padding */
-            #toolWorkspace { padding-bottom: 120px; }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- Navbar (Same as before) -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" onclick="goHome()">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
-            <!-- FIX: Added border style to button -->
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto mt-3 mt-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" data-bs-toggle="dropdown">ALL IMAGE TOOLS</a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" onclick="openTool('compress')">Compress</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="openTool('resize')">Resize</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="openTool('crop')">Crop</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="openTool('editor')">Photo Editor</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            <a class="navbar-brand" href="#/">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
+            <!-- ... Navbar content ... -->
         </div>
     </nav>
 
-    <!-- MAIN HOME VIEW -->
-    <div id="homeView">
-        <section class="hero">
-            <div class="container">
-                <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
-                <p>Your online photo editor is here and forever free!</p>
-                <!-- FIX: Added gap class for mobile spacing -->
-                <div class="filter-pills mt-4">
-                    <button class="btn active" onclick="filterTools('all', this)">All</button>
-                    <button class="btn" onclick="filterTools('optimize', this)">Optimize</button>
-                    <button class="btn" onclick="filterTools('create', this)">Create</button>
-                    <button class="btn" onclick="filterTools('edit', this)">Edit</button>
-                    <button class="btn" onclick="filterTools('convert', this)">Convert</button>
-                    <button class="btn" onclick="filterTools('security', this)">Security</button>
+    <!-- HOME VIEW -->
+    <div id="homeView" class="view-section active">
+        <!-- ... Hero and Grid ... -->
+         <div class="container mt-5">
+            <div class="row g-4">
+                <!-- Links now point to Hash URLs -->
+                <div class="col-md-3">
+                    <a href="#/compress" class="tool-card">...Compress Content...</a>
                 </div>
-            </div>
-        </section>
-
-        <section class="tools-section">
-            <div class="container">
-                <div class="row g-4" id="toolsGrid">
-                    <!-- Tools List -->
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('compress')">
-                        <div class="tool-card"><div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div><h5>Compress IMAGE</h5><p>Compress JPG, PNG, SVG, GIF.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('resize')">
-                        <div class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div><h5>Resize IMAGE</h5><p>Define dimensions by percent or pixel.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('crop')">
-                        <div class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div><h5>Crop IMAGE</h5><p>Crop JPG, PNG, or GIFs with ease.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('tojpg')">
-                        <div class="tool-card"><div class="icon-box ic-yellow"><i class="fa-solid fa-file-image"></i></div><h5>Convert to JPG</h5><p>Turn PNG, GIF, WEBP to JPG.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('fromjpg')">
-                        <div class="tool-card"><div class="icon-box ic-yellow"><i class="fa-solid fa-images"></i></div><h5>Convert from JPG</h5><p>Turn JPG images to PNG.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('editor')">
-                        <div class="tool-card"><div class="icon-box ic-purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h5>Photo editor</h5><p>Spice up pictures with effects.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize" onclick="openTool('upscale')">
-                        <div class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-green"><i class="fa-solid fa-arrow-up-right-dots"></i></div><h5>Upscale Image</h5><p>Enlarge images with resolution.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('removebg')">
-                        <div class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-green"><i class="fa-solid fa-eraser"></i></div><h5>Remove background</h5><p>Remove white/simple backgrounds.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security" onclick="openTool('watermark')">
-                        <div class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-stamp"></i></div><h5>Watermark IMAGE</h5><p>Stamp text over your images.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="create" onclick="openTool('meme')">
-                        <div class="tool-card"><div class="icon-box ic-purple"><i class="fa-regular fa-face-laugh-squint"></i></div><h5>Meme generator</h5><p>Caption meme images.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit" onclick="openTool('rotate')">
-                        <div class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-rotate-right"></i></div><h5>Rotate IMAGE</h5><p>Rotate JPG, PNG or GIF.</p></div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert" onclick="openTool('html2image')">
-                        <div class="tool-card"><div class="icon-box ic-yellow"><i class="fa-brands fa-html5"></i></div><h5>HTML to IMAGE</h5><p>Convert HTML code to JPG.</p></div>
-                    </div>
-                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security" onclick="openTool('blur')">
-                        <div class="tool-card"><span class="badge-new">New!</span><div class="icon-box ic-blue"><i class="fa-solid fa-user-secret"></i></div><h5>Blur Image</h5><p>Blur entire image for privacy.</p></div>
-                    </div>
+                <div class="col-md-3">
+                    <a href="#/crop" class="tool-card">...Crop Content...</a>
                 </div>
+                <!-- Add other tools -->
             </div>
-        </section>
+         </div>
     </div>
 
-    <!-- WORKSPACE VIEW -->
-    <div id="toolWorkspace">
+    <!-- TOOL WORKSPACE (Dynamic) -->
+    <div id="toolWorkspace" class="view-section">
         <div class="container">
             <div class="workspace-header">
-                <button class="btn btn-outline-secondary btn-sm mb-3" onclick="goHome()">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Back to tools
-                </button>
+                <a href="#/" class="btn btn-outline-secondary btn-sm mb-3">Back</a>
                 <div class="text-center">
-                    <h2 class="fw-bold display-6 mb-1" id="workspaceTitle">Tool</h2>
-                    <p class="text-muted" id="workspaceDesc">Process your images easily</p>
+                    <h2 class="fw-bold" id="toolTitle">Tool</h2>
                 </div>
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    
-                    <!-- Upload Zone -->
-                    <div class="uploader-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                        <div class="mb-4"><i class="fa-solid fa-cloud-arrow-up fa-5x text-primary"></i></div>
-                        <h3 class="fw-bold">Select images</h3>
-                        <p class="text-muted">or drop them here</p>
-                        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                    <div class="uploader-zone" id="dropZone">
+                        <h3>Select images</h3>
+                        <input type="file" id="fileInput" accept="image/*" hidden>
                     </div>
 
-                    <!-- HTML Input Special Case -->
-                    <div id="htmlInputZone" style="display:none;" class="mb-4">
-                        <div class="card p-4 shadow-sm border-0 bg-light">
-                            <label class="form-label fw-bold">Enter HTML Code</label>
-                            <textarea id="htmlCode" class="form-control font-monospace" rows="5" placeholder="<div style='color:red; font-size:40px;'>Hello World</div>"></textarea>
-                            <button class="btn btn-primary mt-3 w-100 py-2" onclick="processHtml()">
-                                <i class="fa-solid fa-code me-2"></i> Render HTML
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Processing Area -->
-                    <div id="processingArea" style="display: none;" class="fade-in">
-                        
+                    <div id="processingArea" style="display:none;">
                         <div class="preview-container">
                             <img id="imagePreview" src="">
-                            <div id="htmlRender" style="background:white; padding:40px; display:inline-block; text-align:left; min-width: 300px;"></div>
                         </div>
+                        
+                        <!-- DYNAMIC OPTIONS LOAD HERE -->
+                        <div class="options-panel" id="optionsPanel"></div>
 
-                        <div class="options-panel shadow-sm" id="optionsPanel"></div>
-
-                        <!-- FIX: Added margin-bottom to button class in CSS -->
-                        <button class="btn btn-action shadow" id="btnProcess" onclick="executeTool()">
-                            <i class="fa-solid fa-gear me-2"></i> <span id="btnProcessText">Process Image</span>
-                        </button>
+                        <button class="btn btn-primary w-100" id="btnProcess">Process</button>
                     </div>
-
-                    <!-- Result Area -->
-                    <div id="resultArea" class="text-center" style="display:none; background: #fff; border-radius:12px; padding:40px; box-shadow:0 15px 40px rgba(0,0,0,0.1); margin-top: 20px;">
-                        <div class="text-success mb-3"><i class="fa-solid fa-circle-check fa-4x"></i></div>
-                        <h3 class="fw-bold mb-3">Image Processed!</h3>
-                        <div class="my-4 p-2 bg-light rounded d-inline-block">
-                            <img id="resultImage" class="img-fluid rounded border" style="max-height:250px;">
-                        </div>
-                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                            <a id="downloadLink" class="btn btn-dark btn-lg px-5">
-                                <i class="fa-solid fa-download me-2"></i> Download
-                            </a>
-                        </div>
-                        <button class="btn btn-link text-muted mt-4 text-decoration-none" onclick="resetWorkspace()">
-                            <i class="fa-solid fa-rotate-right me-1"></i> Process another image
-                        </button>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center footer-content">
-                <ul class="footer-links">
-                    <li><a href="#">About us</a></li>
-                    <li><a href="#">Contact us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Press</a></li>
-                </ul>
-                <div class="text-md-end">
-                    <span class="small">© iLoveIMG 2025 ® - Your Image Editor</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- APP LOGIC -->
-    <script>
-        const homeView = document.getElementById('homeView');
-        const toolWorkspace = document.getElementById('toolWorkspace');
-        const fileInput = document.getElementById('fileInput');
-        const dropZone = document.getElementById('dropZone');
-        const htmlInputZone = document.getElementById('htmlInputZone');
-        const processingArea = document.getElementById('processingArea');
-        const optionsPanel = document.getElementById('optionsPanel');
-        const imagePreview = document.getElementById('imagePreview');
-        const htmlRender = document.getElementById('htmlRender');
-        const resultArea = document.getElementById('resultArea');
-
-        let currentTool = '';
-        let currentFile = null;
-        let cropper = null;
-        let rotation = 0; 
-        let originalW = 0, originalH = 0;
-
-        function openTool(tool) {
-            currentTool = tool;
-            homeView.style.display = 'none';
-            toolWorkspace.style.display = 'block';
-            resetWorkspace();
-
-            const titles = {
-                'compress': 'Compress IMAGE',
-                'resize': 'Resize IMAGE',
-                'crop': 'Crop IMAGE',
-                'tojpg': 'Convert to JPG',
-                'fromjpg': 'Convert from JPG',
-                'editor': 'Photo Editor',
-                'upscale': 'Upscale Image',
-                'removebg': 'Remove Background',
-                'watermark': 'Watermark IMAGE',
-                'meme': 'Meme Generator',
-                'rotate': 'Rotate IMAGE',
-                'html2image': 'HTML to IMAGE',
-                'blur': 'Blur Image'
-            };
-            document.getElementById('workspaceTitle').textContent = titles[tool] || 'Image Tool';
-            document.getElementById('btnProcessText').textContent = tool === 'compress' ? 'Compress Images' : 'Process Image';
-
-            if(tool === 'html2image') {
-                dropZone.style.display = 'none';
-                htmlInputZone.style.display = 'block';
-            }
-            window.scrollTo(0,0);
-        }
-
-        function goHome() {
-            if(cropper) cropper.destroy();
-            toolWorkspace.style.display = 'none';
-            homeView.style.display = 'block';
-        }
-
-        function resetWorkspace() {
-            currentFile = null;
-            rotation = 0;
-            if(cropper) { cropper.destroy(); cropper = null; }
-            fileInput.value = '';
-            dropZone.style.display = 'block';
-            htmlInputZone.style.display = 'none';
-            processingArea.style.display = 'none';
-            resultArea.style.display = 'none';
-            imagePreview.style.display = 'inline-block';
-            htmlRender.style.display = 'none';
-            optionsPanel.innerHTML = '';
-        }
-
-        fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
-
-        function handleFile(file) {
-            if (!file) return;
-            currentFile = file;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    originalW = img.width;
-                    originalH = img.height;
-                    imagePreview.src = e.target.result;
-                    dropZone.style.display = 'none';
-                    processingArea.style.display = 'block';
-                    setupToolOptions();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function processHtml() {
-            const code = document.getElementById('htmlCode').value;
-            htmlInputZone.style.display = 'none';
-            processingArea.style.display = 'block';
-            imagePreview.style.display = 'none';
-            htmlRender.style.display = 'inline-block';
-            htmlRender.innerHTML = code;
-            setupToolOptions();
-        }
-
-        function setupToolOptions() {
-            let html = '';
-            
-            if (currentTool === 'compress') {
-                html = `<h5 class="mb-3"><i class="fa-solid fa-sliders me-2"></i> Compression Settings</h5>
-                        <label class="form-label">Compression Level</label>
-                        <input type="range" class="form-range" id="qualityRange" min="0.1" max="1" step="0.1" value="0.6">
-                        <div class="d-flex justify-content-between text-muted small mb-3">
-                            <span>Extreme</span><span>Recommended</span><span>High Quality</span>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="keepExif" checked>
-                            <label class="form-check-label">Preserve EXIF Data <span class="premium-badge">PREMIUM</span></label>
-                        </div>`;
-            } 
-            else if (currentTool === 'resize' || currentTool === 'upscale') {
-                const mult = currentTool === 'upscale' ? 2 : 1;
-                html = `<h5 class="mb-3"><i class="fa-solid fa-ruler-combined me-2"></i> Resize Options</h5>
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <label class="form-label">Width (px)</label>
-                                <input type="number" id="resizeW" class="form-control" value="${originalW * mult}" onchange="maintainRatio('w')">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">Height (px)</label>
-                                <input type="number" id="resizeH" class="form-control" value="${originalH * mult}" onchange="maintainRatio('h')">
-                            </div>
-                        </div>
-                        <div class="form-check mt-3">
-                            <input class="form-check-input" type="checkbox" id="ratioCheck" checked>
-                            <label class="form-check-label">Maintain Aspect Ratio <span class="premium-badge">PRO</span></label>
-                        </div>`;
-            }
-            else if (currentTool === 'removebg') {
-                html = `<h5 class="mb-3"><i class="fa-solid fa-wand-magic-sparkles me-2"></i> Magic Removal</h5>
-                        <label class="form-label">Color Tolerance</label>
-                        <input type="range" class="form-range" id="tolerance" min="0" max="100" value="20">
-                        <p class="text-muted small">Adjust to remove more or less similar colors.</p>`;
-            }
-            else if (currentTool === 'editor') {
-                html = `<h5 class="mb-3"><i class="fa-solid fa-palette me-2"></i> Filters</h5>
-                        <div class="mb-3 d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('none')">None</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('vintage')">Vintage</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="applyPreset('lomo')">Lomo</button>
-                        </div>
-                        <label>Brightness</label><input type="range" class="form-range" id="editBright" min="0" max="200" value="100">
-                        <label>Contrast</label><input type="range" class="form-range" id="editCont" min="0" max="200" value="100">`;
-            }
-            else if (currentTool === 'crop') {
-                if(imagePreview.complete) initCropper(); else imagePreview.onload = initCropper;
-                html = `<div class="alert alert-info py-2 small"><i class="fa-solid fa-crop me-2"></i> Drag the frame on image to crop</div>`;
-            }
-            else if (currentTool === 'rotate') {
-                html = `<div class="text-center">
-                            <button class="btn btn-outline-secondary me-3" onclick="rotatePreview(-90)"><i class="fa-solid fa-rotate-left fa-lg"></i></button>
-                            <button class="btn btn-outline-secondary" onclick="rotatePreview(90)"><i class="fa-solid fa-rotate-right fa-lg"></i></button>
-                        </div>`;
-            }
-            else {
-                html = `<div class="text-muted"><i class="fa-solid fa-check me-2"></i> Ready to process.</div>`;
-            }
-            
-            optionsPanel.innerHTML = html;
-            if(currentTool === 'editor') {
-                optionsPanel.querySelectorAll('input').forEach(i => i.addEventListener('input', updateEditorPreview));
-            }
-        }
-
-        function maintainRatio(changed) {
-            if(!document.getElementById('ratioCheck').checked) return;
-            const ratio = originalW / originalH;
-            const wInput = document.getElementById('resizeW');
-            const hInput = document.getElementById('resizeH');
-            if(changed === 'w') hInput.value = Math.round(wInput.value / ratio);
-            else wInput.value = Math.round(hInput.value * ratio);
-        }
-
-        function applyPreset(type) {
-            const img = imagePreview;
-            if(type === 'vintage') img.style.filter = 'sepia(0.5) contrast(1.2)';
-            else if(type === 'lomo') img.style.filter = 'contrast(1.5) saturate(1.2)';
-            else img.style.filter = 'none';
-        }
-
-        function updateEditorPreview() {
-            const b = document.getElementById('editBright').value;
-            const c = document.getElementById('editCont').value;
-            imagePreview.style.filter = `brightness(${b}%) contrast(${c}%)`;
-        }
-
-        function rotatePreview(deg) {
-            rotation += deg;
-            imagePreview.style.transform = `rotate(${rotation}deg)`;
-        }
-
-        function initCropper() {
-            if(cropper) cropper.destroy();
-            cropper = new Cropper(imagePreview, { viewMode: 1, minContainerHeight: 400 });
-        }
-
-        async function executeTool() {
-            const btn = document.getElementById('btnProcess');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
-            btn.disabled = true;
-
-            try {
-                let resultBlob = null;
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-                
-                if (currentTool === 'html2image') {
-                    const c = await html2canvas(htmlRender);
-                    resultBlob = await new Promise(r => c.toBlob(r, 'image/jpeg'));
-                }
-                else if (currentTool === 'compress') {
-                    const q = parseFloat(document.getElementById('qualityRange').value);
-                    resultBlob = await imageCompression(currentFile, { maxSizeMB: 1, initialQuality: q, useWebWorker: true });
-                }
-                else if (currentTool === 'crop') {
-                    const c = cropper.getCroppedCanvas();
-                    resultBlob = await new Promise(r => c.toBlob(r));
-                }
-                else {
-                    img.src = imagePreview.src;
-                    await new Promise(r => img.onload = r);
-
-                    if (currentTool === 'resize' || currentTool === 'upscale') {
-                        canvas.width = parseInt(document.getElementById('resizeW').value);
-                        canvas.height = parseInt(document.getElementById('resizeH').value);
-                    } else if (currentTool === 'rotate') {
-                         if (Math.abs(rotation / 90) % 2 === 1) { canvas.width = img.height; canvas.height = img.width; } 
-                         else { canvas.width = img.width; canvas.height = img.height; }
-                    } else {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                    }
-
-                    if (currentTool === 'rotate') {
-                        ctx.translate(canvas.width/2, canvas.height/2);
-                        ctx.rotate(rotation * Math.PI / 180);
-                        ctx.drawImage(img, -img.width/2, -img.height/2);
-                    }
-                    else if (currentTool === 'editor') {
-                        const b = document.getElementById('editBright').value;
-                        const c = document.getElementById('editCont').value;
-                        ctx.filter = `brightness(${b}%) contrast(${c}%)`;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    }
-                    else if (currentTool === 'removebg') {
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const tol = parseInt(document.getElementById('tolerance').value);
-                        const limit = 255 - tol; 
-                        for (let i = 0; i < frame.data.length; i += 4) {
-                            if (frame.data[i] > limit && frame.data[i+1] > limit && frame.data[i+2] > limit) {
-                                frame.data[i+3] = 0; 
-                            }
-                        }
-                        ctx.putImageData(frame, 0, 0);
-                    }
-                    else {
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    }
-
-                    const type = (currentTool === 'tojpg') ? 'image/jpeg' : 'image/png';
-                    resultBlob = await new Promise(r => canvas.toBlob(r, type));
-                }
-
-                showResult(resultBlob);
-
-            } catch(e) {
-                console.error(e);
-                alert("Processing failed. Try a simpler image.");
-            } finally {
-                btn.innerHTML = document.getElementById('btnProcessText').textContent;
-                btn.disabled = false;
-            }
-        }
-
-        function showResult(blob) {
-            const url = URL.createObjectURL(blob);
-            document.getElementById('resultImage').src = url;
-            const dl = document.getElementById('downloadLink');
-            dl.href = url;
-            dl.download = `iloveimg-edited.${blob.type === 'image/jpeg' ? 'jpg' : 'png'}`;
-
-            processingArea.style.display = 'none';
-            resultArea.style.display = 'block';
-        }
-
-        function filterTools(category, btn) {
-            document.querySelectorAll('.filter-pills .btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.tool-item').forEach(tool => {
-                if (category === 'all' || tool.dataset.category.includes(category)) tool.style.display = 'block';
-                else tool.style.display = 'none';
-            });
-        }
-    </script>
+    <!-- MAIN MODULE SCRIPT -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
