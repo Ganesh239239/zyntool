@@ -1,19 +1,14 @@
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
-  background-color: #ffffff;
-}
-
-.hero h1 {
-  font-size: 2.4rem;
 }
 
 .tool-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
   height: 100%;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  transition: transform .15s ease;
 }
 
 .tool-card:hover {
@@ -21,51 +16,55 @@ body {
 }
 
 .tool-card h6 {
+  margin-top: 14px;
   font-weight: 600;
-  margin-top: 12px;
 }
 
 .tool-card p {
   font-size: 0.9rem;
   color: #6c757d;
+  margin-bottom: 0;
 }
 
 .icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  color: #fff;
 }
 
-.icon.green { background: #4caf50; }
-.icon.blue { background: #2196f3; }
-.icon.cyan { background: #00bcd4; }
-.icon.yellow { background: #ffc107; color: #000; }
+.icon svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+.bg-green { background: #4caf50; }
+.bg-blue  { background: #2196f3; }
+.bg-cyan  { background: #00bcd4; }
+.bg-yellow { background: #ffc107; }
 
 .work-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 24px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 26px;
   height: 100%;
 }
 
 .premium-box {
   background: #fff3cd;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 40px;
-  text-align: left;
 }
 
-.footer ul {
+footer ul {
   list-style: none;
   padding: 0;
 }
 
-.footer ul li {
+footer li {
   font-size: 0.9rem;
   color: #adb5bd;
   margin-bottom: 6px;
