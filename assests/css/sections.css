@@ -1,9 +1,0 @@
-.feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 80px; }
-.feature-card { border-radius: 16px; overflow: hidden; border: 1px solid #f0f0f0; position: relative; }
-.feat-placeholder { height: 200px; background: rgba(0,0,0,0.03); }
-.bg-l-blue { background: #f0f7ff; }
-.bg-l-purple { background: #fcf5ff; }
-.feat-content { padding: 30px; }
-.feat-content h3 { margin-bottom: 10px; }
-.feat-content p { color: #666; font-size: 15px; padding-right: 40px; }
-.arrow { position: absolute; bottom: 30px; right: 30px; color: #ccc; }
