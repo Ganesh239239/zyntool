@@ -1,37 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu
-    const toggle = document.getElementById('mobileToggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
+    // 1. Sidebar Control
+    const ham = document.getElementById('hamBtn');
+    const side = document.getElementById('sidebar');
+    const over = document.getElementById('overlay');
 
-    toggle.onclick = () => {
-        sidebar.classList.toggle('active');
-        overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
-    };
+    if(ham && side && over) {
+        ham.onclick = () => {
+            side.classList.add('active');
+            over.style.display = 'block';
+        };
+        over.onclick = () => {
+            side.classList.remove('active');
+            over.style.display = 'none';
+        };
+    }
 
-    overlay.onclick = () => {
-        sidebar.classList.remove('active');
-        overlay.style.display = 'none';
-    };
-
-    // 2. Filtering
+    // 2. Filter Pills Control
     const pills = document.querySelectorAll('.pill');
     const cards = document.querySelectorAll('.tool-card');
 
-    pills.forEach(pill => {
-        pill.onclick = () => {
-            pills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-
-            const filter = pill.getAttribute('data-filter');
-
-            cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filter === 'all' || category === filter) {
-                    // Force flex on mobile, block on desktop
-                    card.style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
+    pills.forEach(p => {
+        p.onclick = () => {
+            pills.forEach(x => x.classList.remove('active'));
+            p.classList.add('active');
+            const f = p.dataset.filter;
+            cards.forEach(c => {
+                if(f === 'all' || c.dataset.category === f) {
+                    c.style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
                 } else {
-                    card.style.display = 'none';
+                    c.style.display = 'none';
                 }
             });
         };
