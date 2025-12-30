@@ -3,11 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iLoveIMG | Professional Image Tools</title>
+    <title>iLoveIMG | Every tool you need to edit images</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header id="header-placeholder"></header>
+
+    <header>
+        <a href="/" class="logo">💙 iLove<span>IMG</span></a>
+        <nav class="nav-right">
+            <ul class="nav-menu">
+                <li><a href="#">Compress Image</a></li>
+                <li><a href="#">Resize Image</a></li>
+                <li><a href="#">Convert to JPG</a></li>
+                <li><a href="#" style="color:var(--brand-blue)">Login</a></li>
+                <li><a href="#" style="background:var(--brand-blue); color:white; padding:8px 15px; border-radius:4px;">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <main>
         <section class="hero">
@@ -15,16 +27,37 @@
             <p>100% Free and Easy to use.</p>
         </section>
 
-        <div class="filter-bar" style="display:flex; justify-content:center; gap:10px; margin-bottom:30px;">
+        <div class="filter-bar">
             <button class="filter-btn active" data-cat="all">All</button>
             <button class="filter-btn" data-cat="optimize">Optimize</button>
             <button class="filter-btn" data-cat="edit">Edit</button>
         </div>
 
-        <div class="tool-grid" id="tool-grid"></div>
+        <div class="tool-grid" id="tool-grid">
+            <!-- Tools injected here -->
+        </div>
     </main>
 
-    <footer id="footer-placeholder"></footer>
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>ILOVEIMG</h4>
+                <ul><li><a href="#">Home</a></li><li><a href="#">Pricing</a></li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>TOOLS</h4>
+                <ul><li><a href="#">Compress Image</a></li><li><a href="#">Resize Image</a></li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <ul><li><a href="#">About us</a></li><li><a href="#">Contact</a></li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <ul><li><a href="#">Legal & Privacy</a></li><li><a href="#">Cookies Policy</a></li></ul>
+            </div>
+        </div>
+    </footer>
 
     <script src="assets/js/tools-data.js"></script>
     <script src="assets/js/main.js"></script>
