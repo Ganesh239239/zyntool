@@ -1,19 +1,75 @@
-.site-header { height: 64px; background: #fff; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 2000; }
-.header-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 100%; padding: 0 24px; }
-.header-left { display: flex; align-items: center; gap: 30px; }
+/* assets/css/header.css */
+.site-header {
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #e1e4e8;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header-left { display: flex; align-items: center; gap: 25px; height: 100%; }
+
 .logo { font-size: 24px; font-weight: 700; color: #47474f; }
-.logo span { color: #4285f4; }
+.logo span { color: var(--brand-blue); }
 
-/* MEGA MENU LOGIC */
-.mega-menu-trigger { position: relative; font-size: 13px; font-weight: 700; color: #47474f; cursor: pointer; padding: 20px 0; }
-.mega-menu { display: none; position: absolute; top: 64px; left: -100px; width: 800px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; border-radius: 0 0 8px 8px; }
-.mega-menu-trigger:hover .mega-menu { display: block; }
-.mega-menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.menu-col h6 { font-size: 11px; color: #999; margin-bottom: 15px; }
-.menu-col a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; font-weight: 600; }
-.menu-col a:hover { color: #4285f4; }
+/* Desktop Navigation & Mega Menu */
+.mega-trigger {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--nav-grey);
+    cursor: pointer;
+    position: relative;
+}
 
+.mega-menu {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: -50px;
+    width: 800px;
+    background: #fff;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    padding: 30px;
+    border-radius: 0 0 8px 8px;
+    border-top: 1px solid #eee;
+}
+
+.mega-trigger:hover .mega-menu { display: block; }
+
+.mega-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.mega-col h6 { font-size: 11px; color: #999; margin-bottom: 15px; }
+.mega-col a { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 14px; font-weight: 600; }
+
+/* Right side */
 .header-right { display: flex; align-items: center; gap: 20px; }
-.nav-link { font-weight: 600; font-size: 14px; }
-.btn-signup { background: #4285f4; color: #fff !important; padding: 8px 20px; border-radius: 4px; font-weight: 700; }
-.grid-btn { font-size: 20px; color: #47474f; cursor: pointer; }
+.login-link { font-size: 14px; font-weight: 600; }
+.signup-btn { background: var(--brand-blue); color: #fff !important; padding: 8px 20px; border-radius: 4px; font-weight: 700; font-size: 14px; }
+.apps-icon { font-size: 20px; cursor: pointer; color: var(--nav-grey); }
+
+/* Mobile Menu Logic */
+.menu-toggle { display: none; font-size: 22px; cursor: pointer; }
+
+.mobile-sidebar {
+    position: fixed; top: 64px; left: -100%; width: 80%; height: 100vh;
+    background: #fff; z-index: 2000; transition: 0.3s; padding: 20px;
+}
+.mobile-sidebar.active { left: 0; }
+.mobile-sidebar a { display: block; padding: 15px 0; font-size: 17px; font-weight: 700; border-bottom: 1px solid #f5f5f5; }
+.overlay { display: none; position: fixed; top: 64px; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .desktop-nav, .login-link, .signup-btn { display: none; }
+    .menu-toggle { display: block; }
+}
