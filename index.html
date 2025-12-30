@@ -7,12 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS - Ensure these folders/files are lowercase -->
     <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/tools.css">
-    <link rel="stylesheet" href="assets/css/sections.css">
-    <link rel="stylesheet" href="assets/css/footer.css">
 </head>
 <body>
 
@@ -20,87 +17,49 @@
         <div class="header-container">
             <div class="header-left">
                 <div class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
-                <a href="index.html" class="logo"><span>iLove</span>IMG</a>
+                <a href="/" class="logo"><span>iLove</span>IMG</a>
                 <nav class="desktop-nav">
-                    <div class="mega-trigger">
-                        ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down ml-1"></i>
+                    <div class="mega-trigger">ALL IMAGE TOOLS <i class="fa-solid fa-chevron-down"></i>
                         <div class="mega-menu">
                             <div class="menu-grid">
-                                <div class="menu-col">
-                                    <h6>OPTIMIZE IMAGE</h6>
-                                    <a href="#"><i class="fa-solid fa-compress" style="color:#81c784"></i> Compress IMAGE</a>
-                                </div>
-                                <div class="menu-col">
-                                    <h6>MODIFY IMAGE</h6>
-                                    <a href="#"><i class="fa-solid fa-expand" style="color:#64b5f6"></i> Resize IMAGE</a>
-                                    <a href="#"><i class="fa-solid fa-crop" style="color:#4dd0e1"></i> Crop IMAGE</a>
-                                    <a href="#"><i class="fa-solid fa-rotate" style="color:#ffd54f"></i> Rotate IMAGE</a>
-                                </div>
-                                <div class="menu-col">
-                                    <h6>CONVERT IMAGE</h6>
-                                    <a href="#"><i class="fa-solid fa-repeat" style="color:#ffd54f"></i> To JPG</a>
-                                    <a href="#"><i class="fa-solid fa-image" style="color:#ba68c8"></i> From JPG</a>
-                                </div>
+                                <div class="menu-col"><h6>OPTIMIZE</h6><a href="#">Compress</a></div>
+                                <div class="menu-col"><h6>MODIFY</h6><a href="#">Resize</a></div>
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="nav-item">CONVERT TO JPG</a>
-                    <a href="#" class="nav-item">RESIZE IMAGE</a>
-                    <a href="#" class="nav-item">EDIT IMAGE</a>
                 </nav>
             </div>
             <div class="header-right">
-                <a href="#" class="login-link">Login</a>
-                <a href="#" class="signup-btn">Sign up</a>
-                <div class="grid-icon"><i class="fa-solid fa-table-cells"></i></div>
+                <a href="#" class="btn-signup">Sign up</a>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <nav>
-            <a href="#">COMPRESS IMAGE</a><a href="#">RESIZE IMAGE</a><a href="#">CROP IMAGE</a><hr>
-            <a href="#" style="color:#4285f4">Login</a><a href="#">Sign up</a>
-        </nav>
-    </div>
-    <div class="overlay" id="overlay"></div>
-
-    <main>
+    <main class="container">
         <section class="hero">
             <h1>Every tool you could want to edit images in bulk</h1>
             <p>Modify your images at once with our online tools.</p>
-        </section>
-
-        <div class="filter-bar">
-            <button class="pill active" data-filter="all">All</button>
-            <button class="pill" data-filter="optimize">Optimize</button>
-            <button class="pill" data-filter="create">Create</button>
-            <button class="pill" data-filter="edit">Edit</button>
-            <button class="pill" data-filter="convert">Convert</button>
-        </div>
-
-        <section class="container">
-            <div class="tools-grid" id="toolsGrid">
-                <div class="tool-card" data-category="optimize">
-                    <div class="icon-box bg-green"><i class="fa-solid fa-compress"></i></div>
-                    <div class="tool-text"><h3>Compress IMAGE</h3><p>Compress JPG, PNG, SVG or GIF with best quality.</p></div>
-                </div>
-                <div class="tool-card" data-category="optimize">
-                    <div class="icon-box bg-blue"><i class="fa-solid fa-expand"></i></div>
-                    <div class="tool-text"><h3>Resize IMAGE</h3><p>Define dimensions by pixels or percentage.</p></div>
-                </div>
-                <div class="tool-card" data-category="edit">
-                    <div class="icon-box bg-cyan"><i class="fa-solid fa-crop"></i></div>
-                    <div class="tool-text"><h3>Crop IMAGE</h3><p>Crop JPG, PNG or GIFs with ease.</p></div>
-                </div>
-                <div class="tool-card" data-category="convert">
-                    <div class="icon-box bg-yellow"><i class="fa-solid fa-repeat"></i></div>
-                    <div class="tool-text"><h3>Convert to JPG</h3><p>Turn images into JPG in bulk with ease.</p></div>
-                </div>
-                <!-- ... Repeat for all 13 tools using correct category ... -->
+            <div class="filter-bar">
+                <button class="pill active" data-filter="all">All</button>
+                <button class="pill" data-filter="optimize">Optimize</button>
+                <button class="pill" data-filter="edit">Edit</button>
+                <button class="pill" data-filter="convert">Convert</button>
             </div>
         </section>
+
+        <div class="tools-grid">
+            <!-- 1. Compress -->
+            <div class="tool-card" data-category="optimize">
+                <div class="icon-box" style="background:#81c784"><i class="fa-solid fa-compress"></i></div>
+                <div class="tool-text"><h3>Compress IMAGE</h3><p>Saving space while maintaining quality.</p></div>
+            </div>
+            <!-- 2. Resize -->
+            <div class="tool-card" data-category="optimize">
+                <div class="icon-box" style="background:#64b5f6"><i class="fa-solid fa-expand"></i></div>
+                <div class="tool-text"><h3>Resize IMAGE</h3><p>Define dimensions by percent or pixel.</p></div>
+            </div>
+            <!-- ... Add other 11 tools here with correct categories ... -->
+        </div>
     </main>
 
     <script src="assets/js/main.js"></script>
