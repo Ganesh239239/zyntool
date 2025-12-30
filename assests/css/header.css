@@ -30,3 +30,62 @@
 }
 
 .grid-icon { font-size: 20px; color: #47474f; cursor: pointer; margin-left: 20px; }
+
+
+.mega-menu-trigger {
+    position: relative;
+    padding: 20px 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: #47474f;
+}
+
+.mega-menu {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: -50px;
+    width: 850px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border-radius: 0 0 8px 8px;
+    padding: 30px;
+    z-index: 1000;
+}
+
+.mega-menu-trigger:hover .mega-menu {
+    display: block;
+}
+
+.mega-menu-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.menu-column h6 {
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.menu-column a {
+    display: block;
+    text-decoration: none;
+    color: #33333b;
+    font-size: 14px;
+    padding: 8px 0;
+    transition: color 0.2s;
+}
+
+.menu-column a i {
+    width: 20px;
+    color: var(--brand-blue);
+    margin-right: 8px;
+}
+
+.menu-column a:hover {
+    color: var(--brand-blue);
+}
