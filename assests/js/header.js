@@ -1,18 +1,22 @@
-const menuToggle = document.getElementById('menuToggle');
-const sidebar = document.getElementById('mobileSidebar');
-const overlay = document.getElementById('overlay');
-const icon = menuToggle.querySelector('i');
+document.addEventListener('DOMContentLoaded', function() {
+    const megaTrigger = document.getElementById('megaTrigger');
+    const megaMenu = document.getElementById('megaMenu');
 
-function toggleMenu() {
-    sidebar.classList.toggle('active');
-    if (sidebar.classList.contains('active')) {
-        overlay.style.display = 'block';
-        icon.classList.replace('fa-bars', 'fa-xmark');
-    } else {
-        overlay.style.display = 'none';
-        icon.classList.replace('fa-xmark', 'fa-bars');
-    }
-}
+    // iLoveIMG uses a slight delay or hover logic. 
+    // This JS ensures the menu stays open when moving the mouse to it.
+    
+    megaTrigger.addEventListener('mouseenter', () => {
+        megaMenu.style.display = 'block';
+    });
 
-menuToggle.addEventListener('click', toggleMenu);
-overlay.addEventListener('click', toggleMenu);
+    megaTrigger.addEventListener('mouseleave', () => {
+        // We add a tiny timeout so the user can move the mouse into the menu
+        setTimeout(() => {
+            if (!megaMenu.matches(':hover') && !megaTrigger.matches(':hover')) {
+                megaMenu.style.display = 'none';
+            }
+        }, 100);
+    });
+
+    console.log("Header Navigation Loaded Successfully");
+});
