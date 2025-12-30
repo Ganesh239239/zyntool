@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,34 +23,47 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#/">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fa-solid fa-bars"></i>
+            
+            <!-- NEW SIMPLE SVG HAMBURGER ICON -->
+            <button class="navbar-toggler border-0 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6H20" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 12H20" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 18H20" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto mt-3 mt-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" data-bs-toggle="dropdown">ALL IMAGE TOOLS</a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#/compress">Compress</a></li>
-                            <li><a class="dropdown-item" href="#/resize">Resize</a></li>
-                            <li><a class="dropdown-item" href="#/crop">Crop</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#/editor">Photo Editor</a></li>
-                        </ul>
+                <!-- NEW MENU: Direct Links (No Dropdown) -->
+                <ul class="navbar-nav ms-auto mt-3 mt-lg-0 gap-lg-4 align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-dark" href="#/compress">Compress</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-dark" href="#/resize">Resize</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-dark" href="#/crop">Crop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-dark" href="#/tojpg">Convert to JPG</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-dark" href="#/editor">Photo Editor</a>
+                    </li>
+                     <!-- 'More' link for mobile optimization if needed, or keep list simple -->
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- HOME PAGE -->
+    <!-- HOME PAGE (Unchanged) -->
     <div id="homeView">
         <section class="hero">
             <div class="container">
                 <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
                 <p>Your online photo editor is here and forever free!</p>
-                
-                <!-- Filters (Logic handled in main.js) -->
+                <!-- Filters -->
                 <div class="filter-pills mt-4" id="filterContainer">
                     <button class="btn active" data-filter="all">All</button>
                     <button class="btn" data-filter="optimize">Optimize</button>
@@ -64,7 +78,7 @@
         <section class="tools-section">
             <div class="container">
                 <div class="row g-4" id="toolsGrid">
-                    <!-- Tool Cards -->
+                    <!-- Tool Cards (Same as previous) -->
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize"><a href="#/compress" class="tool-card"><div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div><h5>Compress IMAGE</h5><p>Compress JPG, PNG, GIF.</p></a></div>
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize"><a href="#/resize" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div><h5>Resize IMAGE</h5><p>Define dimensions.</p></a></div>
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit"><a href="#/crop" class="tool-card"><div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div><h5>Crop IMAGE</h5><p>Crop JPG, PNG, GIFs.</p></a></div>
@@ -83,9 +97,8 @@
         </section>
     </div>
 
-    <!-- TOOL WORKSPACE -->
+    <!-- TOOL WORKSPACE (Unchanged structure) -->
     <div id="toolWorkspace">
-        <!-- Content same as before... -->
         <div class="container">
             <div class="workspace-header">
                 <a href="#/" class="btn btn-outline-secondary btn-sm mb-3"><i class="fa-solid fa-arrow-left me-1"></i> Back</a>
@@ -95,6 +108,7 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
+                    <!-- Upload -->
                     <div class="uploader-zone" id="dropZone">
                         <div class="mb-4"><i class="fa-solid fa-cloud-arrow-up fa-5x text-primary"></i></div>
                         <h3>Select images</h3>
@@ -105,10 +119,11 @@
                     <div id="htmlInputZone" style="display:none;" class="mb-4">
                         <div class="card p-4 shadow-sm border-0 bg-light">
                             <label class="form-label fw-bold">Enter HTML Code</label>
-                            <textarea id="htmlCode" class="form-control font-monospace" rows="5" placeholder="<h1 style='color:blue'>Hello World</h1>"></textarea>
+                            <textarea id="htmlCode" class="form-control font-monospace" rows="5" placeholder="<h1>Hello</h1>"></textarea>
                             <button class="btn btn-primary mt-3 w-100 py-2" id="btnRenderHtml">Render HTML</button>
                         </div>
                     </div>
+                    <!-- Process -->
                     <div id="processingArea" style="display:none;">
                         <div class="preview-container">
                             <img id="imagePreview" src="">
@@ -117,8 +132,9 @@
                         <div class="options-panel shadow-sm" id="optionsPanel"></div>
                         <button class="btn btn-action shadow" id="btnProcess"><i class="fa-solid fa-gear me-2"></i> Process Image</button>
                     </div>
+                    <!-- Result -->
                     <div id="resultArea" style="display:none;" class="text-center mt-4">
-                        <div class="text-success mb-3"><i class="fa-solid fa-circle-check fa-4x"></i></div>
+                         <div class="text-success mb-3"><i class="fa-solid fa-circle-check fa-4x"></i></div>
                         <h3 class="fw-bold">Success!</h3>
                         <div class="my-3"><img id="resultImage" class="img-fluid border rounded" style="max-height: 250px;"></div>
                         <a id="downloadLink" class="btn btn-dark btn-lg">Download</a>
@@ -130,24 +146,19 @@
         </div>
     </div>
 
-    <!-- FIXED FOOTER -->
     <footer>
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center footer-content">
-                <ul class="footer-links">
-                    <li><a href="#">About us</a></li>
-                    <li><a href="#">Contact us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Press</a></li>
-                </ul>
-                <div class="text-md-end text-light-gray">
-                    <span class="small">© iLoveIMG Clone 2025</span>
-                </div>
+        <div class="container text-center">
+            <div class="d-flex justify-content-center gap-4 mb-3 footer-links-mobile">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Blog</a>
             </div>
+            <span class="small text-muted">© iLoveIMG Clone 2025</span>
         </div>
     </footer>
 
-    <!-- JS Module -->
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
