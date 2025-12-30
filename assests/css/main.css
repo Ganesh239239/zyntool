@@ -26,3 +26,15 @@ body {
 
 .hero h1 { font-size: 48px; font-weight: 700; color: #47474f; }
 .hero p { font-size: 20px; color: #666; margin-top: 10px; }
+
+
+/* assets/css/main.css */
+a {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+h1, h2, h3, h4, p {
+    margin: 0;
+    padding: 0;
+}
