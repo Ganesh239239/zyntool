@@ -1,36 +1,142 @@
-/* assets/css/header.css */
-.logo {
-    font-size: 24px;
-    font-weight: 700;
+/* Precise Brand Colors */
+:root {
+    --brand-blue: #4285f4;
+    --text-grey: #47474f;
+    --border-color: #e1e4e8;
 }
 
-.logo__ilove { color: #47474f; }
-.logo__img { color: var(--primary-blue); }
+.site-header {
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+.logo-ilove { color: var(--brand-blue); } /* Production uses Blue for iLove */
+.logo-img { color: var(--brand-blue); }   /* Production uses Blue for IMG */
+
+/* Navigation Links */
+.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+}
 
 .nav-link {
     font-size: 13px;
-    letter-spacing: 0.5px;
-    color: #47474f !important;
-    padding: 0 15px !important;
+    font-weight: 700;
+    color: var(--text-grey);
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
-.btn-signup {
+/* MEGA MENU LOGIC */
+.has-mega-menu {
+    position: static; /* Important for full-width positioning */
+}
+
+.mega-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0;
+    z-index: 999;
+}
+
+/* The Secret: Hovering the LI shows the Menu */
+.has-mega-menu:hover .mega-menu {
+    display: block;
+}
+
+.mega-menu-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 20px;
+}
+
+.menu-column h6 {
+    font-size: 11px;
+    color: #999;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.menu-column a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.menu-column a:hover {
+    color: var(--brand-blue);
+}
+
+/* Right Side Styling */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.login-link {
     font-size: 14px;
     font-weight: 700;
-    padding: 8px 20px;
+    color: #333;
+}
+
+.signup-btn {
+    background: var(--brand-blue);
+    color: #fff !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .grid-icon {
-    font-size: 20px;
-    color: #47474f;
+    font-size: 18px;
+    color: var(--text-grey);
     cursor: pointer;
-}
-
-/* Responsive Fix for Mobile Logo */
-@media (max-width: 991px) {
-    .navbar-brand {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
+    margin-left: 10px;
 }
