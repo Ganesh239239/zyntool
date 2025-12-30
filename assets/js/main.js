@@ -1,38 +1,33 @@
-// assets/js/main.js
 document.addEventListener('DOMContentLoaded', () => {
-    const pills = document.querySelectorAll('.pill');
-    const cards = document.querySelectorAll('.tool-card');
-    const hamburger = document.getElementById('mobileToggle');
+    const toggle = document.getElementById('mobileToggle');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
+    const pills = document.querySelectorAll('.pill');
+    const cards = document.querySelectorAll('.tool-card');
 
-    // 1. Mobile Sidebar Logic
-    hamburger.addEventListener('click', () => {
+    // Sidebar
+    toggle.onclick = () => {
         sidebar.classList.add('active');
         overlay.style.display = 'block';
-    });
-
-    overlay.addEventListener('click', () => {
+    };
+    overlay.onclick = () => {
         sidebar.classList.remove('active');
         overlay.style.display = 'none';
-    });
+    };
 
-    // 2. Filter Pills Logic
+    // Filters
     pills.forEach(pill => {
-        pill.addEventListener('click', () => {
+        pill.onclick = () => {
             pills.forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
-            
-            const filter = pill.getAttribute('data-filter');
+            const filter = pill.dataset.filter;
             cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filter === 'all' || category === filter) {
-                    // Maintain mobile flex or desktop block via CSS classes or manual set
+                if(filter === 'all' || card.dataset.category === filter) {
                     card.style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
                 } else {
                     card.style.display = 'none';
                 }
             });
-        });
+        };
     });
 });
