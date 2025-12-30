@@ -1,36 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu
-    const toggle = document.getElementById('mobileToggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    
-    toggle.addEventListener('click', () => {
+    const mobileToggle = document.getElementById('mobileToggle');
+    const sidebar = document.getElementById('mobileSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon = mobileToggle.querySelector('i');
+
+    function toggleMenu() {
         sidebar.classList.toggle('active');
-        overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
-    });
+        if (sidebar.classList.contains('active')) {
+            overlay.style.display = 'block';
+            icon.classList.replace('fa-bars', 'fa-xmark');
+        } else {
+            overlay.style.display = 'none';
+            icon.classList.replace('fa-xmark', 'fa-bars');
+        }
+    }
 
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('active');
-        overlay.style.display = 'none';
-    });
-
-    // Filtering logic
-    const pills = document.querySelectorAll('.pill');
-    const cards = document.querySelectorAll('.tool-card');
-
-    pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            pills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            const cat = pill.getAttribute('data-cat');
-            
-            cards.forEach(card => {
-                if(cat === 'all' || card.getAttribute('data-category') === cat) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    });
+    mobileToggle.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
 });
