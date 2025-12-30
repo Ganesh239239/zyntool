@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
         pill.onclick = () => {
             pills.forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
-            const filter = pill.getAttribute('data-filter');
-            cards.forEach(card => {
-                if(filter === 'all' || card.getAttribute('data-category') === filter) {
-                    card.style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
+            const f = pill.dataset.filter;
+            cards.forEach(c => {
+                if(f === 'all' || c.dataset.category === f) {
+                    c.style.display = (window.innerWidth <= 768) ? 'flex' : 'block';
                 } else {
-                    card.style.display = 'none';
+                    c.style.display = 'none';
                 }
             });
         };
