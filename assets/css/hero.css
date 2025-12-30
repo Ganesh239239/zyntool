@@ -1,50 +1,50 @@
 /* assets/css/hero.css */
 .hero {
     text-align: center;
-    padding: 70px 20px 40px;
-    background-color: #fff;
+    padding: 60px 20px 20px;
+    background: #fff;
 }
 
 .hero h1 {
-    font-size: 45px;
+    font-size: 48px;
     font-weight: 800;
     color: #33333b;
-    line-height: 1.1;
-    max-width: 800px;
-    margin: 0 auto 15px;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
 }
 
 .hero p {
-    font-size: 20px;
+    font-size: 18px;
     color: #666;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
 }
 
-/* Perfect Pill Scroll for Mobile */
+/* Fix: Hero Menus (Pills) Scroll on Mobile */
 .filter-bar {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     overflow-x: auto;
-    padding: 5px 15px 15px;
+    padding: 10px 15px 20px;
+    white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 }
 
-.filter-bar::-webkit-scrollbar { display: none; }
+.filter-bar::-webkit-scrollbar { display: none; } /* Hide scrollbar */
 
 .pill {
-    padding: 10px 24px;
-    border-radius: 25px;
+    padding: 8px 24px;
+    border-radius: 20px;
     border: 1px solid #ddd;
     background: #fff;
     font-weight: 600;
     font-size: 14px;
-    white-space: nowrap;
     cursor: pointer;
-    transition: all 0.2s ease;
+    color: #333;
+    transition: 0.2s;
 }
 
+/* Exact Black Active State from Image 20 */
 .pill.active {
     background: #333;
     color: #fff;
@@ -52,8 +52,6 @@
 }
 
 @media (max-width: 768px) {
-    .hero { padding: 40px 15px 25px; }
     .hero h1 { font-size: 28px; letter-spacing: -0.5px; }
-    .hero p { font-size: 15px; }
-    .filter-bar { justify-content: flex-start; }
+    .filter-bar { justify-content: flex-start; } /* Align to left for mobile swiping */
 }
