@@ -101,3 +101,46 @@ header {
     .tool-info { text-align: left; }
     .tool-card h3 { font-size: 19px; }
 }
+
+
+/* ... [Previous CSS here] ... */
+
+/* Header Adjustments */
+header {
+    background: #fff; height: 65px; display: flex; align-items: center; 
+    justify-content: space-between; padding: 0 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 1000;
+}
+
+.nav-right { display: flex; align-items: center; gap: 25px; }
+.nav-menu { display: flex; list-style: none; gap: 20px; }
+.nav-menu a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; text-transform: uppercase; }
+
+/* Desktop: Hide Hamburger, Show Menu */
+.menu-toggle { display: none; font-size: 24px; cursor: pointer; }
+
+/* Footer Styling */
+footer { background: #fff; border-top: 1px solid #eee; padding: 60px 40px 30px; margin-top: 50px; }
+.footer-grid { 
+    display: grid; grid-template-columns: repeat(4, 1fr); 
+    max-width: 1200px; margin: 0 auto; gap: 40px; 
+}
+.footer-col h4 { color: #4285f4; margin-bottom: 20px; font-size: 16px; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 12px; }
+.footer-col a { color: #666; text-decoration: none; font-size: 14px; transition: 0.2s; }
+.footer-col a:hover { color: #4285f4; }
+.copyright { text-align: center; border-top: 1px solid #eee; padding-top: 30px; margin-top: 50px; color: #999; font-size: 13px; }
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+    header { padding: 0 15px; }
+    .nav-menu { 
+        display: none; position: absolute; top: 65px; left: 0; width: 100%; 
+        background: #fff; flex-direction: column; padding: 20px; box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+    }
+    .nav-menu.active { display: flex; }
+    .menu-toggle { display: block; order: 2; } /* Icon on right on mobile */
+    .logo { order: 1; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+}
