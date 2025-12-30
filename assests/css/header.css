@@ -1,14 +1,26 @@
-/* Precise Brand Colors */
-:root {
-    --brand-blue: #4285f4;
-    --text-grey: #47474f;
-    --border-color: #e1e4e8;
+/* GLOBAL RESET - Fixes the blue links issue */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #33333b;
+    background-color: #fff;
+}
+
+a {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+/* HEADER STYLES */
 .site-header {
     height: 64px;
     background: #fff;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #e1e4e8;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -28,65 +40,58 @@
     display: flex;
     align-items: center;
     gap: 30px;
+    height: 100%;
 }
 
-/* Logo Styling */
 .logo {
     font-size: 24px;
     font-weight: 800;
-    text-decoration: none;
-    letter-spacing: -0.5px;
+    display: flex;
 }
-.logo-ilove { color: var(--brand-blue); } /* Production uses Blue for iLove */
-.logo-img { color: var(--brand-blue); }   /* Production uses Blue for IMG */
 
-/* Navigation Links */
+.logo-ilove { color: #47474f; }
+.logo-img { color: #4285f4; }
+
 .nav-list {
     display: flex;
     list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 20px;
+    height: 100%;
+    align-items: center;
+    gap: 15px;
 }
 
 .nav-link {
     font-size: 13px;
     font-weight: 700;
-    color: var(--text-grey);
+    color: #47474f;
     text-transform: uppercase;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
+    padding: 22px 10px;
 }
 
-/* MEGA MENU LOGIC */
-.has-mega-menu {
-    position: static; /* Important for full-width positioning */
-}
-
+/* MEGA MENU STYLING */
 .mega-menu {
-    display: none; /* Hidden by default */
+    display: none; /* Controlled by JS or Hover */
     position: absolute;
     top: 64px;
     left: 0;
     width: 100%;
     background: #fff;
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid #e1e4e8;
     padding: 40px 0;
     z-index: 999;
 }
 
-/* The Secret: Hovering the LI shows the Menu */
-.has-mega-menu:hover .mega-menu {
+/* Show on hover for Desktop */
+.mega-trigger:hover .mega-menu {
     display: block;
 }
 
 .mega-menu-content {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     padding: 0 20px;
 }
 
@@ -95,24 +100,24 @@
     color: #999;
     font-weight: 700;
     margin-bottom: 15px;
+    text-transform: uppercase;
 }
 
 .menu-column a {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
+    gap: 12px;
+    padding: 10px 0;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-dark);
-    text-decoration: none;
 }
 
-.menu-column a:hover {
-    color: var(--brand-blue);
+.menu-column a i {
+    font-size: 18px;
+    width: 25px;
 }
 
-/* Right Side Styling */
+/* RIGHT SIDE */
 .header-right {
     display: flex;
     align-items: center;
@@ -122,11 +127,10 @@
 .login-link {
     font-size: 14px;
     font-weight: 700;
-    color: #333;
 }
 
 .signup-btn {
-    background: var(--brand-blue);
+    background: #4285f4;
     color: #fff !important;
     padding: 10px 22px;
     border-radius: 4px;
@@ -136,7 +140,12 @@
 
 .grid-icon {
     font-size: 18px;
-    color: var(--text-grey);
+    color: #47474f;
     cursor: pointer;
-    margin-left: 10px;
+}
+
+/* Mobile responsive hide */
+@media (max-width: 991px) {
+    .d-none-mobile { display: none; }
+    .mega-menu { width: 100vw; }
 }
