@@ -15,194 +15,287 @@ const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <div class="tool-header py-5 text-white" style={`background-color: ${entry.data.color}`}>
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold">{entry.data.title}</h1>
-            <p class="lead">{entry.data.description}</p>
+    <!-- Premium Header -->
+    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}dd, ${entry.data.color});`}>
+        <div class="container text-center text-white">
+            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">PRO VERSION</div>
+            <h1 class="display-4 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 lead">{entry.data.description}</p>
         </div>
     </div>
 
-    <div class="container my-5">
-        <!-- UPLOAD ZONE -->
-        <div id="uploadContainer">
-            <div class="uploader-zone p-5 border-dashed text-center bg-light rounded-4 mb-4" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-                <i class={`fa-solid ${entry.data.icon} fa-4x mb-3`} style={`color: ${entry.data.color}`}></i>
-                <h3>Select Images</h3>
-                <p>or drop them here</p>
-                <input type="file" id="fileInput" hidden accept="image/*" multiple />
+    <div class="container my-n5 position-relative" style="z-index: 10;">
+        <!-- STEP 1: UPLOAD ZONE -->
+        <div id="uploadContainer" class="card shadow-xl border-0 rounded-5 p-2 bg-white">
+            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()">
+                <div class="icon-circle mb-4" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold h3">Select Images</h2>
+                <p class="text-muted mb-4">or drop files here to start processing</p>
+                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow" style={`background: ${entry.data.color}`}>
+                    Browse Files
+                </button>
+                <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
         </div>
 
-        <!-- PROCESSING AREA -->
-        <div id="processingArea" style="display:none;">
+        <!-- STEP 2: PREMIUM WORKSPACE -->
+        <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
-                <!-- Left: Preview / Comparison -->
+                <!-- Comparison Canvas -->
                 <div class="col-lg-8">
-                    <div class="comparison-container shadow-lg rounded-4 overflow-hidden position-relative bg-dark">
-                        <div class="comparison-label before">Original</div>
-                        <div class="comparison-label after">Processed</div>
-                        <img id="imageBefore" src="" class="w-100 h-100 object-fit-contain">
-                        <div id="comparisonOverlay" class="position-absolute top-0 start-0 h-100 overflow-hidden" style="width: 50%;">
-                            <img id="imageAfter" src="" class="w-100 h-100 object-fit-contain bg-dark">
-                        </div>
-                        <input type="range" id="compareSlider" min="0" max="100" value="50" class="comparison-slider">
-                        <div id="internalLoader" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-none flex-column align-items-center justify-content-center text-white">
-                            <div class="spinner-border text-primary mb-2"></div>
-                            <span class="fw-bold">Processing...</span>
+                    <div class="workspace-card card border-0 shadow-lg rounded-5 overflow-hidden bg-dark">
+                        <div class="comparison-container">
+                            <div class="label-tag before">Original</div>
+                            <div class="label-tag after">Processed</div>
+                            
+                            <img id="imageBefore" src="" class="preview-img">
+                            
+                            <div id="comparisonOverlay" class="comparison-overlay">
+                                <img id="imageAfter" src="" class="preview-img bg-dark">
+                            </div>
+                            
+                            <input type="range" id="compareSlider" min="0" max="100" value="50" class="pro-slider">
+                            
+                            <!-- Processing Overlay -->
+                            <div id="internalLoader" class="loader-overlay d-none">
+                                <div class="spinner-grow text-white mb-3"></div>
+                                <h4 class="text-white fw-bold">Optimizing...</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right: Tool Options -->
-                <div class="col-lg-4 text-start">
-                    <div class="options-sidebar p-4 border-0 rounded-4 bg-white shadow-sm h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="premium-icon-sm me-2 text-warning"><i class="fa-solid fa-crown"></i></div>
-                            <h5 class="fw-bold m-0">Settings</h5>
+                <!-- Control Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-lg rounded-5 p-4 h-100 bg-white">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fa-solid fa-sliders me-2 text-primary"></i>
+                            <h5 class="fw-bold m-0">Tool Settings</h5>
                         </div>
-                        
-                        <!-- DYNAMIC OPTIONS PANEL -->
+
                         <div id="optionsPanel" class="mb-4">
-                            <!-- JS will inject options here -->
+                            <!-- JS Inject -->
                         </div>
 
-                        <div id="batchList" class="mb-4 small text-muted"></div>
+                        <div id="statsBox" class="p-3 rounded-4 bg-light mb-4 d-none">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Saved Space:</span>
+                                <span id="savePercent" class="text-success fw-bold">0%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div id="saveProgress" class="progress-bar bg-success" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill shadow-sm py-3 fw-bold" style={`background-color: ${entry.data.color}`}>
-                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Start Processing
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm transition-all" style={`background: ${entry.data.color}`}>
+                            Apply & Process
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- RESULT AREA -->
-        <div id="resultArea" style="display:none;" class="mt-5 py-5 text-center">
-            <div class="result-card p-5 bg-white rounded-5 shadow-lg mx-auto" style="max-width: 600px;">
-                <div class="success-icon mb-4"><i class="fa-solid fa-circle-check"></i></div>
-                <h2 class="fw-bold mb-2">Done!</h2>
-                <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm">Download Image</a>
-                <br>
-                <button class="btn btn-outline-primary btn-sm mt-4 rounded-pill px-4" onclick="location.reload()">Process Another</button>
+        <!-- STEP 3: RESULT AREA -->
+        <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+            <div class="result-card card border-0 shadow-2xl rounded-5 p-5 mx-auto" style="max-width: 550px;">
+                <div class="check-animation mb-4">
+                    <i class="fa-solid fa-circle-check text-success fa-5x"></i>
+                </div>
+                <h2 class="fw-black">Successfully Done!</h2>
+                <p class="text-muted mb-4">Your image has been optimized and is ready for download.</p>
+                <div class="d-grid gap-3">
+                    <a id="downloadBtn" class="btn btn-dark btn-xl rounded-pill fw-bold py-3 shadow-lg">Download Image</a>
+                    <button class="btn btn-outline-secondary rounded-pill border-2 fw-bold" onclick="location.reload()">Process Another File</button>
+                </div>
             </div>
         </div>
 
-        <hr class="my-5" />
-        <article class="prose mx-auto" style="max-width: 800px;">
-            <Content />
-        </article>
+        <div class="py-5 mt-5">
+            <article class="prose mx-auto">
+                <Content />
+            </article>
+        </div>
     </div>
-
-    <!-- BRAIN LOGIC -->
-    <script is:inline define:vars={{ toolId }}>
-        const fileInput = document.getElementById('fileInput');
-        const uploadContainer = document.getElementById('uploadContainer');
-        const processingArea = document.getElementById('processingArea');
-        const optionsPanel = document.getElementById('optionsPanel');
-        const btnAction = document.getElementById('btnAction');
-        const internalLoader = document.getElementById('internalLoader');
-        const resultArea = document.getElementById('resultArea');
-        const imageBefore = document.getElementById('imageBefore');
-        const imageAfter = document.getElementById('imageAfter');
-        const comparisonOverlay = document.getElementById('comparisonOverlay');
-        const compareSlider = document.getElementById('compareSlider');
-
-        let selectedFiles = [];
-
-        // --- STEP 1: TOOL-SPECIFIC UI SWITCHER ---
-        function injectOptions() {
-            if (toolId === 'compress-image') {
-                optionsPanel.innerHTML = `
-                    <div class="p-3 bg-light rounded-3">
-                        <label class="fw-bold small d-flex justify-content-between mb-2">Compression <span>70%</span></label>
-                        <input type="range" id="compQuality" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                        <label class="fw-bold small mt-3 d-block mb-2">Format</label>
-                        <select id="exportFormat" class="form-select border-0 shadow-sm"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select>
-                    </div>`;
-            } else if (toolId === 'resize-image') {
-                optionsPanel.innerHTML = `
-                    <div class="p-3 bg-light rounded-3">
-                        <label class="fw-bold small mb-2">Resize by Pixels</label>
-                        <div class="row g-2">
-                            <div class="col"><input type="number" id="resizeW" class="form-control" placeholder="Width" value="1200"></div>
-                            <div class="col"><input type="number" id="resizeH" class="form-control" placeholder="Height" value="800"></div>
-                        </div>
-                        <p class="text-muted small mt-2">Enter your desired dimensions.</p>
-                    </div>`;
-            } else if (toolId === 'crop-image') {
-                optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the handles on the image to crop.</p>`;
-            } else {
-                optionsPanel.innerHTML = `<p class="text-muted">Standard settings applied.</p>`;
-            }
-        }
-
-        // Initialize Options
-        injectOptions();
-
-        // --- STEP 2: HANDLE UPLOADS ---
-        fileInput.addEventListener('change', (e) => {
-            selectedFiles = Array.from(e.target.files);
-            if (selectedFiles.length > 0) {
-                uploadContainer.style.display = 'none';
-                processingArea.style.display = 'block';
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imageBefore.src = e.target.result;
-                    imageAfter.src = e.target.result; // Placeholder until processed
-                };
-                reader.readAsDataURL(selectedFiles[0]);
-            }
-        });
-
-        // Slider logic
-        compareSlider.addEventListener('input', (e) => comparisonOverlay.style.width = e.target.value + '%');
-
-        // --- STEP 3: MASTER PROCESSOR ---
-        btnAction.addEventListener('click', async () => {
-            internalLoader.classList.replace('d-none', 'd-flex');
-            btnAction.disabled = true;
-
-            try {
-                const file = selectedFiles[0];
-                let resultBlob;
-
-                if (toolId === 'compress-image') {
-                    const quality = parseFloat(document.getElementById('compQuality').value);
-                    resultBlob = await imageCompression(file, { maxSizeMB: 1, initialQuality: quality });
-                } 
-                else if (toolId === 'resize-image') {
-                    const w = parseInt(document.getElementById('resizeW').value);
-                    resultBlob = await imageCompression(file, { maxWidthOrHeight: w });
-                }
-                else {
-                    resultBlob = file; // Fallback
-                }
-
-                const url = URL.createObjectURL(resultBlob);
-                imageAfter.src = url;
-                document.getElementById('downloadBtn').href = url;
-                document.getElementById('downloadBtn').download = `zyntool-${file.name}`;
-
-                setTimeout(() => {
-                    processingArea.style.display = 'none';
-                    resultArea.style.display = 'block';
-                }, 800);
-
-            } catch (err) {
-                console.error(err);
-                btnAction.disabled = false;
-                internalLoader.classList.replace('d-flex', 'd-none');
-            }
-        });
-    </script>
 </MainLayout>
 
 <style>
-    /* CSS SAME AS PREVIOUS STEP */
-    .comparison-container { height: 500px; position: relative; }
-    .comparison-slider { position: absolute; -webkit-appearance: none; width: 100%; height: 100%; background: transparent; top: 0; z-index: 10; }
-    .comparison-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 4px; height: 500px; background: white; cursor: ew-resize; }
-    .comparison-label { position: absolute; bottom: 20px; padding: 5px 15px; background: rgba(0,0,0,0.6); color: white; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 5; }
-    .comparison-label.before { left: 20px; } .comparison-label.after { right: 20px; }
-    .success-icon { width: 80px; height: 80px; background: #e8f5e9; color: #4caf50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto; }
+    /* --- Premium CSS Architecture --- */
+    .fw-black { font-weight: 900; }
+    .my-n5 { margin-top: -3rem !important; }
+    .shadow-xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important; }
+    .shadow-2xl { box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.2) !important; }
+
+    /* Uploader Zone Fixed Border */
+    .uploader-zone {
+        border: 3px dashed #e2e8f0;
+        border-radius: 30px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .uploader-zone:hover {
+        border-color: var(--primary-blue);
+        background: #f8fafc;
+        transform: scale(0.99);
+    }
+    .icon-circle {
+        width: 100px; height: 100px;
+        margin: 0 auto;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+    }
+
+    /* Comparison Workspace */
+    .comparison-container { height: 550px; position: relative; width: 100%; }
+    .preview-img { width: 100%; height: 100%; object-fit: contain; position: absolute; top:0; left:0; }
+    .comparison-overlay { position: absolute; top: 0; left: 0; height: 100%; overflow: hidden; border-right: 2px solid white; z-index: 2; }
+    
+    .label-tag {
+        position: absolute; bottom: 20px; z-index: 10;
+        background: rgba(0,0,0,0.7); color: white;
+        padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
+    }
+    .label-tag.before { left: 20px; }
+    .label-tag.after { right: 20px; }
+
+    /* Pro Slider Bar */
+    .pro-slider {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        appearance: none; background: transparent; z-index: 20; cursor: ew-resize; margin: 0;
+    }
+    .pro-slider::-webkit-slider-thumb {
+        appearance: none; width: 4px; height: 600px; background: white;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* Loader */
+    .loader-overlay {
+        position: absolute; top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.8); z-index: 30;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    /* Animation */
+    .fade-in { animation: fadeInUp 0.6s ease-out; }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
+
+<script is:inline define:vars={{ toolId }}>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const optionsPanel = document.getElementById('optionsPanel');
+    const btnAction = document.getElementById('btnAction');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
+    const statsBox = document.getElementById('statsBox');
+    
+    // Images
+    const imageBefore = document.getElementById('imageBefore');
+    const imageAfter = document.getElementById('imageAfter');
+    const comparisonOverlay = document.getElementById('comparisonOverlay');
+    const compareSlider = document.getElementById('compareSlider');
+
+    let originalSize = 0;
+
+    // STEP 1: UI INJECTION
+    function initUI() {
+        if (toolId === 'compress-image') {
+            optionsPanel.innerHTML = `
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between fw-bold small">Compression Level <span id="qVal">70%</span></label>
+                    <input type="range" id="qInput" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                </div>
+                <div>
+                    <label class="form-label fw-bold small">Output Format</label>
+                    <select id="fInput" class="form-select rounded-3 border-light shadow-sm">
+                        <option value="image/jpeg">JPEG (Standard)</option>
+                        <option value="image/webp">WebP (Premium)</option>
+                    </select>
+                </div>`;
+            document.getElementById('qInput').oninput = (e) => document.getElementById('qVal').innerText = (e.target.value * 100).toFixed(0) + '%';
+        } else if (toolId === 'resize-image') {
+            optionsPanel.innerHTML = `
+                <div class="row g-2 mb-3">
+                    <div class="col-6"><label class="small fw-bold">Width (px)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
+                    <div class="col-6"><label class="small fw-bold">Height (px)</label><input type="number" id="hIn" class="form-control" value="800"></div>
+                </div>
+                <div class="form-check form-switch small">
+                    <input class="form-check-input" type="checkbox" checked id="ratio">
+                    <label class="form-check-label">Maintain Aspect Ratio</label>
+                </div>`;
+        }
+    }
+    initUI();
+
+    // STEP 2: HANDLE FILE
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalSize = file.size;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imageBefore.src = e.target.result;
+                imageAfter.src = e.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // STEP 3: SLIDER
+    compareSlider.addEventListener('input', (e) => comparisonOverlay.style.width = e.target.value + '%');
+
+    // STEP 4: PROCESSING
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const file = fileInput.files[0];
+            let blob;
+
+            if (toolId === 'compress-image') {
+                const q = parseFloat(document.getElementById('qInput').value);
+                const f = document.getElementById('fInput').value;
+                blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q, fileType: f });
+            } else if (toolId === 'resize-image') {
+                const w = parseInt(document.getElementById('wIn').value);
+                blob = await imageCompression(file, { maxWidthOrHeight: w });
+            } else {
+                blob = file;
+            }
+
+            // Calculations
+            const newSize = blob.size;
+            const saved = ((originalSize - newSize) / originalSize * 100).toFixed(0);
+            
+            const url = URL.createObjectURL(blob);
+            imageAfter.src = url;
+            
+            // Show stats
+            statsBox.classList.remove('d-none');
+            document.getElementById('savePercent').innerText = (saved > 0 ? saved : 0) + '%';
+            document.getElementById('saveProgress').style.width = saved + '%';
+
+            // Show Result
+            setTimeout(() => {
+                const dl = document.getElementById('downloadBtn');
+                dl.href = url;
+                dl.download = `optimized-${file.name}`;
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+            }, 1000);
+
+        } catch (e) {
+            alert("Process failed");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
