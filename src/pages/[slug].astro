@@ -64,94 +64,126 @@ const toolId = entry.slug || entry.id;
     </div>
 
     <!-- CLIENT SIDE SCRIPT -->
-    <script is:inline define:vars={{ toolId }}>
-       const fileInput = document.getElementById('fileInput');
-        const uploadContainer = document.getElementById('uploadContainer');
-        const processingArea = document.getElementById('processingArea');
-        const imagePreview = document.getElementById('imagePreview');
-        const btnAction = document.getElementById('btnAction');
-        const resultArea = document.getElementById('resultArea');
-        const resultImage = document.getElementById('resultImage');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const optionsPanel = document.getElementById('optionsPanel');
+   <script is:inline define:vars={{ toolId }}>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const imagePreview = document.getElementById('imagePreview');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const resultImage = document.getElementById('resultImage');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const optionsPanel = document.getElementById('optionsPanel');
 
-        let selectedFile = null;
+    let selectedFile = null;
+    let cropper = null;
+    let currentRotation = 0;
 
-        // SHOW OPTIONS BASED ON TOOL
-       let cropper = null;
+    // 1. DYNAMIC UI OPTIONS
+    if (toolId === 'resize-image') {
+        optionsPanel.innerHTML = `<div class="row g-2"><div class="col"><label class="small fw-bold">Width</label><input type="number" id="resizeW" class="form-control" value="800"></div><div class="col"><label class="small fw-bold">Height</label><input type="number" id="resizeH" class="form-control" value="600"></div></div>`;
+    } else if (toolId === 'rotate-image') {
+        optionsPanel.innerHTML = `<button class="btn btn-outline-primary" onclick="window.rotateImg()">Rotate 90° Right</button>`;
+        window.rotateImg = () => { currentRotation += 90; imagePreview.style.transform = `rotate(${currentRotation}deg)`; };
+    } else if (toolId === 'watermark-image') {
+        optionsPanel.innerHTML = `<label class="small fw-bold">Watermark Text</label><input type="text" id="wmText" class="form-control" placeholder="© ZynTool 2025">`;
+    } else if (toolId === 'meme-generator') {
+        optionsPanel.innerHTML = `<input type="text" id="memeTop" class="form-control mb-2" placeholder="Top Text"><input type="text" id="memeBot" class="form-control" placeholder="Bottom Text">`;
+    } else if (toolId === 'blur-image') {
+        optionsPanel.innerHTML = `<label class="small fw-bold">Blur Intensity</label><input type="range" id="blurRange" class="form-range" min="0" max="20" value="5">`;
+    }
 
-        // 1. SET OPTIONS UI
-        if (toolId === 'crop-image') {
-            optionsPanel.innerHTML = `<p class="alert alert-info py-2 small">Drag the box on the image below to select your crop area.</p>`;
-        } else if (toolId === 'resize-image') {
-            optionsPanel.innerHTML = `
-                <div class="row g-2">
-                    <div class="col"><label class="small fw-bold">Width (px)</label><input type="number" id="resizeW" class="form-control" value="800"></div>
-                    <div class="col"><label class="small fw-bold">Height (px)</label><input type="number" id="resizeH" class="form-control" value="600"></div>
-                </div>`;
-        } else {
-            optionsPanel.innerHTML = `<p class="text-muted mb-0">Best settings selected automatically.</p>`;
-        }
-
-        // 2. HANDLE FILE UPLOAD
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                selectedFile = file;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    uploadContainer.style.display = 'none';
-                    processingArea.style.display = 'block';
-
-                    // START CROPPER IF TOOL IS CROP
-                    if (toolId === 'crop-image') {
-                        if (cropper) cropper.destroy();
-                        // Small delay to ensure image is loaded
-                        setTimeout(() => {
-                            cropper = new Cropper(imagePreview, { viewMode: 1, autoCropArea: 1 });
-                        }, 100);
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // 3. EXECUTE TOOL
-        btnAction.addEventListener('click', async () => {
-            btnAction.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
-            btnAction.disabled = true;
-
-            try {
-                let resultBlob;
-                
-                if (toolId === 'crop-image' && cropper) {
-                    const canvas = cropper.getCroppedCanvas();
-                    resultBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-                } 
-                else if (toolId === 'compress-image') {
-                    resultBlob = await imageCompression(selectedFile, { maxSizeMB: 1, initialQuality: 0.6 });
-                } 
-                else if (toolId === 'resize-image') {
-                    const width = document.getElementById('resizeW').value;
-                    const height = document.getElementById('resizeH').value;
-                    resultBlob = await imageCompression(selectedFile, { maxWidthOrHeight: Math.max(width, height) });
+    // 2. FILE SELECTION
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+                if (toolId === 'crop-image') {
+                    if(cropper) cropper.destroy();
+                    setTimeout(() => { cropper = new Cropper(imagePreview, { viewMode: 1 }); }, 100);
                 }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-                const url = URL.createObjectURL(resultBlob);
-                resultImage.src = url;
-                downloadBtn.href = url;
-                downloadBtn.download = `zyntool-cropped.png`;
-                
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-            } catch (err) {
-                alert('Error processing');
-                console.error(err);
-                btnAction.disabled = false;
+    // 3. MASTER PROCESSING LOGIC
+    btnAction.addEventListener('click', async () => {
+        btnAction.disabled = true;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = imagePreview.src;
+
+        await new Promise(r => img.onload = r);
+
+        try {
+            let resultBlob;
+            let exportType = 'image/png';
+
+            if (toolId === 'compress-image') {
+                resultBlob = await imageCompression(selectedFile, { maxSizeMB: 1, initialQuality: 0.6 });
+            } 
+            else if (toolId === 'crop-image' && cropper) {
+                resultBlob = await new Promise(r => cropper.getCroppedCanvas().toBlob(r));
             }
-        });
-    </script>
+            else {
+                // CANVAS BASED TOOLS
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                if (toolId === 'rotate-image') {
+                    if ((currentRotation / 90) % 2 !== 0) { canvas.width = img.height; canvas.height = img.width; }
+                    ctx.translate(canvas.width/2, canvas.height/2);
+                    ctx.rotate((currentRotation * Math.PI) / 180);
+                    ctx.drawImage(img, -img.width/2, -img.height/2);
+                } 
+                else if (toolId === 'watermark-image') {
+                    ctx.drawImage(img, 0, 0);
+                    ctx.font = `${canvas.width/15}px Arial`;
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                    ctx.textAlign = "center";
+                    ctx.fillText(document.getElementById('wmText').value, canvas.width/2, canvas.height - 50);
+                }
+                else if (toolId === 'meme-generator') {
+                    ctx.drawImage(img, 0, 0);
+                    ctx.font = `bold ${canvas.width/10}px Impact`;
+                    ctx.fillStyle = "white"; ctx.strokeStyle = "black"; ctx.lineWidth = canvas.width/100; ctx.textAlign = "center";
+                    const top = document.getElementById('memeTop').value.toUpperCase();
+                    const bot = document.getElementById('memeBot').value.toUpperCase();
+                    ctx.strokeText(top, canvas.width/2, canvas.width/8); ctx.fillText(top, canvas.width/2, canvas.width/8);
+                    ctx.strokeText(bot, canvas.width/2, canvas.height - 40); ctx.fillText(bot, canvas.width/2, canvas.height - 40);
+                }
+                else if (toolId === 'convert-to-jpg') {
+                    ctx.drawImage(img, 0, 0); exportType = 'image/jpeg';
+                }
+                else {
+                    ctx.drawImage(img, 0, 0);
+                }
+                
+                resultBlob = await new Promise(r => canvas.toBlob(r, exportType));
+            }
+
+            const url = URL.createObjectURL(resultBlob);
+            resultImage.src = url;
+            downloadBtn.href = url;
+            downloadBtn.download = `zyntool-${toolId}.${exportType.split('/')[1]}`;
+            processingArea.style.display = 'none';
+            resultArea.style.display = 'block';
+
+        } catch (err) {
+            alert('Processing error');
+            console.error(err);
+        } finally {
+            btnAction.disabled = false;
+        }
+    });
+</script>
 </Layout>
 
 <style>
