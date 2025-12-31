@@ -43,14 +43,25 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
     <div class="container tool-container pb-5">
         <!-- STEP 1: UPLOADER -->
         <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
-            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            {toolId === 'html-to-image' ? (
+                <div class="p-4 text-center">
+                    <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                        <i class="fa-solid fa-code fa-3x"></i>
+                    </div>
+                    <h2 class="fw-bold">Enter HTML Code</h2>
+                    <textarea id="htmlInput" class="form-control mt-3 font-monospace" rows="6" placeholder="<div style='background:blue; color:white; padding:20px'>Hello World</div>"></textarea>
+                    <button class="btn btn-lg mt-4 text-white rounded-pill px-5" style={`background: ${entry.data.color}`} onclick="window.renderHTML()">Preview HTML</button>
                 </div>
-                <h2 class="fw-bold">Select Image</h2>
-                <p class="text-muted">Drag & drop your files here or click to browse</p>
-                <input type="file" id="fileInput" hidden accept="image/*" />
-            </div>
+            ) : (
+                <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                    <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                        <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                    </div>
+                    <h2 class="fw-bold">Select Image</h2>
+                    <p class="text-muted">Drag & drop your files here or click to browse</p>
+                    <input type="file" id="fileInput" hidden accept="image/*" />
+                </div>
+            )}
         </div>
 
         <!-- STEP 2: WORKSPACE -->
@@ -59,11 +70,12 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
                 <div class="col-lg-8">
                     <div class="preview-stage overflow-hidden">
                         <div id="imgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                            <div id="htmlRenderArea" style="display:none; background:white; padding:20px;"></div>
                             <img id="mainPreview" src="" class="img-fluid main-preview-img">
                         </div>
                         <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
                             <div class="spinner-border text-primary mb-3"></div>
-                            <h5 class="text-white fw-bold">Processing...</h5>
+                            <h5 class="fw-bold">Processing...</h5>
                         </div>
                     </div>
                 </div>
@@ -81,7 +93,6 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
                             </button>
                         </div>
 
-                        <!-- OTHER TOOLS SECTION -->
                         <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
                             <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
                             <div class="row g-2">
@@ -161,7 +172,7 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Position Grid for Watermark */
+    /* Watermark Position Grid */
     .wm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 150px; }
     .wm-dot { height: 35px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; border-radius: 6px; }
     .wm-dot.active { background: #4B90FF; border-color: #4B90FF; }
@@ -176,13 +187,14 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
     const internalLoader = document.getElementById('internalLoader');
     const resultArea = document.getElementById('resultArea');
     const mainPreview = document.getElementById('mainPreview');
+    const htmlRenderArea = document.getElementById('htmlRenderArea');
 
     let originalFile = null;
     let cropper = null;
-    let rotation = 0;
     window.wmPos = 'c';
+    let currentRotation = 0;
 
-    // Helper: Byte Converter
+    // Helper: Byte Converter for Stats
     window.formatBytes = (bytes) => {
         if (bytes === 0) return '0 KB';
         const k = 1024;
@@ -221,9 +233,41 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
             }
         },
         'crop-image': {
-            renderUI: () => { optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the box to crop.</p>`; },
+            renderUI: () => {
+                optionsPanel.innerHTML = `
+                    <label class="fw-bold small mb-2">Aspect Ratio</label>
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(NaN)">Free Selection</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(1)">Square (1:1)</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(1.77)">HD (16:9)</button>
+                    </div>`;
+            },
             process: async () => {
                 const canvas = cropper.getCroppedCanvas();
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
+        },
+        'remove-background': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `
+                    <label class="fw-bold small mb-2">Sensitivity</label>
+                    <input type="range" id="bgTh" class="form-range" min="1" max="100" value="20">
+                    <p class="text-muted small mt-2">Adjust to remove more colors similar to the background.</p>`;
+            },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const imgData = ctx.getImageData(0,0, canvas.width, canvas.height);
+                const th = parseInt(document.getElementById('bgTh').value) * 2.5;
+                for (let i = 0; i < imgData.data.length; i += 4) {
+                    if (imgData.data[i] > 255-th && imgData.data[i+1] > 255-th && imgData.data[i+2] > 255-th) imgData.data[i+3] = 0;
+                }
+                ctx.putImageData(imgData, 0, 0);
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 return { blob, ext: 'png' };
             }
@@ -253,6 +297,14 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 return { blob, ext: 'png' };
             }
+        },
+        'html-to-image': {
+            renderUI: () => { optionsPanel.innerHTML = `<p class="text-muted small">Code will be captured exactly as shown.</p>`; },
+            process: async () => {
+                const canvas = await html2canvas(htmlRenderArea);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
         }
     };
 
@@ -262,8 +314,15 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         document.querySelectorAll('.wm-dot').forEach(d => d.classList.remove('active'));
         btn.classList.add('active');
     };
+    window.setR = (r) => { if(cropper) cropper.setAspectRatio(r); };
+    window.renderHTML = () => {
+        const code = document.getElementById('htmlInput').value;
+        if(!code) return alert("Enter HTML first");
+        htmlRenderArea.innerHTML = code; htmlRenderArea.style.display = 'block';
+        mainPreview.style.display = 'none'; uploadContainer.style.display = 'none'; processingArea.style.display = 'block';
+    };
 
-    // INIT
+    // INIT TOOL
     const currentTool = ToolRegistry[toolId] || { 
         renderUI: () => { optionsPanel.innerHTML = '<p class="text-muted small">Standard optimized processing.</p>'; },
         process: async () => { return { blob: originalFile, ext: 'png' }; }
@@ -294,12 +353,16 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         try {
             const result = await currentTool.process();
             
-            // KB Saved Logic
+            // KB Saved Logic (Visible only for Compress Tool)
             if (toolId === 'compress-image') {
-                document.getElementById('savingsStats').style.display = 'flex';
-                document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
-                document.getElementById('newSizeLabel').innerText = formatBytes(result.blob.size);
-                document.getElementById('percentLabel').innerText = Math.round(((originalFile.size - result.blob.size)/originalFile.size)*100) + '%';
+                const stats = document.getElementById('savingsStats');
+                stats.style.display = 'flex';
+                document.getElementById('oldSizeLabel').innerText = window.formatBytes(originalFile.size);
+                document.getElementById('newSizeLabel').innerText = window.formatBytes(result.blob.size);
+                const savings = Math.max(0, Math.round(((originalFile.size - result.blob.size) / originalFile.size) * 100));
+                document.getElementById('percentLabel').innerText = savings + '%';
+            } else {
+                document.getElementById('savingsStats').style.display = 'none';
             }
 
             const url = URL.createObjectURL(result.blob);
@@ -311,6 +374,7 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
                 resultArea.style.display = 'block';
             }, 800);
         } catch (e) {
+            console.error(e);
             alert("Process failed."); internalLoader.classList.add('d-none'); btnAction.disabled = false;
         }
     });
