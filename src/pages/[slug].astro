@@ -1,3 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  if (!toolEntries) return [];
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+if (!entry) return Astro.redirect('/404');
+
+const allTools = await getCollection('tools');
+const relatedTools = allTools.filter(t => (t.slug || t.id) !== (entry.slug || entry.id)).slice(0, 6);
+
+const { Content } = await entry.render();
+const toolId = entry.slug || entry.id;
+---
+
+<MainLayout title={entry.data.title}>
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
+        </div>
+    </div>
+
+    <div class="container tool-container pb-5">
+        <!-- STEP 1: UPLOAD / INPUT -->
+        <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
+            {toolId === 'html-to-image' ? (
+                <div class="p-4 text-center">
+                    <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                        <i class="fa-solid fa-code fa-3x"></i>
+                    </div>
+                    <h2 class="fw-bold">Enter HTML Code</h2>
+                    <textarea id="htmlInput" class="form-control mt-3 font-monospace" rows="6" placeholder="<div style='background:blue; color:white; padding:20px'>Hello World</div>"></textarea>
+                    <button class="btn btn-lg mt-4 text-white rounded-pill px-5" style={`background: ${entry.data.color}`} onclick="window.renderHTML()">Preview HTML</button>
+                </div>
+            ) : (
+                <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                    <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                        <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                    </div>
+                    <h2 class="fw-bold">Upload Image</h2>
+                    <p class="text-muted">Drag & drop your files here or click to browse</p>
+                    <input type="file" id="fileInput" hidden accept="image/*" />
+                </div>
+            )}
+        </div>
+
+        <!-- STEP 2: WORKSPACE -->
+        <div id="processingArea" style="display:none;" class="fade-in">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="preview-stage overflow-hidden">
+                        <div id="imgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                            <div id="htmlRenderArea" style="display:none; background:white; padding:20px;"></div>
+                            <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                        </div>
+                        <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                            <div class="spinner-border text-primary mb-3"></div>
+                            <h5 class="fw-bold">Processing...</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="sticky-sidebar">
+                        <div class="options-card card p-4 bg-white mb-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
+                                <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
+                            </div>
+                            <div id="optionsPanel" class="mb-4"></div>
+                            <button id="btnAction" class="btn btn-action w-100 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                                Process {entry.data.title}
+                            </button>
+                        </div>
+
+                        <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
+                            <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
+                            <div class="row g-2">
+                                {relatedTools.map(t => (
+                                    <div class="col-6">
+                                        <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border">
+                                            <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                            <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: SUCCESS RESULT -->
+        <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+            <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
+                <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
+                <h2 class="fw-black mb-2 text-dark">Success!</h2>
+                <div class="d-flex gap-2 flex-wrap justify-content-center pt-2 mt-4">
+                    <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                        <i class="fa-solid fa-download me-2"></i> Download Now
+                    </a>
+                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                        <i class="fa-solid fa-rotate-left me-2"></i> Process Another
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST CONTENT (FIXED POSITION) -->
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
+                <Content />
+            </article>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    /* DESIGN PRESERVED */
+    .fw-black { font-weight: 900; }
+    .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
+    .tool-hero { padding: 100px 0 100px; position: relative; }
+    .uploader-card { background: #ffffff; border-radius: 30px; position: relative; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: var(--primary-blue); }
+    .sticky-sidebar { position: sticky; top: 90px; }
+    .options-card { border-radius: 24px; border: 1px solid #eee; }
+    .preview-stage { background: #ffffff; border-radius: 24px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #f0f0f0; }
+    .main-preview-img { max-height: 65vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .step-badge { width: 28px; height: 28px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+    .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
+    
+    /* PROSE STYLING FOR CONTENT */
+    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
+    .prose h2, .prose h3 { color: #1a202c; font-weight: 800; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .prose p { margin-bottom: 1.25rem; }
+    
+    .fade-in { animation: fadeInUp 0.5s ease-out; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
 <script is:inline define:vars={{ toolId }}>
     // --- SHARED ELEMENTS ---
     const fileInput = document.getElementById('fileInput');
