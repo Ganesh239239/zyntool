@@ -1,4 +1,5 @@
 ---
+category: "edit"
 title: "Resize IMAGE"
 description: "Change the dimensions of your images by pixels easily."
 color: "#2196F3"
