@@ -3,15 +3,15 @@ const { entry, relatedTools } = Astro.props;
 ---
 
 <div id="compress-tool">
-    <!-- STEP 1: UPLOAD BOX -->
-    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white">
+    <!-- STEP 1: UPLOADER -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
         <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
             <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                 <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
             </div>
             <h2 class="fw-bold">Select Images</h2>
-            <p class="text-muted small">or drop them here</p>
-            <input type="file" id="fileInput" hidden accept="image/*" multiple />
+            <p class="text-muted small">Compress JPG, PNG, SVG or GIF without losing quality.</p>
+            <input type="file" id="fileInput" hidden accept="image/*" />
         </div>
     </div>
 
@@ -21,9 +21,6 @@ const { entry, relatedTools } = Astro.props;
             <div class="col-lg-8">
                 <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative">
                     <img id="mainPreview" src="" class="img-fluid main-preview-img">
-                    <!-- Savings Badge (iLoveIMG Style) -->
-                    <div id="savingsFloatBadge" class="position-absolute top-0 end-0 m-3 badge bg-success p-2 d-none">-65%</div>
-                    
                     <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
                         <div class="spinner-border text-primary mb-3"></div>
                         <h5 class="fw-bold">Compressing...</h5>
@@ -33,8 +30,7 @@ const { entry, relatedTools } = Astro.props;
 
             <div class="col-lg-4">
                 <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
-                    <h5 class="fw-bold mb-4">Compression Settings</h5>
-                    
+                    <h5 class="fw-bold mb-4">Compress Options</h5>
                     <div class="mb-4">
                         <label class="fw-bold small d-flex justify-content-between mb-2">Quality <span id="compVal">70%</span></label>
                         <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
@@ -44,7 +40,6 @@ const { entry, relatedTools } = Astro.props;
                         Compress Image
                     </button>
 
-                    <!-- Internal Linking (iLoveIMG Style) -->
                     <div class="related-tools-mini pt-3 border-top">
                         <p class="small fw-bold text-muted mb-3 uppercase">Other Image Tools</p>
                         <div class="row g-2">
@@ -63,11 +58,11 @@ const { entry, relatedTools } = Astro.props;
         </div>
     </div>
 
-    <!-- STEP 3: RESULT -->
+    <!-- STEP 3: RESULT AREA (KB REDUCTION STATS) -->
     <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
         <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
             <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
-            <h2 class="fw-black mb-2 text-dark">Lighter than ever!</h2>
+            <h2 class="fw-black mb-2 text-dark">Image Optimized!</h2>
             
             <div class="row g-3 my-4 justify-content-center">
                 <div class="col-4">
@@ -78,7 +73,7 @@ const { entry, relatedTools } = Astro.props;
                 </div>
                 <div class="col-4">
                     <div class="p-2 border rounded-4 bg-light text-center">
-                        <div class="small text-muted">Optimized</div>
+                        <div class="small text-muted">New Size</div>
                         <div id="newSizeLabel" class="fw-bold text-success small">0 KB</div>
                     </div>
                 </div>
@@ -95,7 +90,7 @@ const { entry, relatedTools } = Astro.props;
                     <i class="fa-solid fa-download me-2"></i> Download Image
                 </a>
                 <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
-                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another
+                    <i class="fa-solid fa-rotate-left me-2"></i> Compress Another
                 </button>
             </div>
         </div>
@@ -103,15 +98,13 @@ const { entry, relatedTools } = Astro.props;
 </div>
 
 <style>
-    .uploader-card { border-radius: 30px; position: relative; border: 1px solid #eee; }
+    .uploader-card { border-radius: 30px; border: 1px solid #eee !important; background: white !important; }
     .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
     .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
     .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; }
-    .main-preview-img { max-height: 60vh; }
-    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
-    .transition { transition: 0.2s; }
+    .main-preview-img { max-height: 60vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
-    .loader-overlay { border-radius: 24px; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
 </style>
 
 <script is:inline>
@@ -130,10 +123,8 @@ const { entry, relatedTools } = Astro.props;
     function formatBytes(bytes) {
         if (bytes === 0) return '0 KB';
         const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB'][i];
     }
 
     qIn.oninput = (e) => qVal.innerText = Math.round(e.target.value * 100) + '%';
@@ -162,7 +153,7 @@ const { entry, relatedTools } = Astro.props;
                 initialQuality: parseFloat(qIn.value) 
             });
 
-            // Set Stats
+            // Set KB Reduction Stats
             document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
             document.getElementById('newSizeLabel').innerText = formatBytes(blob.size);
             const savings = Math.max(0, Math.round(((originalFile.size - blob.size) / originalFile.size) * 100));
