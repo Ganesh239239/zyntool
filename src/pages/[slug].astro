@@ -1,7 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
+
+// Import modular components
 import CompressTool from '../components/tools/CompressTool.astro';
+import ResizeTool from '../components/tools/ResizeTool.astro'; // ADD THIS
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
@@ -12,21 +15,12 @@ const { entry } = Astro.props;
 if (!entry) return Astro.redirect('/404');
 
 const toolId = entry.slug || entry.id;
-
-// Internal Linking Logic
 const allTools = await getCollection('tools');
 const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
-
-// IMPORTANT: Extract the Content component correctly for Astro
 const { Content } = await entry.render();
-
-// SEO Strategy
-const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
-const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy and speed.`;
 ---
 
-<MainLayout title={seoTitle} description={seoDesc}>
-    <!-- Hero Section -->
+<MainLayout title={`${entry.data.title} Online - 100% Free | ZynTool`}>
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -34,26 +28,26 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         </div>
     </div>
 
-    <!-- Container with Stacking Fix -->
     <div class="container tool-container-fixed pb-5">
         
         <!-- TOOL LOGIC SWITCHER -->
         {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
         
-        {toolId !== 'compress-image' && (
+        {/* Fallback for components not yet created */}
+        {!['compress-image', 'resize-image'].includes(toolId) && (
             <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
                 </div>
                 <h4 class="fw-bold">Updating Engine...</h4>
-                <p class="text-muted m-0">The modular version of <b>{entry.data.title}</b> is launching in a few minutes.</p>
+                <p class="text-muted m-0">The modular version of <b>{entry.data.title}</b> is launching soon.</p>
             </div>
         )}
 
-        <!-- POST CONTENT SECTION -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
-                <Content /> <!-- THIS IS THE FIX: Rendered correctly now -->
+                <Content />
             </article>
         </div>
     </div>
