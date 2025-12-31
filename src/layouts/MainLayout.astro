@@ -19,46 +19,55 @@ const { title } = Astro.props;
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 
     <style>
-        :root { --primary-blue: #4B90FF; --dark-text: #2c3e50; --light-bg: #f4f7fa; --footer-bg: #1f2227; }
-        body { font-family: 'Inter', sans-serif; background-color: #fff; color: #47474f; padding-top: 80px; min-height: 100vh; display: flex; flex-direction: column; }
-        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 80px; }
-        .navbar-brand { font-weight: 800; font-size: 1.8rem; color: #333; display: flex; align-items: center; gap: 6px; text-decoration: none; }
-        .nav-link { font-weight: 700; color: #333 !important; text-transform: uppercase; font-size: 0.9rem; }
-        footer { background-color: var(--footer-bg); color: #b0b3b8; padding: 50px 0; margin-top: auto; }
-        .footer-links { list-style: none; display: flex; gap: 25px; padding: 0; justify-content: center; }
-        .footer-links a { color: #b0b3b8; text-decoration: none; }
+        :root { --primary-blue: #4B90FF; --dark-bg: #212529; }
+        body { font-family: 'Inter', sans-serif; padding-top: 70px; }
+
+        /* --- Professional Navbar --- */
+        .navbar { background: #fff; border-bottom: 1px solid #eaeaea; height: 70px; }
+        .navbar-brand { font-weight: 800; color: #333 !important; font-size: 1.5rem; }
+        
+        .nav-link { 
+            color: #333 !important; 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            padding: 10px 15px !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover { color: var(--primary-blue) !important; }
+
+        /* Hamburger Icon (GeneratePress Style) */
+        .navbar-toggler { border: none; padding: 0; }
+        .navbar-toggler:focus { shadow: none; outline: none; box-shadow: none; }
+        .hamburger-icon { width: 25px; height: 2px; background: #333; display: block; position: relative; }
+        .hamburger-icon::before, .hamburger-icon::after { content: ''; width: 25px; height: 2px; background: #333; position: absolute; left: 0; transition: 0.3s; }
+        .hamburger-icon::before { top: -8px; }
+        .hamburger-icon::after { top: 8px; }
+
+        @media (max-width: 991px) {
+            .navbar-collapse { background: #fff; padding: 20px; border-bottom: 1px solid #eee; }
+        }
+
+        footer { background: #1a1c1e; color: #999; padding: 40px 0; font-size: 0.85rem; }
+        .footer-links a { color: #999; text-decoration: none; margin: 0 10px; }
     </style>
+
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top">
+   <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <a class="navbar-brand" href="/">ZYN<span class="text-primary">TOOL</span></a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
+                <span class="hamburger-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+
+            <div class="collapse navbar-collapse" id="mainMenu">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">All Image Tools</a>
-                       <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-    <li><h6 class="dropdown-header">Optimize</h6></li>
-    <li><a class="dropdown-item" href="/compress-image">Compress Image</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header">Edit</h6></li>
-    <li><a class="dropdown-item" href="/resize-image">Resize Image</a></li>
-    <li><a class="dropdown-item" href="/crop-image">Crop Image</a></li>
-    <li><a class="dropdown-item" href="/rotate-image">Rotate Image</a></li>
-    <li><a class="dropdown-item" href="/blur-image">Blur Image</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header">Convert</h6></li>
-    <li><a class="dropdown-item" href="/convert-to-jpg">Convert to JPG</a></li>
-    <li><a class="dropdown-item" href="/convert-from-jpg">Convert from JPG</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header">Create</h6></li>
-    <li><a class="dropdown-item" href="/meme-generator">Meme Generator</a></li>
-    <li><a class="dropdown-item" href="/watermark-image">Watermark Image</a></li>
-</ul>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/compress-image">Compress</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/resize-image">Resize</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/crop-image">Crop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/convert-to-jpg">Convert</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/remove-background">Remove BG</a></li>
                 </ul>
             </div>
         </div>
