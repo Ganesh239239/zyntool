@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zyntool.pages.dev/sitemap-index.xml
