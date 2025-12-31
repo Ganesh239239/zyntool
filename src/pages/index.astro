@@ -5,12 +5,12 @@ const tools = await getCollection('tools');
 ---
 
 <MainLayout title="Home">
+    <!-- Hero Section (Keep your existing Hero HTML here) -->
     <section class="hero-section">
         <div class="container text-center">
             <h1 class="hero-title">Every tool you could want to edit images in bulk</h1>
             <p class="hero-subtitle">Your online photo editor is here and forever free!</p>
 
-            <!-- DESIGN FROM YOUR IMAGE -->
             <div class="filter-container mt-4">
                 <button class="filter-pill active" onclick="filterTools('all', this)">All</button>
                 <button class="filter-pill" onclick="filterTools('optimize', this)">Optimize</button>
@@ -22,17 +22,20 @@ const tools = await getCollection('tools');
         </div>
     </section>
 
-    <section class="tools-grid py-5">
+    <!-- UPDATED TOOL GRID -->
+    <section class="tools-grid py-4">
         <div class="container">
-            <div class="row g-4" id="toolsGrid">
+            <div class="row g-3" id="toolsGrid">
                 {tools.map((tool) => (
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category={tool.data.category}>
                         <a href={`/${tool.slug || tool.id}`} class="tool-link">
                             <div class="tool-card shadow-sm">
-                                <div class="tool-icon" style={`color: ${tool.data.color}`}>
-                                    <i class={`fa-solid ${tool.data.icon}`}></i>
+                                <div class="card-top-row">
+                                    <div class="tool-icon-box" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
+                                        <i class={`fa-solid ${tool.data.icon}`}></i>
+                                    </div>
+                                    <h5 class="tool-name">{tool.data.title}</h5>
                                 </div>
-                                <h5 class="tool-name">{tool.data.title}</h5>
                                 <p class="tool-desc">{tool.data.description}</p>
                             </div>
                         </a>
@@ -42,68 +45,79 @@ const tools = await getCollection('tools');
         </div>
     </section>
 
-    <script is:inline>
-        function filterTools(cat, btn) {
-            // Update button styles
-            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Filter items
-            const items = document.querySelectorAll('.tool-item');
-            items.forEach(item => {
-                if(cat === 'all' || item.dataset.category === cat) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-    </script>
+    <!-- Keep your existing filter script here -->
 </MainLayout>
 
 <style>
-    /* --- HERO DESIGN --- */
-    .hero-section { padding: 80px 0 40px; background-color: #f8f9fa; }
-    .hero-title { font-size: 2.8rem; font-weight: 800; color: #333; letter-spacing: -1px; }
-    .hero-subtitle { color: #666; font-size: 1.2rem; margin-top: 15px; }
+    /* --- HERO DESIGN (Keep your existing hero styles) --- */
+    .hero-section { padding: 60px 0 30px; background-color: #f8f9fa; }
+    .hero-title { font-size: 2.2rem; font-weight: 800; color: #333; }
+    .filter-pill { border: 1px solid #dee2e6; background: #fff; padding: 6px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; margin: 2px; }
+    .filter-pill.active { background-color: #2c2e33; color: #fff; border-color: #2c2e33; }
 
-    /* --- PILL BUTTON DESIGN (Matching your image) --- */
-    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .filter-pill {
-        border: 1px solid #dee2e6;
-        background: #fff;
-        color: #495057;
-        padding: 8px 24px;
-        border-radius: 50px; /* Makes it a pill */
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: 0.2s ease;
-        cursor: pointer;
-    }
-    .filter-pill:hover { background-color: #f1f3f5; border-color: #ced4da; }
-    .filter-pill.active {
-        background-color: #2c2e33 !important; /* Dark color from your image */
-        color: #fff !important;
-        border-color: #2c2e33 !important;
-    }
-
-    /* --- TOOL CARD DESIGN --- */
-    .tool-link { text-decoration: none; color: inherit; }
+    /* --- NEW TOOL CARD DESIGN (MATCHING YOUR IMAGE) --- */
+    .tool-link { text-decoration: none; display: block; height: 100%; }
+    
     .tool-card {
         background: #fff;
-        border-radius: 12px;
-        padding: 30px 20px;
+        border: 1px solid #e0e6ed;
+        border-radius: 24px; /* Large rounded corners from image */
+        padding: 24px;
+        transition: 0.3s ease;
         height: 100%;
-        text-align: center;
-        transition: 0.3s;
-        border: 1px solid #efefef;
     }
-    .tool-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important; border-color: #4B90FF; }
-    .tool-icon { font-size: 2.5rem; margin-bottom: 15px; }
-    .tool-name { font-weight: 700; font-size: 1.15rem; color: #333; margin-bottom: 8px; }
-    .tool-desc { font-size: 0.9rem; color: #777; line-height: 1.4; margin-bottom: 0; }
 
-    @media (max-width: 768px) {
-        .hero-title { font-size: 2rem; }
+    /* Row containing Icon and Title */
+    .card-top-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+
+    /* The Square Icon Box from your image */
+    .tool-icon-box {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .tool-name {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: #2d3748;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .tool-desc {
+        font-size: 0.95rem;
+        color: #718096;
+        line-height: 1.5;
+        margin: 0;
+        padding-left: 2px;
+    }
+
+    /* Hover effect for Desktop */
+    .tool-card:hover {
+        border-color: #4B90FF;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+        transform: translateY(-3px);
+    }
+
+    /* MOBILE SPECIFIC ADJUSTMENTS */
+    @media (max-width: 767px) {
+        .tools-grid { padding: 10px; }
+        .tool-card {
+            padding: 20px;
+            margin-bottom: 5px;
+        }
+        .tool-name { font-size: 1.15rem; }
+        .tool-desc { font-size: 0.9rem; }
     }
 </style>
