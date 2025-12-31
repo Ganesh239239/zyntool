@@ -20,7 +20,35 @@ const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
 ---
 
-<MainLayout title={entry.data.title}>
+// SEO Keyword Strategy (iLoveIMG Style)
+const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
+const seoDesc = `Use our professional ${entry.data.title} tool to process your images in seconds. ${entry.data.description} No registration required, 100% secure.`;
+
+// JSON-LD Schema for Google Search Snippets
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": entry.data.title,
+  "url": Astro.url.href,
+  "description": seoDesc,
+  "applicationCategory": "MultimediaApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0.00",
+    "priceCurrency": "USD"
+  },
+  "operatingSystem": "Windows, macOS, Android, iOS"
+};
+---
+
+ title={seoTitle} description={seoDesc}>
+    <!-- Inject Schema in Head -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- Inject Schema in Head -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+title={entry.data.title}>
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
