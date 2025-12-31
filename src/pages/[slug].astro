@@ -147,6 +147,25 @@ const toolId = entry.slug || entry.id;
     
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Watermark Position Grid */
+    .wm-grid { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 8px; 
+        width: 100%; 
+        max-width: 150px; 
+    }
+    .wm-dot { 
+        height: 35px; 
+        border: 2px solid #e2e8f0; 
+        background: #fff; 
+        cursor: pointer; 
+        border-radius: 6px; 
+        transition: 0.2s;
+    }
+    .wm-dot:hover { border-color: var(--primary-blue); background: #f8fbff; }
+    .wm-dot.active { background: var(--primary-blue); border-color: var(--primary-blue); }
 </style>
 
 <script is:inline define:vars={{ toolId }}>
@@ -163,8 +182,10 @@ const toolId = entry.slug || entry.id;
 
     let originalFile = null;
     let cropper = null;
+    window.wmPos = 'c'; // Default watermark position
+    let currentRotation = 0;
 
-    // --- TOOL-SPECIFIC ENGINES (This separates the logic) ---
+    // --- TOOL-SPECIFIC ENGINES ---
     const ToolRegistry = {
         'compress-image': {
             renderUI: () => {
@@ -172,8 +193,7 @@ const toolId = entry.slug || entry.id;
                     <label class="fw-bold small d-flex justify-content-between">Quality <span id="qVal">70%</span></label>
                     <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
                     <label class="fw-bold small mt-3">Format</label>
-                    <select id="fIn" class="form-select"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select>
-                `;
+                    <select id="fIn" class="form-select"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select>`;
                 document.getElementById('qIn').oninput = (e) => document.getElementById('qVal').innerText = Math.round(e.target.value * 100) + '%';
             },
             process: async () => {
@@ -188,8 +208,7 @@ const toolId = entry.slug || entry.id;
                 optionsPanel.innerHTML = `
                     <label class="small fw-bold">Width (px)</label>
                     <input type="number" id="wIn" class="form-control mb-3" value="1200">
-                    <div class="form-check form-switch small"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label>Lock Aspect Ratio</label></div>
-                `;
+                    <div class="form-check form-switch small"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label>Lock Aspect Ratio</label></div>`;
             },
             process: async () => {
                 const w = parseInt(document.getElementById('wIn').value);
@@ -198,19 +217,69 @@ const toolId = entry.slug || entry.id;
             }
         },
         'crop-image': {
-            renderUI: () => {
-                optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the box on the preview to select your area.</p>`;
-            },
+            renderUI: () => { optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the box on the preview to select your area.</p>`; },
             process: async () => {
                 const canvas = cropper.getCroppedCanvas();
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 return { blob, ext: 'png' };
             }
         },
-        'html-to-image': {
+        'watermark-image': {
             renderUI: () => {
-                optionsPanel.innerHTML = `<p class="text-muted small">Rendering HTML to high-quality PNG.</p>`;
+                optionsPanel.innerHTML = `
+                    <label class="fw-bold small mb-2">Watermark Text</label>
+                    <input type="text" id="wmText" class="form-control mb-3" placeholder="Type text here...">
+                    <label class="fw-bold small mb-2">Position</label>
+                    <div class="wm-grid mb-3">
+                        <div class="wm-dot" onclick="window.setWMPos('tl', this)"></div><div class="wm-dot" onclick="window.setWMPos('tc', this)"></div><div class="wm-dot" onclick="window.setWMPos('tr', this)"></div>
+                        <div class="wm-dot" onclick="window.setWMPos('cl', this)"></div><div class="wm-dot active" onclick="window.setWMPos('c', this)"></div><div class="wm-dot" onclick="window.setWMPos('cr', this)"></div>
+                        <div class="wm-dot" onclick="window.setWMPos('bl', this)"></div><div class="wm-dot" onclick="window.setWMPos('bc', this)"></div><div class="wm-dot" onclick="window.setWMPos('br', this)"></div>
+                    </div>
+                    <label class="fw-bold small mb-2 d-flex justify-content-between">Opacity <span id="wmOpVal">50%</span></label>
+                    <input type="range" id="wmOp" class="form-range" min="0.1" max="1" step="0.1" value="0.5">`;
+                document.getElementById('wmOp').oninput = (e) => document.getElementById('wmOpVal').innerText = Math.round(e.target.value * 100) + '%';
             },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const txt = document.getElementById('wmText').value || 'ZynTool';
+                const opacity = parseFloat(document.getElementById('wmOp').value);
+                ctx.globalAlpha = opacity; ctx.font = `bold ${canvas.width/15}px Inter, sans-serif`;
+                ctx.fillStyle = "white"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                let x = canvas.width/2, y = canvas.height/2, p = canvas.width * 0.05;
+                if(window.wmPos.includes('t')) { y = p; ctx.textBaseline = "top"; }
+                if(window.wmPos.includes('b')) { y = canvas.height - p; ctx.textBaseline = "bottom"; }
+                if(window.wmPos.includes('l')) { x = p; ctx.textAlign = "left"; }
+                if(window.wmPos.includes('r')) { x = canvas.width - p; ctx.textAlign = "right"; }
+                ctx.fillText(txt, x, y);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
+        },
+        'rotate-image': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `<button class="btn btn-outline-dark w-100" onclick="window.doRotate()">Rotate 90° Right</button>`;
+            },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                if ((currentRotation / 90) % 2 !== 0) { canvas.width = img.height; canvas.height = img.width; }
+                else { canvas.width = img.width; canvas.height = img.height; }
+                ctx.translate(canvas.width/2, canvas.height/2);
+                ctx.rotate((currentRotation * Math.PI) / 180);
+                ctx.drawImage(img, -img.width/2, -img.height/2);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
+        },
+        'html-to-image': {
+            renderUI: () => { optionsPanel.innerHTML = `<p class="text-muted small">Rendering HTML to PNG.</p>`; },
             process: async () => {
                 const canvas = await html2canvas(htmlRenderArea);
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
@@ -219,25 +288,28 @@ const toolId = entry.slug || entry.id;
         }
     };
 
-    // --- INITIALIZE CURRENT TOOL ---
+    // --- INITIALIZE ---
     const currentTool = ToolRegistry[toolId] || { 
         renderUI: () => { optionsPanel.innerHTML = '<p class="text-muted small">Standard processing applied.</p>'; },
         process: async () => { return { blob: originalFile, ext: 'png' }; }
     };
     currentTool.renderUI();
 
-    // --- COMMON HELPERS ---
+    // --- GLOBALS ---
+    window.setWMPos = (p, btn) => {
+        window.wmPos = p;
+        document.querySelectorAll('.wm-dot').forEach(d => d.classList.remove('active'));
+        btn.classList.add('active');
+    };
+    window.doRotate = () => { currentRotation += 90; mainPreview.style.transform = `rotate(${currentRotation}deg)`; };
     window.renderHTML = () => {
         const code = document.getElementById('htmlInput').value;
         if(!code) return alert("Enter HTML first");
-        htmlRenderArea.innerHTML = code;
-        htmlRenderArea.style.display = 'block';
-        mainPreview.style.display = 'none';
-        uploadContainer.style.display = 'none';
-        processingArea.style.display = 'block';
+        htmlRenderArea.innerHTML = code; htmlRenderArea.style.display = 'block';
+        mainPreview.style.display = 'none'; uploadContainer.style.display = 'none'; processingArea.style.display = 'block';
     };
 
-    // --- UPLOAD LOGIC ---
+    // --- UPLOAD & PROCESS ---
     if(fileInput) {
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -248,7 +320,6 @@ const toolId = entry.slug || entry.id;
                     mainPreview.src = ev.target.result;
                     uploadContainer.style.display = 'none';
                     processingArea.style.display = 'block';
-                    // Specific behavior for Crop
                     if (toolId === 'crop-image') {
                         if (cropper) cropper.destroy();
                         setTimeout(() => { cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 0.8 }); }, 200);
@@ -259,36 +330,18 @@ const toolId = entry.slug || entry.id;
         });
     }
 
-    // --- FINAL PROCESSING LOGIC ---
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
-
         try {
-            // Run ONLY the current tool's process function
             const result = await currentTool.process();
-            
-            // Stats handling (Only for Compress)
-            if (toolId === 'compress-image' && window.formatBytes) {
-                document.getElementById('savingsStats').style.display = 'flex';
-                document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
-                document.getElementById('newSizeLabel').innerText = formatBytes(result.blob.size);
-                document.getElementById('percentLabel').innerText = Math.round(((originalFile.size - result.blob.size)/originalFile.size)*100) + '%';
-            }
-
             const url = URL.createObjectURL(result.blob);
             document.getElementById('downloadBtn').href = url;
             document.getElementById('downloadBtn').download = `zyntool-${Date.now()}.${result.ext}`;
-            
-            setTimeout(() => {
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-            }, 800);
+            setTimeout(() => { processingArea.style.display = 'none'; resultArea.style.display = 'block'; }, 800);
         } catch (e) {
-            console.error(e);
-            alert("Error processing image.");
-            internalLoader.classList.add('d-none');
-            btnAction.disabled = false;
+            console.error(e); alert("Error processing image.");
+            internalLoader.classList.add('d-none'); btnAction.disabled = false;
         }
     });
 </script>
