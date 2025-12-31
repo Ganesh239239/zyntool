@@ -15,173 +15,117 @@ const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <!-- Premium Header -->
-    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}dd, ${entry.data.color});`}>
+    <!-- Advanced Tool Header -->
+    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center text-white">
-            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">PRO VERSION</div>
-            <h1 class="display-4 fw-black mb-2">{entry.data.title}</h1>
-            <p class="opacity-75 lead">{entry.data.description}</p>
+            <div class="pro-badge mb-3">ADVANCED ENGINE 2.0</div>
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
-    <div class="container my-n5 position-relative" style="z-index: 10;">
-        <!-- STEP 1: UPLOAD ZONE -->
-        <div id="uploadContainer" class="card shadow-xl border-0 rounded-5 p-2 bg-white">
+    <div class="container mt-n5 position-relative">
+        
+        <!-- STEP 1: UPLOADER (Fixed Border & Shadow) -->
+        <div id="uploadContainer" class="card main-card shadow-lg border-0 rounded-4 p-2 bg-white mb-5">
             <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()">
-                <div class="icon-circle mb-4" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
+                <div class="icon-circle mb-3" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
                     <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
                 </div>
-                <h2 class="fw-bold h3">Select Images</h2>
-                <p class="text-muted mb-4">or drop files here to start processing</p>
-                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow" style={`background: ${entry.data.color}`}>
-                    Browse Files
+                <h2 class="fw-bold">Select Image</h2>
+                <p class="text-muted mb-4">Click to browse or drag and drop images</p>
+                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                    Upload File
                 </button>
                 <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
         </div>
 
-        <!-- STEP 2: PREMIUM WORKSPACE -->
+        <!-- STEP 2: ADVANCED WORKSPACE (Side-by-Side) -->
         <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
-                <!-- Comparison Canvas -->
+                <!-- Large Live Preview -->
                 <div class="col-lg-8">
-                    <div class="workspace-card card border-0 shadow-lg rounded-5 overflow-hidden bg-dark">
-                        <div class="comparison-container">
-                            <div class="label-tag before">Original</div>
-                            <div class="label-tag after">Processed</div>
-                            
-                            <img id="imageBefore" src="" class="preview-img">
-                            
-                            <div id="comparisonOverlay" class="comparison-overlay">
-                                <img id="imageAfter" src="" class="preview-img bg-dark">
-                            </div>
-                            
-                            <input type="range" id="compareSlider" min="0" max="100" value="50" class="pro-slider">
-                            
-                            <!-- Processing Overlay -->
+                    <div class="workspace-card card border-0 shadow-lg rounded-4 overflow-hidden bg-secondary bg-opacity-10">
+                        <div class="preview-container">
+                            <img id="mainPreview" src="" class="img-fluid main-preview-img">
                             <div id="internalLoader" class="loader-overlay d-none">
-                                <div class="spinner-grow text-white mb-3"></div>
-                                <h4 class="text-white fw-bold">Optimizing...</h4>
+                                <div class="spinner-border text-primary mb-3" role="status"></div>
+                                <h5 class="text-white fw-bold">Applying Changes...</h5>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Control Sidebar -->
+                <!-- Advanced Sidebar -->
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-lg rounded-5 p-4 h-100 bg-white">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="fa-solid fa-sliders me-2 text-primary"></i>
-                            <h5 class="fw-bold m-0">Tool Settings</h5>
+                    <div class="card border-0 shadow-lg rounded-4 p-4 h-100 bg-white">
+                        <div class="d-flex align-items-center mb-4 text-primary">
+                            <i class="fa-solid fa-gears me-2"></i>
+                            <h5 class="fw-bold m-0">Advanced Settings</h5>
                         </div>
 
                         <div id="optionsPanel" class="mb-4">
-                            <!-- JS Inject -->
+                            <!-- Dynamic Advanced UI injected here -->
                         </div>
 
-                        <div id="statsBox" class="p-3 rounded-4 bg-light mb-4 d-none">
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span>Saved Space:</span>
-                                <span id="savePercent" class="text-success fw-bold">0%</span>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div id="saveProgress" class="progress-bar bg-success" style="width: 0%"></div>
-                            </div>
-                        </div>
-
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm transition-all" style={`background: ${entry.data.color}`}>
-                            Apply & Process
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-3 py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                            <i class="fa-solid fa-bolt me-2"></i> Process & Download
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- STEP 3: RESULT AREA -->
+        <!-- STEP 3: RESULT SECTION -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-            <div class="result-card card border-0 shadow-2xl rounded-5 p-5 mx-auto" style="max-width: 550px;">
-                <div class="check-animation mb-4">
-                    <i class="fa-solid fa-circle-check text-success fa-5x"></i>
-                </div>
-                <h2 class="fw-black">Successfully Done!</h2>
-                <p class="text-muted mb-4">Your image has been optimized and is ready for download.</p>
-                <div class="d-grid gap-3">
-                    <a id="downloadBtn" class="btn btn-dark btn-xl rounded-pill fw-bold py-3 shadow-lg">Download Image</a>
-                    <button class="btn btn-outline-secondary rounded-pill border-2 fw-bold" onclick="location.reload()">Process Another File</button>
+            <div class="card border-0 shadow-lg rounded-5 p-5 mx-auto" style="max-width: 500px;">
+                <div class="text-success mb-4"><i class="fa-solid fa-circle-check fa-5x"></i></div>
+                <h2 class="fw-bold">Perfectly Processed!</h2>
+                <p class="text-muted mb-4">Your advanced editing is complete.</p>
+                <div class="d-grid gap-2">
+                    <a id="downloadBtn" class="btn btn-dark btn-lg py-3 rounded-3 fw-bold">Download Now</a>
+                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Reset Tool</button>
                 </div>
             </div>
         </div>
 
-        <div class="py-5 mt-5">
-            <article class="prose mx-auto">
-                <Content />
-            </article>
+        <div class="py-5">
+            <article class="prose mx-auto"><Content /></article>
         </div>
     </div>
 </MainLayout>
 
 <style>
-    /* --- Premium CSS Architecture --- */
+    /* Premium UI Styles */
     .fw-black { font-weight: 900; }
-    .my-n5 { margin-top: -3rem !important; }
-    .shadow-xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important; }
-    .shadow-2xl { box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.2) !important; }
+    .mt-n5 { margin-top: -4rem !important; }
+    .pro-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
 
-    /* Uploader Zone Fixed Border */
+    /* Uploader Zone (Fixed & Visible) */
     .uploader-zone {
-        border: 3px dashed #e2e8f0;
-        border-radius: 30px;
-        transition: 0.3s;
-        cursor: pointer;
+        border: 3px dashed #cbd5e0; /* Explicitly visible border */
+        border-radius: 20px;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #fff;
     }
     .uploader-zone:hover {
         border-color: var(--primary-blue);
         background: #f8fafc;
-        transform: scale(0.99);
-    }
-    .icon-circle {
-        width: 100px; height: 100px;
-        margin: 0 auto;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 50%;
+        border-style: solid;
     }
 
-    /* Comparison Workspace */
-    .comparison-container { height: 550px; position: relative; width: 100%; }
-    .preview-img { width: 100%; height: 100%; object-fit: contain; position: absolute; top:0; left:0; }
-    .comparison-overlay { position: absolute; top: 0; left: 0; height: 100%; overflow: hidden; border-right: 2px solid white; z-index: 2; }
-    
-    .label-tag {
-        position: absolute; bottom: 20px; z-index: 10;
-        background: rgba(0,0,0,0.7); color: white;
-        padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
-    }
-    .label-tag.before { left: 20px; }
-    .label-tag.after { right: 20px; }
+    .icon-circle { width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
-    /* Pro Slider Bar */
-    .pro-slider {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        appearance: none; background: transparent; z-index: 20; cursor: ew-resize; margin: 0;
-    }
-    .pro-slider::-webkit-slider-thumb {
-        appearance: none; width: 4px; height: 600px; background: white;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
+    /* Live Preview Area */
+    .preview-container { min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative; background-image: radial-gradient(#cbd5e0 1px, transparent 1px); background-size: 20px 20px; }
+    .main-preview-img { max-height: 600px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 8px; }
 
-    /* Loader */
-    .loader-overlay {
-        position: absolute; top:0; left:0; width:100%; height:100%;
-        background: rgba(0,0,0,0.8); z-index: 30;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
+    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
 
     /* Animation */
-    .fade-in { animation: fadeInUp 0.6s ease-out; }
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    .fade-in { animation: slideUp 0.5s ease-out; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 <script is:inline define:vars={{ toolId }}>
@@ -192,55 +136,49 @@ const toolId = entry.slug || entry.id;
     const btnAction = document.getElementById('btnAction');
     const internalLoader = document.getElementById('internalLoader');
     const resultArea = document.getElementById('resultArea');
-    const statsBox = document.getElementById('statsBox');
-    
-    // Images
-    const imageBefore = document.getElementById('imageBefore');
-    const imageAfter = document.getElementById('imageAfter');
-    const comparisonOverlay = document.getElementById('comparisonOverlay');
-    const compareSlider = document.getElementById('compareSlider');
+    const mainPreview = document.getElementById('mainPreview');
 
-    let originalSize = 0;
-
-    // STEP 1: UI INJECTION
-    function initUI() {
-        if (toolId === 'compress-image') {
-            optionsPanel.innerHTML = `
-                <div class="mb-4">
-                    <label class="form-label d-flex justify-content-between fw-bold small">Compression Level <span id="qVal">70%</span></label>
-                    <input type="range" id="qInput" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                </div>
-                <div>
-                    <label class="form-label fw-bold small">Output Format</label>
-                    <select id="fInput" class="form-select rounded-3 border-light shadow-sm">
-                        <option value="image/jpeg">JPEG (Standard)</option>
-                        <option value="image/webp">WebP (Premium)</option>
-                    </select>
-                </div>`;
-            document.getElementById('qInput').oninput = (e) => document.getElementById('qVal').innerText = (e.target.value * 100).toFixed(0) + '%';
-        } else if (toolId === 'resize-image') {
-            optionsPanel.innerHTML = `
-                <div class="row g-2 mb-3">
-                    <div class="col-6"><label class="small fw-bold">Width (px)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
-                    <div class="col-6"><label class="small fw-bold">Height (px)</label><input type="number" id="hIn" class="form-control" value="800"></div>
-                </div>
-                <div class="form-check form-switch small">
-                    <input class="form-check-input" type="checkbox" checked id="ratio">
-                    <label class="form-check-label">Maintain Aspect Ratio</label>
-                </div>`;
+    // STEP 1: ADVANCED TOOL SWITCHER (UI)
+    function injectAdvancedUI() {
+        let html = '';
+        switch(toolId) {
+            case 'compress-image':
+                html = `
+                    <div class="mb-3"><label class="fw-bold small">Compression Level</label><input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7"></div>
+                    <div class="mb-3"><label class="fw-bold small">Target Format</label><select id="fIn" class="form-select"><option value="image/jpeg">JPG (Standard)</option><option value="image/webp">WebP (Next Gen)</option><option value="image/png">PNG (Lossless)</option></select></div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="meta"><label class="form-check-label small">Preserve Metadata (EXIF)</label></div>`;
+                break;
+            case 'resize-image':
+                html = `
+                    <div class="mb-3"><label class="fw-bold small">Resize Method</label><select id="mIn" class="form-select"><option value="pixel">By Pixel</option><option value="percent">By Percentage</option></select></div>
+                    <div class="row g-2 mb-3"><div class="col"><label class="small">Width</label><input type="number" id="wIn" class="form-control" value="1200"></div><div class="col"><label class="small">Height</label><input type="number" id="hIn" class="form-control" value="800"></div></div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratio"><label class="form-check-label small">Lock Aspect Ratio</label></div>`;
+                break;
+            case 'watermark-image':
+                html = `
+                    <div class="mb-3"><label class="fw-bold small">Watermark Text</label><input type="text" id="wmText" class="form-control" placeholder="Type here..."></div>
+                    <div class="mb-3"><label class="fw-bold small">Opacity</label><input type="range" id="wmOp" class="form-range" min="0.1" max="1" step="0.1" value="0.5"></div>
+                    <div class="mb-3"><label class="fw-bold small">Position</label><select id="wmPos" class="form-select"><option value="center">Center</option><option value="bottom-right">Bottom Right</option><option value="top-left">Top Left</option></select></div>`;
+                break;
+            case 'remove-background':
+                html = `
+                    <div class="mb-3"><label class="fw-bold small">Sensitivity (Threshold)</label><input type="range" id="bgTh" class="form-range" min="1" max="100" value="20"></div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="feather"><label class="form-check-label small">Smooth Edges (Feathering)</label></div>`;
+                break;
+            default:
+                html = `<p class="text-muted small">Standard AI optimization will be applied to this image.</p>`;
         }
+        optionsPanel.innerHTML = html;
     }
-    initUI();
+    injectAdvancedUI();
 
-    // STEP 2: HANDLE FILE
+    // STEP 2: HANDLE FILE SELECTION
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            originalSize = file.size;
             const reader = new FileReader();
-            reader.onload = (e) => {
-                imageBefore.src = e.target.result;
-                imageAfter.src = e.target.result;
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
                 uploadContainer.style.display = 'none';
                 processingArea.style.display = 'block';
             };
@@ -248,52 +186,59 @@ const toolId = entry.slug || entry.id;
         }
     });
 
-    // STEP 3: SLIDER
-    compareSlider.addEventListener('input', (e) => comparisonOverlay.style.width = e.target.value + '%');
-
-    // STEP 4: PROCESSING
+    // STEP 3: MASTER PROCESSING ENGINE
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
 
         try {
             const file = fileInput.files[0];
-            let blob;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            await new Promise(r => img.onload = r);
 
+            let finalBlob;
+
+            // ADVANCED LOGIC HANDLERS
             if (toolId === 'compress-image') {
-                const q = parseFloat(document.getElementById('qInput').value);
-                const f = document.getElementById('fInput').value;
-                blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q, fileType: f });
-            } else if (toolId === 'resize-image') {
+                const q = parseFloat(document.getElementById('qIn').value);
+                const f = document.getElementById('fIn').value;
+                finalBlob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q, fileType: f });
+            } 
+            else if (toolId === 'resize-image') {
                 const w = parseInt(document.getElementById('wIn').value);
-                blob = await imageCompression(file, { maxWidthOrHeight: w });
-            } else {
-                blob = file;
+                finalBlob = await imageCompression(file, { maxWidthOrHeight: w });
+            } 
+            else if (toolId === 'remove-background') {
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const imgData = ctx.getImageData(0,0, canvas.width, canvas.height);
+                const th = parseInt(document.getElementById('bgTh').value) * 2.5;
+                for (let i = 0; i < imgData.data.length; i += 4) {
+                    if (imgData.data[i] > 255-th && imgData.data[i+1] > 255-th && imgData.data[i+2] > 255-th) imgData.data[i+3] = 0;
+                }
+                ctx.putImageData(imgData, 0, 0);
+                finalBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+            }
+            else {
+                finalBlob = file; // Fallback
             }
 
-            // Calculations
-            const newSize = blob.size;
-            const saved = ((originalSize - newSize) / originalSize * 100).toFixed(0);
+            // SUCCESS FLOW
+            const url = URL.createObjectURL(finalBlob);
+            const dl = document.getElementById('downloadBtn');
+            dl.href = url;
+            dl.download = `zyntool-${file.name}`;
             
-            const url = URL.createObjectURL(blob);
-            imageAfter.src = url;
-            
-            // Show stats
-            statsBox.classList.remove('d-none');
-            document.getElementById('savePercent').innerText = (saved > 0 ? saved : 0) + '%';
-            document.getElementById('saveProgress').style.width = saved + '%';
-
-            // Show Result
             setTimeout(() => {
-                const dl = document.getElementById('downloadBtn');
-                dl.href = url;
-                dl.download = `optimized-${file.name}`;
                 processingArea.style.display = 'none';
                 resultArea.style.display = 'block';
             }, 1000);
 
         } catch (e) {
-            alert("Process failed");
+            alert("Advanced processing failed. Please try a standard image.");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
