@@ -24,28 +24,22 @@ const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <!-- Advanced Tool Header -->
-    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
-        <div class="container text-center text-white">
-            <div class="pro-badge mb-3">ZYN ENGINE 2.0</div>
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
             <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
-    <div class="container mt-n5 position-relative">
-        
-        <!-- STEP 1: UPLOADER -->
-        <div id="uploadContainer" class="card main-card shadow-lg border-0 rounded-4 p-2 bg-white mb-5">
-            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-                <div class="icon-circle mb-3" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
+    <div class="container mt-n5 pb-5">
+        <!-- STEP 1: UPLOAD -->
+        <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
                 </div>
-                <h2 class="fw-bold">Select Image</h2>
-                <p class="text-muted mb-4">Click to browse or drag and drop images</p>
-                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                    Upload File
-                </button>
+                <h2 class="fw-bold">Upload Image</h2>
+                <p class="text-muted">Drag & drop your files here or click to browse</p>
                 <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
         </div>
@@ -54,68 +48,154 @@ const toolId = entry.slug || entry.id;
         <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
                 <div class="col-lg-8">
-                    <div class="workspace-card card border-0 shadow-lg rounded-4 overflow-hidden bg-secondary bg-opacity-10">
-                        <div class="preview-container">
-                            <div id="imgWrapper" style="max-width: 100%; height: auto;">
-                                <img id="mainPreview" src="" class="img-fluid main-preview-img">
-                            </div>
-                            <div id="internalLoader" class="loader-overlay d-none">
-                                <div class="spinner-border text-primary mb-3"></div>
-                                <h5 class="text-white fw-bold">Processing...</h5>
-                            </div>
+                    <div class="preview-stage overflow-hidden">
+                        <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                        <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                            <div class="spinner-grow text-primary mb-3"></div>
+                            <h5 class="fw-bold">Optimizing...</h5>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-lg rounded-4 p-4 h-100 bg-white">
-                        <div class="d-flex align-items-center mb-4 text-primary">
-                            <i class={`fa-solid ${entry.data.icon} me-2`}></i>
-                            <!-- RESEARCHED: Specific title instead of "Advanced Settings" -->
-                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
+                    <div class="options-card card p-4 h-100 bg-white sticky-sidebar">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="step-number">2</span>
+                            <h5 class="fw-bold m-0">Configure Settings</h5>
                         </div>
 
                         <div id="optionsPanel" class="mb-4">
-                            <!-- Dynamic UI injected here -->
+                            <!-- JS Inject -->
                         </div>
 
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-3 py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                            <i class="fa-solid fa-bolt me-2"></i> Process & Download
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm transition-all" style={`background: ${entry.data.color}`}>
+                            Apply & Download
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- STEP 3: RESULT -->
+        <!-- STEP 3: SUCCESS -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-            <div class="card border-0 shadow-lg rounded-5 p-5 mx-auto" style="max-width: 500px;">
-                <div class="text-success mb-4"><i class="fa-solid fa-circle-check fa-5x"></i></div>
-                <h2 class="fw-bold">Ready!</h2>
-                <div class="d-grid gap-2 mt-4">
-                    <a id="downloadBtn" class="btn btn-dark btn-lg py-3 rounded-3 fw-bold">Download Now</a>
-                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Reset Tool</button>
+            <div class="result-card card bg-white mx-auto" style="max-width: 600px;">
+                <div class="success-badge"><i class="fa-solid fa-check"></i></div>
+                <h2 class="fw-black mb-3">Task Complete!</h2>
+                <p class="text-muted mb-4 fs-5">Your file has been successfully processed and is ready for download.</p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-center">
+                    <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow">Download Image</a>
+                    <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill border-2" onclick="location.reload()">Start Over</button>
                 </div>
             </div>
         </div>
 
-        <div class="py-5">
-            <article class="prose mx-auto"><Content /></article>
-        </div>
+        <div class="py-5"><article class="prose mx-auto"><Content /></article></div>
     </div>
 </MainLayout>
 
 <style>
+    /* --- Modern Typography & Layout --- */
     .fw-black { font-weight: 900; }
-    .mt-n5 { margin-top: -4rem !important; }
-    .pro-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
-    .uploader-zone { border: 3px dashed #cbd5e0; border-radius: 20px; transition: 0.3s; background: #fff; }
-    .icon-circle { width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-    .preview-container { min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; background: #f0f2f5; }
-    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
-    .fade-in { animation: slideUp 0.5s ease-out; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .mt-n5 { margin-top: -5rem !important; }
+    
+    /* --- Professional Tool Hero --- */
+    .tool-hero {
+        padding: 100px 0 80px;
+        position: relative;
+        overflow: hidden;
+    }
+    .tool-hero::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="2" cy="2" r="1" fill="white" fill-opacity="0.1"/></svg>');
+        opacity: 0.3;
+    }
+
+    /* --- Animated Uploader --- */
+    .uploader-card {
+        background: #ffffff;
+        border-radius: 30px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .uploader-zone {
+        border: 2px dashed #e2e8f0;
+        border-radius: 24px;
+        padding: 60px 20px;
+        transition: 0.3s;
+        animation: pulse-border 3s infinite;
+    }
+    @keyframes pulse-border {
+        0% { border-color: #e2e8f0; }
+        50% { border-color: var(--primary-blue); }
+        100% { border-color: #e2e8f0; }
+    }
+    .uploader-zone:hover {
+        background: #f8fbff;
+        border-style: solid;
+        transform: scale(0.995);
+    }
+
+    /* --- Sidebar & Controls --- */
+    .sticky-sidebar {
+        position: sticky;
+        top: 90px;
+    }
+    .options-card {
+        border-radius: 24px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    /* --- Preview Container --- */
+    .preview-stage {
+        background: #f0f2f5;
+        border-radius: 24px;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .main-preview-img {
+        max-height: 65vh;
+        border-radius: 8px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    /* --- Success State --- */
+    .result-card {
+        border-radius: 40px;
+        padding: 60px;
+        border: none;
+        box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+    }
+    .success-badge {
+        width: 100px; height: 100px;
+        background: #ecfdf5;
+        color: #10b981;
+        border-radius: 50%;
+        display: flex;
+        align-items: center; justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 3rem;
+    }
+
+    /* --- Step Badges --- */
+    .step-number {
+        width: 24px; height: 24px;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center; justify-content: center;
+        font-size: 0.7rem;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
 </style>
+
 
 <script is:inline define:vars={{ toolId }}>
     const fileInput = document.getElementById('fileInput');
