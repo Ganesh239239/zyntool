@@ -26,8 +26,10 @@ const toolId = entry.slug || entry.id;
         </div>
     </div>
 
+    <!-- Container with z-index and margin fix -->
     <div class="container tool-container pb-5">
-        <!-- STEP 1: UPLOAD -->
+        
+        <!-- STEP 1: UPLOAD BOX -->
         <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
             <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
@@ -39,7 +41,7 @@ const toolId = entry.slug || entry.id;
             </div>
         </div>
 
-        <!-- STEP 2: WORKSPACE -->
+        <!-- STEP 2: WORKSPACE (PREVIEW & OPTIONS) -->
         <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
                 <div class="col-lg-8">
@@ -49,7 +51,7 @@ const toolId = entry.slug || entry.id;
                         </div>
                         <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
                             <div class="spinner-grow text-primary mb-3"></div>
-                            <h5 class="fw-bold">Compressing...</h5>
+                            <h5 class="fw-bold">Processing...</h5>
                         </div>
                     </div>
                 </div>
@@ -58,7 +60,7 @@ const toolId = entry.slug || entry.id;
                     <div class="options-card card p-4 h-100 bg-white sticky-sidebar">
                         <div class="d-flex align-items-center mb-4">
                             <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
-                            <h5 class="fw-bold m-0">Compression Settings</h5>
+                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
                         </div>
 
                         <div id="optionsPanel" class="mb-4">
@@ -66,14 +68,14 @@ const toolId = entry.slug || entry.id;
                         </div>
 
                         <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                            Compress Image
+                            Process {entry.data.title}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- STEP 3: SUCCESS RESULT (iLoveIMG Style) -->
+        <!-- STEP 3: SUCCESS RESULT (iLoveIMG Style Stats) -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
             <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
                 <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
@@ -101,12 +103,13 @@ const toolId = entry.slug || entry.id;
                     </div>
                 </div>
 
-                <div class="d-grid gap-3 d-sm-flex justify-content-center pt-3">
-                    <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow">
+                <!-- REFINED SMALLER BUTTONS -->
+                <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                    <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
                         <i class="fa-solid fa-download me-2"></i> Download Image
                     </a>
-                    <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill border-2" onclick="location.reload()">
-                        <i class="fa-solid fa-rotate-left me-2"></i> Compress Another
+                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                        <i class="fa-solid fa-rotate-left me-2"></i> Process Another
                     </button>
                 </div>
             </div>
@@ -118,17 +121,56 @@ const toolId = entry.slug || entry.id;
 
 <style>
     .fw-black { font-weight: 900; }
-    .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
-    .tool-hero { padding: 100px 0 100px; position: relative; }
-    .uploader-card { background: #ffffff; border-radius: 30px; position: relative; }
-    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
-    .uploader-zone:hover { background: #f8fbff; border-color: var(--primary-blue); }
+    
+    /* FIX: Card Overlap and Border Protection */
+    .tool-container {
+        margin-top: -5rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .tool-hero {
+        padding: 100px 0 100px;
+        position: relative;
+    }
+
+    /* Uploader Styling */
+    .uploader-card {
+        background: #ffffff;
+        border-radius: 30px;
+        position: relative;
+        border: 1px solid #eee;
+    }
+    .uploader-zone {
+        border: 2px dashed #e2e8f0;
+        border-radius: 24px;
+        padding: 60px 20px;
+        transition: 0.3s;
+    }
+    .uploader-zone:hover {
+        background: #f8fbff;
+        border-color: var(--primary-blue);
+    }
+
+    /* Sidebar & Preview Styling */
     .sticky-sidebar { position: sticky; top: 90px; border-radius: 24px; border: 1px solid #eee; }
     .preview-stage { background: #f0f2f5; border-radius: 24px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; }
-    .main-preview-img { max-height: 65vh; border-radius: 8px; }
+    .main-preview-img { max-height: 65vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+    /* Badges and Icons */
     .step-badge { width: 28px; height: 28px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-    .success-badge { width: 80px; height: 80px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2.5rem; }
+    .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+    
+    /* Loader Overlay */
     .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
+
+    /* Result Area Refinement */
+    #resultArea .btn {
+        font-size: 0.95rem;
+        min-width: 180px;
+        white-space: nowrap;
+    }
+
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
@@ -144,8 +186,9 @@ const toolId = entry.slug || entry.id;
     const mainPreview = document.getElementById('mainPreview');
 
     let originalFile = null;
+    let cropper = null;
 
-    // Helper to format bytes to human-readable size
+    // Helper: Byte Converter
     function formatBytes(bytes, decimals = 2) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -155,26 +198,35 @@ const toolId = entry.slug || entry.id;
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
 
-    // Initialize UI Options
+    // --- TOOL OPTIONS ENGINE ---
     function initOptions() {
+        let html = '';
         if (toolId === 'compress-image') {
-            optionsPanel.innerHTML = `
-                <label class="fw-bold small mb-2 d-flex justify-content-between">
-                    Compression Level <span id="compVal">70%</span>
-                </label>
-                <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                <p class="text-muted small mt-2">Lower quality saves more space.</p>
-            `;
+            html = `<label class="fw-bold small mb-2 d-flex justify-content-between">Compression Level <span id="compVal">70%</span></label>
+                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">`;
+        } else if (toolId === 'resize-image') {
+            html = `<div class="mb-3"><label class="small fw-bold">Width (Pixels)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label class="small">Maintain Aspect Ratio</label></div>`;
+        } else if (toolId === 'crop-image') {
+            html = `<label class="fw-bold small mb-2">Crop Ratio</label>
+                    <select id="ratioSelect" class="form-select" onchange="window.setRatio(this.value)">
+                        <option value="NaN">Free Selection</option>
+                        <option value="1">Square (1:1)</option>
+                        <option value="1.77">HD (16:9)</option>
+                    </select>`;
+        }
+        optionsPanel.innerHTML = html;
+        if (toolId === 'compress-image') {
             const qIn = document.getElementById('qIn');
             qIn.oninput = () => document.getElementById('compVal').innerText = (qIn.value * 100).toFixed(0) + '%';
-        } else {
-            optionsPanel.innerHTML = `<p class="text-muted small">Standard settings will be applied.</p>`;
         }
     }
 
+    window.setRatio = (r) => { if(cropper) cropper.setAspectRatio(parseFloat(r)); };
+
     initOptions();
 
-    // Uploader
+    // --- UPLOAD HANDLER ---
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -184,41 +236,52 @@ const toolId = entry.slug || entry.id;
                 mainPreview.src = ev.target.result;
                 uploadContainer.style.display = 'none';
                 processingArea.style.display = 'block';
+
+                if (toolId === 'crop-image') {
+                    if (cropper) cropper.destroy();
+                    setTimeout(() => { cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 1 }); }, 200);
+                }
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Processing
+    // --- EXECUTION ENGINE ---
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
 
         try {
             let blob;
-            if (toolId === 'compress-image') {
+            if (toolId === 'crop-image' && cropper) {
+                const canvas = cropper.getCroppedCanvas();
+                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+            } else if (toolId === 'compress-image') {
                 const q = parseFloat(document.getElementById('qIn').value);
-                // Perform compression
                 blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q });
+            } else if (toolId === 'resize-image') {
+                const w = parseInt(document.getElementById('wIn').value);
+                blob = await imageCompression(originalFile, { maxWidthOrHeight: w });
             } else {
                 blob = originalFile;
             }
 
-            // --- CALCULATE SAVINGS ---
-            const oldSize = originalFile.size;
-            const newSize = blob.size;
-            const savedBytes = oldSize - newSize;
-            const percentSaved = Math.max(0, Math.round((savedBytes / oldSize) * 100));
+            // --- SAVINGS CALCULATION (For Compress Tool) ---
+            if (toolId === 'compress-image') {
+                const oldSize = originalFile.size;
+                const newSize = blob.size;
+                const percentSaved = Math.max(0, Math.round(((oldSize - newSize) / oldSize) * 100));
+                document.getElementById('oldSizeLabel').innerText = formatBytes(oldSize);
+                document.getElementById('newSizeLabel').innerText = formatBytes(newSize);
+                document.getElementById('percentLabel').innerText = percentSaved + '%';
+                document.getElementById('savingsStats').style.display = 'flex';
+            } else {
+                document.getElementById('savingsStats').style.display = 'none';
+            }
 
-            // Update Labels
-            document.getElementById('oldSizeLabel').innerText = formatBytes(oldSize);
-            document.getElementById('newSizeLabel').innerText = formatBytes(newSize);
-            document.getElementById('percentLabel').innerText = percentSaved + '%';
-
-            // Prepare Download
             const url = URL.createObjectURL(blob);
             document.getElementById('downloadBtn').href = url;
-            document.getElementById('downloadBtn').download = `compressed-${originalFile.name}`;
+            document.getElementById('downloadBtn').download = `zyntool-${originalFile.name}`;
             
             setTimeout(() => {
                 processingArea.style.display = 'none';
@@ -226,8 +289,7 @@ const toolId = entry.slug || entry.id;
             }, 800);
 
         } catch (e) {
-            console.error(e);
-            alert("Compression failed. Try a different image.");
+            alert("Processing error");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
