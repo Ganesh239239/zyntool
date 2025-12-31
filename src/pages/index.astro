@@ -91,82 +91,67 @@ const tools = await getCollection('tools');
 </MainLayout>
 
 <style>
-    /* --- Premium Hero Section --- */
-    .hero-section { 
-        padding: 100px 0 60px; 
-        background: radial-gradient(circle at top right, #f8faff, #ffffff);
-    }
-    .hero-title { 
-        font-size: 3.2rem; 
-        font-weight: 850; 
-        color: #1a202c; 
-        letter-spacing: -2px;
-        line-height: 1.1;
-    }
-    .hero-subtitle { 
-        color: #4a5568; 
-        font-size: 1.25rem; 
-        max-width: 600px; 
-        margin: 20px auto 0; 
-    }
+    /* --- HERO STYLES --- */
+    .hero-section { padding: 60px 0 30px; background-color: #f8f9fa; }
+    .hero-title { font-size: 2.5rem; font-weight: 800; color: #333; letter-spacing: -1px; }
+    .hero-subtitle { color: #666; font-size: 1.1rem; }
 
-    /* --- Floating Pills --- */
+    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
     .filter-pill {
-        border: 1px solid #e2e8f0;
+        border: 1px solid #dee2e6;
         background: #fff;
-        padding: 10px 24px;
-        border-radius: 100px;
+        padding: 6px 22px;
+        border-radius: 50px;
         font-weight: 600;
         font-size: 0.9rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        cursor: pointer;
+        transition: 0.2s;
     }
-    .filter-pill:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        border-color: var(--primary-blue);
-    }
-    .filter-pill.active {
-        background-color: #1a202c;
-        color: #fff;
-        border-color: #1a202c;
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-    }
+    .filter-pill.active { background-color: #2c2e33; color: #fff; border-color: #2c2e33; }
 
-    /* --- The "No-Border" Card Design --- */
+    /* --- TOOL CARD BASE --- */
+    .tool-link { text-decoration: none; display: block; height: 100%; }
     .tool-card {
         background: #fff;
-        border-radius: 20px;
-        padding: 30px;
-        transition: all 0.4s ease;
-        height: 100%;
-        border: 1px solid rgba(0,0,0,0.03); /* Almost invisible border */
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Very soft shadow */
-    }
-
-    .tool-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
-        border-color: var(--primary-blue);
-    }
-
-    /* Gradient Background for Icons */
-    .tool-icon-box {
-        width: 56px;
-        height: 56px;
+        border: 1px solid #e0e6ed;
         border-radius: 16px;
+        padding: 24px;
+        transition: 0.3s ease;
+        height: 100%;
+    }
+    .tool-icon-box {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.6rem;
-        margin-bottom: 20px;
-        /* Default subtle background */
-        background: #f7fafc; 
+        font-size: 1.4rem;
+    }
+    .tool-name { font-weight: 700; color: #2d3748; margin: 0; }
+    .tool-desc { font-size: 0.92rem; color: #718096; line-height: 1.5; margin: 0; }
+
+    /* --- DESKTOP VERSION (Vertical Layout) --- */
+    @media (min-width: 768px) {
+        .tool-card { text-align: center; padding: 30px 20px; }
+        .card-header-wrapper { display: block; } /* Icon on top of text */
+        .tool-icon-box { margin: 0 auto 15px; } /* Center icon */
+        .tool-name { font-size: 1.2rem; margin-bottom: 10px; }
+        .tool-card:hover { transform: translateY(-5px); border-color: #4B90FF; box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important; }
     }
 
-    /* Responsive Typography */
-    @media (max-width: 768px) {
-        .hero-title { font-size: 2.2rem; }
-        .tool-card { padding: 20px; }
+    /* --- MOBILE VERSION (Horizontal Layout - Matching your Image) --- */
+    @media (max-width: 767px) {
+        .hero-title { font-size: 1.8rem; }
+        .tool-card { text-align: left; padding: 20px; }
+        .card-header-wrapper { 
+            display: flex; /* Icon next to text */
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 12px; 
+        }
+        .tool-name { font-size: 1.1rem; }
+        .tool-desc { font-size: 0.88rem; }
     }
 </style>
