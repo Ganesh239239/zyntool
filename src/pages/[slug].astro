@@ -15,20 +15,18 @@ const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <!-- Advanced Tool Header -->
     <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center text-white">
-            <div class="pro-badge mb-3">ADVANCED ENGINE 2.0</div>
+            <div class="pro-badge mb-3">ZYN ENGINE 2.0</div>
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
             <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
     <div class="container mt-n5 position-relative">
-        
-        <!-- STEP 1: UPLOADER (Fixed Border & Shadow) -->
+        <!-- STEP 1: UPLOADER -->
         <div id="uploadContainer" class="card main-card shadow-lg border-0 rounded-4 p-2 bg-white mb-5">
-            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()">
+            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
                 <div class="icon-circle mb-3" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
                     <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
                 </div>
@@ -41,32 +39,32 @@ const toolId = entry.slug || entry.id;
             </div>
         </div>
 
-        <!-- STEP 2: ADVANCED WORKSPACE (Side-by-Side) -->
+        <!-- STEP 2: WORKSPACE -->
         <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
-                <!-- Large Live Preview -->
                 <div class="col-lg-8">
                     <div class="workspace-card card border-0 shadow-lg rounded-4 overflow-hidden bg-secondary bg-opacity-10">
                         <div class="preview-container">
-                            <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                            <div id="imgWrapper" style="max-width: 100%; height: auto;">
+                                <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                            </div>
                             <div id="internalLoader" class="loader-overlay d-none">
-                                <div class="spinner-border text-primary mb-3" role="status"></div>
-                                <h5 class="text-white fw-bold">Applying Changes...</h5>
+                                <div class="spinner-border text-primary mb-3"></div>
+                                <h5 class="text-white fw-bold">Processing...</h5>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Advanced Sidebar -->
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-lg rounded-4 p-4 h-100 bg-white">
                         <div class="d-flex align-items-center mb-4 text-primary">
-                            <i class="fa-solid fa-gears me-2"></i>
-                            <h5 class="fw-bold m-0">Advanced Settings</h5>
+                            <i class={`fa-solid ${entry.data.icon} me-2`}></i>
+                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
                         </div>
 
                         <div id="optionsPanel" class="mb-4">
-                            <!-- Dynamic Advanced UI injected here -->
+                            <!-- Dynamic Options injected here -->
                         </div>
 
                         <button id="btnAction" class="btn btn-lg w-100 text-white rounded-3 py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
@@ -77,53 +75,28 @@ const toolId = entry.slug || entry.id;
             </div>
         </div>
 
-        <!-- STEP 3: RESULT SECTION -->
+        <!-- STEP 3: RESULT -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
             <div class="card border-0 shadow-lg rounded-5 p-5 mx-auto" style="max-width: 500px;">
                 <div class="text-success mb-4"><i class="fa-solid fa-circle-check fa-5x"></i></div>
-                <h2 class="fw-bold">Perfectly Processed!</h2>
-                <p class="text-muted mb-4">Your advanced editing is complete.</p>
-                <div class="d-grid gap-2">
+                <h2 class="fw-bold">Ready for Download!</h2>
+                <div class="d-grid gap-2 mt-4">
                     <a id="downloadBtn" class="btn btn-dark btn-lg py-3 rounded-3 fw-bold">Download Now</a>
-                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Reset Tool</button>
+                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Process Another</button>
                 </div>
             </div>
-        </div>
-
-        <div class="py-5">
-            <article class="prose mx-auto"><Content /></article>
         </div>
     </div>
 </MainLayout>
 
 <style>
-    /* Premium UI Styles */
     .fw-black { font-weight: 900; }
     .mt-n5 { margin-top: -4rem !important; }
     .pro-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
-
-    /* Uploader Zone (Fixed & Visible) */
-    .uploader-zone {
-        border: 3px dashed #cbd5e0; /* Explicitly visible border */
-        border-radius: 20px;
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: #fff;
-    }
-    .uploader-zone:hover {
-        border-color: var(--primary-blue);
-        background: #f8fafc;
-        border-style: solid;
-    }
-
+    .uploader-zone { border: 3px dashed #cbd5e0; border-radius: 20px; transition: 0.3s; background: #fff; }
     .icon-circle { width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-
-    /* Live Preview Area */
-    .preview-container { min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative; background-image: radial-gradient(#cbd5e0 1px, transparent 1px); background-size: 20px 20px; }
-    .main-preview-img { max-height: 600px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 8px; }
-
+    .preview-container { min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; background: #f0f2f5; }
     .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
-
-    /* Animation */
     .fade-in { animation: slideUp 0.5s ease-out; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
@@ -138,183 +111,113 @@ const toolId = entry.slug || entry.id;
     const resultArea = document.getElementById('resultArea');
     const mainPreview = document.getElementById('mainPreview');
 
-    let queue = []; // Research: iLoveIMG uses a queue for bulk processing
+    let cropper = null;
+    let originalDim = { w: 0, h: 0 };
 
-    // --- DEEP RESEARCHED UI INJECTION (iLoveIMG & SmallSEOTools Style) ---
-    function injectAdvancedUI() {
+    // --- 1. UI GENERATOR (Researched from iLoveIMG) ---
+    function initUI() {
         let html = '';
-        switch(toolId) {
-            case 'compress-image':
-                html = `
-                    <div class="mb-3"><label class="fw-bold small">Compression Level</label>
-                        <select id="compLevel" class="form-select">
-                            <option value="0.6">Recommended (Best Quality/Size)</option>
-                            <option value="0.4">Extreme (Smallest Size)</option>
-                            <option value="0.8">Low (Best Image Quality)</option>
-                        </select>
-                    </div>
-                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="keepExif"><label class="form-check-label small">Keep Metadata (EXIF)</label></div>`;
-                break;
-            case 'resize-image':
-                html = `
-                    <div class="mb-3"><label class="fw-bold small">Resize Unit</label>
-                        <select id="resizeUnit" class="form-select" onchange="window.toggleResizeUnit(this.value)">
-                            <option value="pixel">By Pixels</option>
-                            <option value="percent">By Percentage</option>
-                        </select>
-                    </div>
-                    <div id="pixelInputs" class="row g-2 mb-3">
-                        <div class="col"><label class="small">Width (px)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
-                        <div class="col"><label class="small">Height (px)</label><input type="number" id="hIn" class="form-control" value="800"></div>
-                    </div>
-                    <div id="percentInputs" class="mb-3" style="display:none;">
-                        <label class="small">Scale Factor</label>
-                        <select id="pIn" class="form-select"><option value="0.75">75% (Smaller)</option><option value="0.5">50% (Half Size)</option><option value="0.25">25% (Smallest)</option></select>
-                    </div>
-                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratio"><label class="form-check-label small">Maintain Aspect Ratio</label></div>`;
-                break;
-            case 'rotate-image':
-                html = `
-                    <div class="d-grid gap-2 mb-3">
-                        <button class="btn btn-outline-secondary btn-sm" onclick="window.rotate(90)"><i class="fa-solid fa-rotate-right me-2"></i>Rotate Right</button>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="window.rotate(-90)"><i class="fa-solid fa-rotate-left me-2"></i>Rotate Left</button>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col"><button class="btn btn-light w-100 btn-sm" onclick="window.flip('h')">Flip Horiz.</button></div>
-                        <div class="col"><button class="btn btn-light w-100 btn-sm" onclick="window.flip('v')">Flip Vert.</button></div>
+        if (toolId === 'crop-image') {
+            html = `<label class="fw-bold small mb-2">Aspect Ratio</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(NaN)">Free</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(1)">1:1 (Square)</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(16/9)">16:9 (HD)</button>
                     </div>`;
-                break;
-            case 'watermark-image':
-                html = `
-                    <div class="mb-2"><label class="fw-bold small">Watermark Type</label>
-                        <select id="wmType" class="form-select" onchange="window.toggleWM(this.value)"><option value="text">Text</option><option value="image">Logo/Image</option></select>
+        } else if (toolId === 'resize-image') {
+            html = `<div class="mb-3">
+                        <label class="small fw-bold">Width (px)</label>
+                        <input type="number" id="wIn" class="form-control" oninput="window.syncH(this.value)">
                     </div>
-                    <div id="wmTextGroup"><input type="text" id="wmText" class="form-control mb-2" placeholder="© Copyright 2025"></div>
-                    <div id="wmImgGroup" style="display:none;"><input type="file" id="wmFile" class="form-control form-control-sm mb-2" accept="image/*"></div>
-                    <label class="small">Position</label>
-                    <div class="d-flex flex-wrap gap-1 mb-2">
-                        <button class="btn btn-xs btn-outline-primary" onclick="window.wmPos='tl'">TL</button>
-                        <button class="btn btn-xs btn-outline-primary active" onclick="window.wmPos='c'">Center</button>
-                        <button class="btn btn-xs btn-outline-primary" onclick="window.wmPos='br'">BR</button>
+                    <div class="mb-3">
+                        <label class="small fw-bold">Height (px)</label>
+                        <input type="number" id="hIn" class="form-control" oninput="window.syncW(this.value)">
                     </div>
-                    <label class="small">Opacity</label><input type="range" id="wmOp" class="form-range" min="0.1" max="1" step="0.1" value="0.5">`;
-                break;
-            case 'ocr-image': // SmallSEOTools Specialized Feature
-                html = `<p class="alert alert-warning small">Advanced OCR: Extract all text from this image into a TXT file.</p>
-                        <label class="small">Language</label><select id="ocrLang" class="form-select"><option value="eng">English</option><option value="spa">Spanish</option><option value="fra">French</option></select>`;
-                break;
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label class="small">Lock Aspect Ratio</label></div>`;
+        } else if (toolId === 'compress-image') {
+            html = `<label class="fw-bold small mb-2">Quality</label>
+                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                    <select id="fIn" class="form-select mt-3"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select>`;
         }
         optionsPanel.innerHTML = html;
     }
 
-    // --- HELPERS (iLoveIMG Logic) ---
-    let rotation = 0; let flipH = 1; let flipV = 1;
-    window.rotate = (deg) => { rotation += deg; mainPreview.style.transform = `rotate(${rotation}deg) scale(${flipH}, ${flipV})`; };
-    window.flip = (dir) => { if(dir==='h') flipH *= -1; else flipV *= -1; mainPreview.style.transform = `rotate(${rotation}deg) scale(${flipH}, ${flipV})`; };
-    window.toggleResizeUnit = (val) => { 
-        document.getElementById('pixelInputs').style.display = val === 'pixel' ? 'flex' : 'none';
-        document.getElementById('percentInputs').style.display = val === 'percent' ? 'block' : 'none';
+    // Resize Helpers
+    window.syncH = (val) => {
+        if(!document.getElementById('ratioLock').checked) return;
+        document.getElementById('hIn').value = Math.round(val / (originalDim.w / originalDim.h));
     };
-    window.toggleWM = (val) => {
-        document.getElementById('wmTextGroup').style.display = val === 'text' ? 'block' : 'none';
-        document.getElementById('wmImgGroup').style.display = val === 'image' ? 'block' : 'none';
+    window.syncW = (val) => {
+        if(!document.getElementById('ratioLock').checked) return;
+        document.getElementById('wIn').value = Math.round(val * (originalDim.w / originalDim.h));
     };
-    window.wmPos = 'c';
+    window.setRatio = (r) => { if(cropper) cropper.setAspectRatio(r); };
 
-    injectAdvancedUI();
+    initUI();
 
-    // --- FILE HANDLING ---
+    // --- 2. UPLOAD & PREVIEW ---
     fileInput.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
-        if(files.length > 0) {
-            queue = files; // Bulk support
+        const file = e.target.files[0];
+        if (file) {
             const reader = new FileReader();
             reader.onload = (ev) => {
-                mainPreview.src = ev.target.result;
-                uploadContainer.style.display = 'none';
-                processingArea.style.display = 'block';
+                const img = new Image();
+                img.onload = () => {
+                    originalDim = { w: img.width, h: img.height };
+                    if(document.getElementById('wIn')) {
+                        document.getElementById('wIn').value = img.width;
+                        document.getElementById('hIn').value = img.height;
+                    }
+                    mainPreview.src = ev.target.result;
+                    uploadContainer.style.display = 'none';
+                    processingArea.style.display = 'block';
+
+                    if (toolId === 'crop-image') {
+                        if (cropper) cropper.destroy();
+                        setTimeout(() => {
+                            cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 0.8 });
+                        }, 200);
+                    }
+                };
+                img.src = ev.target.result;
             };
-            reader.readAsDataURL(files[0]);
+            reader.readAsDataURL(file);
         }
     });
 
-    // --- MASTER EXECUTION (Deep Research Logic) ---
+    // --- 3. PROCESSING ---
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
 
         try {
-            const file = queue[0];
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            img.src = mainPreview.src;
-            await new Promise(r => img.onload = r);
+            const file = fileInput.files[0];
+            let blob;
 
-            let outputBlob;
-            let outputName = `zyntool-${file.name}`;
-
-            if (toolId === 'compress-image') {
-                const q = parseFloat(document.getElementById('compLevel').value);
-                outputBlob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q });
-            } 
-            else if (toolId === 'resize-image') {
-                const unit = document.getElementById('resizeUnit').value;
-                let width = img.width;
-                if(unit === 'pixel') width = parseInt(document.getElementById('wIn').value);
-                else width = img.width * parseFloat(document.getElementById('pIn').value);
-                outputBlob = await imageCompression(file, { maxWidthOrHeight: width });
-            }
-            else if (toolId === 'rotate-image') {
-                canvas.width = (rotation / 90) % 2 !== 0 ? img.height : img.width;
-                canvas.height = (rotation / 90) % 2 !== 0 ? img.width : img.height;
-                ctx.translate(canvas.width/2, canvas.height/2);
-                ctx.rotate((rotation * Math.PI) / 180);
-                ctx.scale(flipH, flipV);
-                ctx.drawImage(img, -img.width/2, -img.height/2);
-                outputBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-            }
-            else if (toolId === 'ocr-image') {
-                const lang = document.getElementById('ocrLang').value;
-                const result = await Tesseract.recognize(img.src, lang);
-                outputBlob = new Blob([result.data.text], { type: 'text/plain' });
-                outputName = `text-extracted-${file.name}.txt`;
-            }
-            else if (toolId === 'watermark-image') {
-                canvas.width = img.width; canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                const type = document.getElementById('wmType').value;
-                const opacity = parseFloat(document.getElementById('wmOp').value);
-                ctx.globalAlpha = opacity;
-                
-                if(type === 'text') {
-                    const text = document.getElementById('wmText').value || '© ZynTool';
-                    ctx.font = `bold ${canvas.width/15}px Arial`;
-                    ctx.fillStyle = "white"; ctx.textAlign = "center";
-                    // Position logic (iLoveIMG style)
-                    let x = canvas.width/2; let y = canvas.height/2;
-                    if(window.wmPos === 'tl') { x = 100; y = 100; ctx.textAlign = "left"; }
-                    if(window.wmPos === 'br') { x = canvas.width-100; y = canvas.height-100; ctx.textAlign = "right"; }
-                    ctx.fillText(text, x, y);
-                }
-                outputBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+            if (toolId === 'crop-image' && cropper) {
+                const canvas = cropper.getCroppedCanvas();
+                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+            } else if (toolId === 'compress-image') {
+                const q = parseFloat(document.getElementById('qIn').value);
+                const f = document.getElementById('fIn').value;
+                blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q, fileType: f });
+            } else if (toolId === 'resize-image') {
+                const w = parseInt(document.getElementById('wIn').value);
+                blob = await imageCompression(file, { maxWidthOrHeight: w });
+            } else {
+                blob = file;
             }
 
-            // DOWNLOAD
-            const url = URL.createObjectURL(outputBlob);
-            const dl = document.getElementById('downloadBtn');
-            dl.href = url;
-            dl.download = outputName;
-
+            const url = URL.createObjectURL(blob);
+            document.getElementById('downloadBtn').href = url;
+            document.getElementById('downloadBtn').download = `zyntool-${file.name}`;
+            
             setTimeout(() => {
                 processingArea.style.display = 'none';
                 resultArea.style.display = 'block';
-            }, 1000);
-
+            }, 800);
         } catch (e) {
-            console.error(e);
-            alert("Error: Image processing failed. Ensure the format is supported.");
-        } finally {
+            alert("Error processing");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
