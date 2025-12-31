@@ -4,26 +4,21 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  // Build Guard: Ensure we don't crash if tools folder is empty
   if (!toolEntries) return [];
-  
   return toolEntries.map(entry => ({
     params: { slug: entry.slug || entry.id }, props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-
-// Build Guard: Fix for the 'render' error on Cloudflare
-if (!entry) {
-  return Astro.redirect('/404');
-}
+if (!entry) return Astro.redirect('/404');
 
 const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
+    <!-- Enhanced Tool Hero -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -31,7 +26,8 @@ const toolId = entry.slug || entry.id;
         </div>
     </div>
 
-    <div class="container mt-n5 pb-5">
+    <!-- Container with z-index fix to prevent border clipping -->
+    <div class="container tool-container pb-5">
         <!-- STEP 1: UPLOAD -->
         <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
             <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
@@ -49,10 +45,13 @@ const toolId = entry.slug || entry.id;
             <div class="row g-4">
                 <div class="col-lg-8">
                     <div class="preview-stage overflow-hidden">
-                        <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                        <!-- Wrapper for Cropper.js -->
+                        <div id="imgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                            <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                        </div>
                         <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
                             <div class="spinner-grow text-primary mb-3"></div>
-                            <h5 class="fw-bold">Optimizing...</h5>
+                            <h5 class="fw-bold">Processing...</h5>
                         </div>
                     </div>
                 </div>
@@ -60,16 +59,16 @@ const toolId = entry.slug || entry.id;
                 <div class="col-lg-4">
                     <div class="options-card card p-4 h-100 bg-white sticky-sidebar">
                         <div class="d-flex align-items-center mb-4">
-                            <span class="step-number">2</span>
-                            <h5 class="fw-bold m-0">Configure Settings</h5>
+                            <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
+                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
                         </div>
 
                         <div id="optionsPanel" class="mb-4">
-                            <!-- JS Inject -->
+                            <!-- Dynamic Options Injected Here -->
                         </div>
 
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm transition-all" style={`background: ${entry.data.color}`}>
-                            Apply & Download
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                            Process & Download
                         </button>
                     </div>
                 </div>
@@ -78,10 +77,10 @@ const toolId = entry.slug || entry.id;
 
         <!-- STEP 3: SUCCESS -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-            <div class="result-card card bg-white mx-auto" style="max-width: 600px;">
-                <div class="success-badge"><i class="fa-solid fa-check"></i></div>
-                <h2 class="fw-black mb-3">Task Complete!</h2>
-                <p class="text-muted mb-4 fs-5">Your file has been successfully processed and is ready for download.</p>
+            <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5" style="max-width: 600px;">
+                <div class="success-badge mb-4"><i class="fa-solid fa-check"></i></div>
+                <h2 class="fw-black mb-3">Done!</h2>
+                <p class="text-muted mb-4 fs-5">Your file is processed and ready.</p>
                 <div class="d-grid gap-3 d-sm-flex justify-content-center">
                     <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow">Download Image</a>
                     <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill border-2" onclick="location.reload()">Start Over</button>
@@ -94,120 +93,47 @@ const toolId = entry.slug || entry.id;
 </MainLayout>
 
 <style>
-    /* --- Modern Typography & Layout --- */
     .fw-black { font-weight: 900; }
-    .mt-n5 { margin-top: -5rem !important; }
     
-    /* --- Professional Tool Hero --- */
-    .tool-hero {
-        padding: 100px 0 80px;
+    /* FIX: Negative margin with Z-Index to prevent border clipping */
+    .tool-container {
+        margin-top: -5rem;
         position: relative;
-        overflow: hidden;
+        z-index: 10;
     }
-    .tool-hero::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="2" cy="2" r="1" fill="white" fill-opacity="0.1"/></svg>');
-        opacity: 0.3;
+    
+    .tool-hero {
+        padding: 100px 0 100px;
+        position: relative;
     }
 
-    /* --- Animated Uploader --- */
+    /* uploader-card styling */
     .uploader-card {
         background: #ffffff;
         border-radius: 30px;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
     }
     .uploader-zone {
         border: 2px dashed #e2e8f0;
         border-radius: 24px;
         padding: 60px 20px;
         transition: 0.3s;
-        animation: pulse-border 3s infinite;
-    }
-    @keyframes pulse-border {
-        0% { border-color: #e2e8f0; }
-        50% { border-color: var(--primary-blue); }
-        100% { border-color: #e2e8f0; }
     }
     .uploader-zone:hover {
         background: #f8fbff;
-        border-style: solid;
-        transform: scale(0.995);
+        border-color: var(--primary-blue);
     }
 
-    /* --- Sidebar & Controls --- */
-    .sticky-sidebar {
-        position: sticky;
-        top: 90px;
-    }
-    .options-card {
-        border-radius: 24px;
-        border: 1px solid rgba(0,0,0,0.05);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-    }
+    .sticky-sidebar { position: sticky; top: 90px; border-radius: 24px; border: 1px solid #eee; }
+    .preview-stage { background: #f0f2f5; border-radius: 24px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .main-preview-img { max-height: 65vh; border-radius: 8px; }
 
-    /* --- Preview Container --- */
-    .preview-stage {
-        background: #f0f2f5;
-        border-radius: 24px;
-        min-height: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-    }
-    .main-preview-img {
-        max-height: 65vh;
-        border-radius: 8px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
+    .step-badge { width: 28px; height: 28px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+    .success-badge { width: 80px; height: 80px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2.5rem; }
 
-    /* --- Success State --- */
-    .result-card {
-        border-radius: 40px;
-        padding: 60px;
-        border: none;
-        box-shadow: 0 40px 80px rgba(0,0,0,0.1);
-    }
-    .success-badge {
-        width: 100px; height: 100px;
-        background: #ecfdf5;
-        color: #10b981;
-        border-radius: 50%;
-        display: flex;
-        align-items: center; justify-content: center;
-        margin: 0 auto 25px;
-        font-size: 3rem;
-    }
-
-    /* --- Step Badges --- */
-    .step-number {
-        width: 24px; height: 24px;
-        background: var(--primary-blue);
-        color: white;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center; justify-content: center;
-        font-size: 0.7rem;
-        margin-right: 10px;
-        vertical-align: middle;
-    }
-
-.form-control, .form-select {
-    border: 2px solid #f1f5f9;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 500;
-}
-.form-control:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 4px rgba(75, 144, 255, 0.1);
-}
-
+    .fade-in { animation: fadeInUp 0.5s ease-out; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
-
 
 <script is:inline define:vars={{ toolId }}>
     const fileInput = document.getElementById('fileInput');
@@ -220,60 +146,48 @@ const toolId = entry.slug || entry.id;
     const mainPreview = document.getElementById('mainPreview');
 
     let cropper = null;
-    let queue = [];
 
-    // --- 1. RESEARCHED UI INJECTION (iLoveIMG style) ---
-    function injectAdvancedUI() {
+    // --- TOOL OPTIONS GENERATOR (iLoveIMG Style) ---
+    function initOptions() {
         let html = '';
-        switch(toolId) {
-            case 'crop-image':
-                html = `
-                    <label class="fw-bold small mb-2">Crop Aspect Ratio</label>
-                    <div class="d-grid gap-2 mb-3">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(NaN)">Free Selection</button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(1)">Square (1:1)</button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(16/9)">HD (16:9)</button>
-                    </div>
-                    <p class="text-muted small">Drag the box on the image to select your crop area.</p>`;
-                break;
-            case 'compress-image':
-                html = `<label class="fw-bold small mb-2">Compression Level</label>
-                        <select id="compLevel" class="form-select"><option value="0.6">Recommended</option><option value="0.4">Extreme</option></select>`;
-                break;
-            case 'resize-image':
-                html = `<div class="mb-3"><label class="small fw-bold">Width (px)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratio"><label class="small">Maintain Aspect Ratio</label></div>`;
-                break;
-            case 'rotate-image':
-                html = `<div class="d-grid gap-2"><button class="btn btn-sm btn-outline-dark" onclick="window.rotate(90)">Rotate Right 90°</button></div>`;
-                break;
+        if (toolId === 'compress-image') {
+            html = `<label class="fw-bold small mb-2">Compression Quality</label>
+                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                    <p class="text-muted small">Higher quality results in larger file size.</p>`;
+        } else if (toolId === 'resize-image') {
+            html = `<div class="mb-3"><label class="small fw-bold">Width (Pixels)</label>
+                    <input type="number" id="wIn" class="form-control" value="1200"></div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratio">
+                    <label class="small">Maintain Aspect Ratio</label></div>`;
+        } else if (toolId === 'crop-image') {
+            html = `<label class="fw-bold small mb-2">Crop Ratio</label>
+                    <select id="ratioSelect" class="form-select" onchange="window.changeRatio(this.value)">
+                        <option value="NaN">Free Selection</option>
+                        <option value="1">Square (1:1)</option>
+                        <option value="1.77">HD (16:9)</option>
+                    </select>`;
         }
         optionsPanel.innerHTML = html;
     }
 
-    // Helper for crop ratio
-    window.setRatio = (r) => { if(cropper) cropper.setAspectRatio(r); };
-    let rotation = 0;
-    window.rotate = (deg) => { rotation += deg; mainPreview.style.transform = `rotate(${rotation}deg)`; };
+    window.changeRatio = (r) => { if(cropper) cropper.setAspectRatio(parseFloat(r)); };
 
-    injectAdvancedUI();
+    initOptions();
 
-    // --- 2. FILE HANDLING & PREVIEW ---
+    // --- UPLOAD HANDLER ---
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            queue = [file];
             const reader = new FileReader();
             reader.onload = (ev) => {
                 mainPreview.src = ev.target.result;
                 uploadContainer.style.display = 'none';
                 processingArea.style.display = 'block';
 
-                // INITIALIZE CROPPER FOR CROP TOOL
                 if (toolId === 'crop-image') {
                     if (cropper) cropper.destroy();
                     setTimeout(() => {
-                        cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 0.8 });
+                        cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 1 });
                     }, 200);
                 }
             };
@@ -281,20 +195,20 @@ const toolId = entry.slug || entry.id;
         }
     });
 
-    // --- 3. MASTER EXECUTION ---
+    // --- PROCESSING ENGINE ---
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
 
         try {
-            const file = queue[0];
+            const file = fileInput.files[0];
             let blob;
 
             if (toolId === 'crop-image' && cropper) {
                 const canvas = cropper.getCroppedCanvas();
                 blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
             } else if (toolId === 'compress-image') {
-                const q = parseFloat(document.getElementById('compLevel').value);
+                const q = parseFloat(document.getElementById('qIn').value);
                 blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q });
             } else if (toolId === 'resize-image') {
                 const w = parseInt(document.getElementById('wIn').value);
@@ -311,10 +225,8 @@ const toolId = entry.slug || entry.id;
                 processingArea.style.display = 'none';
                 resultArea.style.display = 'block';
             }, 800);
-
         } catch (e) {
-            alert("Error: Processing failed.");
-            console.error(e);
+            alert("Error processing");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
