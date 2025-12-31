@@ -58,9 +58,7 @@ const toolId = entry.slug || entry.id;
                 <div class="col-lg-8">
                     <div class="preview-stage overflow-hidden">
                         <div id="imgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                            <!-- Target for HTML Render -->
                             <div id="htmlRenderArea" style="display:none; background:white; padding:20px;"></div>
-                            <!-- Target for Image Tools -->
                             <img id="mainPreview" src="" class="img-fluid main-preview-img">
                         </div>
                         <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
@@ -77,9 +75,7 @@ const toolId = entry.slug || entry.id;
                                 <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
                                 <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
                             </div>
-
                             <div id="optionsPanel" class="mb-4"></div>
-
                             <button id="btnAction" class="btn btn-action w-100 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
                                 Process {entry.data.title}
                             </button>
@@ -108,7 +104,6 @@ const toolId = entry.slug || entry.id;
             <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
                 <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
                 <h2 class="fw-black mb-2 text-dark">Success!</h2>
-                
                 <div class="d-flex gap-2 flex-wrap justify-content-center pt-2 mt-4">
                     <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
                         <i class="fa-solid fa-download me-2"></i> Download Now
@@ -119,11 +114,18 @@ const toolId = entry.slug || entry.id;
                 </div>
             </div>
         </div>
+
+        <!-- POST CONTENT (FIXED POSITION) -->
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
+                <Content />
+            </article>
+        </div>
     </div>
 </MainLayout>
 
 <style>
-    /* ALL YOUR EXISTING CSS STAYS THE SAME */
+    /* DESIGN PRESERVED */
     .fw-black { font-weight: 900; }
     .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
     .tool-hero { padding: 100px 0 100px; position: relative; }
@@ -131,14 +133,20 @@ const toolId = entry.slug || entry.id;
     .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
     .uploader-zone:hover { background: #f8fbff; border-color: var(--primary-blue); }
     .sticky-sidebar { position: sticky; top: 90px; }
+    .options-card { border-radius: 24px; border: 1px solid #eee; }
     .preview-stage { background: #ffffff; border-radius: 24px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #f0f0f0; }
     .main-preview-img { max-height: 65vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     .step-badge { width: 28px; height: 28px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
     .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
     .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
+    
+    /* PROSE STYLING FOR CONTENT */
+    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
+    .prose h2, .prose h3 { color: #1a202c; font-weight: 800; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .prose p { margin-bottom: 1.25rem; }
+    
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 767px) { .tool-hero { padding: 60px 0 80px; } .btn-action { padding: 18px 30px; font-size: 1.1rem; } }
 </style>
 
 <script is:inline define:vars={{ toolId }}>
@@ -154,7 +162,6 @@ const toolId = entry.slug || entry.id;
 
     let originalFile = null;
 
-    // --- FIX: HTML TO IMAGE PREVIEW ---
     window.renderHTML = () => {
         const code = document.getElementById('htmlInput').value;
         if(!code) return alert("Please enter some HTML");
@@ -165,21 +172,17 @@ const toolId = entry.slug || entry.id;
         processingArea.style.display = 'block';
     };
 
-    // --- TOOL OPTIONS ---
     function initOptions() {
         let html = '';
-        if (toolId === 'convert-to-png' || toolId === 'convert-to-jpg' || toolId === 'convert-from-png' || toolId === 'convert-from-jpg') {
-            html = `<p class="text-muted small">Your image will be converted to <b>${toolId.includes('png') ? 'PNG' : 'JPG'}</b> format automatically.</p>`;
-        } else if (toolId === 'html-to-image') {
-            html = `<p class="text-muted small">Capture high-quality snapshot of your code.</p>`;
-        } else if (toolId === 'compress-image') {
+        if (toolId === 'compress-image') {
             html = `<label class="fw-bold small">Compression Quality</label><input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">`;
+        } else if (toolId.includes('convert')) {
+             html = `<p class="text-muted small">Converting to your desired format...</p>`;
         }
         optionsPanel.innerHTML = html;
     }
     initOptions();
 
-    // --- FILE UPLOAD ---
     if(fileInput) {
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -198,7 +201,6 @@ const toolId = entry.slug || entry.id;
         });
     }
 
-    // --- PROCESSING ENGINE (FIXED) ---
     btnAction.addEventListener('click', async () => {
         internalLoader.classList.remove('d-none');
         btnAction.disabled = true;
@@ -207,41 +209,32 @@ const toolId = entry.slug || entry.id;
             let blob;
             let ext = 'png';
 
-            // 1. HTML TO IMAGE Logic
             if (toolId === 'html-to-image') {
                 const canvas = await html2canvas(htmlRenderArea);
                 blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
             } 
-            // 2. CONVERT TO PNG Logic
-            else if (toolId === 'convert-to-png' || toolId === 'convert-from-jpg') {
-                const img = new Image();
-                img.src = mainPreview.src;
-                await new Promise(r => img.onload = r);
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width; canvas.height = img.height;
-                canvas.getContext('2d').drawImage(img, 0, 0);
-                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-                ext = 'png';
+            else if (toolId === 'compress-image') {
+                const q = parseFloat(document.getElementById('qIn').value);
+                blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q });
+                ext = 'jpg';
             }
-            // 3. CONVERT TO JPG Logic
-            else if (toolId === 'convert-to-jpg' || toolId === 'convert-from-png') {
+            else {
+                // Default Conversion logic
                 const img = new Image();
                 img.src = mainPreview.src;
                 await new Promise(r => img.onload = r);
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width; canvas.height = img.height;
                 const ctx = canvas.getContext('2d');
-                ctx.fillStyle = "#FFFFFF"; // Ensure no transparency in JPG
-                ctx.fillRect(0,0,canvas.width,canvas.height);
-                ctx.drawImage(img, 0, 0);
-                blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
-                ext = 'jpg';
-            }
-            // 4. COMPRESSION Logic
-            else if (toolId === 'compress-image') {
-                const q = parseFloat(document.getElementById('qIn').value);
-                blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q });
-                ext = 'jpg';
+                if(!toolId.includes('png')) {
+                    ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0,0,canvas.width,canvas.height);
+                    blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
+                    ext = 'jpg';
+                } else {
+                    ctx.drawImage(img, 0, 0);
+                    blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                    ext = 'png';
+                }
             }
 
             const url = URL.createObjectURL(blob);
@@ -254,7 +247,7 @@ const toolId = entry.slug || entry.id;
             }, 800);
         } catch (e) {
             console.error(e);
-            alert("Error processing your request.");
+            alert("Error processing request.");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
