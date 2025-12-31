@@ -78,23 +78,22 @@ const toolId = entry.slug || entry.id;
         let selectedFile = null;
 
         // SHOW OPTIONS BASED ON TOOL
-        if (toolId === 'resize-image') {
+       let cropper = null;
+
+        // 1. SET OPTIONS UI
+        if (toolId === 'crop-image') {
+            optionsPanel.innerHTML = `<p class="alert alert-info py-2 small">Drag the box on the image below to select your crop area.</p>`;
+        } else if (toolId === 'resize-image') {
             optionsPanel.innerHTML = `
                 <div class="row g-2">
-                    <div class="col">
-                        <label class="small fw-bold">Width (px)</label>
-                        <input type="number" id="resizeW" class="form-control" value="800">
-                    </div>
-                    <div class="col">
-                        <label class="small fw-bold">Height (px)</label>
-                        <input type="number" id="resizeH" class="form-control" value="600">
-                    </div>
-                </div>
-            `;
-        } else if (toolId === 'compress-image') {
-            optionsPanel.innerHTML = `<p class="text-muted mb-0">Recommended settings applied automatically for best quality.</p>`;
+                    <div class="col"><label class="small fw-bold">Width (px)</label><input type="number" id="resizeW" class="form-control" value="800"></div>
+                    <div class="col"><label class="small fw-bold">Height (px)</label><input type="number" id="resizeH" class="form-control" value="600"></div>
+                </div>`;
+        } else {
+            optionsPanel.innerHTML = `<p class="text-muted mb-0">Best settings selected automatically.</p>`;
         }
 
+        // 2. HANDLE FILE UPLOAD
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -104,11 +103,21 @@ const toolId = entry.slug || entry.id;
                     imagePreview.src = e.target.result;
                     uploadContainer.style.display = 'none';
                     processingArea.style.display = 'block';
+
+                    // START CROPPER IF TOOL IS CROP
+                    if (toolId === 'crop-image') {
+                        if (cropper) cropper.destroy();
+                        // Small delay to ensure image is loaded
+                        setTimeout(() => {
+                            cropper = new Cropper(imagePreview, { viewMode: 1, autoCropArea: 1 });
+                        }, 100);
+                    }
                 };
                 reader.readAsDataURL(file);
             }
         });
 
+        // 3. EXECUTE TOOL
         btnAction.addEventListener('click', async () => {
             btnAction.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
             btnAction.disabled = true;
@@ -116,7 +125,11 @@ const toolId = entry.slug || entry.id;
             try {
                 let resultBlob;
                 
-                if (toolId === 'compress-image') {
+                if (toolId === 'crop-image' && cropper) {
+                    const canvas = cropper.getCroppedCanvas();
+                    resultBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                } 
+                else if (toolId === 'compress-image') {
                     resultBlob = await imageCompression(selectedFile, { maxSizeMB: 1, initialQuality: 0.6 });
                 } 
                 else if (toolId === 'resize-image') {
@@ -124,21 +137,17 @@ const toolId = entry.slug || entry.id;
                     const height = document.getElementById('resizeH').value;
                     resultBlob = await imageCompression(selectedFile, { maxWidthOrHeight: Math.max(width, height) });
                 }
-                else {
-                    resultBlob = selectedFile;
-                }
 
                 const url = URL.createObjectURL(resultBlob);
                 resultImage.src = url;
                 downloadBtn.href = url;
-                downloadBtn.download = `zyntool-${selectedFile.name}`;
+                downloadBtn.download = `zyntool-cropped.png`;
                 
                 processingArea.style.display = 'none';
                 resultArea.style.display = 'block';
             } catch (err) {
-                alert('Error processing image');
+                alert('Error processing');
                 console.error(err);
-                btnAction.innerHTML = 'Try Again';
                 btnAction.disabled = false;
             }
         });
