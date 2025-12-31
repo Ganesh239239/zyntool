@@ -12,11 +12,20 @@ const { entry } = Astro.props;
 if (!entry) return Astro.redirect('/404');
 
 const toolId = entry.slug || entry.id;
+
+// Internal Linking Logic
 const allTools = await getCollection('tools');
 const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
+
+// IMPORTANT: Extract the Content component correctly for Astro
+const { Content } = await entry.render();
+
+// SEO Strategy
+const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
+const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy and speed.`;
 ---
 
-<MainLayout title={`${entry.data.title} - 100% Free Online | ZynTool`}>
+<MainLayout title={seoTitle} description={seoDesc}>
     <!-- Hero Section -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
@@ -28,18 +37,23 @@ const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 
     <!-- Container with Stacking Fix -->
     <div class="container tool-container-fixed pb-5">
         
+        <!-- TOOL LOGIC SWITCHER -->
         {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
         
         {toolId !== 'compress-image' && (
             <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
-                <p class="text-muted m-0">The <b>{entry.data.title}</b> component is being modularized...</p>
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
+                </div>
+                <h4 class="fw-bold">Updating Engine...</h4>
+                <p class="text-muted m-0">The modular version of <b>{entry.data.title}</b> is launching in a few minutes.</p>
             </div>
         )}
 
+        <!-- POST CONTENT SECTION -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
-                <!-- This renders your markdown content automatically -->
-                <entry.Content />
+                <Content /> <!-- THIS IS THE FIX: Rendered correctly now -->
             </article>
         </div>
     </div>
@@ -47,79 +61,7 @@ const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 
 
 <style>
     .fw-black { font-weight: 900; }
-    
-    .tool-hero { 
-        padding: 100px 0 120px; 
-        position: relative;
-        z-index: 1; /* Stay below container */
-    }
-
-    /* THE FIX: Explicit positioning to prevent hero background from cutting card */
-    .tool-container-fixed { 
-        margin-top: -80px; 
-        position: relative; 
-        z-index: 10; /* Force it on top */
-    }
-</style>---
-import { getCollection } from 'astro:content';
-import MainLayout from '../layouts/MainLayout.astro';
-import CompressTool from '../components/tools/CompressTool.astro';
-
-export async function getStaticPaths() {
-  const toolEntries = await getCollection('tools');
-  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
-}
-
-const { entry } = Astro.props;
-if (!entry) return Astro.redirect('/404');
-
-const toolId = entry.slug || entry.id;
-const allTools = await getCollection('tools');
-const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
----
-
-<MainLayout title={`${entry.data.title} - 100% Free Online | ZynTool`}>
-    <!-- Hero Section -->
-    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
-        <div class="container text-center">
-            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
-            <p class="opacity-75 fs-5">{entry.data.description}</p>
-        </div>
-    </div>
-
-    <!-- Container with Stacking Fix -->
-    <div class="container tool-container-fixed pb-5">
-        
-        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
-        
-        {toolId !== 'compress-image' && (
-            <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
-                <p class="text-muted m-0">The <b>{entry.data.title}</b> component is being modularized...</p>
-            </div>
-        )}
-
-        <div class="content-section mt-5 pt-5 border-top">
-            <article class="prose mx-auto">
-                <!-- This renders your markdown content automatically -->
-                <entry.Content />
-            </article>
-        </div>
-    </div>
-</MainLayout>
-
-<style>
-    .fw-black { font-weight: 900; }
-    
-    .tool-hero { 
-        padding: 100px 0 120px; 
-        position: relative;
-        z-index: 1; /* Stay below container */
-    }
-
-    /* THE FIX: Explicit positioning to prevent hero background from cutting card */
-    .tool-container-fixed { 
-        margin-top: -80px; 
-        position: relative; 
-        z-index: 10; /* Force it on top */
-    }
+    .tool-hero { padding: 100px 0 120px; position: relative; z-index: 1; }
+    .tool-container-fixed { margin-top: -80px; position: relative; z-index: 10; }
+    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
 </style>
