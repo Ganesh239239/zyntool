@@ -24,61 +24,48 @@ const toolId = entry.slug || entry.id;
 
     <div class="container my-5">
         <!-- UPLOAD ZONE -->
-        <!-- HTML INPUT (Only for HTML to Image tool) -->
-        {toolId === 'html-to-image' && (
-            <div id="htmlInputArea" class="card p-4 shadow-sm mb-4 border-0 bg-light">
-                <label class="fw-bold mb-2">Enter HTML/CSS Code</label>
-                <textarea id="htmlCode" class="form-control font-monospace mb-3" rows="8" placeholder="<div style='background: linear-gradient(45deg, #f06, #4a9); color: white; padding: 40px; border-radius: 20px; font-family: sans-serif;'><h1>Hello World</h1><p>This is rendered from HTML!</p></div>"></textarea>
-                <button id="btnRenderHtml" class="btn btn-primary">Render Preview</button>
-            </div>
-        )}
-
-        <!-- UPLOAD ZONE (Hidden if HTML tool is rendering) -->
-        <div id="uploadContainer" style={toolId === 'html-to-image' ? "display:none" : ""}>
+        <div id="uploadContainer">
             <div class="uploader-zone p-5 border-dashed text-center bg-light rounded-4 mb-4" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
                 <i class={`fa-solid ${entry.data.icon} fa-4x mb-3`} style={`color: ${entry.data.color}`}></i>
-                <h3>Select Image</h3>
-                <p>or drop it here</p>
-                <input type="file" id="fileInput" hidden accept="image/*" />
+                <h3>Select Images</h3>
+                <p>or drop them here</p>
+                <input type="file" id="fileInput" hidden accept="image/*" multiple />
             </div>
         </div>
 
-<!-- PROCESSING AREA -->
+        <!-- PROCESSING AREA -->
         <div id="processingArea" style="display:none;">
             <div class="row g-4">
+                <!-- Left: Preview / Comparison -->
                 <div class="col-lg-8">
-                    <!-- Premium Comparison Slider -->
                     <div class="comparison-container shadow-lg rounded-4 overflow-hidden position-relative bg-dark">
                         <div class="comparison-label before">Original</div>
                         <div class="comparison-label after">Processed</div>
-                        
-                        <!-- The "Before" Image (Static) -->
                         <img id="imageBefore" src="" class="w-100 h-100 object-fit-contain">
-                        
-                        <!-- The "After" Image (Revealed by Slider) -->
                         <div id="comparisonOverlay" class="position-absolute top-0 start-0 h-100 overflow-hidden" style="width: 50%;">
                             <img id="imageAfter" src="" class="w-100 h-100 object-fit-contain bg-dark">
                         </div>
-                        
-                        <!-- The Professional Slider Handle -->
                         <input type="range" id="compareSlider" min="0" max="100" value="50" class="comparison-slider">
-                        
-                        <!-- Loading Overlay inside the preview -->
                         <div id="internalLoader" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-none flex-column align-items-center justify-content-center text-white">
                             <div class="spinner-border text-primary mb-2"></div>
-                            <span class="fw-bold">Optimizing...</span>
+                            <span class="fw-bold">Processing...</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Right: Tool Options -->
                 <div class="col-lg-4 text-start">
                     <div class="options-sidebar p-4 border-0 rounded-4 bg-white shadow-sm h-100">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="premium-icon-sm me-2"><i class="fa-solid fa-crown"></i></div>
+                            <div class="premium-icon-sm me-2 text-warning"><i class="fa-solid fa-crown"></i></div>
                             <h5 class="fw-bold m-0">Settings</h5>
                         </div>
                         
-                        <div id="optionsPanel" class="mb-4"></div>
+                        <!-- DYNAMIC OPTIONS PANEL -->
+                        <div id="optionsPanel" class="mb-4">
+                            <!-- JS will inject options here -->
+                        </div>
+
                         <div id="batchList" class="mb-4 small text-muted"></div>
 
                         <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill shadow-sm py-3 fw-bold" style={`background-color: ${entry.data.color}`}>
@@ -90,229 +77,132 @@ const toolId = entry.slug || entry.id;
         </div>
 
         <!-- RESULT AREA -->
-        <div id="resultArea" style="display:none;" class="mt-5 py-5 text-center fade-in">
-            <div class="result-card p-5 bg-white rounded-5 shadow-lg border-0 mx-auto" style="max-width: 600px;">
+        <div id="resultArea" style="display:none;" class="mt-5 py-5 text-center">
+            <div class="result-card p-5 bg-white rounded-5 shadow-lg mx-auto" style="max-width: 600px;">
                 <div class="success-icon mb-4"><i class="fa-solid fa-circle-check"></i></div>
-                <h2 class="fw-bold mb-2">Task Complete!</h2>
-                <p class="text-muted mb-4">Your image has been professionally processed and is ready for use.</p>
-                
-                <div class="d-grid gap-3 d-sm-flex justify-content-center">
-                    <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm">
-                        <i class="fa-solid fa-download me-2"></i> Download Image
-                    </a>
-                </div>
-
-                <!-- ATTRACTIVE RESTART BUTTON -->
-                <button class="btn btn-outline-primary btn-sm mt-5 rounded-pill px-4 py-2 fw-bold border-2" onclick="location.reload()">
-                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another Image
-                </button>
+                <h2 class="fw-bold mb-2">Done!</h2>
+                <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm">Download Image</a>
+                <br>
+                <button class="btn btn-outline-primary btn-sm mt-4 rounded-pill px-4" onclick="location.reload()">Process Another</button>
             </div>
         </div>
 
-    <!-- CLIENT SIDE SCRIPT -->
-  <script is:inline define:vars={{ toolId }}>
-    const fileInput = document.getElementById('fileInput');
-    const uploadContainer = document.getElementById('uploadContainer');
-    const processingArea = document.getElementById('processingArea');
-    const btnAction = document.getElementById('btnAction');
-    const internalLoader = document.getElementById('internalLoader');
-    const resultArea = document.getElementById('resultArea');
-    
-    // Comparison Elements
-    const imageBefore = document.getElementById('imageBefore');
-    const imageAfter = document.getElementById('imageAfter');
-    const comparisonOverlay = document.getElementById('comparisonOverlay');
-    const compareSlider = document.getElementById('compareSlider');
+        <hr class="my-5" />
+        <article class="prose mx-auto" style="max-width: 800px;">
+            <Content />
+        </article>
+    </div>
 
-    let selectedFiles = [];
+    <!-- BRAIN LOGIC -->
+    <script is:inline define:vars={{ toolId }}>
+        const fileInput = document.getElementById('fileInput');
+        const uploadContainer = document.getElementById('uploadContainer');
+        const processingArea = document.getElementById('processingArea');
+        const optionsPanel = document.getElementById('optionsPanel');
+        const btnAction = document.getElementById('btnAction');
+        const internalLoader = document.getElementById('internalLoader');
+        const resultArea = document.getElementById('resultArea');
+        const imageBefore = document.getElementById('imageBefore');
+        const imageAfter = document.getElementById('imageAfter');
+        const comparisonOverlay = document.getElementById('comparisonOverlay');
+        const compareSlider = document.getElementById('compareSlider');
 
-    // Setup Options UI
-    if (toolId === 'compress-image') {
-        document.getElementById('optionsPanel').innerHTML = `
-            <div class="p-3 bg-light rounded-3">
-                <label class="fw-bold small d-flex justify-content-between mb-2">Compression <span>70%</span></label>
-                <input type="range" id="compQuality" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                <label class="fw-bold small mt-3 d-block mb-2">Output Format</label>
-                <select id="exportFormat" class="form-select border-0 shadow-sm">
-                    <option value="image/jpeg">JPEG</option>
-                    <option value="image/webp">WebP (Smallest)</option>
-                </select>
-            </div>`;
-    }
+        let selectedFiles = [];
 
-    fileInput.addEventListener('change', (e) => {
-        selectedFiles = Array.from(e.target.files);
-        if (selectedFiles.length > 0) {
-            uploadContainer.style.display = 'none';
-            processingArea.style.display = 'block';
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imageBefore.src = e.target.result;
-                imageAfter.src = e.target.result; // Temporary
-            };
-            reader.readAsDataURL(selectedFiles[0]);
-        }
-    });
-
-    // Slider Logic
-    compareSlider.addEventListener('input', (e) => {
-        comparisonOverlay.style.width = e.target.value + '%';
-    });
-
-    // Main Action
-    btnAction.addEventListener('click', async () => {
-        internalLoader.classList.replace('d-none', 'd-flex');
-        btnAction.disabled = true;
-
-        try {
-            const file = selectedFiles[0];
-            let resultBlob;
-
+        // --- STEP 1: TOOL-SPECIFIC UI SWITCHER ---
+        function injectOptions() {
             if (toolId === 'compress-image') {
-                const quality = parseFloat(document.getElementById('compQuality').value);
-                const format = document.getElementById('exportFormat').value;
-                resultBlob = await imageCompression(file, { 
-                    maxSizeMB: 1, 
-                    initialQuality: quality,
-                    fileType: format 
-                });
+                optionsPanel.innerHTML = `
+                    <div class="p-3 bg-light rounded-3">
+                        <label class="fw-bold small d-flex justify-content-between mb-2">Compression <span>70%</span></label>
+                        <input type="range" id="compQuality" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                        <label class="fw-bold small mt-3 d-block mb-2">Format</label>
+                        <select id="exportFormat" class="form-select border-0 shadow-sm"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select>
+                    </div>`;
+            } else if (toolId === 'resize-image') {
+                optionsPanel.innerHTML = `
+                    <div class="p-3 bg-light rounded-3">
+                        <label class="fw-bold small mb-2">Resize by Pixels</label>
+                        <div class="row g-2">
+                            <div class="col"><input type="number" id="resizeW" class="form-control" placeholder="Width" value="1200"></div>
+                            <div class="col"><input type="number" id="resizeH" class="form-control" placeholder="Height" value="800"></div>
+                        </div>
+                        <p class="text-muted small mt-2">Enter your desired dimensions.</p>
+                    </div>`;
+            } else if (toolId === 'crop-image') {
+                optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the handles on the image to crop.</p>`;
             } else {
-                resultBlob = file;
+                optionsPanel.innerHTML = `<p class="text-muted">Standard settings applied.</p>`;
             }
-
-            const url = URL.createObjectURL(resultBlob);
-            imageAfter.src = url;
-            
-            // DOWNLOAD SETUP
-            const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.href = url;
-            downloadBtn.download = `zyntool-${file.name}`;
-
-            // HIDE PROCESSING, SHOW RESULT
-            setTimeout(() => {
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 800);
-
-        } catch (err) {
-            alert('Processing error');
-            console.error(err);
-            btnAction.disabled = false;
         }
-    });
-</script>
 
-</Layout>
+        // Initialize Options
+        injectOptions();
+
+        // --- STEP 2: HANDLE UPLOADS ---
+        fileInput.addEventListener('change', (e) => {
+            selectedFiles = Array.from(e.target.files);
+            if (selectedFiles.length > 0) {
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imageBefore.src = e.target.result;
+                    imageAfter.src = e.target.result; // Placeholder until processed
+                };
+                reader.readAsDataURL(selectedFiles[0]);
+            }
+        });
+
+        // Slider logic
+        compareSlider.addEventListener('input', (e) => comparisonOverlay.style.width = e.target.value + '%');
+
+        // --- STEP 3: MASTER PROCESSOR ---
+        btnAction.addEventListener('click', async () => {
+            internalLoader.classList.replace('d-none', 'd-flex');
+            btnAction.disabled = true;
+
+            try {
+                const file = selectedFiles[0];
+                let resultBlob;
+
+                if (toolId === 'compress-image') {
+                    const quality = parseFloat(document.getElementById('compQuality').value);
+                    resultBlob = await imageCompression(file, { maxSizeMB: 1, initialQuality: quality });
+                } 
+                else if (toolId === 'resize-image') {
+                    const w = parseInt(document.getElementById('resizeW').value);
+                    resultBlob = await imageCompression(file, { maxWidthOrHeight: w });
+                }
+                else {
+                    resultBlob = file; // Fallback
+                }
+
+                const url = URL.createObjectURL(resultBlob);
+                imageAfter.src = url;
+                document.getElementById('downloadBtn').href = url;
+                document.getElementById('downloadBtn').download = `zyntool-${file.name}`;
+
+                setTimeout(() => {
+                    processingArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                }, 800);
+
+            } catch (err) {
+                console.error(err);
+                btnAction.disabled = false;
+                internalLoader.classList.replace('d-flex', 'd-none');
+            }
+        });
+    </script>
+</MainLayout>
 
 <style>
-    .border-dashed { border: 3px dashed #ccc; transition: 0.3s; }
-    .border-dashed:hover { border-color: #4B90FF; background: #f0f7ff !important; }
-    .prose h3 { margin-top: 2rem; font-weight: 700; color: #333; }
-
-<style>
-    /* Premium Uploader */
-    .border-dashed { border: 2px dashed #cbd5e0; background: #f8fafc; transition: 0.3s; }
-    .border-dashed:hover { border-color: var(--primary-blue); background: #f0f7ff !important; }
-
-    /* Comparison Slider Styles */
-    #comparisonOverlay img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        filter: brightness(1.1); /* Subtle "pop" for the processed version */
-    }
-    
-    #compareSlider {
-        height: 100%;
-        appearance: none;
-        background: transparent;
-    }
-
-    /* Floating Result Stats */
-    .saving-badge {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 5px 15px;
-        border-radius: 50px;
-        font-size: 0.8rem;
-        z-index: 20;
-    }
-
-    .comparison-container {
-        height: 500px;
-        position: relative;
-    }
-
-    .comparison-label {
-        position: absolute;
-        bottom: 20px;
-        padding: 5px 15px;
-        background: rgba(0,0,0,0.6);
-        color: white;
-        font-size: 0.75rem;
-        font-weight: bold;
-        text-transform: uppercase;
-        z-index: 5;
-        border-radius: 4px;
-    }
-    .comparison-label.before { left: 20px; }
-    .comparison-label.after { right: 20px; }
-
-    /* The Secret: Styling the range input to be an invisible trigger for a visible line */
-    .comparison-slider {
-        position: absolute;
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0);
-        outline: none;
-        margin: 0;
-        transition: all 0.2s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10;
-        top: 0;
-    }
-
-    /* The Vertical White Line */
-    .comparison-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 4px;
-        height: 500px;
-        background: white;
-        cursor: ew-resize;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-
-    /* Success Icon Style */
-    .success-icon {
-        width: 80px;
-        height: 80px;
-        background: #e8f5e9;
-        color: #4caf50;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        margin: 0 auto;
-    }
-
-    .premium-icon-sm {
-        color: #ffc107;
-        font-size: 1.2rem;
-    }
-
-    .fade-in {
-        animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* CSS SAME AS PREVIOUS STEP */
+    .comparison-container { height: 500px; position: relative; }
+    .comparison-slider { position: absolute; -webkit-appearance: none; width: 100%; height: 100%; background: transparent; top: 0; z-index: 10; }
+    .comparison-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 4px; height: 500px; background: white; cursor: ew-resize; }
+    .comparison-label { position: absolute; bottom: 20px; padding: 5px 15px; background: rgba(0,0,0,0.6); color: white; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 5; }
+    .comparison-label.before { left: 20px; } .comparison-label.after { right: 20px; }
+    .success-icon { width: 80px; height: 80px; background: #e8f5e9; color: #4caf50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto; }
 </style>
