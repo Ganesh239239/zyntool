@@ -1,4 +1,5 @@
 ---
+category: "edit"
 title: "Crop IMAGE"
 description: "Crop your JPG, PNG or GIF images to the perfect size."
 color: "#e91e63"
