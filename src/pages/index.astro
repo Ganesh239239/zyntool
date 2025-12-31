@@ -45,6 +45,34 @@ const tools = await getCollection('tools');
         </div>
     </section>
 
+<section class="features-section py-5 bg-white border-top">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="p-3">
+                    <div class="mb-3 text-primary"><i class="fa-solid fa-shield-halved fa-3x"></i></div>
+                    <h5 class="fw-bold">Privacy First</h5>
+                    <p class="text-muted small">Your images never leave your browser. We never see your data.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <div class="mb-3 text-primary"><i class="fa-solid fa-bolt-lightning fa-3x"></i></div>
+                    <h5 class="fw-bold">Instant Processing</h5>
+                    <p class="text-muted small">Powered by your hardware. No waiting for server queues.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <div class="mb-3 text-primary"><i class="fa-solid fa-face-smile fa-3x"></i></div>
+                    <h5 class="fw-bold">Completely Free</h5>
+                    <p class="text-muted small">All tools are available without subscription or registration.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
     <script is:inline>
         function filterTools(cat, btn) {
             document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
