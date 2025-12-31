@@ -35,7 +35,7 @@ const App = {
     currentFile: null,
 
     init() {
-        window.addEventListener('popstate', () => this.router());
+        window.addEventListener('hashtag', () => this.router());
         window.addEventListener('load', () => this.router());
         
         // Listeners for Tools
