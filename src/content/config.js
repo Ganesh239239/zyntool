@@ -7,6 +7,7 @@ const toolsCollection = defineCollection({
     description: z.string(),
     color: z.string(),
     icon: z.string(),
+    category: z.string(), // ADD THIS LINE
   }),
 });
 
