@@ -13,12 +13,15 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 if (!entry) return Astro.redirect('/404');
 
+// Internal Linking: Fetch all tools for the sidebar "Related Tools"
+const allTools = await getCollection('tools');
+const relatedTools = allTools.filter(t => (t.slug || t.id) !== (entry.slug || entry.id)).slice(0, 6);
+
 const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <!-- Enhanced Tool Hero -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -26,10 +29,8 @@ const toolId = entry.slug || entry.id;
         </div>
     </div>
 
-    <!-- Container with z-index and margin fix -->
     <div class="container tool-container pb-5">
-        
-        <!-- STEP 1: UPLOAD BOX -->
+        <!-- STEP 1: UPLOAD -->
         <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
             <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
@@ -45,7 +46,6 @@ const toolId = entry.slug || entry.id;
         <div id="processingArea" style="display:none;" class="fade-in">
             <div class="row g-4">
                 <div class="col-lg-8">
-                    <!-- FIX: Removed gray background from preview-stage -->
                     <div class="preview-stage overflow-hidden">
                         <div id="imgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
                             <img id="mainPreview" src="" class="img-fluid main-preview-img">
@@ -58,20 +58,36 @@ const toolId = entry.slug || entry.id;
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="options-card card p-4 h-100 bg-white sticky-sidebar">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
-                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
+                    <div class="sticky-sidebar">
+                        <div class="options-card card p-4 bg-white mb-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="step-badge me-2" style={`background: ${entry.data.color}`}>1</div>
+                                <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
+                            </div>
+
+                            <div id="optionsPanel" class="mb-4">
+                                <!-- Dynamic Options Injected Here -->
+                            </div>
+
+                            <button id="btnAction" class="btn btn-action w-100 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                                Process {entry.data.title}
+                            </button>
                         </div>
 
-                        <div id="optionsPanel" class="mb-4">
-                            <!-- Injected by JS -->
+                        <!-- INTERNAL LINKING: iLoveIMG Style "Other Tools" -->
+                        <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
+                            <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
+                            <div class="row g-2">
+                                {relatedTools.map(t => (
+                                    <div class="col-6">
+                                        <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border">
+                                            <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                            <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-
-                        <!-- MOBILE OPTIMIZED BUTTON -->
-                        <button id="btnAction" class="btn btn-action w-100 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                            Process {entry.data.title}
-                        </button>
                     </div>
                 </div>
             </div>
@@ -83,23 +99,23 @@ const toolId = entry.slug || entry.id;
                 <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
                 <h2 class="fw-black mb-2 text-dark">Success!</h2>
                 
-                <div id="savingsStats" class="row g-3 my-4 justify-content-center">
-                    <div class="col-6 col-md-4">
-                        <div class="p-3 border rounded-4 bg-light text-center">
-                            <div class="small text-muted mb-1">Old Size</div>
-                            <div id="oldSizeLabel" class="fw-bold">0 KB</div>
+                <div id="savingsStats" class="row g-3 my-4 justify-content-center" style="display:none;">
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-light">
+                            <div class="small text-muted">Old</div>
+                            <div id="oldSizeLabel" class="fw-bold small">0 KB</div>
                         </div>
                     </div>
-                    <div class="col-6 col-md-4">
-                        <div class="p-3 border rounded-4 bg-light text-center">
-                            <div class="small text-muted mb-1">New Size</div>
-                            <div id="newSizeLabel" class="fw-bold text-success">0 KB</div>
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-light">
+                            <div class="small text-muted">New</div>
+                            <div id="newSizeLabel" class="fw-bold text-success small">0 KB</div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
-                        <div class="p-3 border rounded-4 bg-primary text-white shadow-sm text-center">
-                            <div class="small opacity-75 mb-1">Lighter by</div>
-                            <div id="percentLabel" class="fw-black fs-4">0%</div>
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-primary text-white shadow-sm">
+                            <div class="small opacity-75">Lighter</div>
+                            <div id="percentLabel" class="fw-bold">0%</div>
                         </div>
                     </div>
                 </div>
@@ -121,93 +137,29 @@ const toolId = entry.slug || entry.id;
 
 <style>
     .fw-black { font-weight: 900; }
-    
-    .tool-container {
-        margin-top: -5rem;
-        position: relative;
-        z-index: 10;
-    }
-    
-    .tool-hero {
-        padding: 100px 0 100px;
-        position: relative;
-    }
-
-    .uploader-card {
-        background: #ffffff;
-        border-radius: 30px;
-        position: relative;
-        border: 1px solid #eee;
-    }
-    .uploader-zone {
-        border: 2px dashed #e2e8f0;
-        border-radius: 24px;
-        padding: 60px 20px;
-        transition: 0.3s;
-    }
-    .uploader-zone:hover {
-        background: #f8fbff;
-        border-color: var(--primary-blue);
-    }
-
-    .sticky-sidebar { position: sticky; top: 90px; border-radius: 24px; border: 1px solid #eee; }
-    
-    /* FIX: "Gray sides" solved by changing background to white and removing shadows from container */
-    .preview-stage { 
-        background: #ffffff; 
-        border-radius: 24px; 
-        min-height: 400px; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        position: relative;
-        border: 1px solid #f0f0f0;
-    }
-    
-    .main-preview-img { 
-        max-height: 65vh; 
-        border-radius: 8px; 
-        /* Adds a subtle shadow to the image itself so it stands out from white background */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    }
-
-    /* Action Button Styling */
-    .btn-action {
-        padding: 15px 30px;
-        font-size: 1rem;
-        transition: 0.3s;
-    }
-
-    /* SUCCESS SECTION BUTTONS */
-    #resultArea .btn {
-        font-size: 0.95rem;
-        min-width: 180px;
-        white-space: nowrap;
-    }
-
+    .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
+    .tool-hero { padding: 100px 0 100px; position: relative; }
+    .uploader-card { background: #ffffff; border-radius: 30px; position: relative; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: var(--primary-blue); }
+    .sticky-sidebar { position: sticky; top: 90px; }
+    .options-card { border-radius: 24px; border: 1px solid #eee; }
+    .preview-stage { background: #ffffff; border-radius: 24px; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #f0f0f0; }
+    .main-preview-img { max-height: 65vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: 0.3s; }
     .step-badge { width: 28px; height: 28px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
     .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
     .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
-
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* MOBILE SPECIFIC CHANGES */
+    /* iLoveIMG Grid Dots for Watermark */
+    .wm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 120px; margin: 0 auto; }
+    .wm-dot { height: 30px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 4px; }
+    .wm-dot.active { background: #4B90FF; border-color: #4B90FF; }
+
     @media (max-width: 767px) {
         .tool-hero { padding: 60px 0 80px; }
-        .display-3 { font-size: 2.2rem; }
-        
-        /* FIX: Process button becomes larger on mobile */
-        .btn-action {
-            padding: 20px 30px;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .preview-stage {
-            min-height: 300px;
-        }
+        .btn-action { padding: 18px 30px; font-size: 1.1rem; }
     }
 </style>
 
@@ -223,40 +175,73 @@ const toolId = entry.slug || entry.id;
 
     let originalFile = null;
     let cropper = null;
+    let rotation = 0;
+    window.wmPos = 'c';
 
-    function formatBytes(bytes, decimals = 2) {
+    function formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
+    // --- iLoveIMG FEATURE UI ---
     function initOptions() {
         let html = '';
         if (toolId === 'compress-image') {
-            html = `<label class="fw-bold small mb-2 d-flex justify-content-between">Compression Quality <span id="compVal">70%</span></label>
-                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">`;
+            html = `
+                <label class="fw-bold small mb-2 d-flex justify-content-between">Quality <span id="compVal">70%</span></label>
+                <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                <label class="fw-bold small mt-3 mb-2">Export Format</label>
+                <select id="exportF" class="form-select"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select>
+            `;
         } else if (toolId === 'resize-image') {
-            html = `<div class="mb-3"><label class="small fw-bold">Width (Pixels)</label><input type="number" id="wIn" class="form-control" value="1200"></div>
-                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label class="small">Maintain Aspect Ratio</label></div>`;
+            html = `
+                <label class="small fw-bold">Unit</label>
+                <select id="rUnit" class="form-select mb-3" onchange="window.toggleR(this.value)">
+                    <option value="px">Pixels</option><option value="percent">Percentage</option>
+                </select>
+                <div id="pxBox">
+                    <input type="number" id="wIn" class="form-control mb-2" placeholder="Width">
+                    <div class="form-check form-switch small"><input class="form-check-input" type="checkbox" checked id="ratio"><label>Lock Aspect Ratio</label></div>
+                </div>
+                <div id="pctBox" style="display:none">
+                    <select id="pctIn" class="form-select"><option value="0.5">50% Smaller</option><option value="0.25">25% Smaller</option></select>
+                </div>
+            `;
         } else if (toolId === 'crop-image') {
-            html = `<label class="fw-bold small mb-2">Crop Ratio</label>
-                    <select id="ratioSelect" class="form-select" onchange="window.setRatio(this.value)">
-                        <option value="NaN">Free Selection</option>
-                        <option value="1">Square (1:1)</option>
-                        <option value="1.77">HD (16:9)</option>
-                    </select>`;
+            html = `
+                <label class="fw-bold small mb-2">Aspect Ratio</label>
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(NaN)">Free</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(1)">Square (1:1)</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="window.setR(16/9)">HD (16:9)</button>
+                </div>`;
+        } else if (toolId === 'watermark-image') {
+            html = `
+                <label class="small fw-bold mb-2">Text Watermark</label>
+                <input type="text" id="wmText" class="form-control mb-3" placeholder="© ZynTool">
+                <label class="small fw-bold mb-2">Position</label>
+                <div class="wm-grid">
+                    <div class="wm-dot" onclick="window.setWM('tl', this)"></div><div class="wm-dot" onclick="window.setWM('tc', this)"></div><div class="wm-dot" onclick="window.setWM('tr', this)"></div>
+                    <div class="wm-dot" onclick="window.setWM('cl', this)"></div><div class="wm-dot active" onclick="window.setWM('c', this)"></div><div class="wm-dot" onclick="window.setWM('cr', this)"></div>
+                    <div class="wm-dot" onclick="window.setWM('bl', this)"></div><div class="wm-dot" onclick="window.setWM('bc', this)"></div><div class="wm-dot" onclick="window.setWM('br', this)"></div>
+                </div>
+            `;
         }
         optionsPanel.innerHTML = html;
-        if (toolId === 'compress-image') {
-            const qIn = document.getElementById('qIn');
-            qIn.oninput = () => document.getElementById('compVal').innerText = (qIn.value * 100).toFixed(0) + '%';
-        }
+        if(document.getElementById('qIn')) document.getElementById('qIn').oninput = (e) => document.getElementById('compVal').innerText = Math.round(e.target.value*100)+'%';
     }
 
-    window.setRatio = (r) => { if(cropper) cropper.setAspectRatio(parseFloat(r)); };
+    // --- PRO LOGIC HELPERS ---
+    window.toggleR = (v) => { document.getElementById('pxBox').style.display=v==='px'?'block':'none'; document.getElementById('pctBox').style.display=v==='percent'?'block':'none'; };
+    window.setR = (r) => { if(cropper) cropper.setAspectRatio(r); };
+    window.setWM = (p, btn) => { 
+        window.wmPos = p; 
+        document.querySelectorAll('.wm-dot').forEach(d=>d.classList.remove('active'));
+        btn.classList.add('active');
+    };
 
     initOptions();
 
@@ -269,7 +254,6 @@ const toolId = entry.slug || entry.id;
                 mainPreview.src = ev.target.result;
                 uploadContainer.style.display = 'none';
                 processingArea.style.display = 'block';
-
                 if (toolId === 'crop-image') {
                     if (cropper) cropper.destroy();
                     setTimeout(() => { cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 1 }); }, 200);
@@ -285,42 +269,53 @@ const toolId = entry.slug || entry.id;
 
         try {
             let blob;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            await new Promise(r => img.onload = r);
+
             if (toolId === 'crop-image' && cropper) {
-                const canvas = cropper.getCroppedCanvas();
-                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                blob = await new Promise(r => cropper.getCroppedCanvas().toBlob(r, 'image/png'));
             } else if (toolId === 'compress-image') {
                 const q = parseFloat(document.getElementById('qIn').value);
-                blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q });
+                const format = document.getElementById('exportF').value;
+                blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q, fileType: format });
             } else if (toolId === 'resize-image') {
-                const w = parseInt(document.getElementById('wIn').value);
-                blob = await imageCompression(originalFile, { maxWidthOrHeight: w });
-            } else {
-                blob = originalFile;
+                const unit = document.getElementById('rUnit').value;
+                let width;
+                if(unit === 'px') width = parseInt(document.getElementById('wIn').value) || img.width;
+                else width = img.width * parseFloat(document.getElementById('pctIn').value);
+                blob = await imageCompression(originalFile, { maxWidthOrHeight: width });
+            } else if (toolId === 'watermark-image') {
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const txt = document.getElementById('wmText').value || 'ZynTool';
+                ctx.font = `bold ${canvas.width/15}px Arial`;
+                ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.textAlign = "center";
+                // 9-Point logic
+                let x = canvas.width/2, y = canvas.height/2;
+                if(window.wmPos.includes('t')) y = 80; if(window.wmPos.includes('b')) y = canvas.height - 80;
+                if(window.wmPos.includes('l')) { x = 20; ctx.textAlign = "left"; } if(window.wmPos.includes('r')) { x = canvas.width - 20; ctx.textAlign = "right"; }
+                ctx.fillText(txt, x, y);
+                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
             }
 
+            // Stats for Compress
             if (toolId === 'compress-image') {
-                const oldSize = originalFile.size;
-                const newSize = blob.size;
-                const percentSaved = Math.max(0, Math.round(((oldSize - newSize) / oldSize) * 100));
-                document.getElementById('oldSizeLabel').innerText = formatBytes(oldSize);
-                document.getElementById('newSizeLabel').innerText = formatBytes(newSize);
-                document.getElementById('percentLabel').innerText = percentSaved + '%';
                 document.getElementById('savingsStats').style.display = 'flex';
-            } else {
-                document.getElementById('savingsStats').style.display = 'none';
+                document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
+                document.getElementById('newSizeLabel').innerText = formatBytes(blob.size);
+                document.getElementById('percentLabel').innerText = Math.round(((originalFile.size - blob.size)/originalFile.size)*100) + '%';
             }
 
             const url = URL.createObjectURL(blob);
             document.getElementById('downloadBtn').href = url;
             document.getElementById('downloadBtn').download = `zyntool-${originalFile.name}`;
             
-            setTimeout(() => {
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-            }, 800);
-
+            setTimeout(() => { processingArea.style.display = 'none'; resultArea.style.display = 'block'; }, 800);
         } catch (e) {
-            alert("Processing error");
+            alert("Error processing");
             internalLoader.classList.add('d-none');
             btnAction.disabled = false;
         }
