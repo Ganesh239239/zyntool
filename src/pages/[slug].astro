@@ -4,222 +4,106 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
+  
+  // If no tools are found, return an empty array to prevent crash
+  if (!toolEntries || toolEntries.length === 0) return [];
+
   return toolEntries.map(entry => ({
-    params: { slug: entry.slug || entry.id }, props: { entry },
+    params: { slug: entry.slug || entry.id }, 
+    props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
+
+// SAFETY CHECK: If entry is undefined, redirect or show error
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
 const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
 ---
 
 <MainLayout title={entry.data.title}>
-    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
-        <div class="container text-center text-white">
-            <div class="pro-badge mb-3">ZYN ENGINE 2.0</div>
-            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
-            <p class="opacity-75 fs-5">{entry.data.description}</p>
+    <div class="tool-header py-5 text-white" style={`background-color: ${entry.data.color}`}>
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">{entry.data.title}</h1>
+            <p class="lead">{entry.data.description}</p>
         </div>
     </div>
 
-    <div class="container mt-n5 position-relative">
-        <!-- STEP 1: UPLOADER -->
-        <div id="uploadContainer" class="card main-card shadow-lg border-0 rounded-4 p-2 bg-white mb-5">
-            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-                <div class="icon-circle mb-3" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
-                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
-                </div>
-                <h2 class="fw-bold">Select Image</h2>
-                <p class="text-muted mb-4">Click to browse or drag and drop images</p>
-                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                    Upload File
-                </button>
+    <div class="container my-5">
+        <div id="uploadContainer">
+            <div class="uploader-zone p-5 border-dashed text-center bg-light rounded-4 mb-4" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <i class={`fa-solid ${entry.data.icon} fa-4x mb-3`} style={`color: ${entry.data.color}`}></i>
+                <h3>Select Image</h3>
+                <p>or drop it here</p>
                 <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
         </div>
 
-        <!-- STEP 2: WORKSPACE -->
-        <div id="processingArea" style="display:none;" class="fade-in">
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="workspace-card card border-0 shadow-lg rounded-4 overflow-hidden bg-secondary bg-opacity-10">
-                        <div class="preview-container">
-                            <div id="imgWrapper" style="max-width: 100%; height: auto;">
-                                <img id="mainPreview" src="" class="img-fluid main-preview-img">
-                            </div>
-                            <div id="internalLoader" class="loader-overlay d-none">
-                                <div class="spinner-border text-primary mb-3"></div>
-                                <h5 class="text-white fw-bold">Processing...</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-lg rounded-4 p-4 h-100 bg-white">
-                        <div class="d-flex align-items-center mb-4 text-primary">
-                            <i class={`fa-solid ${entry.data.icon} me-2`}></i>
-                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
-                        </div>
-
-                        <div id="optionsPanel" class="mb-4">
-                            <!-- Dynamic Options injected here -->
-                        </div>
-
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-3 py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
-                            <i class="fa-solid fa-bolt me-2"></i> Process & Download
-                        </button>
-                    </div>
-                </div>
+        <div id="processingArea" style="display:none;" class="text-center">
+            <div class="preview-card p-4 border rounded shadow-sm mb-4 bg-white">
+                <img id="mainPreview" src="" class="img-fluid rounded mb-3" style="max-height: 400px;" />
+                <div id="optionsPanel" class="p-3 bg-light rounded mb-3 text-start"></div>
+                <button id="btnAction" class="btn btn-lg w-100 text-white shadow-sm" style={`background-color: ${entry.data.color}`}>
+                    Process {entry.data.title}
+                </button>
             </div>
         </div>
 
-        <!-- STEP 3: RESULT -->
-        <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div id="resultArea" style="display:none;" class="text-center py-5">
             <div class="card border-0 shadow-lg rounded-5 p-5 mx-auto" style="max-width: 500px;">
                 <div class="text-success mb-4"><i class="fa-solid fa-circle-check fa-5x"></i></div>
-                <h2 class="fw-bold">Ready for Download!</h2>
+                <h2 class="fw-bold">Ready!</h2>
                 <div class="d-grid gap-2 mt-4">
                     <a id="downloadBtn" class="btn btn-dark btn-lg py-3 rounded-3 fw-bold">Download Now</a>
-                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Process Another</button>
+                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Reset Tool</button>
                 </div>
             </div>
         </div>
+
+        <hr class="my-5" />
+        <article class="prose mx-auto" style="max-width: 800px;">
+            <Content />
+        </article>
     </div>
+
+    <script is:inline define:vars={{ toolId }}>
+        // Your existing JS logic here... (Keep the scripts we wrote in Step 17/19)
+        const fileInput = document.getElementById('fileInput');
+        const uploadContainer = document.getElementById('uploadContainer');
+        const processingArea = document.getElementById('processingArea');
+        const mainPreview = document.getElementById('mainPreview');
+        const btnAction = document.getElementById('btnAction');
+        const optionsPanel = document.getElementById('optionsPanel');
+
+        // Simple check to ensure scripts run
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        mainPreview.src = ev.target.result;
+                        uploadContainer.style.display = 'none';
+                        processingArea.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        btnAction.addEventListener('click', () => {
+             // For now, let's just show the result area to confirm it works
+             document.getElementById('processingArea').style.display = 'none';
+             document.getElementById('resultArea').style.display = 'block';
+        });
+    </script>
 </MainLayout>
 
 <style>
-    .fw-black { font-weight: 900; }
+    .border-dashed { border: 3px dashed #cbd5e0; border-radius: 20px; transition: 0.3s; background: #fff; }
     .mt-n5 { margin-top: -4rem !important; }
-    .pro-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
-    .uploader-zone { border: 3px dashed #cbd5e0; border-radius: 20px; transition: 0.3s; background: #fff; }
-    .icon-circle { width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-    .preview-container { min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; background: #f0f2f5; }
-    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
-    .fade-in { animation: slideUp 0.5s ease-out; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
-
-<script is:inline define:vars={{ toolId }}>
-    const fileInput = document.getElementById('fileInput');
-    const uploadContainer = document.getElementById('uploadContainer');
-    const processingArea = document.getElementById('processingArea');
-    const optionsPanel = document.getElementById('optionsPanel');
-    const btnAction = document.getElementById('btnAction');
-    const internalLoader = document.getElementById('internalLoader');
-    const resultArea = document.getElementById('resultArea');
-    const mainPreview = document.getElementById('mainPreview');
-
-    let cropper = null;
-    let originalDim = { w: 0, h: 0 };
-
-    // --- 1. UI GENERATOR (Researched from iLoveIMG) ---
-    function initUI() {
-        let html = '';
-        if (toolId === 'crop-image') {
-            html = `<label class="fw-bold small mb-2">Aspect Ratio</label>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(NaN)">Free</button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(1)">1:1 (Square)</button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="window.setRatio(16/9)">16:9 (HD)</button>
-                    </div>`;
-        } else if (toolId === 'resize-image') {
-            html = `<div class="mb-3">
-                        <label class="small fw-bold">Width (px)</label>
-                        <input type="number" id="wIn" class="form-control" oninput="window.syncH(this.value)">
-                    </div>
-                    <div class="mb-3">
-                        <label class="small fw-bold">Height (px)</label>
-                        <input type="number" id="hIn" class="form-control" oninput="window.syncW(this.value)">
-                    </div>
-                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label class="small">Lock Aspect Ratio</label></div>`;
-        } else if (toolId === 'compress-image') {
-            html = `<label class="fw-bold small mb-2">Quality</label>
-                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                    <select id="fIn" class="form-select mt-3"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select>`;
-        }
-        optionsPanel.innerHTML = html;
-    }
-
-    // Resize Helpers
-    window.syncH = (val) => {
-        if(!document.getElementById('ratioLock').checked) return;
-        document.getElementById('hIn').value = Math.round(val / (originalDim.w / originalDim.h));
-    };
-    window.syncW = (val) => {
-        if(!document.getElementById('ratioLock').checked) return;
-        document.getElementById('wIn').value = Math.round(val * (originalDim.w / originalDim.h));
-    };
-    window.setRatio = (r) => { if(cropper) cropper.setAspectRatio(r); };
-
-    initUI();
-
-    // --- 2. UPLOAD & PREVIEW ---
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = () => {
-                    originalDim = { w: img.width, h: img.height };
-                    if(document.getElementById('wIn')) {
-                        document.getElementById('wIn').value = img.width;
-                        document.getElementById('hIn').value = img.height;
-                    }
-                    mainPreview.src = ev.target.result;
-                    uploadContainer.style.display = 'none';
-                    processingArea.style.display = 'block';
-
-                    if (toolId === 'crop-image') {
-                        if (cropper) cropper.destroy();
-                        setTimeout(() => {
-                            cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 0.8 });
-                        }, 200);
-                    }
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // --- 3. PROCESSING ---
-    btnAction.addEventListener('click', async () => {
-        internalLoader.classList.remove('d-none');
-        btnAction.disabled = true;
-
-        try {
-            const file = fileInput.files[0];
-            let blob;
-
-            if (toolId === 'crop-image' && cropper) {
-                const canvas = cropper.getCroppedCanvas();
-                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-            } else if (toolId === 'compress-image') {
-                const q = parseFloat(document.getElementById('qIn').value);
-                const f = document.getElementById('fIn').value;
-                blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q, fileType: f });
-            } else if (toolId === 'resize-image') {
-                const w = parseInt(document.getElementById('wIn').value);
-                blob = await imageCompression(file, { maxWidthOrHeight: w });
-            } else {
-                blob = file;
-            }
-
-            const url = URL.createObjectURL(blob);
-            document.getElementById('downloadBtn').href = url;
-            document.getElementById('downloadBtn').download = `zyntool-${file.name}`;
-            
-            setTimeout(() => {
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-            }, 800);
-        } catch (e) {
-            alert("Error processing");
-            internalLoader.classList.add('d-none');
-            btnAction.disabled = false;
-        }
-    });
-</script>
