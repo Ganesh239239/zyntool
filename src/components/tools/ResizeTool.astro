@@ -1,0 +1,50 @@
+---
+const { entry } = Astro.props;
+---
+<div id="tool-workspace">
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <i class={`fa-solid ${entry.data.icon} fa-3x mb-3`} style={`color: ${entry.data.color}`}></i>
+            <h2 class="fw-bold">Select Image to Resize</h2>
+            <input type="file" id="fileInput" hidden accept="image/*" />
+        </div>
+    </div>
+
+    <div id="processingArea" style="display:none;">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="preview-stage rounded-4 border"><img id="mainPreview" class="img-fluid"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4">
+                    <h5 class="fw-bold mb-4">Resize Settings</h5>
+                    <label class="small fw-bold">Width (px)</label>
+                    <input type="number" id="wIn" class="form-control mb-3" value="1200">
+                    <button id="btnAction" class="btn btn-primary w-100 rounded-pill" style={`background: ${entry.data.color}`}>Resize Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+    // ONLY RESIZE LOGIC LIVES HERE
+    const fileInput = document.getElementById('fileInput');
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            document.getElementById('mainPreview').src = ev.target.result;
+            document.getElementById('uploadContainer').style.display = 'none';
+            document.getElementById('processingArea').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('btnAction').addEventListener('click', async () => {
+        const file = fileInput.files[0];
+        const w = parseInt(document.getElementById('wIn').value);
+        const blob = await imageCompression(file, { maxWidthOrHeight: w });
+        window.saveFile(blob, file.name); // Shared helper
+    });
+</script>
