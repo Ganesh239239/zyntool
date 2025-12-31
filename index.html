@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,66 +13,178 @@
 </head>
 <body>
 
-    <!-- 1. Load Header -->
+    <!-- Shared Header -->
     <div id="header-placeholder"></div>
 
-    <!-- 2. Home Hero & Grid -->
-    <div class="home-wrapper" style="padding-top: 80px;">
+    <!-- HOME CONTENT -->
+    <div class="home-wrapper">
         <section class="hero">
             <div class="container">
                 <h1>Every tool you could want to<br class="d-md-none"> edit images in bulk</h1>
                 <p>Your online photo editor is here and forever free!</p>
                 
-                <div class="filter-pills mt-4">
-                    <button class="btn active">All</button>
-                    <button class="btn">Optimize</button>
-                    <button class="btn">Create</button>
-                    <button class="btn">Edit</button>
-                    <button class="btn">Convert</button>
+                <!-- Filter Menus -->
+                <div class="filter-pills" id="homeFilters">
+                    <button class="btn active" data-filter="all">All</button>
+                    <button class="btn" data-filter="optimize">Optimize</button>
+                    <button class="btn" data-filter="create">Create</button>
+                    <button class="btn" data-filter="edit">Edit</button>
+                    <button class="btn" data-filter="convert">Convert</button>
+                    <button class="btn" data-filter="security">Security</button>
                 </div>
             </div>
         </section>
 
         <section class="tools-section">
             <div class="container">
-                <div class="row g-4">
-                    <!-- Link to Physical Page -->
-                    <div class="col-12 col-md-4 col-lg-3">
+                <div class="row g-4" id="toolsGrid">
+                    
+                    <!-- 1. Compress -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
                         <a href="compress.html" class="tool-card">
                             <div class="icon-box ic-green"><i class="fa-solid fa-compress-arrows-alt"></i></div>
-                            <h5>Compress IMAGE</h5>
-                            <p>Compress JPG, PNG, GIF with best quality.</p>
+                            <h5>Compress IMAGE</h5><p>Compress JPG, PNG, GIF with best quality.</p>
                         </a>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-3">
+                    <!-- 2. Resize -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
                         <a href="resize.html" class="tool-card">
                             <div class="icon-box ic-blue"><i class="fa-solid fa-expand"></i></div>
-                            <h5>Resize IMAGE</h5>
-                            <p>Define your dimensions by percent or pixel.</p>
+                            <h5>Resize IMAGE</h5><p>Define your dimensions by percent or pixel.</p>
                         </a>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-3">
+                    <!-- 3. Crop -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
                         <a href="crop.html" class="tool-card">
                             <div class="icon-box ic-blue"><i class="fa-solid fa-crop-simple"></i></div>
-                            <h5>Crop IMAGE</h5>
-                            <p>Crop JPG, PNG, or GIFs with ease.</p>
+                            <h5>Crop IMAGE</h5><p>Crop JPG, PNG, or GIFs with ease.</p>
                         </a>
                     </div>
 
-                    <!-- Add other tools here linking to convert.html, editor.html, etc. -->
+                    <!-- 4. Convert to JPG -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
+                        <a href="convert.html" class="tool-card">
+                            <div class="icon-box ic-yellow"><i class="fa-solid fa-file-image"></i></div>
+                            <h5>Convert to JPG</h5><p>Turn PNG, GIF, WEBP to JPG.</p>
+                        </a>
+                    </div>
+
+                    <!-- 5. Convert from JPG -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
+                        <a href="convert.html" class="tool-card">
+                            <div class="icon-box ic-yellow"><i class="fa-solid fa-images"></i></div>
+                            <h5>Convert from JPG</h5><p>Turn JPG images to PNG and GIF.</p>
+                        </a>
+                    </div>
+
+                    <!-- 6. Photo Editor -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
+                        <a href="editor.html" class="tool-card">
+                            <div class="icon-box ic-purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h5>Photo Editor</h5><p>Spice up pictures with text and effects.</p>
+                        </a>
+                    </div>
+
+                    <!-- 7. Upscale -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="optimize">
+                        <a href="upscale.html" class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-green"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                            <h5>Upscale Image</h5><p>Enlarge images and increase resolution.</p>
+                        </a>
+                    </div>
+
+                    <!-- 8. Remove Background -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
+                        <a href="removebg.html" class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-green"><i class="fa-solid fa-eraser"></i></div>
+                            <h5>Remove Background</h5><p>Remove image backgrounds instantly.</p>
+                        </a>
+                    </div>
+
+                    <!-- 9. Watermark -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security">
+                        <a href="watermark.html" class="tool-card">
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-stamp"></i></div>
+                            <h5>Watermark IMAGE</h5><p>Stamp an image or text over your images.</p>
+                        </a>
+                    </div>
+
+                    <!-- 10. Meme Generator -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="create">
+                        <a href="meme.html" class="tool-card">
+                            <div class="icon-box ic-purple"><i class="fa-regular fa-face-laugh-squint"></i></div>
+                            <h5>Meme Generator</h5><p>Create your own memes online.</p>
+                        </a>
+                    </div>
+
+                    <!-- 11. Rotate -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="edit">
+                        <a href="rotate.html" class="tool-card">
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-rotate-right"></i></div>
+                            <h5>Rotate IMAGE</h5><p>Rotate JPG, PNG or GIF images.</p>
+                        </a>
+                    </div>
+
+                    <!-- 12. HTML to Image -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="convert">
+                        <a href="html2image.html" class="tool-card">
+                            <div class="icon-box ic-yellow"><i class="fa-brands fa-html5"></i></div>
+                            <h5>HTML to IMAGE</h5><p>Convert webpages to JPG or SVG.</p>
+                        </a>
+                    </div>
+
+                    <!-- 13. Blur Face -->
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category="security">
+                        <a href="blur.html" class="tool-card">
+                            <span class="badge-new">New!</span>
+                            <div class="icon-box ic-blue"><i class="fa-solid fa-user-secret"></i></div>
+                            <h5>Blur Face</h5><p>Blur out faces or private info.</p>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- 3. Load Footer -->
+    <!-- Shared Footer -->
     <div id="footer-placeholder"></div>
 
-    <!-- JS -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/global.js"></script> <!-- Loads header/footer -->
+    <script src="js/global.js"></script>
+
+    <!-- Specific Script for Home Page Filtering -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterBtns = document.querySelectorAll('#homeFilters .btn');
+            const toolItems = document.querySelectorAll('.tool-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Remove active class from all
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked
+                    e.target.classList.add('active');
+
+                    const filterValue = e.target.getAttribute('data-filter');
+
+                    toolItems.forEach(item => {
+                        const category = item.getAttribute('data-category');
+                        if (filterValue === 'all' || category === filterValue) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
