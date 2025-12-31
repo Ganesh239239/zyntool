@@ -4,46 +4,45 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  if (!toolEntries) return [];
+  if (!toolEntries || toolEntries.length === 0) return [];
+  
   return toolEntries.map(entry => ({
-    params: { slug: entry.slug || entry.id }, props: { entry },
+    params: { slug: entry.slug || entry.id }, 
+    props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-if (!entry) return Astro.redirect('/404');
 
-const allTools = await getCollection('tools');
-const relatedTools = allTools.filter(t => (t.slug || t.id) !== (entry.slug || entry.id)).slice(0, 6);
+// BUILD SAFETY: If Cloudflare hits a route it doesn't recognize, don't crash
+if (!entry) {
+  return Astro.redirect('/404');
+}
 
 const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
----
 
-// SEO Keyword Strategy (iLoveIMG Style)
+// SEO Strategy
 const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
-const seoDesc = `Use our professional ${entry.data.title} tool to process your images in seconds. ${entry.data.description} No registration required, 100% secure.`;
+const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy and speed. No registration required.`;
 
-// JSON-LD Schema for Google Search Snippets
+// JSON-LD Schema (Fixed syntax)
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": entry.data.title,
-  "url": Astro.url.href,
+  "url": `https://zyntool.pages.dev/${toolId}`,
   "description": seoDesc,
   "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows, macOS, Android, iOS",
   "offers": {
     "@type": "Offer",
-    "price": "0.00",
+    "price": "0",
     "priceCurrency": "USD"
-  },
-  "operatingSystem": "Windows, macOS, Android, iOS"
+  }
 };
 ---
 
- title={seoTitle} description={seoDesc}>
-    <!-- Inject Schema in Head -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
 <MainLayout title={seoTitle} description={seoDesc}>
     <!-- Inject Schema in Head -->
