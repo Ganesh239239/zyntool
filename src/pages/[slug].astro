@@ -1,8 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-
-// Import our new modular components
 import CompressTool from '../components/tools/CompressTool.astro';
 
 export async function getStaticPaths() {
@@ -14,10 +12,12 @@ const { entry } = Astro.props;
 if (!entry) return Astro.redirect('/404');
 
 const toolId = entry.slug || entry.id;
+const allTools = await getCollection('tools');
+const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
 ---
 
-<MainLayout title={`${entry.data.title} Online - Free | ZynTool`}>
-    <!-- HERO SECTION (Shared across all tools) -->
+<MainLayout title={`${entry.data.title} - 100% Free Online | ZynTool`}>
+    <!-- Hero Section -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -25,22 +25,21 @@ const toolId = entry.slug || entry.id;
         </div>
     </div>
 
-    <div class="container tool-container pb-5">
+    <!-- Container with Stacking Fix -->
+    <div class="container tool-container-fixed pb-5">
         
-        <!-- TOOL LOGIC SWITCHER -->
-        {toolId === 'compress-image' && <CompressTool entry={entry} />}
+        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
         
-        <!-- Other tools will be added here one by one -->
         {toolId !== 'compress-image' && (
-            <div class="card p-5 text-center shadow-sm rounded-4">
-                <p class="text-muted">Component for <b>{entry.data.title}</b> is currently being modularized...</p>
+            <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
+                <p class="text-muted m-0">The <b>{entry.data.title}</b> component is being modularized...</p>
             </div>
         )}
 
-        <!-- POST CONTENT SECTION (Shared across all tools) -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
-                <slot /> <!-- Render Markdown Content -->
+                <!-- This renders your markdown content automatically -->
+                <entry.Content />
             </article>
         </div>
     </div>
@@ -48,6 +47,79 @@ const toolId = entry.slug || entry.id;
 
 <style>
     .fw-black { font-weight: 900; }
-    .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
-    .tool-hero { padding: 100px 0 100px; position: relative; }
+    
+    .tool-hero { 
+        padding: 100px 0 120px; 
+        position: relative;
+        z-index: 1; /* Stay below container */
+    }
+
+    /* THE FIX: Explicit positioning to prevent hero background from cutting card */
+    .tool-container-fixed { 
+        margin-top: -80px; 
+        position: relative; 
+        z-index: 10; /* Force it on top */
+    }
+</style>---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import CompressTool from '../components/tools/CompressTool.astro';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+if (!entry) return Astro.redirect('/404');
+
+const toolId = entry.slug || entry.id;
+const allTools = await getCollection('tools');
+const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
+---
+
+<MainLayout title={`${entry.data.title} - 100% Free Online | ZynTool`}>
+    <!-- Hero Section -->
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
+        </div>
+    </div>
+
+    <!-- Container with Stacking Fix -->
+    <div class="container tool-container-fixed pb-5">
+        
+        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+        
+        {toolId !== 'compress-image' && (
+            <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
+                <p class="text-muted m-0">The <b>{entry.data.title}</b> component is being modularized...</p>
+            </div>
+        )}
+
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
+                <!-- This renders your markdown content automatically -->
+                <entry.Content />
+            </article>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .fw-black { font-weight: 900; }
+    
+    .tool-hero { 
+        padding: 100px 0 120px; 
+        position: relative;
+        z-index: 1; /* Stay below container */
+    }
+
+    /* THE FIX: Explicit positioning to prevent hero background from cutting card */
+    .tool-container-fixed { 
+        margin-top: -80px; 
+        position: relative; 
+        z-index: 10; /* Force it on top */
+    }
 </style>
