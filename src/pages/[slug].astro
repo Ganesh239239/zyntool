@@ -12,50 +12,27 @@ export async function getStaticPaths() {
   }));
 }
 
-// 1. Fetch the data for the current page
 const { entry } = Astro.props;
 
-// BUILD GUARD: Prevent crash if tool is missing
 if (!entry) {
   return Astro.redirect('/404');
 }
 
-// 2. INTERNAL LINKING LOGIC: Fetch other tools for the sidebar
 const allTools = await getCollection('tools');
 const currentId = entry.slug || entry.id;
 const relatedTools = allTools
   .filter(t => (t.slug || t.id) !== currentId)
   .slice(0, 6);
 
-// 3. Render Markdown Content
 const { Content } = await entry.render();
 const toolId = entry.slug || entry.id;
 
-// 4. SEO Strategy
+// SEO Strategy
 const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
 const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy and speed. No registration required.`;
-
-// 5. JSON-LD Schema for Google
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": entry.data.title,
-  "url": `https://zyntool.pages.dev/${toolId}`,
-  "description": seoDesc,
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "Windows, macOS, Android, iOS",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
-};
 ---
 
 <MainLayout title={seoTitle} description={seoDesc}>
-    <!-- Inject Schema in Head -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -70,7 +47,7 @@ const jsonLd = {
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
                 </div>
-                <h2 class="fw-bold">Upload Image</h2>
+                <h2 class="fw-bold">Select Image</h2>
                 <p class="text-muted">Drag & drop your files here or click to browse</p>
                 <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
@@ -86,7 +63,7 @@ const jsonLd = {
                         </div>
                         <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
                             <div class="spinner-border text-primary mb-3"></div>
-                            <h5 class="fw-bold">Processing...</h5>
+                            <h5 class="text-white fw-bold">Processing...</h5>
                         </div>
                     </div>
                 </div>
@@ -104,7 +81,7 @@ const jsonLd = {
                             </button>
                         </div>
 
-                        <!-- OTHER TOOLS SECTION (relatedTools fix) -->
+                        <!-- OTHER TOOLS SECTION -->
                         <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
                             <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
                             <div class="row g-2">
@@ -125,9 +102,32 @@ const jsonLd = {
 
         <!-- STEP 3: RESULT -->
         <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-            <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 600px;">
+            <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
                 <div class="success-badge mb-4" style="width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem;"><i class="fa-solid fa-circle-check"></i></div>
                 <h2 class="fw-black mb-2 text-dark">Success!</h2>
+                
+                <!-- KB REDUCED STATS -->
+                <div id="savingsStats" class="row g-3 my-4 justify-content-center" style="display:none;">
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-light text-center">
+                            <div class="small text-muted">Old</div>
+                            <div id="oldSizeLabel" class="fw-bold small">0 KB</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-light text-center">
+                            <div class="small text-muted">New</div>
+                            <div id="newSizeLabel" class="fw-bold text-success small">0 KB</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 border rounded-4 bg-primary text-white shadow-sm text-center">
+                            <div class="small opacity-75">Lighter</div>
+                            <div id="percentLabel" class="fw-bold">0%</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="d-flex gap-2 flex-wrap justify-content-center pt-2 mt-4">
                     <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
                         <i class="fa-solid fa-download me-2"></i> Download Now
@@ -160,29 +160,158 @@ const jsonLd = {
     .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
     .fade-in { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Position Grid for Watermark */
+    .wm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 150px; }
+    .wm-dot { height: 35px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; border-radius: 6px; }
+    .wm-dot.active { background: #4B90FF; border-color: #4B90FF; }
 </style>
 
 <script is:inline define:vars={{ toolId }}>
-    // Add your existing processing logic here (the script block we fixed in Step 19/20)
-    // For now, here is a basic setup to ensure it doesn't crash
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
-    const mainPreview = document.getElementById('mainPreview');
+    const optionsPanel = document.getElementById('optionsPanel');
     const btnAction = document.getElementById('btnAction');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
 
-    if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    mainPreview.src = ev.target.result;
-                    uploadContainer.style.display = 'none';
-                    processingArea.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+    let originalFile = null;
+    let cropper = null;
+    let rotation = 0;
+    window.wmPos = 'c';
+
+    // Helper: Byte Converter
+    window.formatBytes = (bytes) => {
+        if (bytes === 0) return '0 KB';
+        const k = 1024;
+        const dm = 2;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    };
+
+    // --- TOOL REGISTRY ---
+    const ToolRegistry = {
+        'compress-image': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `
+                    <label class="fw-bold small d-flex justify-content-between">Quality <span id="qVal">70%</span></label>
+                    <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">`;
+                document.getElementById('qIn').oninput = (e) => document.getElementById('qVal').innerText = Math.round(e.target.value * 100) + '%';
+            },
+            process: async () => {
+                const q = parseFloat(document.getElementById('qIn').value);
+                const blob = await imageCompression(originalFile, { maxSizeMB: 1, initialQuality: q });
+                return { blob, ext: 'jpg' };
             }
-        });
-    }
+        },
+        'resize-image': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `
+                    <label class="small fw-bold">Width (px)</label>
+                    <input type="number" id="wIn" class="form-control mb-3" value="1200">
+                    <div class="form-check form-switch small"><input class="form-check-input" type="checkbox" checked id="ratioLock"><label>Lock Aspect Ratio</label></div>`;
+            },
+            process: async () => {
+                const w = parseInt(document.getElementById('wIn').value);
+                const blob = await imageCompression(originalFile, { maxWidthOrHeight: w });
+                return { blob, ext: 'png' };
+            }
+        },
+        'crop-image': {
+            renderUI: () => { optionsPanel.innerHTML = `<p class="alert alert-info small">Drag the box to crop.</p>`; },
+            process: async () => {
+                const canvas = cropper.getCroppedCanvas();
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
+        },
+        'watermark-image': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `
+                    <input type="text" id="wmText" class="form-control mb-3" placeholder="© ZynTool">
+                    <div class="wm-grid mb-3">
+                        <div class="wm-dot" onclick="window.setWM('tl', this)"></div><div class="wm-dot" onclick="window.setWM('tc', this)"></div><div class="wm-dot" onclick="window.setWM('tr', this)"></div>
+                        <div class="wm-dot" onclick="window.setWM('cl', this)"></div><div class="wm-dot active" onclick="window.setWM('c', this)"></div><div class="wm-dot" onclick="window.setWM('cr', this)"></div>
+                        <div class="wm-dot" onclick="window.setWM('bl', this)"></div><div class="wm-dot" onclick="window.setWM('bc', this)"></div><div class="wm-dot" onclick="window.setWM('br', this)"></div>
+                    </div>`;
+            },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                ctx.font = `bold ${canvas.width/15}px Arial`; ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.textAlign = "center";
+                let x = canvas.width/2, y = canvas.height/2;
+                if(window.wmPos.includes('t')) y = 80; if(window.wmPos.includes('b')) y = canvas.height - 80;
+                if(window.wmPos.includes('l')) { x = 40; ctx.textAlign = "left"; } if(window.wmPos.includes('r')) { x = canvas.width - 40; ctx.textAlign = "right"; }
+                ctx.fillText(document.getElementById('wmText').value || 'ZynTool', x, y);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                return { blob, ext: 'png' };
+            }
+        }
+    };
+
+    // Helper Globals
+    window.setWM = (p, btn) => {
+        window.wmPos = p;
+        document.querySelectorAll('.wm-dot').forEach(d => d.classList.remove('active'));
+        btn.classList.add('active');
+    };
+
+    // INIT
+    const currentTool = ToolRegistry[toolId] || { 
+        renderUI: () => { optionsPanel.innerHTML = '<p class="text-muted small">Standard optimized processing.</p>'; },
+        process: async () => { return { blob: originalFile, ext: 'png' }; }
+    };
+    currentTool.renderUI();
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+                if (toolId === 'crop-image') {
+                    if (cropper) cropper.destroy();
+                    setTimeout(() => { cropper = new Cropper(mainPreview, { viewMode: 1, autoCropArea: 0.8 }); }, 200);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+        try {
+            const result = await currentTool.process();
+            
+            // KB Saved Logic
+            if (toolId === 'compress-image') {
+                document.getElementById('savingsStats').style.display = 'flex';
+                document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
+                document.getElementById('newSizeLabel').innerText = formatBytes(result.blob.size);
+                document.getElementById('percentLabel').innerText = Math.round(((originalFile.size - result.blob.size)/originalFile.size)*100) + '%';
+            }
+
+            const url = URL.createObjectURL(result.blob);
+            document.getElementById('downloadBtn').href = url;
+            document.getElementById('downloadBtn').download = `zyntool-${Date.now()}.${result.ext}`;
+            
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+            }, 800);
+        } catch (e) {
+            alert("Process failed."); internalLoader.classList.add('d-none'); btnAction.disabled = false;
+        }
+    });
 </script>
