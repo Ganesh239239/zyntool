@@ -47,8 +47,50 @@ const { title } = Astro.props;
             .navbar-collapse { background: #fff; padding: 20px; border-bottom: 1px solid #eee; }
         }
 
-        footer { background: #1a1c1e; color: #999; padding: 40px 0; font-size: 0.85rem; }
-        .footer-links a { color: #999; text-decoration: none; margin: 0 10px; }
+       /* --- FIXED FOOTER DESIGN --- */
+    footer { 
+        background-color: #1a1c1e; 
+        color: #94a3b8; 
+        padding: 60px 0 40px; 
+        margin-top: auto; 
+    }
+
+    .footer-links { 
+        list-style: none; /* Removes the dots */
+        padding: 0;       /* Removes the left space */
+        margin: 0 0 25px 0;
+        display: flex; 
+        justify-content: center; 
+        gap: 30px;        /* Spacing between links */
+    }
+
+    .footer-links a { 
+        color: #94a3b8; 
+        text-decoration: none; 
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: 0.2s; 
+    }
+
+    .footer-links a:hover { 
+        color: #fff; 
+    }
+
+    .footer-copyright {
+        font-size: 0.85rem;
+        color: #64748b;
+        border-top: 1px solid #2d3135;
+        padding-top: 25px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 767px) {
+        .footer-links {
+            flex-direction: column; /* Stacks links vertically on small screens */
+            gap: 15px;
+        }
+    }
+
     </style>
 
 </head>
@@ -77,11 +119,16 @@ const { title } = Astro.props;
 
     <footer>
         <div class="container text-center">
-            <ul class="footer-links mb-3">
-                <li><a href="/about">About</a></li>
-                <li><a href="/privacy">Privacy</a></li>
+            <ul class="footer-links">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/contact">Contact</a></li>
             </ul>
-            <p>© 2025 ZynTool ® - Your Image Editor</p>
+            
+            <div class="footer-copyright">
+                <p> Copyright @ 2025 Zyntool</p>
+            </div>
         </div>
     </footer>
 
