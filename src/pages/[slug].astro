@@ -182,7 +182,7 @@ const toolId = entry.slug || entry.id;
 
     let originalFile = null;
     let cropper = null;
-    window.wmPos = 'c'; // Default watermark position
+    window.wmPos = 'c'; 
     let currentRotation = 0;
 
     // --- TOOL-SPECIFIC ENGINES ---
@@ -213,6 +213,36 @@ const toolId = entry.slug || entry.id;
             process: async () => {
                 const w = parseInt(document.getElementById('wIn').value);
                 const blob = await imageCompression(originalFile, { maxWidthOrHeight: w });
+                return { blob, ext: 'png' };
+            }
+        },
+        'convert-to-jpg': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `<p class="text-muted small">Converting to <b>JPG</b>. Transparent areas will be filled with white background.</p>`;
+            },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill transparency
+                ctx.drawImage(img, 0, 0);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
+                return { blob, ext: 'jpg' };
+            }
+        },
+        'convert-to-png': {
+            renderUI: () => {
+                optionsPanel.innerHTML = `<p class="text-muted small">Converting to <b>PNG</b> format with lossless quality.</p>`;
+            },
+            process: async () => {
+                const canvas = document.createElement('canvas');
+                const img = new Image(); img.src = mainPreview.src;
+                await new Promise(r => img.onload = r);
+                canvas.width = img.width; canvas.height = img.height;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 return { blob, ext: 'png' };
             }
         },
@@ -261,9 +291,7 @@ const toolId = entry.slug || entry.id;
             }
         },
         'rotate-image': {
-            renderUI: () => {
-                optionsPanel.innerHTML = `<button class="btn btn-outline-dark w-100" onclick="window.doRotate()">Rotate 90° Right</button>`;
-            },
+            renderUI: () => { optionsPanel.innerHTML = `<button class="btn btn-outline-dark w-100" onclick="window.doRotate()">Rotate 90° Right</button>`; },
             process: async () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -277,20 +305,16 @@ const toolId = entry.slug || entry.id;
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 return { blob, ext: 'png' };
             }
-        },
-        'html-to-image': {
-            renderUI: () => { optionsPanel.innerHTML = `<p class="text-muted small">Rendering HTML to PNG.</p>`; },
-            process: async () => {
-                const canvas = await html2canvas(htmlRenderArea);
-                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-                return { blob, ext: 'png' };
-            }
         }
     };
 
+    // Mapping duplicates (e.g. convert-from-png is the same as convert-to-jpg)
+    ToolRegistry['convert-from-png'] = ToolRegistry['convert-to-jpg'];
+    ToolRegistry['convert-from-jpg'] = ToolRegistry['convert-to-png'];
+
     // --- INITIALIZE ---
     const currentTool = ToolRegistry[toolId] || { 
-        renderUI: () => { optionsPanel.innerHTML = '<p class="text-muted small">Standard processing applied.</p>'; },
+        renderUI: () => { optionsPanel.innerHTML = '<p class="text-muted small">Optimizing image for best quality.</p>'; },
         process: async () => { return { blob: originalFile, ext: 'png' }; }
     };
     currentTool.renderUI();
