@@ -1,0 +1,69 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Home | Every tool you need to edit images">
+    <!-- Hero Section -->
+    <section class="hero py-5 text-center bg-light">
+        <div class="container">
+            <h1 class="fw-bold display-4">Every tool you could want to<br> edit images in bulk</h1>
+            <p class="lead text-muted">Your online photo editor is here and forever free!</p>
+            
+            <div class="filter-pills d-flex flex-wrap justify-content-center gap-2 mt-4">
+                <button class="btn btn-outline-dark active">All</button>
+                <button class="btn btn-outline-dark">Optimize</button>
+                <button class="btn btn-outline-dark">Edit</button>
+                <button class="btn btn-outline-dark">Convert</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <section class="tools-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Tool: Compress -->
+                <div class="col-12 col-md-4 col-lg-3">
+                    <a href="/compress-image" class="text-decoration-none">
+                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
+                            <div class="icon-box mb-3 text-success fs-2"><i class="fa-solid fa-compress-arrows-alt"></i></div>
+                            <h5 class="fw-bold text-dark">Compress IMAGE</h5>
+                            <p class="text-muted small">Compress JPG, PNG, SVG, GIF.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Tool: Resize -->
+                <div class="col-12 col-md-4 col-lg-3">
+                    <a href="/resize-image" class="text-decoration-none">
+                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
+                            <div class="icon-box mb-3 text-primary fs-2"><i class="fa-solid fa-expand"></i></div>
+                            <h5 class="fw-bold text-dark">Resize IMAGE</h5>
+                            <p class="text-muted small">Define dimensions by pixels.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Tool: Crop -->
+                <div class="col-12 col-md-4 col-lg-3">
+                    <a href="/crop-image" class="text-decoration-none">
+                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
+                            <div class="icon-box mb-3 text-primary fs-2"><i class="fa-solid fa-crop-simple"></i></div>
+                            <h5 class="fw-bold text-dark">Crop IMAGE</h5>
+                            <p class="text-muted small">Crop JPG, PNG, or GIFs.</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Add more tools here later -->
+            </div>
+        </div>
+    </section>
+</MainLayout>
+
+<style>
+    .hero { background-color: #f4f7fa !important; padding: 60px 0; }
+    .tool-card { transition: all 0.3s ease; cursor: pointer; border-color: #eee !important; }
+    .tool-card:hover { transform: translateY(-5px); border-color: var(--primary-blue) !important; box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .icon-box { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #f8f9fa; }
+</style>
