@@ -1,4 +1,5 @@
 ---
+category: "optimize"
 title: "Compress IMAGE"
 description: "Reduce file size while optimizing for maximal quality."
 color: "#4CAF50"
