@@ -5,7 +5,8 @@ import MainLayout from '../layouts/MainLayout.astro';
 // Import modular components
 import CompressTool from '../components/tools/CompressTool.astro';
 import ResizeTool from '../components/tools/ResizeTool.astro';
-import CropTool from '../components/tools/CropTool.astro'; // ADD THIS
+import CropTool from '../components/tools/CropTool.astro';
+import WatermarkTool from '../components/tools/WatermarkTool.astro'; // ADD THIS
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
@@ -35,15 +36,16 @@ const { Content } = await entry.render();
         {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
         
-        {/* Fallback for tools not yet split into components */}
-        {!['compress-image', 'resize-image', 'crop-image'].includes(toolId) && (
+        {/* Fallback for components not yet created */}
+        {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && (
             <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
                 </div>
                 <h4 class="fw-bold">Modularizing Tool...</h4>
-                <p class="text-muted m-0">This feature is being moved to our high-performance modular engine.</p>
+                <p class="text-muted m-0">Coming soon.</p>
             </div>
         )}
 
@@ -54,10 +56,3 @@ const { Content } = await entry.render();
         </div>
     </div>
 </MainLayout>
-
-<style>
-    .fw-black { font-weight: 900; }
-    .tool-hero { padding: 100px 0 120px; position: relative; z-index: 1; }
-    .tool-container-fixed { margin-top: -80px; position: relative; z-index: 10; }
-    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
-</style>
