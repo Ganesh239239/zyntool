@@ -5,12 +5,13 @@ const tools = await getCollection('tools');
 ---
 
 <MainLayout title="Home | Every tool you need to edit images">
-    <!-- Hero Section -->
+    <!-- HERO SECTION: Clean & Balanced -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="hero-title">Every tool you could want to edit images in bulk</h1>
+            <h1 class="hero-title">Every tool you could want to <span class="text-primary">edit images</span> in bulk</h1>
             <p class="hero-subtitle">Your online photo editor is here and forever free!</p>
 
+            <!-- DESIGN FROM YOUR IMAGE (STAYS THE SAME) -->
             <div class="filter-container mt-4">
                 <button class="filter-pill active" onclick="filterTools('all', this)">All</button>
                 <button class="filter-pill" onclick="filterTools('optimize', this)">Optimize</button>
@@ -22,14 +23,14 @@ const tools = await getCollection('tools');
         </div>
     </section>
 
-    <!-- Tool Grid -->
+    <!-- TOOLS GRID: Preserving your exact mobile layout -->
     <section class="tools-grid py-4">
         <div class="container">
             <div class="row g-3" id="toolsGrid">
                 {tools.map((tool) => (
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category={tool.data.category}>
                         <a href={`/${tool.slug || tool.id}`} class="tool-link">
-                            <div class="tool-card shadow-sm">
+                            <div class="tool-card">
                                 <div class="card-header-wrapper">
                                     <div class="tool-icon-box" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
                                         <i class={`fa-solid ${tool.data.icon}`}></i>
@@ -44,34 +45,6 @@ const tools = await getCollection('tools');
             </div>
         </div>
     </section>
-
-<section class="features-section py-5 bg-white border-top">
-    <div class="container">
-        <div class="row text-center g-4">
-            <div class="col-md-4">
-                <div class="p-3">
-                    <div class="mb-3 text-primary"><i class="fa-solid fa-shield-halved fa-3x"></i></div>
-                    <h5 class="fw-bold">Privacy First</h5>
-                    <p class="text-muted small">Your images never leave your browser. We never see your data.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3">
-                    <div class="mb-3 text-primary"><i class="fa-solid fa-bolt-lightning fa-3x"></i></div>
-                    <h5 class="fw-bold">Instant Processing</h5>
-                    <p class="text-muted small">Powered by your hardware. No waiting for server queues.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3">
-                    <div class="mb-3 text-primary"><i class="fa-solid fa-face-smile fa-3x"></i></div>
-                    <h5 class="fw-bold">Completely Free</h5>
-                    <p class="text-muted small">All tools are available without subscription or registration.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
     <script is:inline>
         function filterTools(cat, btn) {
@@ -91,67 +64,76 @@ const tools = await getCollection('tools');
 </MainLayout>
 
 <style>
-    /* --- HERO STYLES --- */
-    .hero-section { padding: 60px 0 30px; background-color: #f8f9fa; }
-    .hero-title { font-size: 2.5rem; font-weight: 800; color: #333; letter-spacing: -1px; }
-    .hero-subtitle { color: #666; font-size: 1.1rem; }
+    /* --- HERO STYLES (Refined) --- */
+    .hero-section { padding: 80px 0 40px; background-color: #f8f9fa; border-bottom: 1px solid #f1f3f5; }
+    .hero-title { font-size: 2.8rem; font-weight: 850; color: #1a202c; letter-spacing: -1.5px; line-height: 1.1; }
+    .hero-subtitle { color: #4a5568; font-size: 1.15rem; margin-top: 15px; }
 
-    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    /* --- FILTER PILLS (Matching your image exactly) --- */
+    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
     .filter-pill {
         border: 1px solid #dee2e6;
         background: #fff;
-        padding: 6px 22px;
+        padding: 8px 24px;
         border-radius: 50px;
         font-weight: 600;
         font-size: 0.9rem;
         cursor: pointer;
-        transition: 0.2s;
+        transition: 0.2s ease;
     }
     .filter-pill.active { background-color: #2c2e33; color: #fff; border-color: #2c2e33; }
+    .filter-pill:hover:not(.active) { background-color: #f1f3f5; }
 
-    /* --- TOOL CARD BASE --- */
+    /* --- TOOL CARD BASE (Professional Standard) --- */
     .tool-link { text-decoration: none; display: block; height: 100%; }
     .tool-card {
         background: #fff;
-        border: 1px solid #e0e6ed;
-        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
         padding: 24px;
-        transition: 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         height: 100%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
+    
     .tool-icon-box {
-        width: 48px;
-        height: 48px;
-        min-width: 48px;
-        border-radius: 12px;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
-    .tool-name { font-weight: 700; color: #2d3748; margin: 0; }
+    
+    .tool-name { font-weight: 700; color: #2d3748; margin: 0; letter-spacing: -0.5px; }
     .tool-desc { font-size: 0.92rem; color: #718096; line-height: 1.5; margin: 0; }
 
-    /* --- DESKTOP VERSION (Vertical Layout) --- */
+    /* --- DESKTOP VIEW: Vertical Stack --- */
     @media (min-width: 768px) {
-        .tool-card { text-align: center; padding: 30px 20px; }
-        .card-header-wrapper { display: block; } /* Icon on top of text */
-        .tool-icon-box { margin: 0 auto 15px; } /* Center icon */
-        .tool-name { font-size: 1.2rem; margin-bottom: 10px; }
-        .tool-card:hover { transform: translateY(-5px); border-color: #4B90FF; box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important; }
+        .tool-card { text-align: center; padding: 40px 24px; }
+        .card-header-wrapper { display: block; } 
+        .tool-icon-box { margin: 0 auto 20px; } 
+        .tool-name { font-size: 1.25rem; margin-bottom: 12px; }
+        .tool-card:hover { 
+            transform: translateY(-6px); 
+            border-color: var(--primary-blue); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.06) !important; 
+        }
     }
 
-    /* --- MOBILE VERSION (Horizontal Layout - Matching your Image) --- */
+    /* --- MOBILE VIEW: Horizontal Stack (Matching your Sample Image) --- */
     @media (max-width: 767px) {
-        .hero-title { font-size: 1.8rem; }
-        .tool-card { text-align: left; padding: 20px; }
+        .hero-title { font-size: 1.9rem; padding: 0 10px; }
+        .tool-card { text-align: left; padding: 20px; border-radius: 24px; }
         .card-header-wrapper { 
-            display: flex; /* Icon next to text */
+            display: flex; 
             align-items: center; 
-            gap: 15px; 
+            gap: 16px; 
             margin-bottom: 12px; 
         }
-        .tool-name { font-size: 1.1rem; }
+        .tool-name { font-size: 1.15rem; }
         .tool-desc { font-size: 0.88rem; }
     }
 </style>
