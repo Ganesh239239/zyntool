@@ -1,9 +1,11 @@
+// js/global.js
+
 document.addEventListener("DOMContentLoaded", function() {
-    loadComponent('header-placeholder', '/components/header.html');
-    loadComponent('footer-placeholder', '/components/footer.html');
+    loadComponent('header-placeholder', 'components/header.html', initNavbar);
+    loadComponent('footer-placeholder', 'components/footer.html');
 });
 
-async function loadComponent(elementId, filePath) {
+async function loadComponent(elementId, filePath, callback) {
     try {
         const response = await fetch(filePath);
         if (!response.ok) throw new Error(`Could not load ${filePath}`);
@@ -11,14 +13,25 @@ async function loadComponent(elementId, filePath) {
         const html = await response.text();
         document.getElementById(elementId).innerHTML = html;
 
-        // Re-initialize Bootstrap Mobile Menu after HTML is injected
-        if (elementId === 'header-placeholder') {
-            const toggle = document.querySelector('.navbar-toggler');
-            const collapse = document.getElementById('navbarNav');
-            // We rely on Bootstrap's data-bs-toggle, but since we injected HTML dynamically, 
-            // sometimes we need to manually re-attach listeners or just ensure bootstrap.js is loaded last.
-        }
+        if (callback) callback();
+
     } catch (error) {
         console.error("Error loading component:", error);
+    }
+}
+
+// FIX: Initialize the mobile menu manually after injection
+function initNavbar() {
+    const toggleBtn = document.querySelector('.navbar-toggler');
+    const collapseElement = document.querySelector('.navbar-collapse');
+    
+    if (toggleBtn && collapseElement) {
+        toggleBtn.addEventListener('click', function() {
+            // Using Bootstrap 5 API to toggle
+            const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                toggle: false
+            });
+            bsCollapse.toggle();
+        });
     }
 }
