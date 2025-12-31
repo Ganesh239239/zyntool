@@ -1,256 +1,219 @@
 ---
-const { title } = Astro.props;
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const toolId = entry.slug || entry.id;
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title} | iLoveIMG Clone</title>
-   
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Libraries for Image Processing -->
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<script is:inline src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 
-    <style>
-        :root { --primary-blue: #4B90FF; --dark-bg: #212529; }
-        body { font-family: 'Inter', sans-serif; padding-top: 70px; }
+<MainLayout title={entry.data.title}>
+    <!-- Advanced Tool Header -->
+    <div class="tool-hero py-5" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center text-white">
+            <div class="pro-badge mb-3">ZYN ENGINE 2.0</div>
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
+        </div>
+    </div>
 
-        /* --- Professional Navbar --- */
-        .navbar { background: #fff; border-bottom: 1px solid #eaeaea; height: 70px; }
-        .navbar-brand { font-weight: 800; color: #333 !important; font-size: 1.5rem; }
+    <div class="container mt-n5 position-relative">
         
-        .nav-link { 
-            color: #333 !important; 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            padding: 10px 15px !important;
-            transition: 0.2s;
-        }
-        .nav-link:hover { color: var(--primary-blue) !important; }
-
-        /* Hamburger Icon (GeneratePress Style) */
-        .navbar-toggler { border: none; padding: 0; }
-        .navbar-toggler:focus { shadow: none; outline: none; box-shadow: none; }
-        .hamburger-icon { width: 25px; height: 2px; background: #333; display: block; position: relative; }
-        .hamburger-icon::before, .hamburger-icon::after { content: ''; width: 25px; height: 2px; background: #333; position: absolute; left: 0; transition: 0.3s; }
-        .hamburger-icon::before { top: -8px; }
-        .hamburger-icon::after { top: 8px; }
-
-        @media (max-width: 991px) {
-            .navbar-collapse { background: #fff; padding: 20px; border-bottom: 1px solid #eee; }
-        }
-
-       /* --- FIXED FOOTER DESIGN --- */
-    footer { 
-        background-color: #1a1c1e; 
-        color: #94a3b8; 
-        padding: 60px 0 40px; 
-        margin-top: auto; 
-    }
-
-    .footer-links { 
-        list-style: none; /* Removes the dots */
-        padding: 0;       /* Removes the left space */
-        margin: 0 0 25px 0;
-        display: flex; 
-        justify-content: center; 
-        gap: 30px;        /* Spacing between links */
-    }
-
-    .footer-links a { 
-        color: #94a3b8; 
-        text-decoration: none; 
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: 0.2s; 
-    }
-
-    .footer-links a:hover { 
-        color: #fff; 
-    }
-
-    .footer-copyright {
-        font-size: 0.85rem;
-        color: #64748b;
-        border-top: 1px solid #2d3135;
-        padding-top: 25px;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 767px) {
-        .footer-links {
-            flex-direction: column; /* Stacks links vertically on small screens */
-            gap: 15px;
-        }
-    }
-
-/* --- NAVBAR BASE --- */
-    .navbar { 
-        background: #ffffff; 
-        border-bottom: 1px solid #f0f0f0; 
-        height: 70px; 
-        z-index: 1050; 
-    }
-
-    /* --- HAMBURGER ANIMATION (GeneratePress Style) --- */
-    .navbar-toggler { border: none; padding: 10px; }
-    .hamburger-wrapper {
-        width: 25px;
-        height: 20px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .line {
-        width: 100%;
-        height: 2px;
-        background-color: #333;
-        transition: 0.3s;
-        border-radius: 2px;
-    }
-
-    /* --- MOBILE OVERLAY MENU --- */
-    @media (max-width: 991px) {
-        .navbar-collapse {
-            position: fixed;
-            top: 0;
-            left: 0; /* Change to right: 0 if you want it to slide from right */
-            width: 100%;
-            height: 100vh;
-            background: #ffffff;
-            z-index: 9999;
-            padding: 0;
-            display: block;
-            transform: translateX(-100%); /* Start hidden off-screen */
-            transition: transform 0.3s ease-in-out;
-            overflow-y: auto;
-        }
-
-        .navbar-collapse.show {
-            transform: translateX(0); /* Slide in */
-        }
-
-        .mobile-menu-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            background: #f9f9f9;
-        }
-
-        .menu-title { font-weight: 800; text-transform: uppercase; color: #666; font-size: 0.9rem; }
-        .close-menu { 
-            background: none; 
-            border: none; 
-            font-size: 1.5rem; 
-            color: #333; 
-        }
-
-        .navbar-nav {
-            padding: 20px 0;
-            text-align: left;
-        }
-
-        .nav-item {
-            border-bottom: 1px solid #f5f5f5;
-        }
-
-        .nav-link {
-            padding: 15px 25px !important;
-            font-size: 1.1rem;
-            display: block;
-            width: 100%;
-        }
-    }
-
-    /* --- DESKTOP NAVBAR --- */
-    @media (min-width: 992px) {
-        .nav-link {
-            font-weight: 600;
-            margin-left: 15px;
-            color: #333 !important;
-        }
-        .nav-link:hover { color: var(--primary-blue) !important; }
-    }
-
-    </style>
-
-</head>
-<body>
-   <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">ZYN<span class="text-primary">TOOL</span></a>
-            
-            <!-- GeneratePress Style Toggler -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-label="Toggle navigation">
-                <div class="hamburger-wrapper">
-                    <span class="line"></span>
-                    <span class="line"></span>
-                    <span class="line"></span>
+        <!-- STEP 1: UPLOADER -->
+        <div id="uploadContainer" class="card main-card shadow-lg border-0 rounded-4 p-2 bg-white mb-5">
+            <div class="uploader-zone p-5 text-center" onclick="document.getElementById('fileInput').click()">
+                <div class="icon-circle mb-3" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
                 </div>
-            </button>
-
-            <div class="collapse navbar-collapse" id="mainMenu">
-                <!-- Mobile Close Button (Hidden on Desktop) -->
-                <div class="mobile-menu-header d-lg-none">
-                    <span class="menu-title">Menu</span>
-                    <button class="close-menu" data-bs-toggle="collapse" data-bs-target="#mainMenu">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/compress-image">Compress</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/resize-image">Resize</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/crop-image">Crop</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/convert-to-jpg">Convert</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/remove-background">Remove BG</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                </ul>
+                <h2 class="fw-bold">Select Image</h2>
+                <p class="text-muted mb-4">Click to browse or drag and drop images</p>
+                <button class="btn btn-lg px-5 text-white rounded-pill fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                    Upload File
+                </button>
+                <input type="file" id="fileInput" hidden accept="image/*" />
             </div>
         </div>
-    </nav>
 
-    <main><slot /></main>
+        <!-- STEP 2: ADVANCED WORKSPACE -->
+        <div id="processingArea" style="display:none;" class="fade-in">
+            <div class="row g-4">
+                <!-- Large Live Preview -->
+                <div class="col-lg-8">
+                    <div class="workspace-card card border-0 shadow-lg rounded-4 overflow-hidden bg-secondary bg-opacity-10">
+                        <div class="preview-container">
+                            <!-- Wrapped in a div for Cropper.js to work correctly -->
+                            <div style="max-width: 100%; height: auto;">
+                                <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                            </div>
+                            <div id="internalLoader" class="loader-overlay d-none">
+                                <div class="spinner-border text-primary mb-3" role="status"></div>
+                                <h5 class="text-white fw-bold">Processing...</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <footer>
-        <div class="container text-center">
-            <ul class="footer-links">
-                <li><a href="/about">About Us</a></li>
-                <li><a href="/privacy">Privacy Policy</a></li>
-                <li><a href="/terms">Terms of Service</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-            
-            <div class="footer-copyright">
-                <p> Copyright @ 2025 Zyntool</p>
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-lg rounded-4 p-4 h-100 bg-white">
+                        <div class="d-flex align-items-center mb-4 text-primary">
+                            <i class={`fa-solid ${entry.data.icon} me-2`}></i>
+                            <h5 class="fw-bold m-0">{entry.data.title} Options</h5>
+                        </div>
+
+                        <div id="optionsPanel" class="mb-4">
+                            <!-- Dynamic UI injected here -->
+                        </div>
+
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-3 py-3 fw-bold shadow-sm" style={`background: ${entry.data.color}`}>
+                            <i class="fa-solid fa-bolt me-2"></i> Process & Download
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
 
-    <!-- Bootstrap JS for Dropdowns -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script is:inline>
-    // Listen for when the mobile menu opens/closes
-    const menu = document.getElementById('mainMenu');
-    
-    menu.addEventListener('show.bs.collapse', function () {
-        document.body.style.overflow = 'hidden'; // Stop scrolling
+        <!-- STEP 3: RESULT SECTION -->
+        <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+            <div class="card border-0 shadow-lg rounded-5 p-5 mx-auto" style="max-width: 500px;">
+                <div class="text-success mb-4"><i class="fa-solid fa-circle-check fa-5x"></i></div>
+                <h2 class="fw-bold">Perfectly Processed!</h2>
+                <div class="d-grid gap-2 mt-4">
+                    <a id="downloadBtn" class="btn btn-dark btn-lg py-3 rounded-3 fw-bold">Download Now</a>
+                    <button class="btn btn-outline-secondary py-2 rounded-3 fw-bold" onclick="location.reload()">Reset Tool</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-5"><article class="prose mx-auto"><Content /></article></div>
+    </div>
+</MainLayout>
+
+<style>
+    .fw-black { font-weight: 900; }
+    .mt-n5 { margin-top: -4rem !important; }
+    .pro-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; }
+    .uploader-zone { border: 3px dashed #cbd5e0; border-radius: 20px; transition: 0.3s; background: #fff; cursor: pointer; }
+    .uploader-zone:hover { border-color: #4B90FF; background: #f8fafc; }
+    .icon-circle { width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .preview-container { min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; background-color: #f0f2f5; }
+    .main-preview-img { max-height: 70vh; }
+    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
+    .fade-in { animation: slideUp 0.5s ease-out; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<script is:inline define:vars={{ toolId }}>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const optionsPanel = document.getElementById('optionsPanel');
+    const btnAction = document.getElementById('btnAction');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+
+    let cropper = null;
+
+    // --- 1. UI INJECTION (iLoveIMG Style) ---
+    function injectUI() {
+        let html = '';
+        if (toolId === 'crop-image') {
+            html = `
+                <label class="fw-bold small mb-2">Aspect Ratio</label>
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.setCropRatio(NaN)">Free Selection</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.setCropRatio(1)">Square (1:1)</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.setCropRatio(16/9)">Wide (16:9)</button>
+                </div>
+                <p class="text-muted small">Use the box on the image to select the area you want to keep.</p>
+            `;
+        } else if (toolId === 'compress-image') {
+            html = `<label class="fw-bold small mb-2">Compression Level</label><input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">`;
+        } else if (toolId === 'resize-image') {
+            html = `<div class="row g-2"><div class="col"><label class="small">Width</label><input type="number" id="wIn" class="form-control" value="1200"></div></div>`;
+        }
+        optionsPanel.innerHTML = html;
+    }
+
+    // Helper to change ratio live
+    window.setCropRatio = (ratio) => {
+        if(cropper) cropper.setAspectRatio(ratio);
+    }
+
+    injectUI();
+
+    // --- 2. FILE SELECTION & CROPPER INIT ---
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+
+                // INITIALIZE CROPPER ONLY IF TOOL IS CROP
+                if (toolId === 'crop-image') {
+                    if (cropper) cropper.destroy();
+                    setTimeout(() => {
+                        cropper = new Cropper(mainPreview, {
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 0.8,
+                            responsive: true
+                        });
+                    }, 200);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     });
 
-    menu.addEventListener('hide.bs.collapse', function () {
-        document.body.style.overflow = 'auto'; // Enable scrolling
+    // --- 3. EXECUTION ---
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const file = fileInput.files[0];
+            let blob;
+
+            if (toolId === 'crop-image' && cropper) {
+                // Get cropped data directly from Cropper.js
+                const canvas = cropper.getCroppedCanvas();
+                blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+            } else if (toolId === 'compress-image') {
+                const q = parseFloat(document.getElementById('qIn').value);
+                blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: q });
+            } else if (toolId === 'resize-image') {
+                const w = parseInt(document.getElementById('wIn').value);
+                blob = await imageCompression(file, { maxWidthOrHeight: w });
+            } else {
+                blob = file;
+            }
+
+            const url = URL.createObjectURL(blob);
+            document.getElementById('downloadBtn').href = url;
+            document.getElementById('downloadBtn').download = `zyntool-${file.name}`;
+            
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+            }, 800);
+
+        } catch (e) {
+            alert("Processing error");
+            console.error(e);
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
     });
 </script>
-</body>
-</html>
