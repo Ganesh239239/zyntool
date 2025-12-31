@@ -2,29 +2,29 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 
-// This grabs all your markdown tools automatically
 const tools = await getCollection('tools');
 ---
 
-<MainLayout title="Home | Every tool you need to edit images">
-    <!-- Hero Section -->
+<MainLayout title="Home">
     <section class="hero py-5 text-center bg-light">
         <div class="container">
             <h1 class="fw-bold display-4">Every tool you could want to<br> edit images in bulk</h1>
             <p class="lead text-muted">Your online photo editor is here and forever free!</p>
             
             <div class="filter-pills d-flex flex-wrap justify-content-center gap-2 mt-4">
-                <button class="btn btn-outline-dark active">All Tools</button>
+                <button class="btn btn-dark" onclick="filterTools('all')">All</button>
+                <button class="btn btn-outline-dark" onclick="filterTools('optimize')">Optimize</button>
+                <button class="btn btn-outline-dark" onclick="filterTools('edit')">Edit</button>
+                <button class="btn btn-outline-dark" onclick="filterTools('convert')">Convert</button>
             </div>
         </div>
     </section>
 
-    <!-- Tools Grid -->
     <section class="tools-section py-5">
         <div class="container">
-            <div class="row g-4">
+            <div class="row g-4" id="toolsGrid">
                 {tools.map((tool) => (
-                    <div class="col-12 col-md-4 col-lg-3">
+                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category={tool.data.category}>
                         <a href={`/${tool.slug || tool.id}`} class="text-decoration-none">
                             <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
                                 <div class="icon-box mb-3 fs-2" style={`color: ${tool.data.color}`}>
@@ -39,19 +39,17 @@ const tools = await getCollection('tools');
             </div>
         </div>
     </section>
-</MainLayout>
 
-<style>
-    .hero { background-color: #f4f7fa !important; padding: 60px 0; }
-    .tool-card { transition: all 0.3s ease; cursor: pointer; border-color: #eee !important; border-top: 4px solid transparent !important; }
-    .tool-card:hover { 
-        transform: translateY(-5px); 
-        border-top-color: var(--primary-blue) !important; 
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
-    }
-    .icon-box { 
-        width: 60px; height: 60px; 
-        display: flex; align-items: center; justify-content: center; 
-        border-radius: 12px; background: #f8f9fa; 
-    }
-</style>
+    <script is:inline>
+        function filterTools(cat) {
+            const items = document.querySelectorAll('.tool-item');
+            items.forEach(item => {
+                if(cat === 'all' || item.dataset.category === cat) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</MainLayout>
