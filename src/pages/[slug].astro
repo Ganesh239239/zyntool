@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<MainLayout title={entry.data.title}>
+    <div class="tool-header py-5 text-white" style={`background-color: ${entry.data.color}`}>
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">{entry.data.title}</h1>
+            <p class="lead">{entry.data.description}</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <!-- THE TOOL INTERFACE (Placeholder for now) -->
+        <div class="uploader-zone p-5 border-dashed text-center bg-light rounded-4 mb-5">
+            <i class={`fa-solid ${entry.data.icon} fa-4x mb-3`} style={`color: ${entry.data.color}`}></i>
+            <h3>Select Images</h3>
+            <p>Ready to process your file for {entry.data.title}</p>
+            <button class="btn btn-lg text-white" style={`background-color: ${entry.data.color}`}>Choose Files</button>
+        </div>
+
+        <!-- THE DYNAMIC CONTENT (Detects your Markdown text) -->
+        <article class="prose mx-auto" style="max-width: 800px;">
+            <Content />
+        </article>
+    </div>
+</MainLayout>
+
+<style>
+    .border-dashed { border: 3px dashed #ccc; }
+    .prose h3 { margin-top: 2rem; font-weight: 700; color: #333; }
+</style>
