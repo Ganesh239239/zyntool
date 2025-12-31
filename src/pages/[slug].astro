@@ -6,7 +6,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import CompressTool from '../components/tools/CompressTool.astro';
 import ResizeTool from '../components/tools/ResizeTool.astro';
 import CropTool from '../components/tools/CropTool.astro';
-import WatermarkTool from '../components/tools/WatermarkTool.astro'; // ADD THIS
+import WatermarkTool from '../components/tools/WatermarkTool.astro';
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
@@ -17,12 +17,20 @@ const { entry } = Astro.props;
 if (!entry) return Astro.redirect('/404');
 
 const toolId = entry.slug || entry.id;
+
+// Fetch all tools for the sidebar "Other Tools" feature
 const allTools = await getCollection('tools');
 const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
+
+// Extract Markdown Content
 const { Content } = await entry.render();
+
+// SEO Setup
+const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 ---
 
-<MainLayout title={`${entry.data.title} Online - Free | ZynTool`}>
+<MainLayout title={seoTitle}>
+    <!-- Hero Section -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -30,6 +38,7 @@ const { Content } = await entry.render();
         </div>
     </div>
 
+    <!-- FIXED CONTAINER: Explicit Z-Index to prevent border clipping -->
     <div class="container tool-container-fixed pb-5">
         
         <!-- TOOL LOGIC SWITCHER -->
@@ -38,17 +47,18 @@ const { Content } = await entry.render();
         {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
         
-        {/* Fallback for components not yet created */}
+        {/* Fallback for components not yet split */}
         {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && (
             <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
                 </div>
-                <h4 class="fw-bold">Modularizing Tool...</h4>
-                <p class="text-muted m-0">Coming soon.</p>
+                <h4 class="fw-bold">Modularizing Engine...</h4>
+                <p class="text-muted m-0">This tool is being optimized for the new modular system.</p>
             </div>
         )}
 
+        <!-- POST CONTENT -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
                 <Content />
@@ -56,3 +66,22 @@ const { Content } = await entry.render();
         </div>
     </div>
 </MainLayout>
+
+<style>
+    .fw-black { font-weight: 900; }
+    
+    .tool-hero { 
+        padding: 100px 0 120px; 
+        position: relative;
+        z-index: 1; /* Stay at the bottom layer */
+    }
+
+    /* THE FIX: Explicitly set position and high z-index */
+    .tool-container-fixed { 
+        margin-top: -80px; 
+        position: relative; 
+        z-index: 10; /* Force the container to be ABOVE the hero background */
+    }
+    
+    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
+</style>
