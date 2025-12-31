@@ -1,0 +1,55 @@
+---
+// This is the "MainLayout" that wraps every page
+const { title } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title} | iLoveIMG Clone</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Your original styles */
+        :root { --primary-blue: #4B90FF; --dark-text: #2c3e50; --light-bg: #f4f7fa; --footer-bg: #1f2227; }
+        body { font-family: 'Inter', sans-serif; background-color: #fff; color: #47474f; display: flex; flex-direction: column; min-height: 100vh; padding-top: 80px; }
+        .navbar { padding: 10px 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 80px; }
+        .navbar-brand { font-weight: 800; font-size: 1.8rem; color: #333; letter-spacing: -1px; display: flex; align-items: center; gap: 6px; cursor: pointer; text-decoration:none; }
+        footer { background-color: var(--footer-bg); color: #b0b3b8; padding: 50px 0; font-size: 0.9rem; margin-top: auto; position: relative; z-index: 10; }
+        .footer-links { list-style: none; display: flex; gap: 25px; padding: 0; margin: 0; }
+        .footer-links a { color: #b0b3b8; text-decoration: none; transition: 0.2s; }
+        .footer-links a:hover { color: white; }
+    </style>
+</head>
+<body>
+    <!-- Shared Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">I <i class="fa-solid fa-heart text-danger"></i> IMG</a>
+        </div>
+    </nav>
+
+    <!-- This "slot" is where the specific tool content will go -->
+    <main>
+        <slot />
+    </main>
+
+    <!-- Shared Footer -->
+    <footer>
+        <div class="container text-center">
+            <ul class="footer-links justify-content-center mb-3">
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/about">About Us</a></li>
+            </ul>
+            <p>© 2025 ZynTool - Your Image Editor</p>
+        </div>
+    </footer>
+</body>
+</html>
