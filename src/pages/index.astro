@@ -1,5 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
+
+// This grabs all your markdown tools automatically
+const tools = await getCollection('tools');
 ---
 
 <MainLayout title="Home | Every tool you need to edit images">
@@ -10,10 +14,7 @@ import MainLayout from '../layouts/MainLayout.astro';
             <p class="lead text-muted">Your online photo editor is here and forever free!</p>
             
             <div class="filter-pills d-flex flex-wrap justify-content-center gap-2 mt-4">
-                <button class="btn btn-outline-dark active">All</button>
-                <button class="btn btn-outline-dark">Optimize</button>
-                <button class="btn btn-outline-dark">Edit</button>
-                <button class="btn btn-outline-dark">Convert</button>
+                <button class="btn btn-outline-dark active">All Tools</button>
             </div>
         </div>
     </section>
@@ -22,40 +23,19 @@ import MainLayout from '../layouts/MainLayout.astro';
     <section class="tools-section py-5">
         <div class="container">
             <div class="row g-4">
-                <!-- Tool: Compress -->
-                <div class="col-12 col-md-4 col-lg-3">
-                    <a href="/compress-image" class="text-decoration-none">
-                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
-                            <div class="icon-box mb-3 text-success fs-2"><i class="fa-solid fa-compress-arrows-alt"></i></div>
-                            <h5 class="fw-bold text-dark">Compress IMAGE</h5>
-                            <p class="text-muted small">Compress JPG, PNG, SVG, GIF.</p>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Tool: Resize -->
-                <div class="col-12 col-md-4 col-lg-3">
-                    <a href="/resize-image" class="text-decoration-none">
-                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
-                            <div class="icon-box mb-3 text-primary fs-2"><i class="fa-solid fa-expand"></i></div>
-                            <h5 class="fw-bold text-dark">Resize IMAGE</h5>
-                            <p class="text-muted small">Define dimensions by pixels.</p>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Tool: Crop -->
-                <div class="col-12 col-md-4 col-lg-3">
-                    <a href="/crop-image" class="text-decoration-none">
-                        <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
-                            <div class="icon-box mb-3 text-primary fs-2"><i class="fa-solid fa-crop-simple"></i></div>
-                            <h5 class="fw-bold text-dark">Crop IMAGE</h5>
-                            <p class="text-muted small">Crop JPG, PNG, or GIFs.</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <!-- Add more tools here later -->
+                {tools.map((tool) => (
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <a href={`/${tool.slug || tool.id}`} class="text-decoration-none">
+                            <div class="tool-card p-4 border rounded shadow-sm bg-white h-100">
+                                <div class="icon-box mb-3 fs-2" style={`color: ${tool.data.color}`}>
+                                    <i class={`fa-solid ${tool.data.icon}`}></i>
+                                </div>
+                                <h5 class="fw-bold text-dark">{tool.data.title}</h5>
+                                <p class="text-muted small">{tool.data.description}</p>
+                            </div>
+                        </a>
+                    </div>
+                ))}
             </div>
         </div>
     </section>
@@ -63,7 +43,15 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 <style>
     .hero { background-color: #f4f7fa !important; padding: 60px 0; }
-    .tool-card { transition: all 0.3s ease; cursor: pointer; border-color: #eee !important; }
-    .tool-card:hover { transform: translateY(-5px); border-color: var(--primary-blue) !important; box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
-    .icon-box { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #f8f9fa; }
+    .tool-card { transition: all 0.3s ease; cursor: pointer; border-color: #eee !important; border-top: 4px solid transparent !important; }
+    .tool-card:hover { 
+        transform: translateY(-5px); 
+        border-top-color: var(--primary-blue) !important; 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
+    }
+    .icon-box { 
+        width: 60px; height: 60px; 
+        display: flex; align-items: center; justify-content: center; 
+        border-radius: 12px; background: #f8f9fa; 
+    }
 </style>
