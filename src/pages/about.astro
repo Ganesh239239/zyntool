@@ -3,8 +3,22 @@ import MainLayout from '../layouts/MainLayout.astro';
 ---
 
 <MainLayout title="About Us">
-    <div class="container py-5 text-center">
-        <h1 class="display-4 fw-bold">About ZynTool</h1>
-        <p class="lead">We provide professional-grade image tools for free.</p>
+    <section class="py-5 bg-light border-bottom">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">About ZynTool</h1>
+            <p class="lead text-muted">Professional-grade image tools, processed entirely in your browser.</p>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3>Our Mission</h3>
+                <p>ZynTool was created to provide a fast, secure, and free alternative to expensive image editing software. We believe that privacy is a right, which is why your images never leave your computer.</p>
+                
+                <h3 class="mt-4">How it works</h3>
+                <p>We use modern browser technologies (WebAssembly and Canvas) to edit your images locally. This means no waiting for server uploads and 100% security for your data.</p>
+            </div>
+        </div>
     </div>
 </MainLayout>
