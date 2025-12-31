@@ -43,199 +43,165 @@ const toolId = entry.slug || entry.id;
             </div>
         </div>
 
-        <!-- PROCESSING AREA -->
-        <div id="processingArea" style="display:none;" class="text-center">
-            <div class="preview-card p-4 border rounded shadow-sm mb-4 bg-white">
-                <!-- HTML Render Target -->
-                <div id="htmlPreviewContainer" style="display:none; margin: 0 auto; display: inline-block;"></div>
-                <!-- Image Render Target -->
-                <img id="imagePreview" src="" class="img-fluid rounded mb-3" style="max-height: 400px;" />
-                
-                <div id="optionsPanel" class="p-3 bg-light rounded mb-3 text-start"></div>
-                
-                <button id="btnAction" class="btn btn-lg w-100 text-white shadow-sm" style={`background-color: ${entry.data.color}`}>
-                    Process {entry.data.title}
-                </button>
-            </div>
-        </div>
-
-
-        <!-- PROCESSING AREA -->
+<!-- PROCESSING AREA -->
         <div id="processingArea" style="display:none;">
             <div class="row g-4">
-                <!-- Left: Preview / Comparison -->
                 <div class="col-lg-8">
-                    <div class="preview-card p-2 border rounded-4 bg-white shadow-sm overflow-hidden">
-                        <div id="comparisonWrapper" class="position-relative" style="display:none;">
-                            <img id="imageBefore" src="" class="img-fluid w-100">
-                            <div id="comparisonOverlay" class="position-absolute top-0 start-0 h-100 overflow-hidden" style="width: 50%; border-right: 2px solid white;">
-                                <img id="imageAfter" src="" class="img-fluid" style="max-width: none;">
-                            </div>
-                            <input type="range" id="compareSlider" class="position-absolute top-50 start-50 translate-middle w-100 opacity-0" style="z-index: 10; cursor: ew-resize;">
+                    <!-- Premium Comparison Slider -->
+                    <div class="comparison-container shadow-lg rounded-4 overflow-hidden position-relative bg-dark">
+                        <div class="comparison-label before">Original</div>
+                        <div class="comparison-label after">Processed</div>
+                        
+                        <!-- The "Before" Image (Static) -->
+                        <img id="imageBefore" src="" class="w-100 h-100 object-fit-contain">
+                        
+                        <!-- The "After" Image (Revealed by Slider) -->
+                        <div id="comparisonOverlay" class="position-absolute top-0 start-0 h-100 overflow-hidden" style="width: 50%;">
+                            <img id="imageAfter" src="" class="w-100 h-100 object-fit-contain bg-dark">
                         </div>
-                        <img id="imagePreview" src="" class="img-fluid rounded-3 w-100">
+                        
+                        <!-- The Professional Slider Handle -->
+                        <input type="range" id="compareSlider" min="0" max="100" value="50" class="comparison-slider">
+                        
+                        <!-- Loading Overlay inside the preview -->
+                        <div id="internalLoader" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-none flex-column align-items-center justify-content-center text-white">
+                            <div class="spinner-border text-primary mb-2"></div>
+                            <span class="fw-bold">Optimizing...</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Right: Premium Options & Batch List -->
                 <div class="col-lg-4 text-start">
-                    <div class="options-sidebar p-4 border rounded-4 bg-white shadow-sm h-100">
+                    <div class="options-sidebar p-4 border-0 rounded-4 bg-white shadow-sm h-100">
                         <div class="d-flex align-items-center mb-3">
-                            <span class="badge bg-warning text-dark me-2">PREMIUM</span>
+                            <div class="premium-icon-sm me-2"><i class="fa-solid fa-crown"></i></div>
                             <h5 class="fw-bold m-0">Settings</h5>
                         </div>
                         
                         <div id="optionsPanel" class="mb-4"></div>
+                        <div id="batchList" class="mb-4 small text-muted"></div>
 
-                        <div id="batchList" class="mb-4 small text-muted" style="max-height: 150px; overflow-y: auto;">
-                            <!-- File names appear here -->
-                        </div>
-
-                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill shadow" style={`background-color: ${entry.data.color}`}>
-                            Start Processing
+                        <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill shadow-sm py-3 fw-bold" style={`background-color: ${entry.data.color}`}>
+                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Start Processing
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- RESULT AREA (Hidden until processed) -->
-        <div id="resultArea" style="display:none;" class="text-center">
-            <div class="alert alert-success">Image Processed Successfully!</div>
-            <img id="resultImage" src="" class="img-fluid rounded mb-3 border" style="max-height: 400px;" />
-            <br />
-            <a id="downloadBtn" class="btn btn-dark btn-lg px-5">Download Processed Image</a>
-            <br />
-            <button class="btn btn-link mt-3" onclick="location.reload()">Process another</button>
+
+        <!-- RESULT AREA -->
+        <div id="resultArea" style="display:none;" class="mt-5 py-5 text-center fade-in">
+            <div class="result-card p-5 bg-white rounded-5 shadow-lg border-0 mx-auto" style="max-width: 600px;">
+                <div class="success-icon mb-4"><i class="fa-solid fa-circle-check"></i></div>
+                <h2 class="fw-bold mb-2">Task Complete!</h2>
+                <p class="text-muted mb-4">Your image has been professionally processed and is ready for use.</p>
+                
+                <div class="d-grid gap-3 d-sm-flex justify-content-center">
+                    <a id="downloadBtn" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="fa-solid fa-download me-2"></i> Download Image
+                    </a>
+                </div>
+
+                <!-- ATTRACTIVE RESTART BUTTON -->
+                <button class="btn btn-outline-primary btn-sm mt-5 rounded-pill px-4 py-2 fw-bold border-2" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another Image
+                </button>
+            </div>
         </div>
-
-        <hr class="my-5" />
-
-        <article class="prose mx-auto" style="max-width: 800px;">
-            <Content />
-        </article>
-    </div>
 
     <!-- CLIENT SIDE SCRIPT -->
   <script is:inline define:vars={{ toolId }}>
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
-    const imagePreview = document.getElementById('imagePreview');
     const btnAction = document.getElementById('btnAction');
-    const optionsPanel = document.getElementById('optionsPanel');
-    const batchList = document.getElementById('batchList');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
     
     // Comparison Elements
-    const comparisonWrapper = document.getElementById('comparisonWrapper');
     const imageBefore = document.getElementById('imageBefore');
     const imageAfter = document.getElementById('imageAfter');
     const comparisonOverlay = document.getElementById('comparisonOverlay');
     const compareSlider = document.getElementById('compareSlider');
 
     let selectedFiles = [];
-    let processedFiles = [];
 
-    // Initialize Options UI (Add Pro Formats)
+    // Setup Options UI
     if (toolId === 'compress-image') {
-        optionsPanel.innerHTML = `
-            <label class="fw-bold small d-flex justify-content-between">Quality <span>Recommended</span></label>
-            <input type="range" id="compQuality" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-            <label class="fw-bold small mt-3">Export Format</label>
-            <select id="exportFormat" class="form-select">
-                <option value="image/jpeg">JPEG (Standard)</option>
-                <option value="image/webp">WebP (Premium)</option>
-                <option value="image/avif">AVIF (Ultra Compressed)</option>
-            </select>
-        `;
+        document.getElementById('optionsPanel').innerHTML = `
+            <div class="p-3 bg-light rounded-3">
+                <label class="fw-bold small d-flex justify-content-between mb-2">Compression <span>70%</span></label>
+                <input type="range" id="compQuality" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                <label class="fw-bold small mt-3 d-block mb-2">Output Format</label>
+                <select id="exportFormat" class="form-select border-0 shadow-sm">
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/webp">WebP (Smallest)</option>
+                </select>
+            </div>`;
     }
 
-    // MULTI-FILE UPLOAD
-    fileInput.setAttribute('multiple', 'true');
     fileInput.addEventListener('change', (e) => {
         selectedFiles = Array.from(e.target.files);
         if (selectedFiles.length > 0) {
             uploadContainer.style.display = 'none';
             processingArea.style.display = 'block';
             
-            // Show first image as preview
             const reader = new FileReader();
             reader.onload = (e) => {
-                imagePreview.src = e.target.result;
                 imageBefore.src = e.target.result;
+                imageAfter.src = e.target.result; // Temporary
             };
             reader.readAsDataURL(selectedFiles[0]);
-
-            // Update Batch List
-            batchList.innerHTML = `<p class="fw-bold mb-1">Queue (${selectedFiles.length} files):</p>` + 
-                selectedFiles.map(f => `<div>• ${f.name}</div>`).join('');
         }
     });
 
-    // COMPARISON SLIDER LOGIC
+    // Slider Logic
     compareSlider.addEventListener('input', (e) => {
-        const value = e.target.value;
-        comparisonOverlay.style.width = value + '%';
+        comparisonOverlay.style.width = e.target.value + '%';
     });
 
-    // BATCH PROCESSING EXECUTION
+    // Main Action
     btnAction.addEventListener('click', async () => {
+        internalLoader.classList.replace('d-none', 'd-flex');
         btnAction.disabled = true;
-        btnAction.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processing...`;
-        
-        processedFiles = [];
 
-        for (let file of selectedFiles) {
-            try {
-                let resultBlob;
-                if (toolId === 'compress-image') {
-                    const quality = parseFloat(document.getElementById('compQuality').value);
-                    const format = document.getElementById('exportFormat').value;
-                    resultBlob = await imageCompression(file, { 
-                        maxSizeMB: 1, 
-                        initialQuality: quality,
-                        fileType: format 
-                    });
-                } else {
-                    resultBlob = file; // Fallback for other tools
-                }
-                processedFiles.push({ blob: resultBlob, name: file.name });
-            } catch (err) { console.error(err); }
-        }
+        try {
+            const file = selectedFiles[0];
+            let resultBlob;
 
-        // Show Comparison for the first file
-        if (processedFiles.length > 0) {
-            const resultUrl = URL.createObjectURL(processedFiles[0].blob);
-            imageAfter.src = resultUrl;
-            imagePreview.style.display = 'none';
-            comparisonWrapper.style.display = 'block';
+            if (toolId === 'compress-image') {
+                const quality = parseFloat(document.getElementById('compQuality').value);
+                const format = document.getElementById('exportFormat').value;
+                resultBlob = await imageCompression(file, { 
+                    maxSizeMB: 1, 
+                    initialQuality: quality,
+                    fileType: format 
+                });
+            } else {
+                resultBlob = file;
+            }
+
+            const url = URL.createObjectURL(resultBlob);
+            imageAfter.src = url;
             
-            // Setup Download
-            showResultView();
+            // DOWNLOAD SETUP
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.href = url;
+            downloadBtn.download = `zyntool-${file.name}`;
+
+            // HIDE PROCESSING, SHOW RESULT
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 800);
+
+        } catch (err) {
+            alert('Processing error');
+            console.error(err);
+            btnAction.disabled = false;
         }
     });
-
-    function showResultView() {
-        document.getElementById('resultArea').style.display = 'block';
-        const resultImage = document.getElementById('resultImage');
-        const downloadBtn = document.getElementById('downloadBtn');
-        
-        if (processedFiles.length === 1) {
-            const url = URL.createObjectURL(processedFiles[0].blob);
-            resultImage.src = url;
-            downloadBtn.href = url;
-            downloadBtn.innerText = "Download Image";
-        } else {
-            downloadBtn.innerText = `Download All (${processedFiles.length} files)`;
-            downloadBtn.onclick = () => {
-                processedFiles.forEach(f => {
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(f.blob);
-                    a.download = `zyntool-${f.name}`;
-                    a.click();
-                });
-            };
-        }
-    }
 </script>
 
 </Layout>
