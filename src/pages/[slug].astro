@@ -65,7 +65,7 @@ const toolId = entry.slug || entry.id;
 
     <!-- CLIENT SIDE SCRIPT -->
     <script is:inline define:vars={{ toolId }}>
-        const fileInput = document.getElementById('fileInput');
+       const fileInput = document.getElementById('fileInput');
         const uploadContainer = document.getElementById('uploadContainer');
         const processingArea = document.getElementById('processingArea');
         const imagePreview = document.getElementById('imagePreview');
@@ -73,8 +73,27 @@ const toolId = entry.slug || entry.id;
         const resultArea = document.getElementById('resultArea');
         const resultImage = document.getElementById('resultImage');
         const downloadBtn = document.getElementById('downloadBtn');
+        const optionsPanel = document.getElementById('optionsPanel');
 
         let selectedFile = null;
+
+        // SHOW OPTIONS BASED ON TOOL
+        if (toolId === 'resize-image') {
+            optionsPanel.innerHTML = `
+                <div class="row g-2">
+                    <div class="col">
+                        <label class="small fw-bold">Width (px)</label>
+                        <input type="number" id="resizeW" class="form-control" value="800">
+                    </div>
+                    <div class="col">
+                        <label class="small fw-bold">Height (px)</label>
+                        <input type="number" id="resizeH" class="form-control" value="600">
+                    </div>
+                </div>
+            `;
+        } else if (toolId === 'compress-image') {
+            optionsPanel.innerHTML = `<p class="text-muted mb-0">Recommended settings applied automatically for best quality.</p>`;
+        }
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -97,24 +116,30 @@ const toolId = entry.slug || entry.id;
             try {
                 let resultBlob;
                 
-                // LOGIC BASED ON THE TOOL TYPE
                 if (toolId === 'compress-image') {
                     resultBlob = await imageCompression(selectedFile, { maxSizeMB: 1, initialQuality: 0.6 });
-                } else {
-                    // Default fallback (just returns the file)
+                } 
+                else if (toolId === 'resize-image') {
+                    const width = document.getElementById('resizeW').value;
+                    const height = document.getElementById('resizeH').value;
+                    resultBlob = await imageCompression(selectedFile, { maxWidthOrHeight: Math.max(width, height) });
+                }
+                else {
                     resultBlob = selectedFile;
                 }
 
                 const url = URL.createObjectURL(resultBlob);
                 resultImage.src = url;
                 downloadBtn.href = url;
-                downloadBtn.download = `processed-${selectedFile.name}`;
+                downloadBtn.download = `zyntool-${selectedFile.name}`;
                 
                 processingArea.style.display = 'none';
                 resultArea.style.display = 'block';
             } catch (err) {
                 alert('Error processing image');
                 console.error(err);
+                btnAction.innerHTML = 'Try Again';
+                btnAction.disabled = false;
             }
         });
     </script>
