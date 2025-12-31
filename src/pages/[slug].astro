@@ -2,22 +2,22 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 
-// Import the Tool Components
+// Import our new modular components
 import CompressTool from '../components/tools/CompressTool.astro';
-import ResizeTool from '../components/tools/ResizeTool.astro';
-import CropTool from '../components/tools/CropTool.astro';
-import WatermarkTool from '../components/tools/WatermarkTool.astro';
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
   return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
 }
+
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+if (!entry) return Astro.redirect('/404');
+
 const toolId = entry.slug || entry.id;
 ---
 
-<MainLayout title={entry.data.title}>
+<MainLayout title={`${entry.data.title} Online - Free | ZynTool`}>
+    <!-- HERO SECTION (Shared across all tools) -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
@@ -26,19 +26,28 @@ const toolId = entry.slug || entry.id;
     </div>
 
     <div class="container tool-container pb-5">
-        <!-- RENDER THE SPECIFIC TOOL COMPONENT -->
-        {toolId === 'compress-image' && <CompressTool entry={entry} />}
-        {toolId === 'resize-image' && <ResizeTool entry={entry} />}
-        {toolId === 'crop-image' && <CropTool entry={entry} />}
-        {toolId === 'watermark-image' && <WatermarkTool entry={entry} />}
         
-        <!-- Placeholder for tools we haven't split yet -->
-        {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && 
-            <p class="text-center py-5">Tool logic coming soon...</p>
-        }
+        <!-- TOOL LOGIC SWITCHER -->
+        {toolId === 'compress-image' && <CompressTool entry={entry} />}
+        
+        <!-- Other tools will be added here one by one -->
+        {toolId !== 'compress-image' && (
+            <div class="card p-5 text-center shadow-sm rounded-4">
+                <p class="text-muted">Component for <b>{entry.data.title}</b> is currently being modularized...</p>
+            </div>
+        )}
 
+        <!-- POST CONTENT SECTION (Shared across all tools) -->
         <div class="content-section mt-5 pt-5 border-top">
-            <article class="prose mx-auto"><Content /></article>
+            <article class="prose mx-auto">
+                <slot /> <!-- Render Markdown Content -->
+            </article>
         </div>
     </div>
 </MainLayout>
+
+<style>
+    .fw-black { font-weight: 900; }
+    .tool-container { margin-top: -5rem; position: relative; z-index: 10; }
+    .tool-hero { padding: 100px 0 100px; position: relative; }
+</style>
