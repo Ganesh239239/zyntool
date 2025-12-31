@@ -1,0 +1,177 @@
+---
+const { entry } = Astro.props;
+---
+
+<div id="compress-tool">
+    <!-- STEP 1: UPLOAD -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Select Images</h2>
+            <p class="text-muted small">or drop them here</p>
+            <input type="file" id="fileInput" hidden accept="image/*" />
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden">
+                    <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-grow text-primary mb-3"></div>
+                        <h5 class="fw-bold">Compressing...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 sticky-sidebar">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="step-badge me-2 text-white" style={`background: ${entry.data.color}; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:bold`}>1</div>
+                        <h5 class="fw-bold m-0">Compression Settings</h5>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="fw-bold small d-flex justify-content-between mb-2">
+                            Quality <span id="compVal">70%</span>
+                        </label>
+                        <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                        
+                        <label class="fw-bold small mt-3 mb-2 d-block">Output Format</label>
+                        <select id="fIn" class="form-select">
+                            <option value="image/jpeg">JPG (Standard)</option>
+                            <option value="image/webp">WebP (Smallest)</option>
+                        </select>
+                    </div>
+
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0" style={`background: ${entry.data.color}`}>
+                        Compress Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
+            <div class="success-badge mb-4" style="width:60px; height:60px; background:#ecfdf5; color:#10b981; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto; font-size:1.8rem"><i class="fa-solid fa-circle-check"></i></div>
+            <h2 class="fw-black mb-2 text-dark">Success!</h2>
+            
+            <div class="row g-3 my-4 justify-content-center">
+                <div class="col-4">
+                    <div class="p-2 border rounded-4 bg-light text-center">
+                        <div class="small text-muted">Old</div>
+                        <div id="oldSizeLabel" class="fw-bold small">0 KB</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded-4 bg-light text-center">
+                        <div class="small text-muted">New</div>
+                        <div id="newSizeLabel" class="fw-bold text-success small">0 KB</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded-4 bg-primary text-white shadow-sm text-center">
+                        <div class="small opacity-75">Lighter</div>
+                        <div id="percentLabel" class="fw-bold">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download Now
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const qIn = document.getElementById('qIn');
+    const qVal = document.getElementById('compVal');
+    const internalLoader = document.getElementById('internalLoader');
+
+    let originalFile = null;
+
+    // Format Byte Helper
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 KB';
+        const k = 1024;
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB'][i];
+    }
+
+    // UI Updates
+    qIn.oninput = (e) => qVal.innerText = Math.round(e.target.value * 100) + '%';
+
+    // File Handling
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Execution
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const quality = parseFloat(qIn.value);
+            const format = document.getElementById('fIn').value;
+            
+            // Core library call
+            const blob = await imageCompression(originalFile, { 
+                maxSizeMB: 1, 
+                initialQuality: quality,
+                fileType: format 
+            });
+
+            // Calculate Stats
+            document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
+            document.getElementById('newSizeLabel').innerText = formatBytes(blob.size);
+            const savings = Math.max(0, Math.round(((originalFile.size - blob.size) / originalFile.size) * 100));
+            document.getElementById('percentLabel').innerText = savings + '%';
+
+            // Setup Result
+            const url = URL.createObjectURL(blob);
+            const dlBtn = document.getElementById('downloadBtn');
+            dlBtn.href = url;
+            dlBtn.download = `compressed-${originalFile.name.split('.')[0]}.${format.split('/')[1]}`;
+            
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+            }, 800);
+
+        } catch (e) {
+            console.error(e);
+            alert("Error compressing image.");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
