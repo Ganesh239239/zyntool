@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // This tells Astro we are deploying to a web server
+  site: 'https://zyntool.pages.dev', // REPLACE with your real domain later
+  integrations: [sitemap()],
   output: 'static'
 });
