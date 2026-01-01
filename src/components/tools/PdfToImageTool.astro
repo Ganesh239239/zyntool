@@ -2,15 +2,17 @@
 const { entry, relatedTools } = Astro.props;
 ---
 <div id="pdf-to-image-tool">
-    <!-- STEP 1: UPLOAD -->
-    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
-        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+    <!-- STEP 1: UPLOAD (Fixed UI) -->
+    <div id="uploadContainer" class="uploader-card shadow-lg mb-5 bg-white mx-auto" style="max-width: 800px;">
+        <div class="uploader-border-wrapper p-3"> 
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold text-dark">Select PDF File</h2>
+                <p class="text-muted small">Convert PDF pages into individual images.</p>
+                <input type="file" id="fileInput" hidden accept="application/pdf" />
             </div>
-            <h2 class="fw-bold">Select PDF file</h2>
-            <p class="text-muted small">Convert PDF pages into individual images.</p>
-            <input type="file" id="fileInput" hidden accept="application/pdf" />
         </div>
     </div>
 
@@ -37,21 +39,42 @@ const { entry, relatedTools } = Astro.props;
                     </select>
 
                     <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
-                        Convert to Image
+                        Convert PDF
                     </button>
-                    <!-- Related tools... -->
+
+                    <div class="related-tools-mini pt-3 border-top">
+                        <p class="small fw-bold text-muted mb-3 uppercase">Other Tools</p>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-dark d-flex align-items-center p-2 border rounded-3 bg-light-hover transition">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- STEP 3: RESULT -->
-    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-        <h3 class="fw-bold mb-4">Extracted Pages</h3>
-        <div id="imageGridResult" class="row g-3"></div>
-        <button class="btn btn-outline-secondary mt-5 rounded-pill px-4" onclick="location.reload()">Start Over</button>
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in mx-auto" style="max-width: 850px;">
+        <h3 class="fw-bold mb-4">Extracted Images</h3>
+        <div id="imageGridResult" class="row g-3 justify-content-center"></div>
+        <button class="btn btn-outline-secondary mt-5 rounded-pill px-4 py-2 border-2 fw-bold" onclick="location.reload()">Process Another PDF</button>
     </div>
 </div>
+
+<style>
+    .uploader-card { border-radius: 24px; overflow: visible; }
+    .uploader-zone { border: 3px dashed #cbd5e1; border-radius: 20px; padding: 80px 20px; transition: 0.3s; background: #fff; }
+    .uploader-zone:hover { border-color: #4B90FF; background: #f8faff; }
+    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; background: #ffffff; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+</style>
 
 <script is:inline>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -63,7 +86,6 @@ const { entry, relatedTools } = Astro.props;
         document.getElementById('uploadContainer').style.display = 'none';
         document.getElementById('processingArea').style.display = 'block';
         document.getElementById('pdfName').innerText = file.name;
-
         const buffer = await file.arrayBuffer();
         pdfDoc = await pdfjsLib.getDocument(buffer).promise;
         document.getElementById('pdfPages').innerText = `${pdfDoc.numPages} Pages Found`;
@@ -79,17 +101,13 @@ const { entry, relatedTools } = Astro.props;
             const page = await pdfDoc.getPage(i);
             const vp = page.getViewport({ scale: 2 });
             const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
             canvas.width = vp.width; canvas.height = vp.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-            
+            await page.render({ canvasContext: ctx, viewport: vp }).promise;
             const url = canvas.toDataURL(fmt);
             const col = document.createElement('div');
             col.className = 'col-6 col-md-3';
-            col.innerHTML = `
-                <div class="card p-2 border-0 shadow-sm rounded-3">
-                    <img src="${url}" class="img-fluid rounded mb-2">
-                    <a href="${url}" download="page-${i}.${fmt.split('/')[1]}" class="btn btn-sm btn-dark w-100">Download Page ${i}</a>
-                </div>`;
+            col.innerHTML = `<div class="card p-2 border-0 shadow-sm rounded-3"><img src="${url}" class="img-fluid rounded mb-2"><a href="${url}" download="page-${i}.${fmt.split('/')[1]}" class="btn btn-sm btn-dark w-100">Download Page ${i}</a></div>`;
             grid.appendChild(col);
         }
     });
