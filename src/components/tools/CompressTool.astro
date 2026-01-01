@@ -132,6 +132,89 @@ const { entry, relatedTools } = Astro.props;
     .loader-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
     .custom-scrollbar::-webkit-scrollbar { height: 6px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+
+/* ====== GENERAL ====== */
+.fw-black { font-weight: 900; }
+.extra-small { font-size: 0.65rem; letter-spacing: .5px; }
+
+/* ====== UPLOADER ====== */
+.uploader-zone {
+    border: 3px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 70px 20px;
+    cursor: pointer;
+}
+
+/* ====== IMAGE PREVIEW FIX (IMPORTANT) ====== */
+.image-viewport {
+    min-height: 280px;
+    background: linear-gradient(180deg,#f8fafc,#f1f5f9);
+}
+
+.image-viewport img {
+    max-height: 220px;
+    width: 100%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+/* ====== GRID ====== */
+.transparency-grid {
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.7;
+}
+
+/* ====== LABELS ====== */
+.comp-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    font-size: .6rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.size-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: .65rem;
+    font-weight: 700;
+}
+
+/* ====== QUEUE ====== */
+.q-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    overflow: hidden;
+    cursor: pointer;
+}
+.q-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.q-thumb.active { border-color: #4B90FF; }
+
+/* ====== LOADER ====== */
+.loader-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 </style>
 
 <script is:inline>
