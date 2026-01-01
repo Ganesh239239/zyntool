@@ -1,0 +1,175 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+
+<div id="convert-to-jpg-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Select images to convert</h2>
+            <p class="text-muted small">Turn PNG, GIF, WEBP, or HEIC into high-quality JPGs.</p>
+            <input type="file" id="fileInput" hidden accept="image/png,image/webp,image/gif,image/heic,image/bmp" />
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative">
+                    <!-- Standardized iLoveIMG Background for Transparency check -->
+                    <div class="transparency-grid-bg w-100 h-100 d-flex align-items-center justify-content-center">
+                        <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                    </div>
+                    
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Converting to JPG...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">JPG Options</h5>
+                    
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted d-flex justify-content-between mb-2">
+                            Image Quality <span id="qVal">90%</span>
+                        </label>
+                        <input type="range" id="jpgQuality" class="form-range" min="0.1" max="1" step="0.05" value="0.9">
+                        <p class="text-muted extra-small mt-3">
+                            <i class="fa-solid fa-circle-info me-1"></i> Transparency will be replaced with a white background.
+                        </p>
+                    </div>
+
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
+                        Convert to JPG
+                    </button>
+
+                    <!-- Sidebar Linking -->
+                    <div class="related-tools-mini pt-3 border-top">
+                        <p class="small fw-bold text-muted mb-3 uppercase">Related Tools</p>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-dark d-flex align-items-center p-2 border rounded-3 bg-light-hover transition">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
+            <div class="success-badge mb-4"><i class="fa-solid fa-check-double"></i></div>
+            <h2 class="fw-black mb-3">Converted to JPG!</h2>
+            <p class="text-muted mb-4">Your image is now a standard, compatible JPEG file.</p>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download Image
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Convert Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 30px; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
+    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; }
+    /* Checkered background for transparency preview */
+    .transparency-grid-bg { background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
+    .main-preview-img { max-height: 60vh; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+    .success-badge { width: 60px; height: 60px; background: #f0fdf4; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+    .extra-small { font-size: 0.75rem; line-height: 1.4; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const internalLoader = document.getElementById('internalLoader');
+    const jpgQuality = document.getElementById('jpgQuality');
+    const qValLabel = document.getElementById('qVal');
+
+    let originalFile = null;
+
+    jpgQuality.oninput = (e) => qValLabel.innerText = Math.round(e.target.value * 100) + '%';
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            
+            await new Promise(r => img.onload = r);
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // CRITICAL FEATURE: Fill background with white for JPG (handles transparent PNGs)
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.drawImage(img, 0, 0);
+
+            const quality = parseFloat(jpgQuality.value);
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = url;
+                dlBtn.download = `zyntool-${originalFile.name.split('.')[0]}.jpg`;
+                
+                setTimeout(() => {
+                    processingArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 800);
+            }, 'image/jpeg', quality);
+
+        } catch (e) {
+            alert("Conversion failed.");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
