@@ -22,8 +22,6 @@ import PdfToImageTool from '../components/tools/PdfToImageTool.astro';
 // 1. Generate paths for all tools
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  if (!toolEntries || toolEntries.length === 0) return [];
-  
   return toolEntries.map(entry => ({
     params: { slug: entry.slug || entry.id }, 
     props: { entry },
