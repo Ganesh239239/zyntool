@@ -1,236 +1,59 @@
 ---
-const { entry, relatedTools } = Astro.props;
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import CompressTool from '../components/tools/CompressTool.astro';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const toolId = entry.slug || entry.id;
+const allTools = await getCollection('tools');
+const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
+const { Content } = await entry.render();
 ---
 
-<div id="compress-tool">
-    <!-- STEP 1: UPLOAD BOX (Untouched) -->
-    <div id="uploadContainer" class="uploader-card shadow-lg mb-5 bg-white">
-        <div class="uploader-border-wrapper p-3"> 
-            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
-                </div>
-                <h2 class="fw-bold text-dark">Select Images</h2>
-                <p class="text-muted small">or drop them here</p>
-                <input type="file" id="fileInput" hidden accept="image/jpeg,image/png,image/webp" multiple />
-            </div>
+<MainLayout title={entry.data.title}>
+    <!-- HERO SECTION -->
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
-    <!-- STEP 2: PROFESSIONAL BATCH WORKSPACE -->
-    <div id="processingArea" style="display:none;" class="fade-in">
-        <!-- QUEUE SELECTOR -->
-        <div id="fileQueue" class="d-flex gap-2 mb-4 overflow-auto pb-2 custom-scrollbar"></div>
-
-        <div class="row g-4 text-start">
-            <!-- LEFT: CONSTRAINED COMPARISON STAGE -->
-            <div class="col-lg-8">
-                <div class="workspace-stage shadow-sm rounded-4 border bg-white overflow-hidden">
-                    <div class="stage-header p-2 px-3 border-bottom d-flex justify-content-between align-items-center bg-light">
-                        <span class="badge bg-white text-dark border small fw-bold">Live Comparison</span>
-                        <div id="activeFileName" class="extra-small fw-bold text-muted text-truncate ms-2" style="max-width: 150px;">filename.jpg</div>
-                    </div>
-                    
-                    <!-- THE FIX: Hard height limit on the viewport -->
-                    <div class="row g-0 image-viewport-fixed">
-                        <!-- Original Side -->
-                        <div class="col-6 border-end position-relative transparency-bg d-flex align-items-center justify-content-center overflow-hidden">
-                            <div class="comp-label">ORIGINAL</div>
-                            <img id="viewBefore" src="" class="preview-img-contain">
-                            <div class="size-tag" id="sizeBefore">0 KB</div>
-                        </div>
-                        <!-- Compressed Side -->
-                        <div class="col-6 position-relative transparency-bg d-flex align-items-center justify-content-center overflow-hidden">
-                            <div class="comp-label">COMPRESSED</div>
-                            <img id="viewAfter" src="" class="preview-img-contain">
-                            <div class="size-tag text-success" id="sizeAfter">0 KB</div>
-                        </div>
-                    </div>
-
-                    <div id="miniLoader" class="loader-overlay d-none">
-                        <div class="spinner-border spinner-border-sm text-primary mb-2"></div>
-                        <span class="extra-small fw-bold uppercase">Optimizing...</span>
-                    </div>
-                </div>
-                <p class="text-center text-muted mt-2 extra-small"><i class="fa-solid fa-circle-info me-1"></i> Preview is scaled for display. Actual pixels remain sharp.</p>
+    <!-- WRAPPER: Fixed stacking order -->
+    <div class="container tool-page-wrapper pb-5">
+        
+        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+        
+        <!-- Placeholder for other tools -->
+        {toolId !== 'compress-image' && (
+            <div class="card p-5 text-center shadow border-0 mx-auto" style="max-width: 800px;">
+                <p class="text-muted m-0">Modular Component loading...</p>
             </div>
+        )}
 
-            <!-- RIGHT: SIDEBAR -->
-            <div class="col-lg-4">
-                <div class="sidebar-sticky">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-                        <div class="text-center p-3 bg-light rounded-4 mb-4">
-                            <div class="display-6 fw-black text-primary" id="savingsPct">-0%</div>
-                            <p class="extra-small fw-bold text-muted uppercase mt-1 mb-0">Space Saved</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="small fw-bold text-muted d-flex justify-content-between mb-2">
-                                Compression Quality <span id="qVal" class="badge bg-primary">70</span>
-                            </label>
-                            <input type="range" id="qIn" class="form-range" min="5" max="100" step="1" value="70">
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button id="btnDownloadActive" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm">
-                                <i class="fa-solid fa-download me-2"></i> Download Current
-                            </button>
-                            <button id="btnDownloadAll" class="btn btn-dark rounded-pill py-2 fw-bold shadow-sm">
-                                <i class="fa-solid fa-file-zipper me-2"></i> Download All (ZIP)
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- RELATED TOOLS -->
-                    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white d-none d-lg-block">
-                        <p class="extra-small fw-bold text-muted uppercase mb-3">Other Tools</p>
-                        <div class="row g-2">
-                            {relatedTools.map(t => (
-                                <div class="col-6">
-                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none extra-small text-dark d-flex align-items-center p-2 border rounded-3 sidebar-tool-link">
-                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
-                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
+                <Content />
+            </article>
         </div>
     </div>
-</div>
+</MainLayout>
 
 <style>
     .fw-black { font-weight: 900; }
-    .extra-small { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tool-hero { padding: 80px 0 100px; position: relative; z-index: 1; }
     
-    /* THE FIX: Fixed viewport height prevents large image issues */
-    .image-viewport-fixed { 
-        height: 320px; /* Reduced from 450px to make it compact */
-        background: #f8fafc; 
+    /* THE FIX: Explicit z-index and margin for the box */
+    .tool-page-wrapper { 
+        margin-top: -60px; 
+        position: relative; 
+        z-index: 10; 
     }
     
-    .preview-img-contain {
-        max-width: 90%;
-        max-height: 90%;
-        object-fit: contain; /* Ensures image fits perfectly without cropping */
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border-radius: 4px;
-        background: white;
-    }
-
-    .transparency-bg { 
-        background-image: radial-gradient(#e2e8f0 1px, transparent 1px); 
-        background-size: 15px 15px; 
-    }
-
-    .comp-label { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.55rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; }
-    .size-tag { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background: #fff; padding: 2px 10px; border-radius: 50px; font-size: 0.65rem; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 5; }
-
-    /* Thumbnail Selector */
-    .q-thumb { width: 60px; height: 60px; border-radius: 10px; border: 2px solid #e2e8f0; cursor: pointer; flex-shrink: 0; position: relative; background: #fff; transition: 0.2s; }
-    .q-thumb.active { border-color: #4B90FF; box-shadow: 0 0 0 3px rgba(75,144,255,0.1); }
-    .q-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-    .q-savings { position: absolute; bottom: -5px; right: -5px; background: #4CAF50; color: #fff; font-size: 0.5rem; font-weight: 900; padding: 1px 4px; border-radius: 4px; }
-
-    .sidebar-sticky { position: sticky; top: 100px; }
-    .loader-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-    .custom-scrollbar::-webkit-scrollbar { height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
 </style>
-
-<script is:inline>
-    // Logic remains identical to previous version, ensuring multiple files and ZIP are supported
-    const fileInput = document.getElementById('fileInput');
-    const uploadContainer = document.getElementById('uploadContainer');
-    const processingArea = document.getElementById('processingArea');
-    const queueContainer = document.getElementById('fileQueue');
-    const viewBefore = document.getElementById('viewBefore');
-    const viewAfter = document.getElementById('viewAfter');
-    const qIn = document.getElementById('qIn');
-    const qVal = document.getElementById('qVal');
-    const miniLoader = document.getElementById('miniLoader');
-
-    let queue = [];
-    let activeIndex = 0;
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 KB';
-        const k = 1024;
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
-    }
-
-    async function processActiveItem() {
-        const item = queue[activeIndex];
-        document.getElementById('activeFileName').innerText = item.file.name;
-        viewBefore.src = item.originalUrl;
-        document.getElementById('sizeBefore').innerText = formatBytes(item.file.size);
-        
-        miniLoader.classList.remove('d-none');
-
-        try {
-            const blob = await imageCompression(item.file, { maxSizeMB: 1, initialQuality: item.quality / 100 });
-            item.compressedBlob = blob;
-            item.compressedUrl = URL.createObjectURL(blob);
-            viewAfter.src = item.compressedUrl;
-            document.getElementById('sizeAfter').innerText = formatBytes(blob.size);
-            const savings = Math.max(0, Math.round(((item.file.size - blob.size) / item.file.size) * 100));
-            document.getElementById('savingsPct').innerText = `-${savings}%`;
-            document.querySelectorAll('.q-savings')[activeIndex].innerText = `-${savings}%`;
-        } catch (e) { console.error(e); } 
-        finally { miniLoader.classList.add('d-none'); }
-    }
-
-    fileInput.addEventListener('change', async (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-        uploadContainer.style.display = 'none';
-        processingArea.style.display = 'block';
-        files.forEach((file, i) => {
-            const item = { file, originalUrl: URL.createObjectURL(file), quality: 70, compressedBlob: null, compressedUrl: null };
-            queue.push(item);
-            const thumb = document.createElement('div');
-            thumb.className = `q-thumb ${i === 0 ? 'active' : ''}`;
-            thumb.innerHTML = `<img src="${item.originalUrl}"><span class="q-savings">...</span>`;
-            thumb.onclick = () => {
-                activeIndex = i;
-                document.querySelectorAll('.q-thumb').forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                qIn.value = queue[activeIndex].quality;
-                qVal.innerText = qIn.value;
-                processActiveItem();
-            };
-            queueContainer.appendChild(thumb);
-        });
-        processActiveItem();
-    });
-
-    let debounce;
-    qIn.oninput = (e) => {
-        qVal.innerText = e.target.value;
-        queue[activeIndex].quality = parseInt(e.target.value);
-        clearTimeout(debounce);
-        debounce = setTimeout(processActiveItem, 500);
-    };
-
-    document.getElementById('btnDownloadAll').onclick = async () => {
-        const zip = new JSZip();
-        queue.forEach(item => { if (item.compressedBlob) zip.file(`compressed-${item.file.name}`, item.compressedBlob); });
-        const content = await zip.generateAsync({ type: "blob" });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = "zyntool-bulk.zip";
-        link.click();
-    };
-
-    document.getElementById('btnDownloadActive').onclick = () => {
-        const item = queue[activeIndex];
-        if (!item.compressedBlob) return;
-        const a = document.createElement('a');
-        a.href = item.compressedUrl;
-        a.download = `optimized-${item.file.name}`;
-        a.click();
-    };
-</script>
