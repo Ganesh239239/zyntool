@@ -2,7 +2,11 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://zyntool.pages.dev', // No trailing slash
+  // IMPORTANT: Replace with your actual domain if you buy one later
+  site: 'https://zyntool.pages.dev',
   integrations: [sitemap()],
-  output: 'static'
+  output: 'static',
+  build: {
+    format: 'directory'
+  }
 });
