@@ -2,15 +2,17 @@
 const { entry, relatedTools } = Astro.props;
 ---
 <div id="image-to-pdf-tool">
-    <!-- STEP 1: UPLOAD -->
-    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
-        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+    <!-- STEP 1: UPLOAD (Fixed UI) -->
+    <div id="uploadContainer" class="uploader-card shadow-lg mb-5 bg-white mx-auto" style="max-width: 800px;">
+        <div class="uploader-border-wrapper p-3"> 
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold text-dark">Select Images</h2>
+                <p class="text-muted small">JPG, PNG, or WebP images to PDF.</p>
+                <input type="file" id="fileInput" hidden accept="image/*" multiple />
             </div>
-            <h2 class="fw-bold">Select Images</h2>
-            <p class="text-muted small">JPG, PNG, or WebP images to PDF.</p>
-            <input type="file" id="fileInput" hidden accept="image/*" multiple />
         </div>
     </div>
 
@@ -75,6 +77,14 @@ const { entry, relatedTools } = Astro.props;
     </div>
 </div>
 
+<style>
+    .uploader-card { border-radius: 24px; overflow: visible; }
+    .uploader-zone { border: 3px dashed #cbd5e1; border-radius: 20px; padding: 80px 20px; transition: 0.3s; background: #fff; }
+    .uploader-zone:hover { border-color: #4B90FF; background: #f8faff; }
+    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; background: #ffffff; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+</style>
+
 <script is:inline>
     const fileInput = document.getElementById('fileInput');
     const imageGrid = document.getElementById('imageGridPreview');
@@ -84,10 +94,8 @@ const { entry, relatedTools } = Astro.props;
         const files = Array.from(e.target.files);
         if(files.length === 0) return;
         selectedImages = files;
-        
         document.getElementById('uploadContainer').style.display = 'none';
         document.getElementById('processingArea').style.display = 'block';
-
         files.forEach(file => {
             const col = document.createElement('div');
             col.className = 'col-4 col-md-3';
@@ -102,7 +110,6 @@ const { entry, relatedTools } = Astro.props;
         const doc = new jsPDF(orient, 'px', 'a4');
         const pw = doc.internal.pageSize.getWidth();
         const ph = doc.internal.pageSize.getHeight();
-
         for (let i = 0; i < selectedImages.length; i++) {
             if (i > 0) doc.addPage();
             const data = await new Promise(r => {
@@ -112,7 +119,6 @@ const { entry, relatedTools } = Astro.props;
             });
             doc.addImage(data, 'JPEG', 20, 20, pw - 40, ph - 40);
         }
-
         const url = URL.createObjectURL(doc.output('blob'));
         document.getElementById('downloadBtn').href = url;
         document.getElementById('downloadBtn').download = "zyntool.pdf";
