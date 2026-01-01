@@ -8,6 +8,7 @@ import ResizeTool from '../components/tools/ResizeTool.astro';
 import CropTool from '../components/tools/CropTool.astro';
 import WatermarkTool from '../components/tools/WatermarkTool.astro';
 import BlurTool from '../components/tools/BlurTool.astro';
+import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
 
 // 1. Generate paths for all tools in src/content/tools/
 export async function getStaticPaths() {
@@ -61,6 +62,7 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
         
         <!-- FALLBACK: If we haven't built the specific component file yet -->
         {!['compress-image', 'resize-image', 'crop-image', 'watermark-image', 'blur-image'].includes(toolId) && (
