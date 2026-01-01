@@ -1,0 +1,202 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+
+<div id="upscale-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Select Image to Upscale</h2>
+            <p class="text-muted small">Enlarge JPG, PNG or WEBP images by 2x or 4x with high quality.</p>
+            <input type="file" id="fileInput" hidden accept="image/*" />
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative">
+                    <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Enhancing Resolution...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Upscale Settings</h5>
+                    
+                    <!-- UPSCALE MULTIPLIER -->
+                    <label class="small fw-bold text-muted mb-2">Upscale Factor</label>
+                    <div class="list-group mb-4">
+                        <label class="list-group-item d-flex gap-2 align-items-center py-3 cursor-pointer">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="upscale" value="2" checked>
+                            <span>2x <small class="d-block text-muted">Double the resolution</small></span>
+                        </label>
+                        <label class="list-group-item d-flex gap-2 align-items-center py-3 cursor-pointer">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="upscale" value="4">
+                            <span>4x <small class="d-block text-muted">Ultra HD Resolution</small></span>
+                        </label>
+                    </div>
+
+                    <!-- DIMENSION PREVIEW -->
+                    <div class="p-3 bg-light rounded-3 mb-4 border border-light">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Original:</span>
+                            <span id="oldDim" class="small fw-bold">0 x 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">New:</span>
+                            <span id="newDim" class="small fw-bold text-primary">0 x 0</span>
+                        </div>
+                    </div>
+
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
+                        Upscale Now
+                    </button>
+
+                    <div class="related-tools-mini pt-3 border-top">
+                        <p class="small fw-bold text-muted mb-3 uppercase">Other Pro Tools</p>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-dark d-flex align-items-center p-2 border rounded-3 bg-light-hover transition">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
+            <div class="success-badge mb-4"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+            <h2 class="fw-black mb-3">Image Upscaled!</h2>
+            <p class="text-muted mb-4">Your image has been processed with high-quality smoothing.</p>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download High-Res
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Upscale Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 30px; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
+    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; background: #ffffff; }
+    .main-preview-img { max-height: 60vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .cursor-pointer { cursor: pointer; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+    .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const internalLoader = document.getElementById('internalLoader');
+    const oldDimLabel = document.getElementById('oldDim');
+    const newDimLabel = document.getElementById('newDim');
+
+    let originalFile = null;
+    let originalWidth = 0;
+    let originalHeight = 0;
+
+    // --- LOGIC: UPDATE NEW DIMENSION LABELS ---
+    function updateLabels() {
+        const factor = parseInt(document.querySelector('input[name="upscale"]:checked').value);
+        oldDimLabel.innerText = `${originalWidth} x ${originalHeight} px`;
+        newDimLabel.innerText = `${originalWidth * factor} x ${originalHeight * factor} px`;
+    }
+
+    document.querySelectorAll('input[name="upscale"]').forEach(radio => {
+        radio.addEventListener('change', updateLabels);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalWidth = img.width;
+                    originalHeight = img.height;
+                    mainPreview.src = ev.target.result;
+                    uploadContainer.style.display = 'none';
+                    processingArea.style.display = 'block';
+                    updateLabels();
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const factor = parseInt(document.querySelector('input[name="upscale"]:checked').value);
+            const targetWidth = originalWidth * factor;
+            const targetHeight = originalHeight * factor;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            
+            await new Promise(r => img.onload = r);
+            
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+
+            // UPSCALE ENGINE: Enable High Quality Interpolation
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = url;
+                dlBtn.download = `upscaled-${originalFile.name}`;
+                
+                setTimeout(() => {
+                    processingArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 800);
+            }, originalFile.type, 0.95);
+
+        } catch (e) {
+            alert("Upscale failed. The image might be too large for browser memory.");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
