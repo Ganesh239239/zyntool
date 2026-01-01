@@ -10,7 +10,7 @@ import WatermarkTool from '../components/tools/WatermarkTool.astro';
 import BlurTool from '../components/tools/BlurTool.astro';
 import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
 
-// 1. Generate paths for all tools in src/content/tools/
+// 1. Generate paths for all tools
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
   if (!toolEntries || toolEntries.length === 0) return [];
@@ -23,19 +23,19 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 
-// BUILD SAFETY: Prevent Cloudflare crashes if a tool is missing
+// BUILD GUARD: Prevent crashes
 if (!entry) {
   return Astro.redirect('/404');
 }
 
-// 2. Fetch other tools for the "Related Tools" sidebar feature
+// 2. Fetch other tools for the sidebar feature
 const allTools = await getCollection('tools');
 const toolId = entry.slug || entry.id;
 const relatedTools = allTools
   .filter(t => (t.slug || t.id) !== toolId)
   .slice(0, 6);
 
-// 3. Render the Markdown content (instructions/SEO text)
+// 3. Render the Markdown content
 const { Content } = await entry.render();
 
 // 4. Dynamic SEO Metadata
@@ -64,19 +64,9 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
         
-        <!-- FALLBACK: If we haven't built the specific component file yet -->
-        {!['compress-image', 'resize-image', 'crop-image', 'watermark-image', 'blur-image'].includes(toolId) && (
-            <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
-                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                    <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
-                </div>
-                <h4 class="fw-bold">Modular Engine Update</h4>
-                <p class="text-muted m-0">The high-performance version of <b>{entry.data.title}</b> is currently being deployed. Please check back in a few minutes.</p>
-                <a href="/" class="btn btn-primary mt-4 rounded-pill px-4">Back to Home</a>
-            </div>
-        )}
+        <!-- The "Modular Engine Update" section has been removed -->
 
-        <!-- SEO CONTENT SECTION (Renders Markdown text) -->
+        <!-- SEO CONTENT SECTION -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
                 <Content />
