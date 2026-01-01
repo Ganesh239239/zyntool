@@ -3,45 +3,76 @@ const { entry, relatedTools } = Astro.props;
 ---
 
 <div id="compress-tool">
-    <!-- STEP 1: UPLOADER -->
+    <!-- STEP 1: UPLOAD BOX (Supports Multiple Files) -->
     <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
         <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
             <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                 <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
             </div>
             <h2 class="fw-bold">Select Images</h2>
-            <p class="text-muted small">Compress JPG, PNG, SVG or GIF without losing quality.</p>
-            <input type="file" id="fileInput" hidden accept="image/*" />
+            <p class="text-muted small">Upload up to 20 images. Adjust quality for each.</p>
+            <input type="file" id="fileInput" hidden accept="image/jpeg,image/png" multiple />
         </div>
     </div>
 
-    <!-- STEP 2: WORKSPACE -->
+    <!-- STEP 2: MULTI-FILE WORKSPACE (Optimizilla Style) -->
     <div id="processingArea" style="display:none;" class="fade-in">
+        <!-- Thumbnail Queue -->
+        <div id="fileQueue" class="d-flex gap-3 mb-4 overflow-auto pb-2" style="scrollbar-width: thin;">
+            <!-- Thumbnails injected here -->
+        </div>
+
         <div class="row g-4 text-start">
+            <!-- Side-by-Side Comparison -->
             <div class="col-lg-8">
-                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative">
-                    <img id="mainPreview" src="" class="img-fluid main-preview-img">
-                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
-                        <div class="spinner-border text-primary mb-3"></div>
-                        <h5 class="fw-bold">Compressing...</h5>
+                <div class="card border-0 shadow-sm rounded-4 bg-dark overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-6 border-end border-secondary position-relative" style="height: 450px;">
+                             <div class="comparison-tag">ORIGINAL</div>
+                             <img id="compBefore" src="" class="w-100 h-100 object-fit-contain p-2">
+                             <div id="originalSizeTag" class="size-label">0 KB</div>
+                        </div>
+                        <div class="col-6 position-relative" style="height: 450px;">
+                            <div class="comparison-tag">COMPRESSED</div>
+                            <img id="compAfter" src="" class="w-100 h-100 object-fit-contain p-2">
+                            <div id="compressedSizeTag" class="size-label text-success">0 KB</div>
+                        </div>
+                    </div>
+                    <!-- Internal Progress Bar -->
+                    <div id="miniLoader" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-none flex-column align-items-center justify-content-center z-3">
+                        <div class="spinner-border text-primary"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- Controls Sidebar -->
             <div class="col-lg-4">
                 <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
-                    <h5 class="fw-bold mb-4">Compress Options</h5>
-                    <div class="mb-4">
-                        <label class="fw-bold small d-flex justify-content-between mb-2">Quality <span id="compVal">70%</span></label>
-                        <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
+                    <h5 class="fw-bold mb-4">Quality Settings</h5>
+                    
+                    <div class="mb-4 text-center">
+                        <div class="display-5 fw-black text-primary mb-1" id="savingsPct">-0%</div>
+                        <p class="small fw-bold text-muted uppercase">Space Saved</p>
                     </div>
 
-                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
-                        Compress Image
-                    </button>
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted d-flex justify-content-between mb-2">
+                            Quality Level <span id="qVal" class="text-primary">70</span>
+                        </label>
+                        <input type="range" id="qIn" class="form-range" min="10" max="100" step="1" value="70">
+                    </div>
 
-                    <div class="related-tools-mini pt-3 border-top">
-                        <p class="small fw-bold text-muted mb-3 uppercase">Other Image Tools</p>
+                    <div class="d-grid gap-2">
+                        <button id="btnDownloadActive" class="btn btn-dark rounded-pill py-2 fw-bold shadow-sm">
+                            <i class="fa-solid fa-download me-2"></i> Download Selected
+                        </button>
+                        <button id="btnDownloadAll" class="btn btn-outline-dark rounded-pill py-2 fw-bold">
+                            Download All (ZIP)
+                        </button>
+                    </div>
+
+                    <div class="related-tools-mini pt-4 mt-4 border-top">
+                        <p class="small fw-bold text-muted mb-3">Other Pro Tools</p>
                         <div class="row g-2">
                             {relatedTools.map(t => (
                                 <div class="col-6">
@@ -57,53 +88,21 @@ const { entry, relatedTools } = Astro.props;
             </div>
         </div>
     </div>
-
-    <!-- STEP 3: RESULT AREA (KB REDUCTION STATS) -->
-    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
-            <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
-            <h2 class="fw-black mb-2 text-dark">Image Optimized!</h2>
-            
-            <div class="row g-3 my-4 justify-content-center">
-                <div class="col-4">
-                    <div class="p-2 border rounded-4 bg-light text-center">
-                        <div class="small text-muted">Original</div>
-                        <div id="oldSizeLabel" class="fw-bold small">0 KB</div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="p-2 border rounded-4 bg-light text-center">
-                        <div class="small text-muted">New Size</div>
-                        <div id="newSizeLabel" class="fw-bold text-success small">0 KB</div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="p-2 border rounded-4 bg-primary text-white shadow-sm text-center">
-                        <div class="small opacity-75">Saved</div>
-                        <div id="percentLabel" class="fw-bold">0%</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
-                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
-                    <i class="fa-solid fa-download me-2"></i> Download Image
-                </a>
-                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
-                    <i class="fa-solid fa-rotate-left me-2"></i> Compress Another
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <style>
-    .uploader-card { border-radius: 30px; border: 1px solid #eee !important; background: white !important; }
-    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
-    .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
-    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; }
-    .main-preview-img { max-height: 60vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    .success-badge { width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+    /* Premium Logic Styling */
+    .uploader-card { border-radius: 30px; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; }
+    .comparison-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; z-index: 5; }
+    .size-label { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.9); color: #333; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 50px; z-index: 5; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    
+    /* Thumbnail Gallery */
+    .q-thumb { width: 80px; height: 80px; border-radius: 12px; border: 2px solid #eee; cursor: pointer; transition: 0.2s; background: #fff; flex-shrink: 0; position: relative; }
+    .q-thumb.active { border-color: #4B90FF; box-shadow: 0 0 0 3px rgba(75,144,255,0.2); }
+    .q-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .q-thumb .q-badge { position: absolute; bottom: -5px; right: -5px; background: #4B90FF; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; }
+
     .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
 </style>
 
@@ -111,69 +110,122 @@ const { entry, relatedTools } = Astro.props;
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
-    const btnAction = document.getElementById('btnAction');
-    const resultArea = document.getElementById('resultArea');
-    const mainPreview = document.getElementById('mainPreview');
+    const fileQueueContainer = document.getElementById('fileQueue');
+    const compBefore = document.getElementById('compBefore');
+    const compAfter = document.getElementById('compAfter');
     const qIn = document.getElementById('qIn');
-    const qVal = document.getElementById('compVal');
-    const internalLoader = document.getElementById('internalLoader');
+    const qVal = document.getElementById('qVal');
+    const miniLoader = document.getElementById('miniLoader');
 
-    let originalFile = null;
+    let queue = [];
+    let activeIndex = 0;
 
     function formatBytes(bytes) {
         if (bytes === 0) return '0 KB';
         const k = 1024;
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB'][i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
     }
 
-    qIn.oninput = (e) => qVal.innerText = Math.round(e.target.value * 100) + '%';
-
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            originalFile = file;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                mainPreview.src = ev.target.result;
-                uploadContainer.style.display = 'none';
-                processingArea.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    btnAction.addEventListener('click', async () => {
-        internalLoader.classList.remove('d-none');
-        btnAction.disabled = true;
-
+    // --- RENDER CURRENT ACTIVE IMAGE ---
+    async function updateActiveImage() {
+        const item = queue[activeIndex];
+        compBefore.src = item.originalUrl;
+        document.getElementById('originalSizeTag').innerText = formatBytes(item.file.size);
+        
+        miniLoader.classList.replace('d-none', 'd-flex');
+        
         try {
-            const blob = await imageCompression(originalFile, { 
-                maxSizeMB: 1, 
-                initialQuality: parseFloat(qIn.value) 
+            const options = {
+                maxSizeMB: 1,
+                initialQuality: item.quality / 100,
+                useWebWorker: true
+            };
+            
+            const compressedBlob = await imageCompression(item.file, options);
+            item.compressedBlob = compressedBlob;
+            item.compressedUrl = URL.createObjectURL(compressedBlob);
+            
+            compAfter.src = item.compressedUrl;
+            document.getElementById('compressedSizeTag').innerText = formatBytes(compressedBlob.size);
+            
+            const savings = Math.max(0, Math.round(((item.file.size - compressedBlob.size) / item.file.size) * 100));
+            document.getElementById('savingsPct').innerText = `-${savings}%`;
+            
+            // Update the small badge on thumbnail
+            document.querySelectorAll('.q-badge')[activeIndex].innerText = `-${savings}%`;
+            
+        } catch (e) {
+            console.error(e);
+        } finally {
+            miniLoader.classList.replace('d-flex', 'd-none');
+        }
+    }
+
+    // --- HANDLE FILE UPLOAD ---
+    fileInput.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        uploadContainer.style.display = 'none';
+        processingArea.style.display = 'block';
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            queue.push({
+                file: file,
+                originalUrl: URL.createObjectURL(file),
+                quality: 70,
+                compressedBlob: null,
+                compressedUrl: null
             });
 
-            // Set KB Reduction Stats
-            document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
-            document.getElementById('newSizeLabel').innerText = formatBytes(blob.size);
-            const savings = Math.max(0, Math.round(((originalFile.size - blob.size) / originalFile.size) * 100));
-            document.getElementById('percentLabel').innerText = savings + '%';
-
-            const url = URL.createObjectURL(blob);
-            const dlBtn = document.getElementById('downloadBtn');
-            dlBtn.href = url;
-            dlBtn.download = `optimized-${originalFile.name}`;
-            
-            setTimeout(() => {
-                processingArea.style.display = 'none';
-                resultArea.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 800);
-
-        } catch (e) {
-            alert("Compression failed.");
-            internalLoader.classList.add('d-none');
-            btnAction.disabled = false;
+            // Create Thumbnail
+            const thumb = document.createElement('div');
+            thumb.className = `q-thumb ${i === 0 ? 'active' : ''}`;
+            thumb.innerHTML = `<img src="${queue[i].originalUrl}"><span class="q-badge">...</span>`;
+            thumb.onclick = () => {
+                activeIndex = i;
+                document.querySelectorAll('.q-thumb').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                qIn.value = queue[activeIndex].quality;
+                qVal.innerText = qIn.value;
+                updateActiveImage();
+            };
+            fileQueueContainer.appendChild(thumb);
         }
+
+        updateActiveImage();
     });
+
+    // --- QUALITY SLIDER (DEBOUNCED) ---
+    let debounceTimer;
+    qIn.oninput = (e) => {
+        qVal.innerText = e.target.value;
+        queue[activeIndex].quality = parseInt(e.target.value);
+        
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(updateActiveImage, 300);
+    };
+
+    // --- DOWNLOADS ---
+    document.getElementById('btnDownloadActive').onclick = () => {
+        const item = queue[activeIndex];
+        if (!item.compressedBlob) return;
+        const a = document.createElement('a');
+        a.href = item.compressedUrl;
+        a.download = `compressed-${item.file.name}`;
+        a.click();
+    };
+
+    document.getElementById('btnDownloadAll').onclick = () => {
+        queue.forEach(item => {
+            if (item.compressedBlob) {
+                const a = document.createElement('a');
+                a.href = item.compressedUrl;
+                a.download = `compressed-${item.file.name}`;
+                a.click();
+            }
+        });
+    };
 </script>
