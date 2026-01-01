@@ -1,0 +1,192 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+
+<div id="remove-bg-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Select Image to Remove Background</h2>
+            <p class="text-muted small">Instantly make white or solid color backgrounds transparent.</p>
+            <input type="file" id="fileInput" hidden accept="image/*" />
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <!-- iLoveIMG Style: Checkered background for transparency -->
+                <div class="preview-stage transparency-grid-bg border rounded-4 overflow-hidden position-relative">
+                    <img id="mainPreview" src="" class="img-fluid main-preview-img">
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Removing Background...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Removal Settings</h5>
+                    
+                    <!-- THRESHOLD SLIDER -->
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted d-flex justify-content-between mb-2">
+                            Sensitivity <span id="threshVal">15</span>
+                        </label>
+                        <input type="range" id="thresholdIn" class="form-range" min="1" max="100" step="1" value="15">
+                        <p class="text-muted extra-small mt-2">
+                            Increase sensitivity to remove colors that are "almost" white or light-grey.
+                        </p>
+                    </div>
+
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
+                        Remove Background
+                    </button>
+
+                    <div class="related-tools-mini pt-3 border-top">
+                        <p class="small fw-bold text-muted mb-3 uppercase">Other Pro Tools</p>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-dark d-flex align-items-center p-2 border rounded-3 bg-light-hover transition">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 650px;">
+            <div class="success-badge mb-4"><i class="fa-solid fa-eraser"></i></div>
+            <h2 class="fw-black mb-3">Background Removed!</h2>
+            <p class="text-muted mb-4">Your image now has a transparent background (PNG format).</p>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download PNG
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 30px; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
+    
+    /* Transparency Checkerboard */
+    .transparency-grid-bg { 
+        background-color: #ffffff;
+        background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .preview-stage { min-height: 400px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; }
+    .main-preview-img { max-height: 60vh; border-radius: 8px; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+    .success-badge { width: 60px; height: 60px; background: #f0fdf4; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+    .extra-small { font-size: 0.75rem; line-height: 1.4; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const internalLoader = document.getElementById('internalLoader');
+    const thresholdIn = document.getElementById('thresholdIn');
+    const threshValLabel = document.getElementById('threshVal');
+
+    let originalFile = null;
+
+    thresholdIn.oninput = (e) => threshValLabel.innerText = e.target.value;
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            
+            await new Promise(r => img.onload = r);
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // PIXEL MANIPULATION LOGIC
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            const threshold = parseInt(thresholdIn.value);
+
+            // Standard "Magic Wand" logic for white/solid backgrounds
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i+1];
+                const b = data[i+2];
+                
+                // If pixel is within the "white" threshold, make it transparent
+                const brightness = (r + g + b) / 3;
+                if (r > 255 - threshold && g > 255 - threshold && b > 255 - threshold) {
+                    data[i + 3] = 0; // Alpha channel to 0
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = url;
+                dlBtn.download = `no-bg-${originalFile.name.split('.')[0]}.png`;
+                
+                setTimeout(() => {
+                    processingArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 800);
+            }, 'image/png');
+
+        } catch (e) {
+            alert("Background removal failed. Ensure the image has a clear, solid-color background.");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
