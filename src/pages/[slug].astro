@@ -11,6 +11,7 @@ import BlurTool from '../components/tools/BlurTool.astro';
 import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
 import ConvertToJpgTool from '../components/tools/ConvertToJpgTool.astro';
 import MemeTool from '../components/tools/MemeTool.astro';
+import HtmlToImageTool from '../components/tools/HtmlToImageTool.astro';
 
 // 1. Generate paths for all tools
 export async function getStaticPaths() {
@@ -67,6 +68,7 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
 
         <!-- The "Modular Engine Update" section has been removed -->
 
