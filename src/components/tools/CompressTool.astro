@@ -135,128 +135,180 @@ const { entry, relatedTools } = Astro.props;
 </style>
 
 <script is:inline>
-    const fileInput = document.getElementById('fileInput');
-    const uploadContainer = document.getElementById('uploadContainer');
-    const processingArea = document.getElementById('processingArea');
-    const queueContainer = document.getElementById('fileQueue');
-    const viewBefore = document.getElementById('viewBefore');
-    const viewAfter = document.getElementById('viewAfter');
-    const qIn = document.getElementById('qIn');
-    const qVal = document.getElementById('qVal');
-    const miniLoader = document.getElementById('miniLoader');
+/* =========================
+   GLOBAL REFERENCES
+========================= */
+const fileInput = document.getElementById('fileInput');
+const uploadContainer = document.getElementById('uploadContainer');
+const processingArea = document.getElementById('processingArea');
+const queueContainer = document.getElementById('fileQueue');
+const viewBefore = document.getElementById('viewBefore');
+const viewAfter = document.getElementById('viewAfter');
+const qIn = document.getElementById('qIn');
+const qVal = document.getElementById('qVal');
+const miniLoader = document.getElementById('miniLoader');
 
-    let queue = [];
-    let activeIndex = 0;
+let queue = [];
+let activeIndex = 0;
 
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 KB';
-        const k = 1024;
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
+/* =========================
+   HELPERS
+========================= */
+function formatBytes(bytes) {
+    if (!bytes) return '0 KB';
+    const k = 1024;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + ['B', 'KB', 'MB'][i];
+}
+
+function autoQuality(fileSize, sliderQ) {
+    if (fileSize > 6_000_000) return Math.min(sliderQ, 55);
+    if (fileSize > 3_000_000) return Math.min(sliderQ, 65);
+    if (fileSize > 1_000_000) return Math.min(sliderQ, 70);
+    return sliderQ;
+}
+
+function shouldResize(width, height) {
+    return Math.max(width, height) > 2560;
+}
+
+/* =========================
+   CORE COMPRESSION ENGINE
+========================= */
+async function compressImage(item) {
+    const img = new Image();
+    img.src = item.originalUrl;
+    await img.decode();
+
+    let maxDim = Math.max(img.width, img.height);
+    let resizeNeeded = shouldResize(img.width, img.height);
+
+    let quality = autoQuality(item.file.size, item.quality);
+
+    const options = {
+        initialQuality: quality / 100,
+        maxIteration: 15,
+        useWebWorker: true,
+        fileType: 'image/webp',
+        maxWidthOrHeight: resizeNeeded ? 2560 : undefined
+    };
+
+    return imageCompression(item.file, options);
+}
+
+/* =========================
+   PROCESS ACTIVE IMAGE
+========================= */
+async function processActiveItem() {
+    const item = queue[activeIndex];
+    document.getElementById('activeFileName').innerText = item.file.name;
+    viewBefore.src = item.originalUrl;
+    document.getElementById('sizeBefore').innerText = formatBytes(item.file.size);
+
+    miniLoader.classList.remove('d-none');
+
+    try {
+        if (item.compressedUrl) URL.revokeObjectURL(item.compressedUrl);
+
+        const blob = await compressImage(item);
+        item.compressedBlob = blob;
+        item.compressedUrl = URL.createObjectURL(blob);
+
+        viewAfter.src = item.compressedUrl;
+        document.getElementById('sizeAfter').innerText = formatBytes(blob.size);
+
+        const savings = Math.max(
+            0,
+            Math.round(((item.file.size - blob.size) / item.file.size) * 100)
+        );
+
+        document.getElementById('savingsPct').innerText = `-${savings}%`;
+        document.querySelectorAll('.q-savings')[activeIndex].innerText = `-${savings}%`;
+
+    } catch (err) {
+        console.error('Compression error:', err);
+    } finally {
+        miniLoader.classList.add('d-none');
     }
+}
 
-    // --- AGGRESSIVE COMPRESSION ENGINE ---
-    async function processActiveItem() {
-        const item = queue[activeIndex];
-        document.getElementById('activeFileName').innerText = item.file.name;
-        viewBefore.src = item.originalUrl;
-        document.getElementById('sizeBefore').innerText = formatBytes(item.file.size);
-        
-        miniLoader.classList.remove('d-none');
+/* =========================
+   FILE SELECTION
+========================= */
+fileInput.addEventListener('change', (e) => {
+    const files = [...e.target.files];
+    if (!files.length) return;
 
-        try {
-            const options = {
-                maxSizeMB: 1,
-                initialQuality: item.quality / 100,
-                useWebWorker: true,
-                maxIteration: 15
-            };
+    uploadContainer.style.display = 'none';
+    processingArea.style.display = 'block';
 
-            const blob = await imageCompression(item.file, options);
-            item.compressedBlob = blob;
-            item.compressedUrl = URL.createObjectURL(blob);
+    files.forEach((file, i) => {
+        const item = {
+            file,
+            originalUrl: URL.createObjectURL(file),
+            quality: parseInt(qIn.value),
+            compressedBlob: null,
+            compressedUrl: null
+        };
+        queue.push(item);
 
-            viewAfter.src = item.compressedUrl;
-            document.getElementById('sizeAfter').innerText = formatBytes(blob.size);
-            
-            const savings = Math.max(0, Math.round(((item.file.size - blob.size) / item.file.size) * 100));
-            document.getElementById('savingsPct').innerText = `-${savings}%`;
-            document.querySelectorAll('.q-savings')[activeIndex].innerText = `-${savings}%`;
-
-        } catch (e) {
-            console.error(e);
-        } finally {
-            miniLoader.classList.add('d-none');
-        }
-    }
-
-    // --- HANDLE MULTI-FILE SELECTION ---
-    fileInput.addEventListener('change', async (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        uploadContainer.style.display = 'none';
-        processingArea.style.display = 'block';
-
-        files.forEach((file, i) => {
-            const item = {
-                file: file,
-                originalUrl: URL.createObjectURL(file),
-                quality: 70,
-                compressedBlob: null,
-                compressedUrl: null
-            };
-            queue.push(item);
-
-            // Create UI Thumbnail
-            const thumb = document.createElement('div');
-            thumb.className = `q-thumb ${i === 0 ? 'active' : ''}`;
-            thumb.innerHTML = `<img src="${item.originalUrl}"><span class="q-savings">...</span>`;
-            thumb.onclick = () => {
-                activeIndex = i;
-                document.querySelectorAll('.q-thumb').forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                qIn.value = queue[activeIndex].quality;
-                qVal.innerText = qIn.value;
-                processActiveItem();
-            };
-            queueContainer.appendChild(thumb);
-        });
-
-        processActiveItem();
+        const thumb = document.createElement('div');
+        thumb.className = `q-thumb ${i === 0 ? 'active' : ''}`;
+        thumb.innerHTML = `
+            <img src="${item.originalUrl}">
+            <span class="q-savings">...</span>
+        `;
+        thumb.onclick = () => {
+            activeIndex = i;
+            document.querySelectorAll('.q-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            qIn.value = queue[i].quality;
+            qVal.innerText = qIn.value;
+            processActiveItem();
+        };
+        queueContainer.appendChild(thumb);
     });
 
-    // --- INTERACTIVE QUALITY OVERRIDE ---
-    let debounce;
-    qIn.oninput = (e) => {
-        const val = e.target.value;
-        qVal.innerText = val;
-        queue[activeIndex].quality = parseInt(val);
-        clearTimeout(debounce);
-        debounce = setTimeout(processActiveItem, 500);
-    };
+    processActiveItem();
+});
 
-    // --- BULK DOWNLOAD (ZIP) ---
-    document.getElementById('btnDownloadAll').onclick = async () => {
-        const zip = new JSZip();
-        queue.forEach(item => {
-            if (item.compressedBlob) {
-                zip.file(`compressed-${item.file.name}`, item.compressedBlob);
-            }
-        });
-        const content = await zip.generateAsync({ type: "blob" });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = "zyntool-compressed.zip";
-        link.click();
-    };
+/* =========================
+   QUALITY SLIDER
+========================= */
+let debounce;
+qIn.oninput = (e) => {
+    qVal.innerText = e.target.value;
+    queue[activeIndex].quality = parseInt(e.target.value);
+    clearTimeout(debounce);
+    debounce = setTimeout(processActiveItem, 400);
+};
 
-    document.getElementById('btnDownloadActive').onclick = () => {
-        const item = queue[activeIndex];
-        if (!item.compressedBlob) return;
-        const a = document.createElement('a');
-        a.href = item.compressedUrl;
-        a.download = `optimized-${item.file.name}`;
-        a.click();
-    };
+/* =========================
+   DOWNLOADS
+========================= */
+document.getElementById('btnDownloadActive').onclick = () => {
+    const item = queue[activeIndex];
+    if (!item.compressedBlob) return;
+    const a = document.createElement('a');
+    a.href = item.compressedUrl;
+    a.download = item.file.name.replace(/\.\w+$/, '.webp');
+    a.click();
+};
+
+document.getElementById('btnDownloadAll').onclick = async () => {
+    const zip = new JSZip();
+    queue.forEach(item => {
+        if (item.compressedBlob) {
+            zip.file(
+                item.file.name.replace(/\.\w+$/, '.webp'),
+                item.compressedBlob
+            );
+        }
+    });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'compressed-images.zip';
+    a.click();
+};
 </script>
