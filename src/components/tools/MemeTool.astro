@@ -1,0 +1,198 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+
+<div id="meme-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Upload an image to caption</h2>
+            <p class="text-muted small">Create your own meme by adding text to an image.</p>
+            <input type="file" id="fileInput" hidden accept="image/*" />
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative">
+                    <div id="canvasWrapper" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <canvas id="memeCanvas" style="max-width: 100%; max-height: 60vh; object-fit: contain;"></canvas>
+                    </div>
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Generating Meme...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Meme Settings</h5>
+                    
+                    <div class="mb-3">
+                        <label class="small fw-bold text-muted mb-1">Top Text</label>
+                        <textarea id="topText" class="form-control" placeholder="TOP TEXT GOES HERE" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted mb-1">Bottom Text</label>
+                        <textarea id="bottomText" class="form-control" placeholder="BOTTOM TEXT GOES HERE" rows="2"></textarea>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-6">
+                            <label class="small fw-bold text-muted mb-1">Font Size</label>
+                            <input type="number" id="fontSize" class="form-control" value="50">
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold text-muted mb-1">Text Color</label>
+                            <input type="color" id="textColor" class="form-control form-control-color w-100" value="#ffffff">
+                        </div>
+                    </div>
+
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-4" style={`background: ${entry.data.color}`}>
+                        Generate Meme
+                    </button>
+
+                    <div class="related-tools-mini pt-3 border-top">
+                        <p class="small fw-bold text-muted mb-3 uppercase">Other Creative Tools</p>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-dark d-flex align-items-center p-2 border rounded-3 bg-light-hover transition">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 600px;">
+            <div class="success-badge mb-4"><i class="fa-regular fa-face-laugh-squint"></i></div>
+            <h2 class="fw-black mb-3">Meme Ready!</h2>
+            <p class="text-muted mb-4">Your masterpiece has been generated and is ready to share.</p>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download Meme
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Create Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 30px; border: 1px solid #eee; }
+    .uploader-zone { border: 2px dashed #e2e8f0; border-radius: 24px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { background: #f8fbff; border-color: #4B90FF; }
+    .preview-stage { min-height: 450px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0; background: #f9f9f9; }
+    .bg-light-hover:hover { background: #f8f9fa; border-color: #4B90FF !important; }
+    .success-badge { width: 60px; height: 60px; background: #fef3c7; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const memeCanvas = document.getElementById('memeCanvas');
+    const ctx = memeCanvas.getContext('2d');
+    const internalLoader = document.getElementById('internalLoader');
+    
+    // Inputs
+    const topTextInput = document.getElementById('topText');
+    const bottomTextInput = document.getElementById('bottomText');
+    const fontSizeInput = document.getElementById('fontSize');
+    const textColorInput = document.getElementById('textColor');
+
+    let memeImage = new Image();
+    let originalFileName = "meme";
+
+    // --- LIVE DRAWING FUNCTION ---
+    function drawMeme() {
+        if (!memeImage.src) return;
+
+        // Set canvas dimensions to match image
+        memeCanvas.width = memeImage.width;
+        memeCanvas.height = memeImage.height;
+
+        // Draw Image
+        ctx.drawImage(memeImage, 0, 0);
+
+        // Text Styles
+        const fontSize = parseInt(fontSizeInput.value) || 40;
+        ctx.fillStyle = textColorInput.value;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = fontSize / 8;
+        ctx.textAlign = 'center';
+        ctx.font = `bold ${fontSize}px sans-serif`; // iLoveIMG style classic font fallback
+        ctx.textBaseline = 'top';
+
+        // Draw Top Text
+        const topText = topTextInput.value.toUpperCase();
+        ctx.strokeText(topText, memeCanvas.width / 2, 20);
+        ctx.fillText(topText, memeCanvas.width / 2, 20);
+
+        // Draw Bottom Text
+        const bottomText = bottomTextInput.value.toUpperCase();
+        ctx.textBaseline = 'bottom';
+        ctx.strokeText(bottomText, memeCanvas.width / 2, memeCanvas.height - 20);
+        ctx.fillText(bottomText, memeCanvas.width / 2, memeCanvas.height - 20);
+    }
+
+    // Listeners for Live Preview
+    [topTextInput, bottomTextInput, fontSizeInput, textColorInput].forEach(el => {
+        el.addEventListener('input', drawMeme);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFileName = file.name.split('.')[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                memeImage.onload = () => {
+                    uploadContainer.style.display = 'none';
+                    processingArea.style.display = 'block';
+                    drawMeme();
+                };
+                memeImage.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        setTimeout(() => {
+            memeCanvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = url;
+                dlBtn.download = `zyntool-${originalFileName}.png`;
+                
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 'image/png');
+        }, 500);
+    });
+</script>
