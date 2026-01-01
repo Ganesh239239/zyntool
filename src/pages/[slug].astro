@@ -2,63 +2,79 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 
-// Import modular components
+// Import all modular tool components
 import CompressTool from '../components/tools/CompressTool.astro';
 import ResizeTool from '../components/tools/ResizeTool.astro';
 import CropTool from '../components/tools/CropTool.astro';
 import WatermarkTool from '../components/tools/WatermarkTool.astro';
+import BlurTool from '../components/tools/BlurTool.astro';
 
+// 1. Generate paths for all tools in src/content/tools/
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+  if (!toolEntries || toolEntries.length === 0) return [];
+  
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, 
+    props: { entry },
+  }));
 }
 
 const { entry } = Astro.props;
-if (!entry) return Astro.redirect('/404');
 
-const toolId = entry.slug || entry.id;
+// BUILD SAFETY: Prevent Cloudflare crashes if a tool is missing
+if (!entry) {
+  return Astro.redirect('/404');
+}
 
-// Fetch all tools for the sidebar "Other Tools" feature
+// 2. Fetch other tools for the "Related Tools" sidebar feature
 const allTools = await getCollection('tools');
-const relatedTools = allTools.filter(t => (t.slug || t.id) !== toolId).slice(0, 6);
+const toolId = entry.slug || entry.id;
+const relatedTools = allTools
+  .filter(t => (t.slug || t.id) !== toolId)
+  .slice(0, 6);
 
-// Extract Markdown Content
+// 3. Render the Markdown content (instructions/SEO text)
 const { Content } = await entry.render();
 
-// SEO Setup
-const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
+// 4. Dynamic SEO Metadata
+const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
+const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy. No registration required.`;
 ---
 
-<MainLayout title={seoTitle}>
-    <!-- Hero Section -->
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- TOOL HERO SECTION -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
+            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">FREE ONLINE TOOL</div>
             <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
             <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
-    <!-- FIXED CONTAINER: Explicit Z-Index to prevent border clipping -->
+    <!-- MAIN WORKSPACE CONTAINER -->
     <div class="container tool-container-fixed pb-5">
         
-        <!-- TOOL LOGIC SWITCHER -->
+        <!-- DYNAMIC TOOL COMPONENT SWITCHER -->
         {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
         
-        {/* Fallback for components not yet split */}
-        {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && (
+        <!-- FALLBACK: If we haven't built the specific component file yet -->
+        {!['compress-image', 'resize-image', 'crop-image', 'watermark-image', 'blur-image'].includes(toolId) && (
             <div class="card p-5 text-center shadow-sm rounded-4 border-0 bg-white">
                 <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                     <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
                 </div>
-                <h4 class="fw-bold">Modularizing Engine...</h4>
-                <p class="text-muted m-0">This tool is being optimized for the new modular system.</p>
+                <h4 class="fw-bold">Modular Engine Update</h4>
+                <p class="text-muted m-0">The high-performance version of <b>{entry.data.title}</b> is currently being deployed. Please check back in a few minutes.</p>
+                <a href="/" class="btn btn-primary mt-4 rounded-pill px-4">Back to Home</a>
             </div>
         )}
 
-        <!-- POST CONTENT -->
+        <!-- SEO CONTENT SECTION (Renders Markdown text) -->
         <div class="content-section mt-5 pt-5 border-top">
             <article class="prose mx-auto">
                 <Content />
@@ -68,20 +84,43 @@ const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 </MainLayout>
 
 <style>
+    /* Premium Typography */
     .fw-black { font-weight: 900; }
     
+    /* Hero Header */
     .tool-hero { 
         padding: 100px 0 120px; 
         position: relative;
-        z-index: 1; /* Stay at the bottom layer */
+        z-index: 1; 
     }
 
-    /* THE FIX: Explicitly set position and high z-index */
+    /* THE LAYOUT FIX: Ensures card border is visible and on top of hero */
     .tool-container-fixed { 
         margin-top: -80px; 
         position: relative; 
-        z-index: 10; /* Force the container to be ABOVE the hero background */
+        z-index: 10; 
     }
-    
-    .prose { max-width: 800px; color: #4a5568; line-height: 1.7; }
+
+    /* SEO Article Styling (Typography) */
+    .prose { 
+        max-width: 800px; 
+        color: #4a5568; 
+        line-height: 1.8; 
+    }
+    .prose :global(h2), .prose :global(h3) { 
+        color: #1a202c; 
+        font-weight: 800; 
+        margin-top: 2.5rem; 
+        margin-bottom: 1rem; 
+    }
+    .prose :global(p) { margin-bottom: 1.5rem; }
+    .prose :global(ul) { margin-bottom: 1.5rem; }
+    .prose :global(li) { margin-bottom: 0.5rem; }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+        .tool-hero { padding: 60px 0 100px; }
+        .display-3 { font-size: 2.4rem; }
+        .tool-container-fixed { margin-top: -60px; }
+    }
 </style>
