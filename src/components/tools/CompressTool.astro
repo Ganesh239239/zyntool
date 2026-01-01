@@ -2,287 +2,298 @@
 const { entry, relatedTools } = Astro.props;
 ---
 
-<div id="compress-tool-pro">
-    <!-- STEP 1: INITIAL STATE (The GeneratePress-Standard Dropzone) -->
-    <div id="uploadContainer" class="uploader-wrapper mx-auto">
-        <div class="uploader-glass shadow-2xl transition-all" onclick="document.getElementById('fileInput').click()">
-            <div class="uploader-inner">
-                <div class="icon-stack mb-4">
-                    <div class="icon-blob" style={`background: ${entry.data.color}`}></div>
-                    <i class={`fa-solid ${entry.data.icon} text-white z-10`}></i>
+<div id="compress-app-root" class="tool-app-shell">
+    <!-- 1. INITIAL UPLOADER (Minimalist & Centered) -->
+    <div id="uploadContainer" class="uploader-fullscreen">
+        <div class="uploader-center-card shadow-2xl" onclick="document.getElementById('fileInput').click()">
+            <div class="uploader-dashed">
+                <div class="icon-pulse mb-4" style={`background: ${entry.data.color}`}>
+                    <i class={`fa-solid ${entry.data.icon}`}></i>
                 </div>
-                <h2 class="fw-black text-dark h3 mb-2">Drop Images Here</h2>
-                <p class="text-muted small">JPG, PNG, WebP or SVG • Max 20 files</p>
-                <button class="btn btn-primary rounded-pill px-5 py-2 fw-bold mt-2 shadow-lg border-0" style={`background: ${entry.data.color}`}>
-                    Browse Files
-                </button>
+                <h2 class="fw-bold h3 mb-2">Select Images</h2>
+                <p class="text-muted small">JPG, PNG, WEBP, or SVG • Batch up to 20 files</p>
+                <button class="btn btn-dark rounded-pill px-5 py-2 mt-3 shadow-sm border-0">Browse Files</button>
                 <input type="file" id="fileInput" hidden accept="image/*" multiple />
             </div>
         </div>
     </div>
 
-    <!-- STEP 2: PROFESSIONAL WORKSPACE (Batch Management) -->
-    <div id="processingArea" style="display:none;" class="fade-in">
-        <div class="row g-4">
-            <!-- Left: The Queue (List View) -->
-            <div class="col-lg-7">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold m-0 text-dark">Queue <span id="queueTotal" class="text-muted small ms-2">0 files</span></h5>
-                    <button class="btn btn-sm btn-outline-danger border-0 fw-bold" onclick="location.reload()">Clear All</button>
-                </div>
-                <div id="fileQueueList" class="batch-list custom-scrollbar pe-2">
-                    <!-- Cards injected here -->
-                </div>
-            </div>
-
-            <!-- Right: Global Settings & Stats -->
-            <div class="col-lg-5">
-                <div class="settings-card card border-0 shadow-xl rounded-5 p-4 sticky-top" style="top: 100px;">
-                    <div class="savings-display text-center p-4 rounded-5 mb-4 shadow-inner">
-                        <div class="display-4 fw-black text-primary" id="globalSavings">-0%</div>
-                        <p class="extra-small fw-bold text-muted uppercase tracking-widest m-0">Total Weight Removed</p>
-                    </div>
-
-                    <div class="control-group mb-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <label class="small fw-bold text-dark">Compression Strength</label>
-                            <span id="globalQVal" class="badge bg-dark rounded-pill">70%</span>
-                        </div>
-                        <input type="range" id="globalQIn" class="form-range pro-range" min="5" max="100" value="70">
-                    </div>
-
-                    <div class="d-grid gap-3">
-                        <button id="btnDownloadZip" class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow-xl d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-file-zipper me-2"></i> Download All (ZIP)
+    <!-- 2. PROFESSIONAL WORKSPACE (App Layout) -->
+    <div id="processingArea" class="app-workspace fade-in" style="display:none;">
+        
+        <!-- THE STAGE (Left/Center Side) -->
+        <div class="editor-main">
+            <div class="stage-container shadow-inner">
+                <div class="stage-header">
+                    <span class="badge bg-dark rounded-pill" id="currentFileName">file.jpg</span>
+                    <div class="stage-controls">
+                        <button class="btn-stage-icon" onclick="window.toggleComparison()" title="Compare">
+                            <i class="fa-solid fa-layer-group"></i>
                         </button>
-                        <a href="/" class="btn btn-link text-muted text-decoration-none small fw-bold">Back to Home</a>
                     </div>
+                </div>
 
-                    <div class="related-pro-tools mt-5 pt-4 border-top">
-                        <div class="row g-2">
-                            {relatedTools.slice(0,4).map(t => (
-                                <div class="col-6">
-                                    <a href={`/${t.slug || t.id}`} class="pro-link">
-                                        <i class={`fa-solid ${t.data.icon}`} style={`color: ${t.data.color}`}></i>
-                                        <span>{t.data.title.split(' ')[0]}</span>
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
+                <!-- Split-Screen Engine -->
+                <div class="comparison-engine" id="compEngine">
+                    <div class="img-wrapper original">
+                        <img id="viewBefore" src="">
+                        <div class="size-overlay left">ORIGINAL: <span id="labelOrig">0 KB</span></div>
+                    </div>
+                    <div class="img-wrapper compressed" id="compWrapper">
+                        <img id="viewAfter" src="">
+                        <div class="size-overlay right">OPTIMIZED: <span id="labelNew">0 KB</span></div>
+                    </div>
+                    <input type="range" class="comp-slider" id="compHandle" min="0" max="100" value="50">
+                </div>
+
+                <div id="miniLoader" class="stage-loader d-none">
+                    <div class="spinner-border text-white"></div>
+                    <p class="mt-3 text-white fw-bold">Calculating Pixels...</p>
+                </div>
+            </div>
+
+            <!-- BATCH TRAY (Bottom) -->
+            <div class="batch-tray custom-scrollbar" id="batchTray">
+                <!-- Thumbnails go here -->
+            </div>
+        </div>
+
+        <!-- THE INSPECTOR (Right Side) -->
+        <aside class="app-sidebar shadow-xl">
+            <div class="sidebar-header border-bottom">
+                <div class="savings-card text-center w-100 p-3 bg-primary bg-opacity-10 rounded-4">
+                    <div class="display-5 fw-black text-primary" id="savingsPct">-0%</div>
+                    <p class="extra-small fw-bold text-muted uppercase tracking-widest mb-0">Saved Size</p>
+                </div>
+            </div>
+
+            <div class="sidebar-body p-4 scrollable">
+                <div class="control-section mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <label class="small fw-bold">Quality Level</label>
+                        <span id="qDisplay" class="badge bg-dark">70</span>
+                    </div>
+                    <input type="range" id="qIn" class="form-range custom-slider" min="1" max="100" value="70">
+                    <div class="d-flex justify-content-between text-muted x-small mt-2">
+                        <span>Smallest</span>
+                        <span>Balanced</span>
+                        <span>Best</span>
+                    </div>
+                </div>
+
+                <div class="control-section mb-4 pt-3 border-top">
+                    <label class="small fw-bold mb-2 d-block">Export Format</label>
+                    <select id="exportFormat" class="form-select border-0 bg-light rounded-3">
+                        <option value="original">Match Original</option>
+                        <option value="image/webp">Next-Gen WebP</option>
+                        <option value="image/jpeg">Standard JPEG</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <button id="btnDownloadCurrent" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold shadow-sm border-0">
+                        <i class="fa-solid fa-download me-2"></i> Download Active
+                    </button>
+                    <button id="btnDownloadZip" class="btn btn-outline-dark rounded-pill py-2 fw-bold">
+                        Download All (ZIP)
+                    </button>
+                </div>
+
+                <div class="related-tray mt-auto">
+                    <p class="extra-small fw-bold text-muted uppercase mb-3">Quick Tools</p>
+                    <div class="row g-2">
+                        {relatedTools.slice(0,4).map(t => (
+                            <div class="col-6">
+                                <a href={`/${t.slug || t.id}`} class="tray-link">
+                                    <i class={`fa-solid ${t.data.icon}`} style={`color: ${t.data.color}`}></i>
+                                    <span>{t.data.title.split(' ')[0]}</span>
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
+        </aside>
+    </div>
+
+    <!-- 3. FINAL SUCCESS (Simple overlay) -->
+    <div id="resultArea" class="success-overlay fade-in" style="display:none;">
+        <div class="success-content shadow-2xl p-5 rounded-5 text-center bg-white">
+            <div class="check-lottie mb-4"><i class="fa-solid fa-circle-check text-success fa-5x"></i></div>
+            <h2 class="fw-black mb-1">Files Processed!</h2>
+            <p class="text-muted mb-4">Batch task successfully completed.</p>
+            <button class="btn btn-dark rounded-pill px-5 py-3 fw-bold" onclick="location.reload()">Start New Batch</button>
         </div>
     </div>
 </div>
 
 <style>
-    /* --- WORLD CLASS UI SYSTEM --- */
+    /* --- ZYN ENGINE APP SHELL STYLING --- */
     .fw-black { font-weight: 900; }
-    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
-    .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
-    .shadow-inner { background: #f8fafc; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); }
-    .tracking-widest { letter-spacing: 0.1em; }
+    .x-small { font-size: 0.7rem; }
+    .extra-small { font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; }
 
-    /* Uploader */
-    .uploader-wrapper { max-width: 850px; }
-    .uploader-glass {
-        background: #ffffff;
-        border: 2px solid #f1f5f9;
-        border-radius: 40px;
-        padding: 10px;
-        cursor: pointer;
+    .tool-app-shell {
+        height: 80vh;
+        margin-top: -60px;
+        position: relative;
+        z-index: 100;
     }
-    .uploader-inner {
-        border: 3px dashed #e2e8f0;
-        border-radius: 32px;
-        padding: 80px 20px;
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .uploader-glass:hover .uploader-inner { border-color: var(--primary-blue); background: #fcfdfe; }
+
+    /* Uploader Overlay */
+    .uploader-fullscreen { height: 100%; display: flex; align-items: center; justify-content: center; }
+    .uploader-center-card { background: white; border-radius: 40px; padding: 15px; width: 100%; max-width: 600px; }
+    .uploader-dashed { border: 3px dashed #e2e8f0; border-radius: 32px; padding: 80px 20px; text-align: center; transition: 0.3s; }
+    .uploader-dashed:hover { border-color: var(--primary-blue); background: #fcfdfe; }
     
-    .icon-stack { position: relative; width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-    .icon-blob { position: absolute; inset: 0; filter: blur(20px); opacity: 0.2; border-radius: 50%; }
-    .icon-stack i { font-size: 2.5rem; position: relative; }
+    .icon-pulse { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; position: relative; }
 
-    /* Batch List Item */
-    .batch-list { max-height: 700px; overflow-y: auto; }
-    .batch-card {
-        background: #fff;
-        border-radius: 24px;
-        padding: 16px;
-        margin-bottom: 12px;
-        border: 1px solid #f1f5f9;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        transition: 0.2s;
-    }
-    .batch-card:hover { border-color: #e2e8f0; transform: translateX(5px); }
-    .thumb-mini { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #f8fafc; border: 1px solid #eee; }
+    /* App Layout */
+    .app-workspace { display: flex; height: 100%; gap: 20px; }
+    .editor-main { flex-grow: 1; display: flex; flex-direction: column; height: 100%; gap: 20px; }
+    .stage-container { flex-grow: 1; background: #1a1c1e; border-radius: 32px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     
-    .file-meta { flex-grow: 1; min-width: 0; }
-    .file-meta h6 { font-size: 0.9rem; font-weight: 700; margin: 0; color: #1e293b; }
-    .file-size-info { font-size: 0.75rem; font-weight: 600; color: #64748b; }
-    
-    .saving-tag {
-        background: #ecfdf5;
-        color: #10b981;
-        padding: 4px 12px;
-        border-radius: 100px;
-        font-size: 0.75rem;
-        font-weight: 800;
-    }
+    .app-sidebar { width: 350px; background: white; border-radius: 32px; display: flex; flex-direction: column; overflow: hidden; }
+    .scrollable { overflow-y: auto; flex-grow: 1; }
 
-    /* Pro Range Input */
-    .pro-range::-webkit-slider-thumb {
-        width: 24px; height: 24px;
-        background: var(--primary-blue);
-        border: 4px solid #fff;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        cursor: pointer;
-        appearance: none;
-        margin-top: -8px;
-        border-radius: 50%;
-    }
-    .pro-range::-webkit-slider-runnable-track {
-        height: 8px; background: #e2e8f0; border-radius: 10px;
-    }
+    /* The Slider Engine */
+    .comparison-engine { width: 100%; height: 100%; position: relative; }
+    .img-wrapper { position: absolute; top:0; left:0; width:100%; height:100%; display: flex; align-items: center; justify-content: center; }
+    .img-wrapper img { max-width: 90%; max-height: 90%; object-fit: contain; }
+    .compressed { z-index: 2; border-right: 2px solid white; overflow: hidden; width: 50%; background: #1a1c1e; }
+    .comp-slider { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: ew-resize; margin:0; }
 
-    /* Related Links */
-    .pro-link {
-        display: flex; align-items: center; gap: 8px; padding: 12px;
-        background: #f8fafc; border-radius: 16px; text-decoration: none;
-        font-size: 0.75rem; font-weight: 700; color: #475569; transition: 0.2s;
-    }
-    .pro-link:hover { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
+    .size-overlay { position: absolute; bottom: 20px; background: rgba(255,255,255,0.9); color: #333; padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.75rem; }
+    .size-overlay.left { left: 20px; }
+    .size-overlay.right { right: 20px; color: #10b981; }
 
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    /* Batch Tray */
+    .batch-tray { height: 110px; display: flex; gap: 12px; padding: 10px; background: white; border-radius: 24px; border: 1px solid #f1f5f9; overflow-x: auto; }
+    .tray-thumb { width: 80px; height: 80px; border-radius: 12px; border: 2px solid #eee; cursor: pointer; flex-shrink: 0; }
+    .tray-thumb.active { border-color: var(--primary-blue); border-width: 3px; }
+    .tray-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 9px; }
+
+    /* Custom Slider */
+    .custom-slider::-webkit-slider-thumb { width: 24px; height: 24px; background: var(--primary-blue); border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); appearance: none; border-radius: 50%; }
+
+    /* Success Overlay */
+    .success-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+    .success-content { background: white; max-width: 500px; width: 90%; }
+
+    @media (max-width: 991px) {
+        .app-workspace { flex-direction: column; height: auto; }
+        .app-sidebar { width: 100%; }
+        .tool-app-shell { height: auto; }
+        .stage-container { height: 400px; }
+    }
 </style>
 
 <script is:inline>
-    // THE ENGINE (Think like a Senior Engineer)
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
-    const queueList = document.getElementById('fileQueueList');
-    const globalQIn = document.getElementById('globalQIn');
-    const globalQVal = document.getElementById('globalQVal');
-    const globalSavings = document.getElementById('globalSavings');
+    const batchTray = document.getElementById('batchTray');
+    const viewBefore = document.getElementById('viewBefore');
+    const viewAfter = document.getElementById('viewAfter');
+    const compWrapper = document.getElementById('compWrapper');
+    const compHandle = document.getElementById('compHandle');
+    const qIn = document.getElementById('qIn');
+    const qDisplay = document.getElementById('qDisplay');
+    const miniLoader = document.getElementById('miniLoader');
 
-    let imageQueue = [];
+    let queue = [];
+    let activeIdx = 0;
 
-    const formatSize = (bytes) => {
-        if (bytes === 0) return '0 KB';
-        const k = 1024;
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
-    };
+    const formatSize = (b) => (b / 1024).toFixed(1) + ' KB';
 
-    // --- AGGRESSIVE COMPRESSOR ENGINE ---
-    async function compressItem(item) {
+    // --- RE-PROCESSING ENGINE ---
+    async function reProcess() {
+        const item = queue[activeIdx];
+        viewBefore.src = item.origUrl;
+        document.getElementById('labelOrig').innerText = formatSize(item.file.size);
+        document.getElementById('currentFileName').innerText = item.file.name;
+        
+        miniLoader.classList.remove('d-none');
+        
         try {
             const options = {
-                maxSizeMB: 0.8, // Aggressive target
+                maxSizeMB: 1,
                 initialQuality: item.quality / 100,
-                useWebWorker: true,
-                maxIteration: 10
+                useWebWorker: true
             };
             const blob = await imageCompression(item.file, options);
-            item.compressed = blob;
+            item.compBlob = blob;
+            item.compUrl = URL.createObjectURL(blob);
             
-            // Update UI Card
-            const card = document.getElementById(`card-${item.id}`);
-            const savings = Math.max(0, Math.round(((item.file.size - blob.size) / item.file.size) * 100));
+            viewAfter.src = item.compUrl;
+            document.getElementById('labelNew').innerText = formatSize(blob.size);
             
-            card.querySelector('.file-size-info').innerHTML = 
-                `${formatSize(item.file.size)} <i class="fa-solid fa-arrow-right mx-1 opacity-50"></i> ${formatSize(blob.size)}`;
-            card.querySelector('.saving-tag').innerText = `-${savings}%`;
-            
-            updateGlobalStats();
-        } catch (err) {
-            console.error(err);
-        }
+            const saved = Math.max(0, Math.round(((item.file.size - blob.size) / item.file.size) * 100));
+            document.getElementById('savingsPct').innerText = `-${saved}%`;
+        } catch (e) { console.error(e); }
+        finally { miniLoader.classList.add('d-none'); }
     }
 
-    function updateGlobalStats() {
-        let totalOld = 0;
-        let totalNew = 0;
-        imageQueue.forEach(item => {
-            totalOld += item.file.size;
-            totalNew += item.compressed ? item.compressed.size : item.file.size;
-        });
-        const saved = Math.max(0, Math.round(((totalOld - totalNew) / totalOld) * 100));
-        globalSavings.innerText = `-${saved}%`;
-    }
-
-    // --- UI COMPONENT: BATCH CARD ---
-    function createCard(item) {
-        const div = document.createElement('div');
-        div.className = 'batch-card shadow-sm fade-in';
-        div.id = `card-${item.id}`;
-        div.innerHTML = `
-            <img src="${URL.createObjectURL(item.file)}" class="thumb-mini shadow-sm">
-            <div class="file-meta">
-                <h6 class="text-truncate" style="max-width: 200px;">${item.file.name}</h6>
-                <div class="file-size-info">Processing...</div>
-            </div>
-            <div class="saving-tag">0%</div>
-            <button class="btn btn-light btn-sm rounded-circle shadow-sm ms-2" onclick="window.removeImage('${item.id}')">
-                <i class="fa-solid fa-xmark small"></i>
-            </button>
-        `;
-        return div;
-    }
-
-    window.removeImage = (id) => {
-        imageQueue = imageQueue.filter(i => i.id !== id);
-        document.getElementById(`card-${id}`).remove();
-        updateGlobalStats();
-        if (imageQueue.length === 0) location.reload();
-    };
-
-    // --- ACTIONS ---
+    // --- UPLOAD HANDLER ---
     fileInput.addEventListener('change', async (e) => {
         const files = Array.from(e.target.files);
         if (!files.length) return;
 
         uploadContainer.style.display = 'none';
-        processingArea.style.display = 'block';
+        processingArea.style.display = 'flex';
 
-        for (let file of files) {
-            const id = Math.random().toString(36).substr(2, 9);
-            const item = { id, file, quality: globalQIn.value, compressed: null };
-            imageQueue.push(item);
-            queueList.appendChild(createCard(item));
-            compressItem(item);
-        }
-        document.getElementById('queueTotal').innerText = `${imageQueue.length} files`;
+        files.forEach((file, i) => {
+            const item = { file, origUrl: URL.createObjectURL(file), quality: 70 };
+            queue.push(item);
+
+            const thumb = document.createElement('div');
+            thumb.className = `tray-thumb ${i === 0 ? 'active' : ''}`;
+            thumb.innerHTML = `<img src="${item.origUrl}">`;
+            thumb.onclick = () => {
+                activeIdx = i;
+                document.querySelectorAll('.tray-thumb').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                qIn.value = item.quality;
+                qDisplay.innerText = item.quality;
+                reProcess();
+            };
+            batchTray.appendChild(thumb);
+        });
+        reProcess();
     });
 
-    globalQIn.oninput = (e) => {
-        globalQVal.innerText = e.target.value + '%';
+    // --- SLIDER ENGINE ---
+    compHandle.oninput = (e) => {
+        compWrapper.style.width = e.target.value + '%';
     };
 
-    // Re-process all on change
-    globalQIn.onchange = () => {
-        imageQueue.forEach(item => {
-            item.quality = globalQIn.value;
-            compressItem(item);
-        });
+    let debounce;
+    qIn.oninput = (e) => {
+        qDisplay.innerText = e.target.value;
+        queue[activeIdx].quality = parseInt(e.target.value);
+        clearTimeout(debounce);
+        debounce = setTimeout(reProcess, 400);
+    };
+
+    document.getElementById('btnDownloadCurrent').onclick = () => {
+        const item = queue[activeIdx];
+        if (!item.compBlob) return;
+        const a = document.createElement('a');
+        a.href = item.compUrl;
+        a.download = `optimized-${item.file.name}`;
+        a.click();
     };
 
     document.getElementById('btnDownloadZip').onclick = async () => {
         const zip = new JSZip();
-        imageQueue.forEach(item => {
-            if (item.compressed) zip.file(`optimized-${item.file.name}`, item.compressed);
+        queue.forEach(item => {
+            if (item.compBlob) zip.file(`optimized-${item.file.name}`, item.compBlob);
         });
-        const blob = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(blob);
+        const blob = await zip.generateAsync({type:"blob"});
         const a = document.createElement('a');
-        a.href = url;
-        a.download = "zyntool-optimized.zip";
+        a.href = URL.createObjectURL(blob);
+        a.download = "zyntool-batch.zip";
         a.click();
+        document.getElementById('resultArea').style.display = 'flex';
     };
 </script>
