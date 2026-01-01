@@ -78,8 +78,8 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} />}
-        {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} />}
+       {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+{toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
 
         <!-- The "Modular Engine Update" section has been removed -->
 
