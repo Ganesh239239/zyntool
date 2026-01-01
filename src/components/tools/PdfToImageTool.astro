@@ -1,0 +1,92 @@
+---
+const { entry } = Astro.props;
+---
+<div id="pdf-to-image-tool">
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border mx-auto" style="max-width: 800px;">
+        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+            </div>
+            <h2 class="fw-bold">Select PDF File</h2>
+            <p class="text-muted small">Convert every PDF page into a high-quality JPG image.</p>
+            <input type="file" id="fileInput" hidden accept="application/pdf" />
+        </div>
+    </div>
+
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 p-4 text-center" id="pdfRenderStatus">
+                    <i class="fa-solid fa-file-pdf fa-4x text-danger mb-3"></i>
+                    <h5 id="pdfFileName">filename.pdf</h5>
+                    <p class="text-muted small" id="pdfPageCount">0 Pages detected</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="options-card card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Export Settings</h5>
+                    <label class="small fw-bold text-muted mb-2">Image Format</label>
+                    <select id="imgFormat" class="form-select mb-4">
+                        <option value="image/jpeg">JPG (Smaller size)</option>
+                        <option value="image/png">PNG (Best quality)</option>
+                    </select>
+                    <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0" style={`background: ${entry.data.color}`}>
+                        Convert PDF to Images
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in mx-auto" style="max-width: 800px;">
+        <h3 class="fw-bold mb-4 text-dark">Download Images</h3>
+        <div id="pdfResultGrid" class="row g-3"></div>
+        <button class="btn btn-outline-secondary mt-5 rounded-pill" onclick="location.reload()">Process Another PDF</button>
+    </div>
+</div>
+
+<script is:inline>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    let pdfDoc = null;
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        document.getElementById('uploadContainer').style.display = 'none';
+        document.getElementById('processingArea').style.display = 'block';
+        document.getElementById('pdfFileName').innerText = file.name;
+
+        const arrayBuffer = await file.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+        document.getElementById('pdfPageCount').innerText = `${pdfDoc.numPages} Pages detected`;
+    });
+
+    document.getElementById('btnAction').addEventListener('click', async () => {
+        const format = document.getElementById('imgFormat').value;
+        const resultGrid = document.getElementById('pdfResultGrid');
+        document.getElementById('processingArea').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'block';
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+            const page = await pdfDoc.getPage(i);
+            const viewport = page.getViewport({ scale: 2 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            
+            const url = canvas.toDataURL(format);
+            const col = document.createElement('div');
+            col.className = "col-6 col-md-3";
+            col.innerHTML = `
+                <div class="card p-2 shadow-sm border-0 rounded-3">
+                    <img src="${url}" class="img-fluid rounded mb-2">
+                    <a href="${url}" download="page-${i}.${format.split('/')[1]}" class="btn btn-sm btn-dark w-100">Page ${i}</a>
+                </div>`;
+            resultGrid.appendChild(col);
+        }
+    });
+</script>
