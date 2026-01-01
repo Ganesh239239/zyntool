@@ -3,23 +3,25 @@ const { entry, relatedTools } = Astro.props;
 ---
 
 <div id="compress-tool">
-    <!-- STEP 1: UPLOAD BOX (UNTOUCHED DESIGN) -->
-    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
-        <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
-            <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
-                <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+    <!-- STEP 1: UPLOAD BOX (RE-DESIGNED FOR VISIBILITY) -->
+    <div id="uploadContainer" class="uploader-card shadow-lg mb-5 bg-white">
+        <!-- Added padding here so the dashed border has room to show -->
+        <div class="uploader-border-wrapper p-3"> 
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold text-dark">Select Images</h2>
+                <p class="text-muted small">or drop them here</p>
+                <input type="file" id="fileInput" hidden accept="image/jpeg,image/png,image/webp" multiple />
             </div>
-            <h2 class="fw-bold">Select Images</h2>
-            <p class="text-muted small">or drop them here</p>
-            <input type="file" id="fileInput" hidden accept="image/jpeg,image/png,image/webp" multiple />
         </div>
     </div>
 
-    <!-- STEP 2: PREMIUM WORKSPACE (THE REDESIGN) -->
+    <!-- STEP 2: PREMIUM WORKSPACE (ALREADY OPTIMIZED) -->
     <div id="processingArea" style="display:none;" class="fade-in">
         <div class="row g-4 text-start">
-            
-            <!-- LEFT COLUMN: PREVIEW STAGE -->
+            <!-- PREVIEW STAGE -->
             <div class="col-lg-8">
                 <div class="workspace-stage shadow-sm rounded-4 border bg-white overflow-hidden position-relative">
                     <div class="stage-header p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
@@ -28,11 +30,9 @@ const { entry, relatedTools } = Astro.props;
                     </div>
                     
                     <div class="image-viewport d-flex align-items-center justify-content-center p-4">
-                        <!-- THE IMAGE FIX: Contained and sharp -->
                         <img id="mainPreview" src="" class="img-fluid workspace-img shadow-lg">
                     </div>
 
-                    <!-- Loader -->
                     <div id="miniLoader" class="loader-overlay d-none">
                         <div class="spinner-border text-primary mb-2"></div>
                         <span class="fw-bold small uppercase">Optimizing...</span>
@@ -40,7 +40,7 @@ const { entry, relatedTools } = Astro.props;
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: SIDEBAR CONTROLS -->
+            <!-- SIDEBAR CONTROLS -->
             <div class="col-lg-4">
                 <div class="sidebar-sticky">
                     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
@@ -53,10 +53,6 @@ const { entry, relatedTools } = Astro.props;
                                 Compression Level <span id="qVal" class="text-primary">70%</span>
                             </label>
                             <input type="range" id="qIn" class="form-range" min="0.1" max="1" step="0.1" value="0.7">
-                            <div class="d-flex justify-content-between extra-small text-muted mt-1">
-                                <span>Small File</span>
-                                <span>High Quality</span>
-                            </div>
                         </div>
 
                         <button id="btnAction" class="btn btn-lg w-100 text-white rounded-pill py-3 fw-bold shadow-sm border-0 mb-3" style={`background: ${entry.data.color}`}>
@@ -66,7 +62,7 @@ const { entry, relatedTools } = Astro.props;
                         <p class="extra-small text-center text-muted">Original Size: <span id="oldSize">0 KB</span></p>
                     </div>
 
-                    <!-- INTERNAL LINKING: iLoveIMG Style -->
+                    <!-- RELATED TOOLS -->
                     <div class="card border-0 shadow-sm rounded-4 p-4 bg-white d-none d-lg-block">
                         <p class="extra-small fw-bold text-muted uppercase mb-3 letter-spacing-1">Popular Tools</p>
                         <div class="row g-2">
@@ -85,7 +81,7 @@ const { entry, relatedTools } = Astro.props;
         </div>
     </div>
 
-    <!-- STEP 3: SUCCESS RESULT (Refined) -->
+    <!-- STEP 3: SUCCESS RESULT -->
     <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
         <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 600px;">
             <div class="success-badge mb-4"><i class="fa-solid fa-circle-check"></i></div>
@@ -105,7 +101,28 @@ const { entry, relatedTools } = Astro.props;
 </div>
 
 <style>
-    /* --- NEW WORKSPACE UI --- */
+    /* --- FIXED UPLOADER DESIGN --- */
+    .uploader-card { 
+        border-radius: 24px; 
+        overflow: visible; /* Ensure shadow and border don't get cut */
+    }
+    
+    .uploader-zone { 
+        /* Darker and thicker dashed border */
+        border: 3px dashed #cbd5e1; 
+        border-radius: 20px; 
+        padding: 80px 20px; 
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+
+    .uploader-zone:hover { 
+        border-color: var(--primary-blue); 
+        background-color: #f8faff;
+        border-style: solid; /* Changes to solid on hover for a pro feel */
+    }
+
+    /* --- WORKSPACE UI --- */
     .workspace-stage { min-height: 500px; }
     .image-viewport { 
         min-height: 450px; 
@@ -114,7 +131,7 @@ const { entry, relatedTools } = Astro.props;
         background-size: 20px 20px;
     }
     .workspace-img { 
-        max-height: 400px; /* FIXED: Prevents "very large" image */
+        max-height: 400px; 
         border-radius: 8px;
         object-fit: contain;
     }
@@ -122,19 +139,17 @@ const { entry, relatedTools } = Astro.props;
     .sidebar-tool-link { transition: 0.2s; background: #fff; }
     .sidebar-tool-link:hover { background: #f8fbff; border-color: #4B90FF !important; }
     .extra-small { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; }
-    .letter-spacing-1 { letter-spacing: 1px; }
 
     .loader-overlay {
         position: absolute; top:0; left:0; width:100%; height:100%;
         background: rgba(255,255,255,0.8); z-index: 10;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-
-    /* Success Badge */
     .success-badge { width: 70px; height: 70px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem; }
 </style>
 
 <script is:inline>
+    // Logic remains identical to previous working version
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
