@@ -2,16 +2,14 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 
-// Import React Tool Components (Islands)
-// Note: We use .jsx for the processing logic
+// Import React Tool Components
 import CompressTool from '../components/tools/CompressTool.jsx';
-
 import CropTool from '../components/tools/CropTool.jsx';
-
-// ... Import others as we create them
+// Import other tools as .jsx files here...
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
+  if (!toolEntries || toolEntries.length === 0) return [];
   return toolEntries.map(entry => ({
     params: { slug: entry.slug || entry.id }, 
     props: { entry },
@@ -32,61 +30,43 @@ const { Content } = await entry.render();
 // SEO Strategy
 const seoTitle = entry.data.seo_title || `${entry.data.title} Online - 100% Free | ZynTool`;
 const seoDesc = entry.data.seo_description || `Fast and private ${entry.data.title} tool.`;
-
-// JSON-LD Schema
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": entry.data.title,
-  "operatingSystem": "All",
-  "applicationCategory": "MultimediaApplication",
-  "description": seoDesc,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-};
 ---
 
 <MainLayout title={seoTitle} description={seoDesc}>
-    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-
-    <!-- SLIM TAILWIND TOOLBAR -->
-    <div class="sticky top-[70px] z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
-        <div class="container mx-auto flex h-12 items-center justify-between px-4">
-            <nav class="flex items-center space-x-2 text-sm font-semibold text-slate-500">
-                <a href="/" class="hover:text-indigo-600 transition-colors">Home</a>
-                <span class="text-slate-300">/</span>
-                <span class="text-slate-900">{entry.data.title}</span>
-            </nav>
-            <div class="hidden md:flex items-center space-x-2">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={`background-color: ${entry.data.color}`}></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2" style={`background-color: ${entry.data.color}`}></span>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ZynEngine Active</span>
-            </div>
+    <!-- RESTORED HERO SECTION (Simple & Attractive) -->
+    <div class="w-full py-12 md:py-20 text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container mx-auto px-4 text-center">
+            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-[2px] px-3 py-1 rounded-full mb-4 border border-white/30">
+                Online Tool
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black mb-3 tracking-tight">{entry.data.title}</h1>
+            <p class="text-white/80 text-lg md:text-xl max-w-2xl mx-auto font-medium">{entry.data.description}</p>
         </div>
     </div>
 
-    <!-- MAIN WORKSPACE -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="mb-12">
-            <!-- REACT ISLANDS: client:load is the magic for interactivity -->
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div class="container mx-auto px-4 -mt-10 pb-20 relative z-10">
+        
+        <div class="mb-16">
+            <!-- REACT ISLANDS -->
             {toolId === 'compress-image' && <CompressTool client:load entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
             
-{toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
-            
-            <!-- Fallback for tools still being converted to React -->
-            {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && (
-                <div class="flex flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white py-20 shadow-sm">
-                    <div class="mb-4 animate-bounce text-slate-300"><i class="fa-solid fa-microchip fa-3x"></i></div>
-                    <h2 class="text-xl font-bold text-slate-800">Deploying React Engine</h2>
-                    <p class="text-slate-500">Converting {entry.data.title} to the high-performance stack...</p>
+            <!-- Fallback for other tools -->
+            {!['compress-image', 'crop-image'].includes(toolId) && (
+                <div class="bg-white rounded-[32px] p-20 shadow-xl border border-slate-100 text-center">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                        <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800">Switching to React Engine</h2>
+                    <p class="text-slate-400">Please wait while we optimize this tool...</p>
                 </div>
             )}
         </div>
 
-        <!-- TAILWIND PROSE (SEO CONTENT) -->
-        <div class="mx-auto max-w-4xl border-t border-slate-200 pt-12">
-            <article class="prose prose-slate prose-headings:font-black prose-h2:text-2xl prose-p:text-slate-600 max-w-none">
+        <!-- SEO CONTENT SECTION -->
+        <div class="max-w-4xl mx-auto border-t border-slate-200 pt-16">
+            <article class="prose prose-slate prose-headings:font-black prose-h2:text-3xl prose-p:text-slate-600 prose-p:leading-relaxed max-w-none">
                 <Content />
             </article>
         </div>
