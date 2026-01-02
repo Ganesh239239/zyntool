@@ -1,49 +1,94 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-import CompressTool from '../components/tools/CompressTool.astro';
 
+// Import all modular tool components
+import CompressTool from '../components/tools/CompressTool.astro';
+import ResizeTool from '../components/tools/ResizeTool.astro';
+import CropTool from '../components/tools/CropTool.astro';
+import WatermarkTool from '../components/tools/WatermarkTool.astro';
+import BlurTool from '../components/tools/BlurTool.astro';
+import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
+import ConvertToJpgTool from '../components/tools/ConvertToJpgTool.astro';
+import MemeTool from '../components/tools/MemeTool.astro';
+import HtmlToImageTool from '../components/tools/HtmlToImageTool.astro';
+import UpscaleTool from '../components/tools/UpscaleTool.astro';
+import RemoveBgTool from '../components/tools/RemoveBgTool.astro';
+import PhotoEditorTool from '../components/tools/PhotoEditorTool.astro';
+import ImageToPdfTool from '../components/tools/ImageToPdfTool.astro';
+import PdfToImageTool from '../components/tools/PdfToImageTool.astro';
+import RotateTool from '../components/tools/RotateTool.astro';
+import OcrTool from '../components/tools/OcrTool.astro';
+
+
+// 1. Generate paths for all tools
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+if (!toolEntries || toolEntries.length === 0) return [];
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, 
+    props: { entry },
+  }));
 }
 
 const { entry } = Astro.props;
-if (!entry) return Astro.redirect('/404');
 
+// BUILD GUARD: Prevent crashes
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+// 2. Fetch other tools for the sidebar feature
+const allTools = await getCollection('tools');
 const toolId = entry.slug || entry.id;
+const relatedTools = allTools
+  .filter(t => (t.slug || t.id) !== toolId)
+  .slice(0, 6);
+
+// 3. Render the Markdown content
 const { Content } = await entry.render();
 
-const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
+// 4. Dynamic SEO Metadata
+const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
+const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy. No registration required.`;
 ---
 
-<MainLayout title={seoTitle}>
-    <!-- NAVIGATION -->
-    <div class="bg-white border-bottom py-2">
-        <div class="container">
-            <nav class="small fw-bold">
-                <a href="/" class="text-muted text-decoration-none">Home</a>
-                <span class="mx-2 text-muted">›</span>
-                <span class="text-dark">{entry.data.title}</span>
-            </nav>
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- TOOL HERO SECTION -->
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
+            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">FREE ONLINE TOOL</div>
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
     </div>
 
-    <!-- COMPACT TOOL WORKSPACE -->
-    <div class="container py-4">
-        <!-- The header stays simple -->
-        <div id="tool-header-text" class="text-center mb-4">
-            <h1 class="h2 fw-bold text-dark mb-1">{entry.data.title}</h1>
-            <p class="text-muted small">{entry.data.description}</p>
-        </div>
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div class="container tool-container-fixed pb-5">
+        
+        <!-- DYNAMIC TOOL COMPONENT SWITCHER -->
+        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
+       {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+       {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
+       {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
+       {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
 
-        <div id="main-tool-container">
-            {toolId === 'compress-image' && <CompressTool entry={entry} />}
-            {toolId !== 'compress-image' && <p class="text-center py-5">Logic coming soon...</p>}
-        </div>
+        <!-- The "Modular Engine Update" section has been removed -->
 
-        <div class="mt-5 pt-5 border-top">
-            <article class="prose mx-auto" style="max-width: 800px; color: #666;">
+        <!-- SEO CONTENT SECTION -->
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
                 <Content />
             </article>
         </div>
@@ -51,7 +96,43 @@ const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 </MainLayout>
 
 <style>
-    /* iLoveIMG typography */
-    h1 { letter-spacing: -0.5px; }
-    .prose { line-height: 1.7; font-size: 0.95rem; }
+    /* Premium Typography */
+    .fw-black { font-weight: 900; }
+    
+    /* Hero Header */
+    .tool-hero { 
+        padding: 100px 0 120px; 
+        position: relative;
+        z-index: 1; 
+    }
+
+    /* THE LAYOUT FIX: Ensures card border is visible and on top of hero */
+    .tool-container-fixed { 
+        margin-top: -80px; 
+        position: relative; 
+        z-index: 10; 
+    }
+
+    /* SEO Article Styling (Typography) */
+    .prose { 
+        max-width: 800px; 
+        color: #4a5568; 
+        line-height: 1.8; 
+    }
+    .prose :global(h2), .prose :global(h3) { 
+        color: #1a202c; 
+        font-weight: 800; 
+        margin-top: 2.5rem; 
+        margin-bottom: 1rem; 
+    }
+    .prose :global(p) { margin-bottom: 1.5rem; }
+    .prose :global(ul) { margin-bottom: 1.5rem; }
+    .prose :global(li) { margin-bottom: 0.5rem; }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+        .tool-hero { padding: 60px 0 100px; }
+        .display-3 { font-size: 2.4rem; }
+        .tool-container-fixed { margin-top: -60px; }
+    }
 </style>
