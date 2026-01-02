@@ -140,4 +140,64 @@ const tools = await getCollection('tools');
         .tool-name { font-size: 1.15rem; }
         .tool-desc { font-size: 0.88rem; }
     }
+
+
+<style>
+    /* --- UNIQUE ZYN DESIGN SYSTEM --- */
+    .hero-section { 
+        padding: 90px 0 50px; 
+        background-color: #ffffff; 
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .hero-title { 
+        font-size: 3.2rem; 
+        font-weight: 850; 
+        color: #0f172a; 
+        letter-spacing: -2px; 
+        line-height: 1.1; 
+    }
+
+    /* Modern Gradient Text Effect */
+    .text-gradient {
+        background: linear-gradient(to right, #4f46e5, #06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle { 
+        color: #64748b; 
+        font-size: 1.2rem; 
+        margin: 20px auto 0; 
+        max-width: 700px;
+        line-height: 1.6;
+    }
+
+    /* PILL BUTTONS (Matching your previous image but more refined) */
+    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .filter-pill {
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #475569;
+        padding: 8px 22px;
+        border-radius: 12px; /* Sharp modern round */
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .filter-pill:hover { border-color: #4f46e5; color: #4f46e5; }
+    .filter-pill.active {
+        background-color: #0f172a;
+        color: #fff;
+        border-color: #0f172a;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Font Sizing */
+    @media (max-width: 767px) {
+        .hero-title { font-size: 2.2rem; padding: 0 10px; }
+        .hero-subtitle { font-size: 1.05rem; padding: 0 20px; }
+    }
+</style>
 </style>
