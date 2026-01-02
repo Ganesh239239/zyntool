@@ -1,95 +1,107 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-const tools = await getCollection('tools');
 
-const categories = [
-  { id: 'all', label: 'Everything', icon: 'fa-border-all' },
-  { id: 'optimize', label: 'Performance', icon: 'fa-rocket' },
-  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles' },
-  { id: 'edit', label: 'Adjust', icon: 'fa-sliders' },
-  { id: 'convert', label: 'Formats', icon: 'fa-sync' },
-  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved' },
-];
+// Import React Tool Components (JSX)
+import CompressTool from '../components/tools/CompressTool.jsx';
+import CropTool from '../components/tools/CropTool.jsx';
+
+// Import Astro Tool Components (If you haven't converted them to JSX yet)
+// NOTE: Make sure these files actually exist in src/components/tools/
+import ResizeTool from '../components/tools/ResizeTool.astro';
+import WatermarkTool from '../components/tools/WatermarkTool.astro';
+import BlurTool from '../components/tools/BlurTool.astro';
+import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
+import ConvertToJpgTool from '../components/tools/ConvertToJpgTool.astro';
+import MemeTool from '../components/tools/MemeTool.astro';
+import HtmlToImageTool from '../components/tools/HtmlToImageTool.astro';
+import UpscaleTool from '../components/tools/UpscaleTool.astro';
+import RemoveBgTool from '../components/tools/RemoveBgTool.astro';
+import PhotoEditorTool from '../components/tools/PhotoEditorTool.astro';
+import ImageToPdfTool from '../components/tools/ImageToPdfTool.astro';
+import PdfToImageTool from '../components/tools/PdfToImageTool.astro';
+import RotateTool from '../components/tools/RotateTool.astro';
+import OcrTool from '../components/tools/OcrTool.astro';
+
+// 1. Mandatory Export for Dynamic Routing
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  if (!toolEntries || toolEntries.length === 0) return [];
+  
+  return toolEntries.map(entry => ({
+    params: { slug: entry.slug || entry.id }, 
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+
+// 2. Build Safety
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const allTools = await getCollection('tools');
+const toolId = entry.slug || entry.id;
+const relatedTools = allTools
+  .filter(t => (t.slug || t.id) !== toolId)
+  .slice(0, 6);
+
+const { Content } = await entry.render();
+
+// 3. SEO Strategy
+const seoTitle = entry.data.seo_title || `${entry.data.title} Online - 100% Free | ZynTool`;
+const seoDesc = entry.data.seo_description || `Fast and private ${entry.data.title} tool.`;
 ---
 
-<MainLayout title="ZynTool | Free Private Image Editor">
-  
-  <!-- HERO: TIGHT & PROFESSIONAL -->
-  <section class="bg-white border-b border-gray-100 pt-12 pb-16">
-    <div class="container mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-5xl font-[900] text-gray-900 tracking-tight mb-4">
-        Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
-      </h1>
-      <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
-        Fast, free, and secure. Since we process everything in your browser, your photos never leave your device.
-      </p>
-
-      <!-- FILTER BUTTONS: iLoveIMG Style -->
-      <div class="flex flex-wrap justify-center gap-2 mt-10">
-        {categories.map((cat) => (
-          <button 
-            class={`filter-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-gray-900 border-gray-900 text-white' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200'}`}
-            data-category={cat.id}
-          >
-            <i class={`fa-solid ${cat.icon} opacity-50 text-[12px]`}></i>
-            {cat.label}
-          </button>
-        ))}
-      </div>
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- SLIM TOOLBAR -->
+    <div class="sticky top-[70px] z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+        <div class="container mx-auto flex h-12 items-center justify-between px-4">
+            <nav class="flex items-center space-x-2 text-sm font-semibold text-slate-500">
+                <a href="/" class="hover:text-indigo-600 transition-colors no-underline">Home</a>
+                <span class="text-slate-300">/</span>
+                <span class="text-slate-900">{entry.data.title}</span>
+            </nav>
+            <div class="hidden md:flex items-center space-x-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={`background-color: ${entry.data.color}`}></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2" style={`background-color: ${entry.data.color}`}></span>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ZynEngine Active</span>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- GRID: Light gray background makes cards pop -->
-  <section class="py-12">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
-        {tools.map((tool) => (
-          <div class="tool-item" data-category={tool.data.category}>
-            <a href={`/${tool.slug || tool.id}`} class="block no-underline group">
-              <!-- CARD DESIGN -->
-              <div class="bg-white p-6 rounded-[20px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex md:flex-col items-center md:text-center gap-5 md:gap-0">
-                
-                <div class="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 md:mx-auto md:mb-5 rounded-2xl flex items-center justify-center text-2xl md:text-3xl" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
-                  <i class={`fa-solid ${tool.data.icon}`}></i>
-                </div>
+    <!-- WORKSPACE CONTAINER -->
+    <div class="container mx-auto px-4 py-8 min-h-[60vh]">
+        <div class="mb-12">
+            <!-- REACT ISLANDS (client:load is REQUIRED) -->
+            {toolId === 'compress-image' && <CompressTool client:load entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
+            
+            <!-- ASTRO COMPONENTS -->
+            {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
+        </div>
 
-                <div class="flex-1">
-                  <h5 class="text-gray-900 font-bold text-lg md:text-xl mb-1 tracking-tight">
-                    {tool.data.title}
-                  </h5>
-                  <p class="text-gray-500 text-xs md:text-sm font-medium leading-relaxed line-clamp-2">
-                    {tool.data.description}
-                  </p>
-                </div>
-              </div>
-            </a>
-          </div>
-        ))}
-      </div>
+        <!-- SEO CONTENT SECTION -->
+        <div class="mx-auto max-w-4xl border-t border-slate-200 pt-12">
+            <article class="prose prose-slate max-w-none prose-headings:font-black prose-h2:text-3xl prose-p:leading-relaxed text-slate-600">
+                <Content />
+            </article>
+        </div>
     </div>
-  </section>
-
-  <script is:inline>
-    // Filtering Logic
-    const buttons = document.querySelectorAll('.filter-btn');
-    const items = document.querySelectorAll('.tool-item');
-
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.dataset.category;
-        buttons.forEach(b => b.classList.remove('active', 'bg-gray-900', 'border-gray-900', 'text-white'));
-        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-100', 'text-gray-500'));
-        btn.classList.add('active', 'bg-gray-900', 'border-gray-900', 'text-white');
-
-        items.forEach(item => {
-          if (cat === 'all' || item.dataset.category === cat) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
-      });
-    });
-  </script>
 </MainLayout>
