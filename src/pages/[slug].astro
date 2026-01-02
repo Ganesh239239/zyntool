@@ -5,9 +5,9 @@ import MainLayout from '../layouts/MainLayout.astro';
 // Import React Tool Components (Islands)
 // Note: We use .jsx for the processing logic
 import CompressTool from '../components/tools/CompressTool.jsx';
-import ResizeTool from '../components/tools/ResizeTool.jsx';
+
 import CropTool from '../components/tools/CropTool.jsx';
-import WatermarkTool from '../components/tools/WatermarkTool.jsx';
+
 // ... Import others as we create them
 
 export async function getStaticPaths() {
@@ -71,9 +71,8 @@ const schema = {
         <div class="mb-12">
             <!-- REACT ISLANDS: client:load is the magic for interactivity -->
             {toolId === 'compress-image' && <CompressTool client:load entry={entry} relatedTools={relatedTools} />}
-            {toolId === 'resize-image' && <ResizeTool client:load entry={entry} relatedTools={relatedTools} />}
-            {toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
-            {toolId === 'watermark-image' && <WatermarkTool client:load entry={entry} relatedTools={relatedTools} />}
+            
+{toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
             
             <!-- Fallback for tools still being converted to React -->
             {!['compress-image', 'resize-image', 'crop-image', 'watermark-image'].includes(toolId) && (
