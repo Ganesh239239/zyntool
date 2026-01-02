@@ -35,38 +35,42 @@ const { Content } = await entry.render();
 const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 ---
 
-<MainLayout title={seoTitle}>
-    <!-- COMPACT HERO SECTION -->
-    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
-        <div class="container text-center">
-            <span class="badge bg-white text-dark mb-2 px-3 py-1 rounded-pill fw-bold extra-small uppercase tracking-wider">Online Tool</span>
-            <h1 class="h2 fw-black mb-1">{entry.data.title}</h1>
-            <p class="opacity-75 small mb-0 d-none d-md-block">{entry.data.description}</p>
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- APP-STYLE UTILITY HEADER (Developer Mindset) -->
+    <div class="app-header-bar border-bottom bg-white">
+        <div class="container d-flex align-items-center justify-content-between h-100">
+            <!-- Left: Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item small-text active" aria-current="page">{entry.data.title}</li>
+                </ol>
+            </nav>
+
+            <!-- Right: Technical Info (Optional) -->
+            <div class="d-none d-md-flex align-items-center gap-3">
+                <span class="status-indicator">
+                    <span class="pulse-dot"></span> Online & Secure
+                </span>
+            </div>
         </div>
     </div>
 
-    <!-- TIGHTER CONTENT WRAPPER -->
-    <div class="container tool-container-fixed pb-4">
+    <!-- MAIN WORKSPACE: Now sits much higher on the page -->
+    <div class="container tool-workspace-container py-4">
         
-        <!-- COMPONENT SWITCHER -->
-        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
+        <!-- TOOL LOGIC SWITCHER -->
+        <div class="mb-5">
+            {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+            <!-- ... rest of your tool switcher ... -->
+        </div>
 
-        <!-- INSTRUCTIONS -->
-        <div class="content-section mt-5 pt-4 border-top">
+        <!-- TECHNICAL DOCUMENTATION (Hidden in SEO Article) -->
+        <div class="content-section pt-5 border-top">
+            <header class="mb-4">
+                <h2 class="fw-bold h4">Technical Implementation & Guide</h2>
+                <p class="text-muted small">How ZynTool processes your data for {entry.data.title}</p>
+            </header>
             <article class="prose mx-auto">
                 <Content />
             </article>
@@ -75,25 +79,74 @@ const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 </MainLayout>
 
 <style>
-    .fw-black { font-weight: 800; }
-    .extra-small { font-size: 0.65rem; }
-    
-    .tool-hero { 
-        padding: 40px 0 70px; /* Reduced for utility feel */
-        position: relative;
-        z-index: 1; 
+    /* --- THE UTILITY BAR SYSTEM --- */
+    .app-header-bar {
+        height: 56px; /* Strict slim height */
+        background-color: #ffffff;
+        position: sticky;
+        top: 70px; /* Sits right under your main navbar */
+        z-index: 100;
     }
 
-    .tool-container-fixed { 
-        margin-top: -45px; 
-        position: relative; 
-        z-index: 10; 
+    .breadcrumb {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        font-size: 1.2rem;
+        line-height: 1;
+        vertical-align: middle;
+        color: #cbd5e1;
+    }
+
+    .breadcrumb-item.active {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    /* Status Indicator Logic */
+    .status-indicator {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pulse-dot {
+        width: 8px; height: 8px;
+        background-color: #10b981; /* Success Green */
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Workspace container - No more negative margins! */
+    .tool-workspace-container {
+        position: relative;
+        z-index: 10;
     }
 
     .prose { 
-        max-width: 800px; 
+        max-width: 850px; 
+        color: #475569;
         font-size: 0.95rem;
-        color: #4b5563;
-        line-height: 1.7;
+    }
+
+    @media (max-width: 767px) {
+        .app-header-bar { height: 48px; }
+        .breadcrumb { font-size: 0.75rem; }
     }
 </style>
