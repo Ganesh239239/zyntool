@@ -1,10 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-
-// Imports for your tools
 import CompressTool from '../components/tools/CompressTool.astro';
-// ... other imports
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
@@ -12,41 +9,41 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+if (!entry) return Astro.redirect('/404');
+
 const toolId = entry.slug || entry.id;
 const { Content } = await entry.render();
 
-const seoTitle = `${entry.data.title} Online - Free | ZynTool`;
+const seoTitle = `${entry.data.title} Online - 100% Free | ZynTool`;
 ---
 
 <MainLayout title={seoTitle}>
-    <!-- SLIM TOOLBAR (The Breadcrumb we created earlier) -->
-    <div class="app-breadcrumb-bar bg-white border-bottom">
-        <div class="container d-flex align-items-center h-100">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted small fw-bold">Home</a></li>
-                    <li class="breadcrumb-item active small fw-bold text-dark">{entry.data.title}</li>
-                </ol>
+    <!-- NAVIGATION -->
+    <div class="bg-white border-bottom py-2">
+        <div class="container">
+            <nav class="small fw-bold">
+                <a href="/" class="text-muted text-decoration-none">Home</a>
+                <span class="mx-2 text-muted">›</span>
+                <span class="text-dark">{entry.data.title}</span>
             </nav>
         </div>
     </div>
 
-    <!-- SIMPLE TOOL AREA: No cards, no hero, just content -->
-    <div class="container py-5">
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold text-dark mb-2">{entry.data.title}</h1>
-            <p class="fs-5 text-secondary mx-auto" style="max-width: 700px;">{entry.data.description}</p>
+    <!-- COMPACT TOOL WORKSPACE -->
+    <div class="container py-4">
+        <!-- The header stays simple -->
+        <div id="tool-header-text" class="text-center mb-4">
+            <h1 class="h2 fw-bold text-dark mb-1">{entry.data.title}</h1>
+            <p class="text-muted small">{entry.data.description}</p>
         </div>
 
-        <!-- THE TOOL COMPONENT -->
-        <div class="tool-main-content">
+        <div id="main-tool-container">
             {toolId === 'compress-image' && <CompressTool entry={entry} />}
-            <!-- Add other tool switches here -->
+            {toolId !== 'compress-image' && <p class="text-center py-5">Logic coming soon...</p>}
         </div>
 
-        <!-- SEO CONTENT: Sits cleanly below -->
         <div class="mt-5 pt-5 border-top">
-            <article class="prose mx-auto">
+            <article class="prose mx-auto" style="max-width: 800px; color: #666;">
                 <Content />
             </article>
         </div>
@@ -54,7 +51,7 @@ const seoTitle = `${entry.data.title} Online - Free | ZynTool`;
 </MainLayout>
 
 <style>
-    .app-breadcrumb-bar { height: 50px; position: sticky; top: 70px; z-index: 100; }
-    .breadcrumb-item + .breadcrumb-item::before { content: "›"; font-size: 1.2rem; vertical-align: middle; }
-    .prose { max-width: 800px; color: #666; line-height: 1.7; }
+    /* iLoveIMG typography */
+    h1 { letter-spacing: -0.5px; }
+    .prose { line-height: 1.7; font-size: 0.95rem; }
 </style>
