@@ -18,6 +18,7 @@ import PhotoEditorTool from '../components/tools/PhotoEditorTool.astro';
 import ImageToPdfTool from '../components/tools/ImageToPdfTool.astro';
 import PdfToImageTool from '../components/tools/PdfToImageTool.astro';
 import RotateTool from '../components/tools/RotateTool.astro';
+import OcrTool from '../components/tools/OcrTool.astro';
 
 
 // 1. Generate paths for all tools
@@ -81,6 +82,7 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
        {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
        {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
        {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
+       {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
 
         <!-- The "Modular Engine Update" section has been removed -->
 
