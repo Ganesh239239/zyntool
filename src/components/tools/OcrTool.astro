@@ -1,0 +1,192 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+
+<div id="ocr-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border mx-auto" style="max-width: 800px;">
+        <div class="uploader-border-wrapper p-3"> 
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold text-dark">Select Image with Text</h2>
+                <p class="text-muted small">JPG, PNG, or WebP. We will extract the text for you.</p>
+                <input type="file" id="fileInput" hidden accept="image/*" />
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-7">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative d-flex align-items-center justify-content-center p-4">
+                    <img id="mainPreview" src="" class="img-fluid main-preview-img shadow-sm">
+                    
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Reading Text...</h5>
+                        <p class="small opacity-75" id="ocrProgress">Initializing AI Engine...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="sticky-sidebar">
+                    <div class="options-card card p-4 bg-white mb-4 shadow-sm border-0 rounded-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="step-badge me-2 text-white" style={`background: ${entry.data.color}; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;`}>1</div>
+                            <h5 class="fw-bold m-0">OCR Settings</h5>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small fw-bold text-muted mb-2">Recognition Language</label>
+                            <select id="ocrLang" class="form-select border-light shadow-sm">
+                                <option value="eng">English</option>
+                                <option value="spa">Spanish</option>
+                                <option value="fra">French</option>
+                                <option value="deu">German</option>
+                                <option value="hin">Hindi</option>
+                            </select>
+                            <p class="extra-small text-muted mt-2">Selecting the correct language improves accuracy significantly.</p>
+                        </div>
+
+                        <button id="btnAction" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm border-0 mb-3" style={`background: ${entry.data.color}`}>
+                            Extract Text Now
+                        </button>
+                    </div>
+
+                    <!-- Related Tools -->
+                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
+                        <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border transition-all hover-blue">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="fade-in">
+        <div class="card bg-white shadow-lg p-4 p-md-5 rounded-5 border-0">
+            <div class="text-center mb-4">
+                <div class="success-badge mb-3" style="width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem;"><i class="fa-solid fa-file-lines"></i></div>
+                <h2 class="fw-black text-dark">Text Extracted!</h2>
+                <p class="text-muted">Review and copy your text below.</p>
+            </div>
+
+            <div class="mb-4">
+                <textarea id="ocrResultText" class="form-control bg-light border-0 p-4 font-monospace" rows="10" style="font-size: 0.95rem;"></textarea>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap justify-content-center">
+                <button class="btn btn-dark px-4 py-2 rounded-pill fw-bold" onclick="window.copyOcrText()">
+                    <i class="fa-solid fa-copy me-2"></i> Copy Text
+                </button>
+                <a id="downloadBtn" class="btn btn-outline-dark px-4 py-2 rounded-pill border-2 fw-bold">
+                    <i class="fa-solid fa-download me-2"></i> Download .TXT
+                </a>
+                <button class="btn btn-link text-muted fw-bold text-decoration-none" onclick="location.reload()">Process Another</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 24px; border: 1px solid #eee; }
+    .uploader-zone { border: 3px dashed #cbd5e1; border-radius: 20px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { border-color: #4f46e5; background: #f8faff; }
+    .preview-stage { background: #ffffff; border-radius: 24px; min-height: 400px; border: 1px solid #f0f0f0; }
+    .main-preview-img { max-height: 65vh; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; color: white; }
+    .extra-small { font-size: 0.75rem; }
+    .hover-blue:hover { border-color: #4f46e5 !important; background: #f0f7ff !important; color: #4f46e5 !important; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const ocrResultText = document.getElementById('ocrResultText');
+    const ocrProgress = document.getElementById('ocrProgress');
+
+    let originalFile = null;
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        if (typeof Tesseract === 'undefined') {
+            alert("OCR Engine is still loading. Please try again in 5 seconds.");
+            return;
+        }
+
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const lang = document.getElementById('ocrLang').value;
+            
+            // Start Tesseract Recognition
+            const result = await Tesseract.recognize(mainPreview.src, lang, {
+                logger: m => {
+                    if(m.status === 'recognizing text') {
+                        ocrProgress.innerText = `Analyzing: ${Math.round(m.progress * 100)}%`;
+                    }
+                }
+            });
+
+            // Set result text
+            ocrResultText.value = result.data.text;
+
+            // Prepare Download
+            const blob = new Blob([result.data.text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const dlBtn = document.getElementById('downloadBtn');
+            dlBtn.href = url;
+            dlBtn.download = `zyntool-ocr-${Date.now()}.txt`;
+
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+            }, 500);
+
+        } catch (e) {
+            alert("OCR Failed. Please ensure the image is clear and contains text.");
+            console.error(e);
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+
+    window.copyOcrText = () => {
+        ocrResultText.select();
+        document.execCommand('copy');
+        alert("Text copied to clipboard!");
+    };
+</script>
