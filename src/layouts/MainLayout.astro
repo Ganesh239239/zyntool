@@ -2,100 +2,106 @@
 const { title = "ZynTool", description = "Fast, Private Image Tools" } = Astro.props;
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <meta name="description" content={description}>
     
-    <!-- Google Fonts: Plus Jakarta Sans (Elite SaaS Font) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- External Assets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style is:global>
-        :root { --primary-brand: #4b8df8; --bg-gray: #f3f3f7; }
+        :root { --primary-brand: #4f46e5; --bg-gray: #f8fafc; }
         
+        /* FIX: Ensure footer stays at bottom */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-gray) !important;
-            color: #33333b;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
             padding-top: 70px;
         }
 
-        /* FIXED NAV LOGIC */
+        main { flex-grow: 1; }
+
         .main-nav {
             position: fixed; top: 0; left: 0; right: 0; height: 70px;
-            background: #fff; border-bottom: 1px solid #e0e0e6;
+            background: #fff; border-bottom: 1px solid #e2e8f0;
             display: flex; align-items: center; z-index: 1000;
         }
-        .nav-container {
-            width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo { font-weight: 800; font-size: 1.4rem; color: #111; text-decoration: none; letter-spacing: -0.5px; }
+        .logo { font-weight: 800; font-size: 1.3rem; color: #0f172a; text-decoration: none; letter-spacing: -0.5px; }
         .logo span { color: var(--primary-brand); }
         
-        .nav-links { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: #333; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
+        .nav-link-custom { text-decoration: none; color: #475569; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; transition: 0.2s; }
+        .nav-link-custom:hover { color: var(--primary-brand); }
 
-        /* MOBILE MENU OVERLAY (Fixed) */
+        /* MOBILE OVERLAY */
         #mobileMenu {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #fff; z-index: 2000; display: none; flex-direction: column;
-            padding: 20px;
+            background: #fff; z-index: 2000; display: none; flex-direction: column; padding: 30px;
         }
         #mobileMenu.active { display: flex; }
-        .mobile-link { font-size: 1.5rem; font-weight: 800; color: #111; text-decoration: none; margin-bottom: 20px; }
 
-        .main-footer { background: #1a1c1e; color: #94a3b8; padding: 60px 0 40px; margin-top: 50px; }
+        footer { background: #0f172a; color: #94a3b8; padding: 60px 0; }
+        .footer-link { color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.2s; }
+        .footer-link:hover { color: #fff; }
     </style>
 </head>
 <body>
     <header class="main-nav">
-        <div class="nav-container">
+        <div class="container d-flex justify-content-between align-items-center">
             <a href="/" class="logo">ZYN<span>TOOL</span></a>
-            <ul class="nav-links d-none d-lg-flex">
-                <li><a href="/compress-image">Compress</a></li>
-                <li><a href="/resize-image">Resize</a></li>
-                <li><a href="/crop-image">Crop</a></li>
-                <li><a href="/convert-to-jpg">Convert</a></li>
-            </ul>
-            <!-- Mobile Toggle -->
-            <button class="d-lg-none border-0 bg-transparent" id="menuOpen">
-                <i class="fa-solid fa-bars fs-3"></i>
-            </button>
+            <nav class="d-none d-lg-flex gap-4">
+                <a href="/compress-image" class="nav-link-custom">Compress</a>
+                <a href="/resize-image" class="nav-link-custom">Resize</a>
+                <a href="/crop-image" class="nav-link-custom">Crop</a>
+                <a href="/remove-background" class="nav-link-custom">Remove BG</a>
+            </nav>
+            <button class="d-lg-none border-0 bg-transparent" id="menuOpen"><i class="fa-solid fa-bars-staggered fs-3"></i></button>
         </div>
     </header>
 
-    <!-- Fullscreen Mobile Menu -->
     <div id="mobileMenu">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <span class="logo">ZYN<span>TOOL</span></span>
             <button class="border-0 bg-transparent" id="menuClose"><i class="fa-solid fa-xmark fs-2"></i></button>
         </div>
-        <a href="/" class="mobile-link">Home</a>
-        <a href="/compress-image" class="mobile-link">Compress Image</a>
-        <a href="/resize-image" class="mobile-link">Resize Image</a>
-        <a href="/crop-image" class="mobile-link">Crop Image</a>
-        <a href="/convert-to-jpg" class="mobile-link">Convert to JPG</a>
+        <div class="d-flex flex-column gap-4">
+            <a href="/" class="h3 fw-bold text-dark text-decoration-none">Home</a>
+            <a href="/compress-image" class="h3 fw-bold text-dark text-decoration-none">Compress Image</a>
+            <a href="/resize-image" class="h3 fw-bold text-dark text-decoration-none">Resize Image</a>
+            <a href="/crop-image" class="h3 fw-bold text-dark text-decoration-none">Crop Image</a>
+        </div>
     </div>
 
     <main><slot /></main>
 
-    <script is:inline>
-        // Reliability Fix for Mobile Menu
-        const openBtn = document.getElementById('menuOpen');
-        const closeBtn = document.getElementById('menuClose');
-        const menu = document.getElementById('mobileMenu');
+    <footer>
+        <div class="container text-center">
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-4 mb-5">
+                <a href="/about" class="footer-link">About Us</a>
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/terms" class="footer-link">Terms</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+            <div class="pt-4 border-top border-secondary opacity-50 small">
+                © 2025 ZynTool ® - Professional Browser-Based Tools.
+            </div>
+        </div>
+    </footer>
 
-        openBtn.onclick = () => menu.classList.add('active');
-        closeBtn.onclick = () => menu.classList.remove('active');
+    <script is:inline>
+        document.getElementById('menuOpen').onclick = () => document.getElementById('mobileMenu').classList.add('active');
+        document.getElementById('menuClose').onclick = () => document.getElementById('mobileMenu').classList.remove('active');
     </script>
 </body>
 </html>
