@@ -2,17 +2,21 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // 1. MUST be your exact URL (No trailing slash)
+  // 1. Double check: NO trailing slash
   site: 'https://zyntool.pages.dev',
   
-  // 2. The official integration
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // This ensures your dynamic tools from [slug].astro are prioritized
+      changefreq: 'weekly',
+      priority: 0.7,
+      lastmod: new Date(),
+    })
+  ],
   
-  // 3. Ensure static output
   output: 'static',
   
   build: {
-    // This creates clean URLs like /compress-image/
     format: 'directory'
   }
 });
