@@ -1,0 +1,192 @@
+---
+const { entry, relatedTools } = Astro.props;
+---
+<div id="rotate-tool">
+    <!-- STEP 1: UPLOAD BOX -->
+    <div id="uploadContainer" class="uploader-card shadow-lg mb-5 bg-white mx-auto" style="max-width: 800px;">
+        <div class="uploader-border-wrapper p-3"> 
+            <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
+                <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="fw-bold text-dark">Select Image</h2>
+                <p class="text-muted small">or drop image here to rotate</p>
+                <input type="file" id="fileInput" hidden accept="image/*" />
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: WORKSPACE -->
+    <div id="processingArea" style="display:none;" class="fade-in">
+        <div class="row g-4 text-start">
+            <div class="col-lg-8">
+                <div class="preview-stage border bg-white rounded-4 overflow-hidden position-relative d-flex align-items-center justify-content-center p-4">
+                    <img id="mainPreview" src="" class="img-fluid main-preview-img shadow-sm" style="transition: transform 0.3s ease;">
+                    <div id="internalLoader" class="loader-overlay d-none position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white z-3">
+                        <div class="spinner-border text-primary mb-3"></div>
+                        <h5 class="fw-bold">Rotating Image...</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-sidebar">
+                    <div class="options-card card p-4 bg-white mb-4 shadow-sm border-0 rounded-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="step-badge me-2 text-white" style={`background: ${entry.data.color}; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;`}>1</div>
+                            <h5 class="fw-bold m-0">Rotation Options</h5>
+                        </div>
+
+                        <!-- iLoveIMG Style Rotation Controls -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button class="btn btn-outline-dark fw-bold d-flex align-items-center justify-content-center" onclick="window.doRotate(90)">
+                                <i class="fa-solid fa-rotate-right me-2"></i> Rotate Right 90°
+                            </button>
+                            <button class="btn btn-outline-dark fw-bold d-flex align-items-center justify-content-center" onclick="window.doRotate(-90)">
+                                <i class="fa-solid fa-rotate-left me-2"></i> Rotate Left 90°
+                            </button>
+                        </div>
+                        
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <button class="btn btn-light w-100 small fw-bold border" onclick="window.doFlip('h')">Flip Horiz.</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-light w-100 small fw-bold border" onclick="window.doFlip('v')">Flip Vert.</button>
+                            </div>
+                        </div>
+
+                        <button id="btnAction" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm border-0" style={`background: ${entry.data.color}`}>
+                            Apply & Download
+                        </button>
+                    </div>
+
+                    <!-- RELATED TOOLS SIDEBAR -->
+                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
+                        <h6 class="fw-bold mb-3 text-dark">Other Image Tools</h6>
+                        <div class="row g-2">
+                            {relatedTools.map(t => (
+                                <div class="col-6">
+                                    <a href={`/${t.slug || t.id}`} class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border transition-all hover-blue">
+                                        <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                        <span class="text-truncate">{t.data.title.split(' ')[0]}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
+        <div class="result-card card bg-white mx-auto shadow-lg p-5 rounded-5 border-0" style="max-width: 600px;">
+            <div class="success-badge mb-4" style="width: 60px; height: 60px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.8rem;"><i class="fa-solid fa-circle-check"></i></div>
+            <h2 class="fw-black mb-2 text-dark">Success!</h2>
+            <p class="text-muted mb-4">Your image orientation has been fixed.</p>
+            <div class="d-flex gap-2 flex-wrap justify-content-center pt-2 mt-4">
+                <a id="downloadBtn" class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center">
+                    <i class="fa-solid fa-download me-2"></i> Download Image
+                </a>
+                <button class="btn btn-outline-secondary px-4 py-2 rounded-pill border-2 fw-bold d-flex align-items-center" onclick="location.reload()">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Process Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .uploader-card { border-radius: 24px; border: 1px solid #eee; }
+    .uploader-zone { border: 3px dashed #cbd5e1; border-radius: 20px; padding: 60px 20px; transition: 0.3s; }
+    .uploader-zone:hover { border-color: #4B90FF; background: #f8faff; }
+    .preview-stage { background: #ffffff; border-radius: 24px; min-height: 400px; border: 1px solid #f0f0f0; }
+    .main-preview-img { max-height: 65vh; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .loader-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 24px; }
+    .hover-blue:hover { border-color: #4B90FF !important; background: #f0f7ff !important; color: #4B90FF !important; }
+</style>
+
+<script is:inline>
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const internalLoader = document.getElementById('internalLoader');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+
+    let originalFile = null;
+    let rotation = 0;
+    let flipH = 1;
+    let flipV = 1;
+
+    // --- LIVE PREVIEW LOGIC ---
+    window.doRotate = (deg) => {
+        rotation += deg;
+        updatePreview();
+    };
+    window.doFlip = (dir) => {
+        if(dir === 'h') flipH *= -1;
+        else flipV *= -1;
+        updatePreview();
+    };
+    function updatePreview() {
+        mainPreview.style.transform = `rotate(${rotation}deg) scale(${flipH}, ${flipV})`;
+    }
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = mainPreview.src;
+            await new Promise(r => img.onload = r);
+
+            // Handle canvas size for rotation
+            const isVertical = (rotation / 90) % 2 !== 0;
+            canvas.width = isVertical ? img.height : img.width;
+            canvas.height = isVertical ? img.width : img.height;
+
+            ctx.translate(canvas.width/2, canvas.height/2);
+            ctx.rotate((rotation * Math.PI) / 180);
+            ctx.scale(flipH, flipV);
+            ctx.drawImage(img, -img.width/2, -img.height/2);
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                document.getElementById('downloadBtn').href = url;
+                document.getElementById('downloadBtn').download = `rotated-${originalFile.name}`;
+                
+                setTimeout(() => {
+                    processingArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                }, 800);
+            }, 'image/png');
+
+        } catch (e) {
+            alert("Processing error");
+            console.error(e);
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
+</script>
