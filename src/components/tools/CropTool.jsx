@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import 'cropperjs/dist/cropper.css';
+
 import Cropper from 'cropperjs';
 
 export default function CropTool({ entry, relatedTools }) {
