@@ -1,74 +1,95 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
+const tools = await getCollection('tools');
 
-// Import React Tool Components
-import CompressTool from '../components/tools/CompressTool.jsx';
-import CropTool from '../components/tools/CropTool.jsx';
-// Import other tools as .jsx files here...
-
-export async function getStaticPaths() {
-  const toolEntries = await getCollection('tools');
-  if (!toolEntries || toolEntries.length === 0) return [];
-  return toolEntries.map(entry => ({
-    params: { slug: entry.slug || entry.id }, 
-    props: { entry },
-  }));
-}
-
-const { entry } = Astro.props;
-if (!entry) return Astro.redirect('/404');
-
-const allTools = await getCollection('tools');
-const toolId = entry.slug || entry.id;
-const relatedTools = allTools
-  .filter(t => (t.slug || t.id) !== toolId)
-  .slice(0, 6);
-
-const { Content } = await entry.render();
-
-// SEO Strategy
-const seoTitle = entry.data.seo_title || `${entry.data.title} Online - 100% Free | ZynTool`;
-const seoDesc = entry.data.seo_description || `Fast and private ${entry.data.title} tool.`;
+const categories = [
+  { id: 'all', label: 'Everything', icon: 'fa-border-all' },
+  { id: 'optimize', label: 'Performance', icon: 'fa-rocket' },
+  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles' },
+  { id: 'edit', label: 'Adjust', icon: 'fa-sliders' },
+  { id: 'convert', label: 'Formats', icon: 'fa-sync' },
+  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved' },
+];
 ---
 
-<MainLayout title={seoTitle} description={seoDesc}>
-    <!-- RESTORED HERO SECTION (Simple & Attractive) -->
-    <div class="w-full py-12 md:py-20 text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
-        <div class="container mx-auto px-4 text-center">
-            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-[2px] px-3 py-1 rounded-full mb-4 border border-white/30">
-                Online Tool
-            </span>
-            <h1 class="text-4xl md:text-6xl font-black mb-3 tracking-tight">{entry.data.title}</h1>
-            <p class="text-white/80 text-lg md:text-xl max-w-2xl mx-auto font-medium">{entry.data.description}</p>
-        </div>
-    </div>
+<MainLayout title="ZynTool | Free Private Image Editor">
+  
+  <!-- HERO: TIGHT & PROFESSIONAL -->
+  <section class="bg-white border-b border-gray-100 pt-12 pb-16">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-[900] text-gray-900 tracking-tight mb-4">
+        Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
+      </h1>
+      <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+        Fast, free, and secure. Since we process everything in your browser, your photos never leave your device.
+      </p>
 
-    <!-- MAIN WORKSPACE CONTAINER -->
-    <div class="container mx-auto px-4 -mt-10 pb-20 relative z-10">
-        
-        <div class="mb-16">
-            <!-- REACT ISLANDS -->
-            {toolId === 'compress-image' && <CompressTool client:load entry={entry} relatedTools={relatedTools} />}
-            {toolId === 'crop-image' && <CropTool client:load entry={entry} relatedTools={relatedTools} />}
-            
-            <!-- Fallback for other tools -->
-            {!['compress-image', 'crop-image'].includes(toolId) && (
-                <div class="bg-white rounded-[32px] p-20 shadow-xl border border-slate-100 text-center">
-                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-                        <i class={`fa-solid ${entry.data.icon} fa-2x`}></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800">Switching to React Engine</h2>
-                    <p class="text-slate-400">Please wait while we optimize this tool...</p>
+      <!-- FILTER BUTTONS: iLoveIMG Style -->
+      <div class="flex flex-wrap justify-center gap-2 mt-10">
+        {categories.map((cat) => (
+          <button 
+            class={`filter-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-gray-900 border-gray-900 text-white' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200'}`}
+            data-category={cat.id}
+          >
+            <i class={`fa-solid ${cat.icon} opacity-50 text-[12px]`}></i>
+            {cat.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- GRID: Light gray background makes cards pop -->
+  <section class="py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
+        {tools.map((tool) => (
+          <div class="tool-item" data-category={tool.data.category}>
+            <a href={`/${tool.slug || tool.id}`} class="block no-underline group">
+              <!-- CARD DESIGN -->
+              <div class="bg-white p-6 rounded-[20px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex md:flex-col items-center md:text-center gap-5 md:gap-0">
+                
+                <div class="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 md:mx-auto md:mb-5 rounded-2xl flex items-center justify-center text-2xl md:text-3xl" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
+                  <i class={`fa-solid ${tool.data.icon}`}></i>
                 </div>
-            )}
-        </div>
 
-        <!-- SEO CONTENT SECTION -->
-        <div class="max-w-4xl mx-auto border-t border-slate-200 pt-16">
-            <article class="prose prose-slate prose-headings:font-black prose-h2:text-3xl prose-p:text-slate-600 prose-p:leading-relaxed max-w-none">
-                <Content />
-            </article>
-        </div>
+                <div class="flex-1">
+                  <h5 class="text-gray-900 font-bold text-lg md:text-xl mb-1 tracking-tight">
+                    {tool.data.title}
+                  </h5>
+                  <p class="text-gray-500 text-xs md:text-sm font-medium leading-relaxed line-clamp-2">
+                    {tool.data.description}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
+  </section>
+
+  <script is:inline>
+    // Filtering Logic
+    const buttons = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.tool-item');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.category;
+        buttons.forEach(b => b.classList.remove('active', 'bg-gray-900', 'border-gray-900', 'text-white'));
+        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-100', 'text-gray-500'));
+        btn.classList.add('active', 'bg-gray-900', 'border-gray-900', 'text-white');
+
+        items.forEach(item => {
+          if (cat === 'all' || item.dataset.category === cat) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </MainLayout>
