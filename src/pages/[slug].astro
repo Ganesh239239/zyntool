@@ -52,25 +52,32 @@ const { Content } = await entry.render();
 const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
 const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy. No registration required.`;
 ---
+---
+/* Keep your existing imports and logic at the top */
+---
 
 <MainLayout title={seoTitle} description={seoDesc}>
-    <!-- TOOL HERO SECTION -->
+    <!-- COMPACT HERO SECTION -->
     <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
         <div class="container text-center">
-            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">FREE ONLINE TOOL</div>
-            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
-            <p class="opacity-75 fs-5">{entry.data.description}</p>
+            <!-- Small, clean badge -->
+            <span class="badge bg-white text-dark mb-2 px-3 py-1 rounded-pill fw-bold extra-small">FREE ONLINE</span>
+            <!-- Smaller Heading -->
+            <h1 class="h2 fw-black mb-1">{entry.data.title}</h1>
+            <!-- Single line description -->
+            <p class="opacity-75 small mb-0 d-none d-md-block">{entry.data.description}</p>
         </div>
     </div>
 
-    <!-- MAIN WORKSPACE CONTAINER -->
-    <div class="container tool-container-fixed pb-5">
+    <!-- TIGHTER CONTAINER -->
+    <div class="container tool-container-fixed pb-4">
         
-        <!-- DYNAMIC TOOL COMPONENT SWITCHER -->
+        <!-- TOOL LOGIC SWITCHER -->
         {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
@@ -79,15 +86,12 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
         {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
-       {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
-       {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
-       {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
-       {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
 
-        <!-- The "Modular Engine Update" section has been removed -->
-
-        <!-- SEO CONTENT SECTION -->
-        <div class="content-section mt-5 pt-5 border-top">
+        <!-- INSTRUCTIONS BELOW TOOL -->
+        <div class="content-section mt-4 pt-4 border-top">
             <article class="prose mx-auto">
                 <Content />
             </article>
@@ -96,43 +100,31 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
 </MainLayout>
 
 <style>
-    /* Premium Typography */
-    .fw-black { font-weight: 900; }
+    .fw-black { font-weight: 800; }
+    .extra-small { font-size: 0.7rem; letter-spacing: 0.5px; }
     
-    /* Hero Header */
+    /* THE FIX: Much smaller padding for a "Utility" look */
     .tool-hero { 
-        padding: 100px 0 120px; 
+        padding: 40px 0 70px; /* Reduced from 100px/120px */
         position: relative;
         z-index: 1; 
     }
 
-    /* THE LAYOUT FIX: Ensures card border is visible and on top of hero */
     .tool-container-fixed { 
-        margin-top: -80px; 
+        margin-top: -40px; /* Adjusted for smaller hero */
         position: relative; 
         z-index: 10; 
     }
 
-    /* SEO Article Styling (Typography) */
     .prose { 
         max-width: 800px; 
+        font-size: 0.95rem; /* Slightly smaller for cleaner look */
         color: #4a5568; 
-        line-height: 1.8; 
     }
-    .prose :global(h2), .prose :global(h3) { 
-        color: #1a202c; 
-        font-weight: 800; 
-        margin-top: 2.5rem; 
-        margin-bottom: 1rem; 
-    }
-    .prose :global(p) { margin-bottom: 1.5rem; }
-    .prose :global(ul) { margin-bottom: 1.5rem; }
-    .prose :global(li) { margin-bottom: 0.5rem; }
 
-    /* Responsive Adjustments */
     @media (max-width: 767px) {
-        .tool-hero { padding: 60px 0 100px; }
-        .display-3 { font-size: 2.4rem; }
-        .tool-container-fixed { margin-top: -60px; }
+        .tool-hero { padding: 30px 0 60px; }
+        .h2 { font-size: 1.75rem; }
+        .tool-container-fixed { margin-top: -35px; }
     }
 </style>
