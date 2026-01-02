@@ -4,7 +4,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 const tools = await getCollection('tools');
 
 const categories = [
-  { id: 'all', label: 'Everything' },
+  { id: 'all', label: 'All' },
   { id: 'optimize', label: 'Optimize' },
   { id: 'create', label: 'Create' },
   { id: 'edit', label: 'Edit' },
@@ -13,23 +13,23 @@ const categories = [
 ];
 ---
 
-<MainLayout title="ZynTool | Professional Private Image Suite">
+<MainLayout title="ZynTool | Every tool you need to edit images">
   
   <!-- HERO SECTION -->
-  <section class="bg-white border-b border-slate-100 pt-8 pb-12">
+  <section class="bg-white border-b border-slate-100 pt-10 pb-16">
     <div class="container mx-auto px-4 text-center">
-      <h1 class="text-3xl md:text-5xl font-[800] text-slate-900 tracking-tight mb-3">
-        Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
+      <h1 class="text-3xl md:text-5xl font-[800] text-slate-900 tracking-tight mb-4">
+        Every tool you could want to <span class="text-indigo-600">edit images in bulk</span>
       </h1>
-      <p class="text-slate-500 text-base md:text-lg max-w-2xl mx-auto font-medium mb-10 leading-relaxed">
-        Fast, free, and secure. Your photos <strong>never leave your device</strong>.
+      <p class="text-slate-500 text-lg max-w-2xl mx-auto font-medium mb-12">
+        Your online photo editor is here and forever free!
       </p>
 
       <!-- FILTER PILLS -->
-      <div class="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto px-2">
+      <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto px-2">
         {categories.map((cat) => (
           <button 
-            class={`filter-btn px-6 py-2 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white shadow-md' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400'}`}
+            class={`filter-btn px-6 py-2.5 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white shadow-lg' : 'bg-white border-slate-200 text-[#495057] hover:border-slate-400'}`}
             data-category={cat.id}
           >
             {cat.label}
@@ -39,36 +39,36 @@ const categories = [
     </div>
   </section>
 
-  <!-- TOOLS GRID: LIGHT GRAY BACKGROUND -->
-  <section class="bg-[#f3f3f7] py-10 min-h-screen">
-    <div class="container mx-auto px-4 lg:px-10">
-      <!-- Deep Research Fix: 1 col mobile, 3 col tablet, 5 col desktop -->
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolsGrid">
+  <!-- TOOLS GRID: EXACT iLoveIMG Layout -->
+  <section class="bg-[#f3f3f7] py-12 min-h-screen">
+    <div class="container mx-auto px-4 lg:px-12 max-w-[1440px]">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolsGrid">
         {tools.map((tool) => (
           <div class="tool-item group" data-category={tool.data.category}>
-            <a href={`/${tool.slug || tool.id}`} class="block no-underline">
+            <a href={`/${tool.slug || tool.id}`} class="block no-underline h-full">
               
-              <!-- THE PERFECT CARD: 
-                   Mobile: Horizontal (Icon left of Title)
-                   Desktop (md+): Vertical (Icon top of Title) 
+              <!-- CARD ARCHITECTURE 
+                   Mobile: flex-row (Side-by-side header)
+                   Desktop: items-start (Vertical stack header)
               -->
-              <div class="bg-white p-6 md:p-8 rounded-[12px] border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-indigo-500 h-full flex flex-col">
+              <div class="bg-white p-6 md:p-8 rounded-[12px] border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-indigo-500 h-full flex flex-col items-start">
                 
-                <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0">
-                    <!-- Icon Box -->
+                <!-- Header Wrapper -->
+                <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 w-full">
+                    <!-- Icon Box: Stays Top-Left on Desktop -->
                     <div class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 md:mb-6 rounded-xl flex items-center justify-center text-xl md:text-2xl transition-transform group-hover:scale-110" 
                          style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
                         <i class={`fa-solid ${tool.data.icon}`}></i>
                     </div>
 
-                    <!-- Title -->
-                    <h5 class="text-slate-800 font-bold text-lg md:text-xl m-0 tracking-tight group-hover:text-indigo-600 leading-tight">
+                    <!-- Title: Beside icon on mobile, Below icon on desktop -->
+                    <h5 class="text-slate-800 font-bold text-lg md:text-xl m-0 md:mb-3 tracking-tight group-hover:text-indigo-600 transition-colors">
                         {tool.data.title}
                     </h5>
                 </div>
 
-                <!-- Description: Always left aligned below -->
-                <p class="text-slate-500 text-[14px] font-medium leading-relaxed mt-3 md:mt-4">
+                <!-- Description: Always below and left-aligned -->
+                <p class="text-slate-500 text-[13.5px] font-medium leading-relaxed mt-3 md:mt-0">
                     {tool.data.description}
                 </p>
               </div>
@@ -88,11 +88,11 @@ const categories = [
       btn.addEventListener('click', () => {
         const cat = btn.dataset.category;
         buttons.forEach(b => {
-            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-md');
-            b.classList.add('bg-white', 'border-slate-200', 'text-slate-600');
+            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg');
+            b.classList.add('bg-white', 'border-slate-200', 'text-[#495057]');
         });
-        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-md');
-        btn.classList.remove('bg-white', 'border-slate-200', 'text-slate-600');
+        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg');
+        btn.classList.remove('bg-white', 'border-slate-200', 'text-[#495057]');
 
         items.forEach(item => {
           if (cat === 'all' || item.dataset.category === cat) {
