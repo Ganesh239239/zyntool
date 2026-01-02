@@ -4,7 +4,10 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				brand: '#4f46e5', // Your unique indigo
+				brand: '#4f46e5',
+				fontWeight: {
+        black: '900',
+				},
 			},
 		},
 	},
