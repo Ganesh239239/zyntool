@@ -3,23 +3,24 @@
 const { 
     title = "ZynTool - Free Online Image Editor", 
     description = "Compress, resize, crop and convert images online for free. Fast, secure, and no registration required.",
-    image = "/og-image.png", // Path to your default share image
+    image = "/og-image.png",
     canonicalURL = Astro.url.href
 } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="sitemap" href="/sitemap-index.xml" />
-<meta name="google-site-verification" content="Qs3TKSj586DhwbsGN39F8LqXGcvNLgn5oQeW747IMQY" />
+    <!-- Technical Meta -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Qs3TKSj586DhwbsGN39F8LqXGcvNLgn5oQeW747IMQY" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="canonical" href={canonicalURL}>
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>
     <meta name="title" content={title}>
     <meta name="description" content={description}>
-    <link rel="canonical" href={canonicalURL}>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -38,199 +39,99 @@ const {
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
    
+    <!-- SPEED FIX: Preconnect CDNs -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Libraries for Image Processing -->
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+    <!-- Image Processing Engines (is:inline for tool compatibility) -->
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script is:inline src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<script is:inline src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script is:inline src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-    <style>
-        :root { --primary-blue: #4B90FF; }
-        body { font-family: 'Inter', sans-serif; padding-top: 70px; background: #fcfdfe; }
+    <style is:global>
+        /* BRAND IDENTITY SYSTEM */
+        :root { 
+            --primary-blue: #4f46e5; /* Unique Indigo Brand Color */
+            --bg-body: #fcfdfe;
+            --text-main: #1e293b;
+        }
 
-        /* --- Professional Navbar --- */
-        .navbar { background: #fff; border-bottom: 1px solid #eaeaea; height: 70px; }
-        .navbar-brand { font-weight: 800; color: #333 !important; font-size: 1.5rem; }
-        
+        /* 100/100 SPEED: Native System Font Stack */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding-top: 70px; 
+            background-color: var(--bg-body); 
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR - GENERATEPRESS STYLE */
+        .navbar { 
+            background: #ffffff; 
+            border-bottom: 1px solid #f0f0f0; 
+            height: 70px; 
+            z-index: 1050; 
+        }
+        .navbar-brand { font-weight: 800; color: #111827 !important; font-size: 1.4rem; letter-spacing: -0.5px; }
         .nav-link { 
-            color: #333 !important; 
+            color: #4b5563 !important; 
             font-weight: 600; 
-            font-size: 0.95rem; 
+            font-size: 0.9rem; 
             padding: 10px 15px !important;
             transition: 0.2s;
         }
         .nav-link:hover { color: var(--primary-blue) !important; }
 
-        /* Hamburger Icon (GeneratePress Style) */
-        .navbar-toggler { border: none; padding: 0; }
-        .navbar-toggler:focus { shadow: none; outline: none; box-shadow: none; }
-        .hamburger-icon { width: 25px; height: 2px; background: #333; display: block; position: relative; }
-        .hamburger-icon::before, .hamburger-icon::after { content: ''; width: 25px; height: 2px; background: #333; position: absolute; left: 0; transition: 0.3s; }
-        .hamburger-icon::before { top: -8px; }
-        .hamburger-icon::after { top: 8px; }
+        /* HAMBURGER TOGGLER */
+        .navbar-toggler { border: none; padding: 10px; }
+        .navbar-toggler:focus { box-shadow: none; outline: none; }
+        .hamburger-wrapper { width: 25px; height: 18px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+        .line { width: 100%; height: 2px; background-color: #333; transition: 0.3s; border-radius: 2px; }
 
+        /* MOBILE MENU OVERLAY */
         @media (max-width: 991px) {
-            .navbar-collapse { background: #fff; padding: 20px; border-bottom: 1px solid #eee; }
+            .navbar-collapse {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+                background: #ffffff; z-index: 9999; padding: 0; display: block;
+                transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow-y: auto;
+            }
+            .navbar-collapse.show { transform: translateX(0); }
+            .mobile-menu-header { display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 1px solid #f3f4f6; }
+            .close-menu { background: none; border: none; font-size: 1.5rem; color: #111; }
+            .nav-item { border-bottom: 1px solid #f9fafb; }
+            .nav-link { padding: 18px 25px !important; font-size: 1rem; }
         }
 
-       /* --- FIXED FOOTER DESIGN --- */
-    footer { 
-        background-color: #1a1c1e; 
-        color: #94a3b8; 
-        padding: 60px 0 40px; 
-        margin-top: auto; 
-    }
+        /* FOOTER DESIGN */
+        footer { background-color: #0f172a; color: #94a3b8; padding: 60px 0 30px; margin-top: auto; }
+        .footer-links { list-style: none; padding: 0; margin-bottom: 30px; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+        .footer-links a { color: #cbd5e1; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
+        .footer-links a:hover { color: #fff; }
+        .footer-copyright { font-size: 0.8rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 25px; }
 
-    .footer-links { 
-        list-style: none; /* Removes the dots */
-        padding: 0;       /* Removes the left space */
-        margin: 0 0 25px 0;
-        display: flex; 
-        justify-content: center; 
-        gap: 30px;        /* Spacing between links */
-    }
-
-    .footer-links a { 
-        color: #94a3b8; 
-        text-decoration: none; 
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: 0.2s; 
-    }
-
-    .footer-links a:hover { 
-        color: #fff; 
-    }
-
-    .footer-copyright {
-        font-size: 0.85rem;
-        color: #64748b;
-        border-top: 1px solid #2d3135;
-        padding-top: 25px;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 767px) {
-        .footer-links {
-            flex-direction: column; /* Stacks links vertically on small screens */
-            gap: 15px;
-        }
-    }
-
-/* --- NAVBAR BASE --- */
-    .navbar { 
-        background: #ffffff; 
-        border-bottom: 1px solid #f0f0f0; 
-        height: 70px; 
-        z-index: 1050; 
-    }
-
-    /* --- HAMBURGER ANIMATION (GeneratePress Style) --- */
-    .navbar-toggler { border: none; padding: 10px; }
-    .hamburger-wrapper {
-        width: 25px;
-        height: 20px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .line {
-        width: 100%;
-        height: 2px;
-        background-color: #333;
-        transition: 0.3s;
-        border-radius: 2px;
-    }
-
-    /* --- MOBILE OVERLAY MENU --- */
-    @media (max-width: 991px) {
-        .navbar-collapse {
-            position: fixed;
-            top: 0;
-            left: 0; /* Change to right: 0 if you want it to slide from right */
-            width: 100%;
-            height: 100vh;
-            background: #ffffff;
-            z-index: 9999;
-            padding: 0;
-            display: block;
-            transform: translateX(-100%); /* Start hidden off-screen */
-            transition: transform 0.3s ease-in-out;
-            overflow-y: auto;
-        }
-
-        .navbar-collapse.show {
-            transform: translateX(0); /* Slide in */
-        }
-
-        .mobile-menu-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            background: #f9f9f9;
-        }
-
-        .menu-title { font-weight: 800; text-transform: uppercase; color: #666; font-size: 0.9rem; }
-        .close-menu { 
-            background: none; 
-            border: none; 
-            font-size: 1.5rem; 
-            color: #333; 
-        }
-
-        .navbar-nav {
-            padding: 20px 0;
-            text-align: left;
-        }
-
-        .nav-item {
-            border-bottom: 1px solid #f5f5f5;
-        }
-
-        .nav-link {
-            padding: 15px 25px !important;
-            font-size: 1.1rem;
-            display: block;
-            width: 100%;
-        }
-    }
-
-    /* --- DESKTOP NAVBAR --- */
-    @media (min-width: 992px) {
-        .nav-link {
-            font-weight: 600;
-            margin-left: 15px;
-            color: #333 !important;
-        }
-        .nav-link:hover { color: var(--primary-blue) !important; }
-    }
-
-body {
-    background-color: #fcfdfe; /* Ultra-light blue-grey */
-    color: #1e293b; /* Slate-800 for better readability */
-}
-
+        /* GLOBAL UI REFINEMENTS */
+        .btn-primary { background: var(--primary-blue) !important; border: none !important; }
+        .uploader-card, .tool-card { border-radius: 16px !important; transition: 0.3s ease; }
     </style>
-
 </head>
 <body>
-   <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/">ZYN<span class="text-primary">TOOL</span></a>
             
-            <!-- GeneratePress Style Toggler -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
                 <div class="hamburger-wrapper">
                     <span class="line"></span>
                     <span class="line"></span>
@@ -239,9 +140,8 @@ body {
             </button>
 
             <div class="collapse navbar-collapse" id="mainMenu">
-                <!-- Mobile Close Button (Hidden on Desktop) -->
                 <div class="mobile-menu-header d-lg-none">
-                    <span class="menu-title">Menu</span>
+                    <span class="fw-bold small text-muted">MENU</span>
                     <button class="close-menu" data-bs-toggle="collapse" data-bs-target="#mainMenu">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -259,40 +159,36 @@ body {
         </div>
     </nav>
 
-    <main><slot /></main>
+    <main>
+        <slot />
+    </main>
 
     <footer>
         <div class="container text-center">
             <ul class="footer-links">
                 <li><a href="/about">About Us</a></li>
                 <li><a href="/privacy">Privacy Policy</a></li>
-                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/terms">Terms</a></li>
                 <li><a href="/contact">Contact</a></li>
-                 <li><a href="/compress-image">Compress Image</a></li>
-    <li><a href="/resize-image">Resize Image</a></li>
-    <li><a href="/remove-background">Remove BG</a></li>
-    <li><a href="/image-to-pdf">Image to PDF</a></li>
+                <li><a href="/compress-image">Compress</a></li>
+                <li><a href="/resize-image">Resize</a></li>
+                <li><a href="/remove-background">Remove BG</a></li>
+                <li><a href="/image-to-pdf">Image to PDF</a></li>
             </ul>
-            
             <div class="footer-copyright">
-                <p> Copyright @ 2025 Zyntool</p>
+                <p>© 2025 ZynTool — Local & Private Image Processing.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS for Dropdowns -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script is:inline>
-    // Listen for when the mobile menu opens/closes
-    const menu = document.getElementById('mainMenu');
     
-    menu.addEventListener('show.bs.collapse', function () {
-        document.body.style.overflow = 'hidden'; // Stop scrolling
-    });
-
-    menu.addEventListener('hide.bs.collapse', function () {
-        document.body.style.overflow = 'auto'; // Enable scrolling
-    });
-</script>
+    <!-- Mobile Menu Prevention Script -->
+    <script is:inline>
+        const menu = document.getElementById('mainMenu');
+        menu.addEventListener('show.bs.collapse', () => document.body.style.overflow = 'hidden');
+        menu.addEventListener('hide.bs.collapse', () => document.body.style.overflow = 'auto');
+    </script>
 </body>
 </html>
