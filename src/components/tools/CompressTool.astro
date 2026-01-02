@@ -2,168 +2,163 @@
 const { entry, relatedTools } = Astro.props;
 ---
 
-<div id="tool-root" class="iloveimg-layout">
-    <!-- 1. SELECT STATE (Initial View) -->
+<div id="tool-root" class="zyn-premium-suite">
+    <!-- 1. INITIAL SELECT VIEW -->
     <div id="view-select" class="view-stage active">
-        <div class="text-center py-5">
-            <h1 class="display-4 fw-bold text-dark mb-2">Compress IMAGE</h1>
-            <p class="fs-5 text-muted mb-5">Compress JPG, PNG, SVG, or GIF with the best quality and compression.<br/>Reduce the filesize of your images at once.</p>
-            
-            <div class="upload-box-wrapper mx-auto">
-                <button class="btn-select-main shadow-lg" onclick="document.getElementById('fileInput').click()">
-                    Select images
-                </button>
-                <div class="cloud-options mt-2 d-flex justify-content-center gap-2">
-                    <div class="cloud-icon"><i class="fa-brands fa-google-drive"></i></div>
-                    <div class="cloud-icon"><i class="fa-brands fa-dropbox"></i></div>
+        <div class="uploader-container mx-auto">
+            <div class="uploader-glass shadow-2xl" onclick="document.getElementById('fileInput').click()">
+                <div class="uploader-inner-dash">
+                    <div class="icon-pulse mb-4" style={`background: ${entry.data.color}`}>
+                        <i class={`fa-solid ${entry.data.icon} text-white`}></i>
+                    </div>
+                    <h2 class="fw-bold text-dark h3">Drop Images Here</h2>
+                    <p class="text-muted small mb-4">Support for JPG, PNG, and WebP • Max 20 files</p>
+                    <button class="btn btn-indigo rounded-pill px-5 py-3 fw-bold shadow-lg">
+                        Select Images
+                    </button>
+                    <input type="file" id="fileInput" hidden accept="image/*" multiple />
                 </div>
-                <p class="mt-4 text-muted small">or drop images here</p>
-                <input type="file" id="fileInput" hidden accept="image/*" multiple />
+            </div>
+            <!-- Cloud Integration Icons (Unique Layout) -->
+            <div class="d-flex justify-content-center gap-4 mt-4 opacity-50">
+                <i class="fa-brands fa-google-drive fa-lg cursor-pointer hover-indigo"></i>
+                <i class="fa-brands fa-dropbox fa-lg cursor-pointer hover-indigo"></i>
             </div>
         </div>
     </div>
 
-    <!-- 2. WORKSPACE STATE (After Upload) -->
-    <div id="view-workspace" class="view-stage flex-container" style="display:none;">
-        <!-- Left: Image Gallery -->
-        <div class="gallery-side p-4">
-            <div id="imageGrid" class="image-grid">
-                <!-- Thumbnails injected here -->
+    <!-- 2. BATCH WORKSPACE -->
+    <div id="view-workspace" class="view-stage workspace-layout" style="display:none;">
+        <!-- Left: Image Gallery with Depth -->
+        <div class="gallery-area p-4 scrollable custom-scrollbar">
+            <div id="imageGrid" class="modern-grid">
+                <!-- Cards injected here -->
             </div>
-            <!-- Floating Add Button -->
-            <button class="btn-add-more shadow" onclick="document.getElementById('fileInput').click()">
+            <!-- Add More Button (Floating Unique Design) -->
+            <button class="btn-floating-add shadow-lg" onclick="document.getElementById('fileInput').click()">
                 <i class="fa-solid fa-plus"></i>
-                <span class="tooltip-text">Add more images</span>
             </button>
         </div>
 
-        <!-- Right: Control Sidebar -->
-        <aside class="control-sidebar shadow-sm">
-            <div class="p-4">
-                <h3 class="fw-bold mb-4">Compress images</h3>
-                <div class="alert alert-info border-0 rounded-3 small">
-                    All images will be compressed with the best quality and filesize ratio.
+        <!-- Right: Control Panel (Floating Look) -->
+        <aside class="side-panel p-4">
+            <div class="panel-card shadow-xl p-4 bg-white rounded-4">
+                <h5 class="fw-bold mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-sliders me-2 text-primary"></i> Optimization
+                </h5>
+                <p class="text-muted extra-small mb-4">We will use our aggressive engine to remove metadata and shrink pixels.</p>
+                
+                <div class="mb-4">
+                    <label class="small fw-bold mb-2 d-flex justify-content-between">Quality <span>70%</span></label>
+                    <input type="range" class="form-range custom-range" value="70">
                 </div>
+
+                <button id="btnProcess" class="btn btn-indigo w-100 rounded-pill py-3 fw-bold mt-2">
+                    Optimize Batch <i class="fa-solid fa-bolt-lightning ms-2"></i>
+                </button>
             </div>
-            
-            <button id="btnProcess" class="btn-process-main">
-                Compress IMAGES <i class="fa-solid fa-circle-arrow-right ms-2"></i>
-            </button>
         </aside>
     </div>
 
-    <!-- 3. SUCCESS STATE (After Processing) -->
-    <div id="view-success" class="view-stage text-center py-5" style="display:none;">
-        <h1 class="fw-bold mb-4">Your IMAGES have been compressed!</h1>
-        
-        <div class="download-container mx-auto mb-5">
-            <a id="downloadBtn" class="btn-download-main shadow-lg">
-                <i class="fa-solid fa-download me-2"></i> Download compressed IMAGES
-            </a>
-            <div class="social-cloud-icons mt-3 d-flex justify-content-center gap-2">
-                 <div class="icon-circle-sm"><i class="fa-brands fa-google-drive"></i></div>
-                 <div class="icon-circle-sm"><i class="fa-brands fa-dropbox"></i></div>
-                 <div class="icon-circle-sm"><i class="fa-solid fa-link"></i></div>
-                 <div class="icon-circle-sm"><i class="fa-solid fa-trash-can"></i></div>
-            </div>
-        </div>
+    <!-- 3. SUCCESS VIEW (Modern Scorecard) -->
+    <div id="view-success" class="view-stage py-5" style="display:none;">
+        <div class="container text-center">
+            <div class="success-hero-card shadow-2xl bg-white rounded-5 p-5 mx-auto" style="max-width: 800px;">
+                <div class="celebration-icon mb-4"><i class="fa-solid fa-circle-check"></i></div>
+                <h1 class="fw-black h2 mb-2">Images Successfully Compressed!</h1>
+                <p class="text-muted mb-5">Your files are lighter, faster, and ready for use.</p>
 
-        <!-- Progress Ring & Stats -->
-        <div class="d-flex align-items-center justify-content-center gap-4 mb-5">
-            <div class="progress-ring-container">
-                <svg width="100" height="100">
-                    <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
-                    <circle id="progressRing" class="ring-fill" cx="50" cy="50" r="45"></circle>
-                </svg>
-                <div id="pctSavedLabel" class="ring-text">0%</div>
-                <div class="ring-subtext">SAVED</div>
-            </div>
-            <div class="text-start">
-                <p class="mb-1 text-muted">Your Images are now <span id="pctSavedText">0%</span> smaller!</p>
-                <h5 class="fw-bold" id="sizeComparison">0 KB → 0 KB</h5>
-            </div>
-        </div>
-
-        <!-- Continue To... Section -->
-        <div class="continue-section mx-auto p-4 bg-white rounded-4 shadow-sm border" style="max-width: 800px;">
-            <p class="fw-bold text-start mb-3">Continue to...</p>
-            <div class="row g-3">
-                {relatedTools.slice(0, 5).map(t => (
+                <div class="stats-grid row g-3 mb-5">
                     <div class="col-md-4">
-                        <a href={`/${t.slug || t.id}`} class="tool-card-link">
-                            <div class="d-flex align-items-center p-3 border rounded-3 h-100">
-                                <div class="tool-icon-sm me-3" style={`color: ${t.data.color}`}>
-                                    <i class={`fa-solid ${t.data.icon}`}></i>
-                                </div>
-                                <span class="fw-bold small">{t.data.title}</span>
-                                <i class="fa-solid fa-chevron-right ms-auto opacity-25"></i>
-                            </div>
-                        </a>
+                        <div class="stat-card p-3 rounded-4 bg-light border-0">
+                            <span class="d-block extra-small text-muted fw-bold">BEFORE</span>
+                            <span id="statOld" class="h5 fw-bold">0 KB</span>
+                        </div>
                     </div>
-                ))}
+                    <div class="col-md-4">
+                        <div class="stat-card p-3 rounded-4 bg-light border-0">
+                            <span class="d-block extra-small text-muted fw-bold">AFTER</span>
+                            <span id="statNew" class="h5 fw-bold text-indigo">0 KB</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card p-3 rounded-4 bg-indigo text-white shadow-lg">
+                            <span class="d-block extra-small opacity-75 fw-bold">SAVED</span>
+                            <span id="statSaved" class="h4 fw-black">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <a id="downloadBtn" class="btn btn-dark px-5 py-3 rounded-pill fw-bold shadow-xl">
+                        <i class="fa-solid fa-cloud-arrow-down me-2"></i> Download ZIP
+                    </a>
+                    <button class="btn btn-outline-indigo px-5 py-3 rounded-pill border-2 fw-bold" onclick="location.reload()">
+                        Compress Another Batch
+                    </button>
+                </div>
+
+                <!-- Footer Tool Links -->
+                <div class="mt-5 pt-5 border-top text-start">
+                    <p class="extra-small fw-bold text-muted mb-3 tracking-widest uppercase">Next Steps</p>
+                    <div class="row g-2">
+                        {relatedTools.slice(0, 3).map(t => (
+                            <div class="col-md-4">
+                                <a href={`/${t.slug || t.id}`} class="tool-mini-card shadow-sm border rounded-3 p-2 d-flex align-items-center text-decoration-none text-dark">
+                                    <i class={`fa-solid ${t.data.icon} me-2`} style={`color: ${t.data.color}`}></i>
+                                    <span class="small fw-bold">{t.data.title.split(' ')[0]}</span>
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* --- iLoveIMG STYLE SYSTEM --- */
-    .iloveimg-layout { min-height: 70vh; }
-    
-    /* Buttons */
-    .btn-select-main {
-        background: #4b8df8; color: #fff; border: none; padding: 25px 80px;
-        font-size: 2rem; font-weight: 700; border-radius: 12px; transition: 0.2s;
-    }
-    .btn-select-main:hover { transform: scale(1.02); background: #3b7dec; }
+    /* --- ZYNTOOL UNIQUE SYSTEM --- */
+    .zyn-premium-suite { min-height: 60vh; }
+    .extra-small { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; }
+    .btn-indigo { background: #4f46e5; color: white; border: none; transition: 0.3s; }
+    .btn-indigo:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+    .text-indigo { color: #4f46e5; }
+    .btn-outline-indigo { border-color: #4f46e5; color: #4f46e5; transition: 0.3s; }
+    .btn-outline-indigo:hover { background: #4f46e5; color: white; }
 
-    .btn-process-main {
-        position: absolute; bottom: 0; left: 0; width: 100%;
-        background: #4b8df8; color: #fff; border: none; padding: 25px;
-        font-size: 1.8rem; font-weight: 700; transition: 0.2s;
-    }
-    
-    .btn-download-main {
-        display: inline-block; background: #4b8df8; color: #fff; border: none;
-        padding: 20px 50px; font-size: 1.5rem; font-weight: 700; border-radius: 12px;
-        text-decoration: none; cursor: pointer;
-    }
+    /* Uploader Glassmorphism */
+    .uploader-container { max-width: 700px; padding: 20px; }
+    .uploader-glass { background: #fff; border-radius: 40px; padding: 12px; transition: 0.4s; }
+    .uploader-inner-dash { border: 3px dashed #e2e8f0; border-radius: 32px; padding: 60px 20px; }
+    .uploader-glass:hover { transform: scale(1.01); box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+    .icon-pulse { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
 
-    /* Workspace Layout */
-    .flex-container { display: flex; min-height: 80vh; background: #f2f3f5; margin: 0 -15px; }
-    .gallery-side { flex-grow: 1; position: relative; }
-    .control-sidebar { width: 360px; background: #fff; position: relative; border-left: 1px solid #ddd; }
+    /* Workspace */
+    .workspace-layout { display: flex; gap: 0; background: #f1f5f9; border-radius: 24px; overflow: hidden; height: 75vh; }
+    .gallery-area { flex-grow: 1; background: #f8fafc; position: relative; }
+    .side-panel { width: 380px; background: #fff; border-left: 1px solid #e2e8f0; display: flex; align-items: center; }
+    .modern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    .batch-card { background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #eee; text-align: center; }
+    .batch-card img { width: 100%; height: 110px; object-fit: contain; border-radius: 8px; margin-bottom: 8px; }
+    .batch-card span { font-size: 0.7rem; color: #64748b; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-    .img-card { background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
-    .img-card img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
-    .img-card span { font-size: 0.75rem; color: #666; display: block; overflow: hidden; text-overflow: ellipsis; }
-
-    .btn-add-more {
-        position: absolute; top: 20px; right: 20px; width: 50px; height: 50px;
-        background: #4b8df8; color: #fff; border: none; border-radius: 50%;
-        font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-
-    /* Progress Ring */
-    .ring-bg { fill: none; stroke: #eee; stroke-width: 8; }
-    .ring-fill { fill: none; stroke: #4b8df8; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; transition: stroke-dashoffset 1s ease-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .progress-ring-container { position: relative; width: 100px; height: 100px; }
-    .ring-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-weight: 900; font-size: 1.2rem; }
-    .ring-subtext { position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%); font-size: 0.6rem; font-weight: 700; color: #666; }
+    .btn-floating-add { position: absolute; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #4f46e5; color: white; border: none; border-radius: 50%; font-size: 1.5rem; transition: 0.3s; }
+    .btn-floating-add:hover { transform: rotate(90deg) scale(1.1); }
 
     /* Success Components */
-    .tool-card-link { text-decoration: none; color: inherit; }
-    .tool-card-link:hover .border { border-color: #4b8df8 !important; }
-    .icon-circle-sm { width: 40px; height: 40px; border: 1px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4b8df8; cursor: pointer; }
-    .icon-circle-sm:hover { background: #f8f9fa; }
+    .success-hero-card { border: 1px solid #f1f5f9; }
+    .celebration-icon { width: 80px; height: 80px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2.5rem; }
+    .bg-indigo { background: #4f46e5; }
+    .tool-mini-card { transition: 0.2s; background: #fff; }
+    .tool-mini-card:hover { border-color: #4f46e5; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-    /* Misc */
-    .cloud-icon { font-size: 1.5rem; color: #4b8df8; cursor: pointer; }
-    .fs-xs { font-size: 0.7rem; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 </style>
 
 <script is:inline>
+    // Logic handles the 3-view state system
     const fileInput = document.getElementById('fileInput');
     const viewSelect = document.getElementById('view-select');
     const viewWorkspace = document.getElementById('view-workspace');
@@ -183,50 +178,47 @@ const { entry, relatedTools } = Astro.props;
         files.forEach(file => {
             filesQueue.push(file);
             const card = document.createElement('div');
-            card.className = 'img-card';
+            card.className = 'batch-card fade-in';
             card.innerHTML = `
                 <img src="${URL.createObjectURL(file)}">
-                <span title="${file.name}">${file.name}</span>
+                <span>${file.name}</span>
             `;
             imageGrid.appendChild(card);
         });
     });
 
     btnProcess.addEventListener('click', async () => {
-        btnProcess.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        btnProcess.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Optimizing...';
         btnProcess.disabled = true;
 
-        let totalOriginal = 0;
-        let totalCompressed = 0;
+        let totalOld = 0;
+        let totalNew = 0;
         const zip = new JSZip();
 
         for (const file of filesQueue) {
-            totalOriginal += file.size;
+            totalOld += file.size;
             try {
-                const blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: 0.7 });
-                totalCompressed += blob.size;
-                zip.file(`compressed-${file.name}`, blob);
+                // Aggressive 2026 Engine Logic
+                const blob = await imageCompression(file, { maxSizeMB: 0.8, initialQuality: 0.65 });
+                totalNew += blob.size;
+                zip.file(`zyn-compressed-${file.name}`, blob);
             } catch (err) {
-                totalCompressed += file.size;
+                totalNew += file.size;
             }
         }
 
-        // Final UI Updates
-        const pct = Math.round(((totalOriginal - totalCompressed) / totalOriginal) * 100);
-        document.getElementById('pctSavedLabel').innerText = pct + '%';
-        document.getElementById('pctSavedText').innerText = pct + '%';
-        document.getElementById('sizeComparison').innerText = `${(totalOriginal/1024).toFixed(1)} KB → ${(totalCompressed/1024).toFixed(1)} KB`;
-        
-        // Animate Ring
-        const offset = 283 - (283 * pct) / 100;
-        document.getElementById('progressRing').style.strokeDashoffset = offset;
+        // Stats Calculation
+        const savings = Math.max(0, Math.round(((totalOld - totalNew) / totalOld) * 100));
+        document.getElementById('statOld').innerText = (totalOld / 1024).toFixed(1) + ' KB';
+        document.getElementById('statNew').innerText = (totalNew / 1024).toFixed(1) + ' KB';
+        document.getElementById('statSaved').innerText = savings + '%';
 
-        // Prepare ZIP download
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(zipBlob);
+        // Prepare Download
+        const content = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(content);
         const dlBtn = document.getElementById('downloadBtn');
         dlBtn.href = url;
-        dlBtn.download = "zyntool-images.zip";
+        dlBtn.download = "zyntool-compressed-batch.zip";
 
         viewWorkspace.style.display = 'none';
         viewSuccess.style.display = 'block';
