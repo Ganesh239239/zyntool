@@ -1,85 +1,64 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-
-// Fetch all tools from your content folder
 const tools = await getCollection('tools');
 
-// Tool categories for the filter
 const categories = [
-  { id: 'all', label: 'Everything', icon: 'fa-border-all' },
-  { id: 'optimize', label: 'Performance', icon: 'fa-rocket' },
-  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles' },
-  { id: 'edit', label: 'Adjust', icon: 'fa-sliders' },
-  { id: 'convert', label: 'Formats', icon: 'fa-sync' },
-  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved' },
+  { id: 'all', label: 'Everything', icon: 'fa-border-all', color: '#4b8df8' },
+  { id: 'optimize', label: 'Performance', icon: 'fa-rocket', color: '#22c55e' },
+  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles', color: '#a855f7' },
+  { id: 'edit', label: 'Adjust', icon: 'fa-sliders', color: '#3b82f6' },
+  { id: 'convert', label: 'Formats', icon: 'fa-sync', color: '#f59e0b' },
+  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved', color: '#64748b' },
 ];
 ---
 
 <MainLayout title="ZynTool | Professional Private Image Suite">
   
-  <!-- HERO SECTION: Ultra-Minimalist -->
-  <section class="relative overflow-hidden bg-white pt-10 pb-12 border-b border-slate-100">
-    <!-- Subtle Background Glow -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
-      <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500 rounded-full blur-[120px]"></div>
-      <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-400 rounded-full blur-[120px]"></div>
-    </div>
-
-    <div class="container mx-auto px-4 relative z-10 text-center">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-wider mb-6 border border-indigo-100">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-        </span>
-        100% Browser Based & Private
-      </div>
-      
-      <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-4">
-        Professional Tools. <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">0% Server Uploads.</span>
+  <section class="bg-white border-b border-gray-100 pt-8 pb-12">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-3xl md:text-5xl font-[900] text-gray-900 tracking-tight mb-3">
+        Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
       </h1>
-      
-      <p class="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
-        The fastest way to edit images in bulk without compromising your privacy. 
-        Your photos never leave your device.
+      <p class="text-gray-500 text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+        Fast, free, and secure. Since we process everything in your browser, your photos <strong>never leave your device</strong>.
       </p>
 
-      <!-- FILTER PILLS: Matching your requested design -->
-      <div class="flex flex-wrap justify-center gap-2 mt-10">
-        {categories.map((cat) => (
-          <button 
-            class={`filter-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:text-slate-800'}`}
-            data-category={cat.id}
-          >
-            <i class={`fa-solid ${cat.icon} opacity-50 text-[12px]`}></i>
-            {cat.label}
-          </button>
-        ))}
+      <!-- FILTER MENU: Horizontal on Mobile, Centered on Desktop -->
+      <div class="filter-wrapper mt-8">
+        <div class="flex flex-nowrap md:flex-wrap md:justify-center gap-2 overflow-x-auto pb-4 md:pb-0 no-scrollbar">
+          {categories.map((cat) => (
+            <button 
+              class={`filter-btn flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-gray-900 border-gray-900 text-white shadow-lg' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200'}`}
+              data-category={cat.id}
+            >
+              <!-- Colored Icons -->
+              <i class={`fa-solid ${cat.icon} text-[14px]`} style={`color: ${cat.color}`}></i>
+              {cat.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- TOOLS GRID -->
-  <section class="bg-[#f3f3f7] py-12 min-h-screen">
+  <section class="py-10">
     <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
         {tools.map((tool) => (
-          <div class="tool-item group" data-category={tool.data.category}>
-            <a href={`/${tool.slug || tool.id}`} class="block no-underline">
-              <!-- Card: Desktop Vertical / Mobile Horizontal -->
-              <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-indigo-100 flex md:flex-col items-center md:text-center gap-5 md:gap-0">
+          <div class="tool-item" data-category={tool.data.category}>
+            <a href={`/${tool.slug || tool.id}`} class="block no-underline group">
+              <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex md:flex-col items-center md:text-center gap-5 md:gap-0">
                 
-                <!-- Icon Box -->
-                <div class="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 md:mx-auto md:mb-6 rounded-2xl md:rounded-3xl flex items-center justify-center text-2xl md:text-3xl transition-transform group-hover:scale-110" style={`background-color: ${tool.data.color}10; color: ${tool.data.color}`}>
+                <div class="flex-shrink-0 w-14 h-14 md:w-20 md:h-20 md:mx-auto md:mb-5 rounded-2xl flex items-center justify-center text-2xl md:text-3xl" style={`background-color: ${tool.data.color}10; color: ${tool.data.color}`}>
                   <i class={`fa-solid ${tool.data.icon}`}></i>
                 </div>
 
-                <!-- Text Content -->
                 <div class="flex-1">
-                  <h5 class="text-slate-900 font-black text-lg md:text-xl mb-1 md:mb-2 tracking-tight group-hover:text-indigo-600 transition-colors">
+                  <h5 class="text-gray-900 font-bold text-lg mb-1 tracking-tight">
                     {tool.data.title}
                   </h5>
-                  <p class="text-slate-500 text-xs md:text-sm font-medium leading-relaxed line-clamp-2">
+                  <p class="text-gray-500 text-xs font-medium leading-relaxed line-clamp-2">
                     {tool.data.description}
                   </p>
                 </div>
@@ -91,7 +70,6 @@ const categories = [
     </div>
   </section>
 
-  <!-- CLIENT-SIDE FILTER SCRIPT -->
   <script is:inline>
     const buttons = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.tool-item');
@@ -99,15 +77,10 @@ const categories = [
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.category;
+        buttons.forEach(b => b.classList.remove('active', 'bg-gray-900', 'border-gray-900', 'text-white', 'shadow-lg'));
+        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-100', 'text-gray-500'));
+        btn.classList.add('active', 'bg-gray-900', 'border-gray-900', 'text-white', 'shadow-lg');
 
-        // Update UI
-        buttons.forEach(b => b.classList.remove('active', 'bg-slate-900', 'border-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-200'));
-        buttons.forEach(b => b.classList.add('bg-white', 'border-slate-100', 'text-slate-500'));
-        
-        btn.classList.add('active', 'bg-slate-900', 'border-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-200');
-        btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-500');
-
-        // Filter Logic
         items.forEach(item => {
           if (cat === 'all' || item.dataset.category === cat) {
             item.style.display = 'block';
@@ -119,3 +92,23 @@ const categories = [
     });
   </script>
 </MainLayout>
+
+<style>
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Smooth horizontal scroll container for mobile */
+  .filter-wrapper {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+</style>
