@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import CompressTool from '../components/tools/CompressTool.jsx';
+
+export async function getStaticPaths() {
+  const toolEntries = await getCollection('tools');
+  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const toolId = entry.slug || entry.id;
+const { Content } = await entry.render();
+---
+
+<MainLayout title={entry.data.title} isHome={false}>
+    <div class="app-workspace">
+        <!-- THE REACT ENGINE -->
+        <div class="tool-island">
+            {toolId === 'compress-image' && <CompressTool client:load color={entry.data.color} />}
+        </div>
+
+        <!-- SEO SECTION (Separated from the App) -->
+        <div class="seo-footer">
+            <article class="prose-content">
+                <Content />
+            </article>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .app-workspace {
+        background: #ffffff;
+        min-height: 100vh;
+    }
+    .tool-island {
+        padding: 40px 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .seo-footer {
+        max-width: 850px;
+        margin: 80px auto 0;
+        padding: 60px 20px;
+        border-top: 1px solid #f1f1f1;
+    }
+    .prose-content {
+        line-height: 1.8;
+        color: #444;
+    }
+</style>
