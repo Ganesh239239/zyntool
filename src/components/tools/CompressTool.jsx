@@ -4,164 +4,166 @@ import JSZip from 'jszip';
 
 export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState('landing'); // landing, processing, result
-  const [quality, setQuality] = useState(0.4); // Aggressive default
+  const [status, setStatus] = useState('landing'); // landing | processing | result
+  const [quality, setQuality] = useState(0.4);
   const [summary, setSummary] = useState(null);
 
-  const onUpload = (e) => {
+  const handleUpload = (e) => {
     const selected = Array.from(e.target.files);
     setFiles(selected.map(f => ({
       file: f,
       id: Math.random().toString(36).substr(2, 9),
       url: URL.createObjectURL(f),
       name: f.name,
-      oldSize: (f.size / 1024).toFixed(1),
-      newSize: null,
-      progress: 0
+      size: (f.size / 1024).toFixed(1),
+      status: 'ready'
     })));
     setStatus('processing');
   };
 
-  const startEngine = async () => {
+  const runCompression = async () => {
+    setStatus('working');
     const zip = new JSZip();
-    let totalOld = 0; let totalNew = 0;
+    let oldT = 0; let newT = 0;
 
     await Promise.all(files.map(async (item) => {
-      totalOld += item.file.size;
-      const options = { 
-        maxSizeMB: 0.1, // Target 100KB for maximum compression
-        initialQuality: quality, 
-        useWebWorker: true,
-        maxIteration: 20 
-      };
-      
+      oldT += item.file.size;
+      const options = { maxSizeMB: 0.2, initialQuality: quality, useWebWorker: true };
       const blob = await imageCompression(item.file, options);
-      totalNew += blob.size;
-      zip.file(`zyn-${item.name}`, blob);
-      
-      // Update item UI
-      setFiles(prev => prev.map(f => f.id === item.id ? { ...f, newSize: (blob.size / 1024).toFixed(1), progress: 100 } : f));
+      newT += blob.size;
+      zip.file(item.name, blob);
     }));
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     setSummary({
       url: URL.createObjectURL(zipBlob),
-      saved: Math.round(((totalOld - totalNew) / totalOld) * 100),
-      oldS: (totalOld / 1024).toFixed(0),
-      newS: (totalNew / 1024).toFixed(0)
+      saved: Math.round(((oldT - newT) / oldT) * 100),
+      oldS: (oldT / 1024).toFixed(0),
+      newS: (newT / 1024).toFixed(0)
     });
     setStatus('result');
   };
 
   return (
-    <div className="w-full animate-in fade-in duration-700">
-      {/* 1. LANDING STATE */}
+    <div className="zyn-studio">
+      <style>{`
+        .zyn-studio { font-family: -apple-system, system-ui, sans-serif; color: #111; }
+        
+        /* 1. LANDING DESIGN */
+        .dropzone-realistic {
+            max-width: 800px; margin: 40px auto; background: #fff;
+            border-radius: 40px; padding: 12px; border: 1px solid #eee;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05); cursor: pointer; transition: 0.4s;
+        }
+        .dropzone-realistic:hover { transform: translateY(-5px); box-shadow: 0 40px 80px rgba(79, 70, 229, 0.1); }
+        .inner-dash { border: 3px dashed #e2e8f0; border-radius: 32px; padding: 100px 20px; text-align: center; }
+        .icon-studio { 
+            width: 80px; height: 80px; background: #4b8df8; color: white; 
+            border-radius: 24px; margin: 0 auto 25px; display: flex; 
+            align-items: center; justify-content: center; font-size: 2rem;
+            box-shadow: 0 10px 20px rgba(75, 141, 248, 0.3);
+        }
+
+        /* 2. WORKSPACE DESIGN (THE WORKBENCH) */
+        .workspace-grid { display: flex; gap: 30px; padding: 0 20px; }
+        .bench-area { 
+            flex: 1; background: #f3f3f7; border-radius: 32px; padding: 30px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; align-content: flex-start; min-height: 550px; border: 1px solid #eef0f2;
+        }
+        
+        /* YOUR 198x244 CARD */
+        .realistic-card {
+            width: 198px; height: 244px; background: #fff; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05); position: relative; border: 2px solid transparent; transition: 0.3s;
+        }
+        .realistic-card img { max-width: 150px; max-height: 150px; object-fit: contain; border-radius: 4px; }
+        .realistic-card .meta { font-size: 10px; font-weight: 800; color: #999; margin-top: 15px; text-transform: uppercase; }
+
+        .inspector-panel { width: 340px; background: #fff; border-radius: 32px; padding: 35px; border: 1px solid #eee; position: sticky; top: 20px; }
+        .control-group { margin-bottom: 40px; }
+        .control-label { font-size: 11px; font-weight: 900; color: #bbb; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        
+        .btn-black-pro { 
+            width: 100%; padding: 20px; background: #111; color: #fff; border: none; 
+            border-radius: 50px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-black-pro:hover { background: #000; transform: scale(1.02); }
+
+        /* 3. RESULT DESIGN */
+        .result-stage { max-width: 700px; margin: 0 auto; text-align: center; padding: 60px 20px; }
+        .stat-circle { width: 150px; height: 150px; border-radius: 50%; background: #f0f7ff; color: #4b8df8; display: flex; align-items: center; justify-content: center; font-size: 4rem; font-weight: 900; margin: 0 auto 30px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-download-pro { background: #4b8df8; color: white; padding: 22px 60px; font-size: 1.8rem; font-weight: 800; border-radius: 20px; border: none; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 15px 30px rgba(75, 141, 248, 0.3); }
+
+        /* RESPONSIVE */
+        @media (max-width: 991px) {
+            .workspace-grid { flex-direction: column; }
+            .inspector-panel { width: 100%; order: -1; }
+            .dropzone-realistic { border-radius: 20px; }
+            .realistic-card { width: 100%; height: auto; padding: 20px; flex-direction: row; gap: 20px; }
+            .realistic-card img { width: 60px; height: 60px; }
+        }
+      `}</style>
+
+      {/* STAGE 1: LANDING */}
       {status === 'landing' && (
-        <div 
-          onClick={() => document.getElementById('fIn').click()}
-          className="max-w-3xl mx-auto group cursor-pointer bg-white p-6 rounded-[48px] shadow-[0_30px_100px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_100px_rgba(79,70,229,0.1)] transition-all border border-slate-100"
-        >
-          <div className="border-2 border-dashed border-slate-100 group-hover:border-indigo-500 rounded-[40px] py-24 text-center transition-colors bg-slate-50/30">
-            <div className="w-24 h-24 mx-auto mb-8 rounded-3xl bg-indigo-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-200 rotate-3 group-hover:rotate-0 transition-transform duration-500">
-              <i className="fa-solid fa-cloud-arrow-up text-4xl"></i>
+        <div className="dropzone-realistic" onClick={() => document.getElementById('fIn').click()}>
+          <div className="inner-dash">
+            <div className="icon-studio">
+              <i className="fa-solid fa-cloud-arrow-up"></i>
             </div>
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-3">Choose Images</h2>
-            <p className="text-slate-400 font-semibold tracking-wide">Drag & drop up to 20 files for batch optimization</p>
-            <input type="file" id="fIn" hidden multiple onChange={onUpload} />
+            <h2 style={{fontWeight: 900, fontSize: '2rem'}}>Choose Photos</h2>
+            <p style={{color: '#888', fontWeight: 500}}>Drag and drop up to 20 files to optimize</p>
+            <input type="file" id="fIn" hidden multiple onChange={handleUpload} />
           </div>
         </div>
       )}
 
-      {/* 2. PROCESSING/WORKSPACE STATE */}
-      {status === 'processing' && (
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
-          {/* THE WORKBENCH */}
-          <div className="flex-1 w-full bg-slate-100/50 p-8 rounded-[40px] border border-slate-200 shadow-inner min-h-[500px]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {files.map(f => (
-                <div key={f.id} className="asset-card-refined shadow-xl">
-                  <div className="asset-preview">
-                    <img src={f.url} />
-                    {f.progress === 100 && <div className="status-badge"><i className="fa-solid fa-check"></i></div>}
-                  </div>
-                  <div className="asset-details">
-                    <span class="name">{f.name}</span>
-                    <span class="size">{f.newSize ? `${f.newSize} KB` : `${f.oldSize} KB`}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* STAGE 2: PROCESSING */}
+      {(status === 'processing' || status === 'working') && (
+        <div className="workspace-grid">
+          <div className="bench-area">
+            {files.map((f, i) => (
+              <div key={i} className="realistic-card">
+                <img src={f.url} />
+                <div className="meta">{f.size} KB</div>
+              </div>
+            ))}
           </div>
 
-          {/* THE CONTROL HUB */}
-          <aside className="w-full lg:w-96 bg-white p-10 rounded-[40px] shadow-[0_30px_100px_rgba(0,0,0,0.08)] border border-slate-50 sticky top-36">
-            <div className="flex items-center gap-3 mb-10">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
-                    <i className="fa-solid fa-sliders"></i>
+          <aside className="inspector-panel">
+            <div className="control-group">
+                <span className="control-label">Compression Power</span>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '10px'}}>
+                    <span style={{fontWeight: 900, fontSize: '2rem'}}>{Math.round((1 - quality) * 100)}%</span>
                 </div>
-                <h4 className="font-black text-slate-900 m-0">Settings</h4>
+                <input type="range" min="0.1" max="0.9" step="0.1" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} style={{width: '100%'}} />
             </div>
-
-            <div className="mb-12">
-              <div className="flex justify-between items-end mb-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Strength</label>
-                <span className="text-2xl font-black text-indigo-600">{Math.round((1 - quality) * 100)}%</span>
-              </div>
-              <input type="range" min="0.1" max="0.9" step="0.1" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
-              <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase">
-                <span>Best Quality</span>
-                <span>Smallest Size</span>
-              </div>
-            </div>
-
-            <button onClick={startEngine} className="w-full py-5 bg-slate-900 text-white font-black rounded-full shadow-2xl hover:bg-black transition-all hover:-translate-y-1 active:scale-95">
-                OPTIMIZE BATCH
+            
+            <button className="btn-black-pro" onClick={runCompression} disabled={status === 'working'}>
+              {status === 'working' ? 'OPTIMIZING...' : 'START BATCH'}
             </button>
           </aside>
         </div>
       )}
 
-      {/* 3. RESULT STATE */}
+      {/* STAGE 3: RESULT */}
       {status === 'result' && (
-        <div className="max-w-4xl mx-auto bg-white p-16 rounded-[60px] shadow-[0_50px_120px_rgba(0,0,0,0.1)] border border-slate-50 text-center animate-in zoom-in-95 duration-700">
-          <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-[32px] flex items-center justify-center mx-auto mb-8 text-4xl shadow-inner rotate-12">
-            <i class="fa-solid fa-check-double"></i>
-          </div>
-          <h1 className="text-8xl font-black text-slate-900 tracking-tighter mb-2">{summary.saved}%</h1>
-          <h2 className="text-3xl font-black text-slate-800 mb-4">Lighter than original!</h2>
-          <p class="text-slate-400 font-bold mb-12 text-lg">{summary.oldS} KB reduced to {summary.newS} KB</p>
+        <div className="result-stage">
+          <div className="stat-circle">{summary.saved}%</div>
+          <h2 style={{fontWeight: 900, fontSize: '2.5rem', marginBottom: '10px'}}>Lighter Images!</h2>
+          <p style={{color: '#999', fontSize: '1.2rem', marginBottom: '50px'}}>{summary.oldS} KB reduced to {summary.newS} KB</p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={summary.url} download="zyntool-batch.zip" className="flex-1 max-w-sm no-underline py-6 bg-indigo-600 text-white font-black rounded-[28px] shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all text-xl">
-              <i className="fa-solid fa-download mr-2"></i> DOWNLOAD ZIP
-            </a>
-            <button onClick={() => location.reload()} className="px-10 py-6 bg-slate-100 text-slate-600 font-black rounded-[28px] hover:bg-slate-200 transition-all text-xl uppercase tracking-widest">
-              NEW BATCH
-            </button>
-          </div>
+          <a href={summary.url} download="zyntool-batch.zip" className="btn-download-pro">
+             DOWNLOAD ZIP
+          </a>
+          <br/>
+          <button onClick={() => location.reload()} style={{marginTop: '40px', background: 'none', border: 'none', color: '#4b8df8', fontWeight: '800', cursor: 'pointer', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px'}}>
+             NEW BATCH
+          </button>
         </div>
       )}
-
-      <style>{`
-        .asset-card-refined {
-            width: 198px; height: 244px; background: #fff; border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 1px solid #f1f5f9; position: relative; transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        .asset-card-refined:hover { transform: translateY(-8px) rotate(1deg); border-color: #4f46e5; }
-        .asset-preview { width: 140px; height: 140px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .asset-preview img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.1)); }
-        .status-badge { position: absolute; top: -5px; right: -5px; width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .asset-details { margin-top: 25px; width: 85%; text-align: center; }
-        .asset-details .name { font-size: 10px; font-weight: 900; color: #1e293b; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
-        .asset-details .size { font-size: 10px; font-weight: 700; color: #94a3b8; }
-        
-        @media (max-width: 768px) {
-          .asset-card-refined { width: 100%; height: auto; padding: 20px; flex-direction: row; gap: 20px; }
-          .asset-preview { width: 60px; height: 60px; }
-          .asset-details { text-align: left; margin: 0; }
-        }
-      `}</style>
     </div>
   );
 }
