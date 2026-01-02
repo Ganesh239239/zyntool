@@ -1,135 +1,121 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
+
+// Fetch all tools from your content folder
 const tools = await getCollection('tools');
+
+// Tool categories for the filter
+const categories = [
+  { id: 'all', label: 'Everything', icon: 'fa-border-all' },
+  { id: 'optimize', label: 'Performance', icon: 'fa-rocket' },
+  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles' },
+  { id: 'edit', label: 'Adjust', icon: 'fa-sliders' },
+  { id: 'convert', label: 'Formats', icon: 'fa-sync' },
+  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved' },
+];
 ---
 
 <MainLayout title="ZynTool | Professional Private Image Suite">
-    <!-- REFINED HERO SECTION -->
-    <section class="hero-section">
-        <div class="container text-center">
-            <div class="badge-brand mb-3">
-                <i class="fa-solid fa-shield-halved me-1"></i> 100% PRIVATE & LOCAL
-            </div>
-            <h1 class="hero-title">The <span class="text-gradient">Private</span> Way to Process Images</h1>
-            <p class="hero-subtitle">
-                Professional-grade tools for bulk editing. Your photos <strong>never leave your device</strong>.
-            </p>
+  
+  <!-- HERO SECTION: Ultra-Minimalist -->
+  <section class="relative overflow-hidden bg-white pt-10 pb-12 border-b border-slate-100">
+    <!-- Subtle Background Glow -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
+      <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500 rounded-full blur-[120px]"></div>
+      <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-400 rounded-full blur-[120px]"></div>
+    </div>
 
-            <!-- PILLS WITH ICONS -->
-            <div class="filter-container mt-4">
-                <button class="filter-pill active" onclick="filterTools('all', this)"><i class="fa-solid fa-border-all me-1"></i> Everything</button>
-                <button class="filter-pill" onclick="filterTools('optimize', this)"><i class="fa-solid fa-rocket me-1"></i> Performance</button>
-                <button class="filter-pill" onclick="filterTools('create', this)"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Studio</button>
-                <button class="filter-pill" onclick="filterTools('edit', this)"><i class="fa-solid fa-sliders me-1"></i> Adjust</button>
-                <button class="filter-pill" onclick="filterTools('convert', this)"><i class="fa-solid fa-sync me-1"></i> Formats</button>
-                <button class="filter-pill" onclick="filterTools('security', this)"><i class="fa-solid fa-shield-halved me-1"></i> Privacy</button>
-            </div>
-        </div>
-    </section>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-wider mb-6 border border-indigo-100">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+        </span>
+        100% Browser Based & Private
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-4">
+        Professional Tools. <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">0% Server Uploads.</span>
+      </h1>
+      
+      <p class="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+        The fastest way to edit images in bulk without compromising your privacy. 
+        Your photos never leave your device.
+      </p>
 
-    <!-- TOOLS GRID -->
-    <section class="tools-grid py-5">
-        <div class="container">
-            <div class="row g-3" id="toolsGrid">
-                {tools.map((tool) => (
-                    <div class="col-12 col-md-4 col-lg-3 tool-item" data-category={tool.data.category}>
-                        <a href={`/${tool.slug || tool.id}`} class="tool-link">
-                            <div class="tool-card shadow-sm">
-                                <div class="card-header-wrapper">
-                                    <div class="tool-icon-box" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
-                                        <i class={`fa-solid ${tool.data.icon}`}></i>
-                                    </div>
-                                    <h5 class="tool-name">{tool.data.title}</h5>
-                                </div>
-                                <p class="tool-desc">{tool.data.description}</p>
-                            </div>
-                        </a>
-                    </div>
-                ))}
-            </div>
-        </div>
-    </section>
+      <!-- FILTER PILLS: Matching your requested design -->
+      <div class="flex flex-wrap justify-center gap-2 mt-10">
+        {categories.map((cat) => (
+          <button 
+            class={`filter-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:text-slate-800'}`}
+            data-category={cat.id}
+          >
+            <i class={`fa-solid ${cat.icon} opacity-50 text-[12px]`}></i>
+            {cat.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
 
-    <script is:inline>
-        function filterTools(cat, btn) {
-            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const items = document.querySelectorAll('.tool-item');
-            items.forEach(item => {
-                if(cat === 'all' || item.dataset.category === cat) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-    </script>
+  <!-- TOOLS GRID -->
+  <section class="bg-[#f3f3f7] py-12 min-h-screen">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
+        {tools.map((tool) => (
+          <div class="tool-item group" data-category={tool.data.category}>
+            <a href={`/${tool.slug || tool.id}`} class="block no-underline">
+              <!-- Card: Desktop Vertical / Mobile Horizontal -->
+              <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-indigo-100 flex md:flex-col items-center md:text-center gap-5 md:gap-0">
+                
+                <!-- Icon Box -->
+                <div class="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 md:mx-auto md:mb-6 rounded-2xl md:rounded-3xl flex items-center justify-center text-2xl md:text-3xl transition-transform group-hover:scale-110" style={`background-color: ${tool.data.color}10; color: ${tool.data.color}`}>
+                  <i class={`fa-solid ${tool.data.icon}`}></i>
+                </div>
+
+                <!-- Text Content -->
+                <div class="flex-1">
+                  <h5 class="text-slate-900 font-black text-lg md:text-xl mb-1 md:mb-2 tracking-tight group-hover:text-indigo-600 transition-colors">
+                    {tool.data.title}
+                  </h5>
+                  <p class="text-slate-500 text-xs md:text-sm font-medium leading-relaxed line-clamp-2">
+                    {tool.data.description}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENT-SIDE FILTER SCRIPT -->
+  <script is:inline>
+    const buttons = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.tool-item');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.category;
+
+        // Update UI
+        buttons.forEach(b => b.classList.remove('active', 'bg-slate-900', 'border-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-200'));
+        buttons.forEach(b => b.classList.add('bg-white', 'border-slate-100', 'text-slate-500'));
+        
+        btn.classList.add('active', 'bg-slate-900', 'border-slate-900', 'text-white', 'shadow-lg', 'shadow-slate-200');
+        btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-500');
+
+        // Filter Logic
+        items.forEach(item => {
+          if (cat === 'all' || item.dataset.category === cat) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </MainLayout>
-
-<style>
-    /* HERO STYLES */
-    .hero-section { 
-        padding: 20px 0 60px; 
-        background-color: #ffffff; 
-        background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px);
-        background-size: 30px 30px;
-        border-bottom: 1px solid #f1f5f9;
-    }
-    .badge-brand {
-        display: inline-block;
-        background: #4f46e510;
-        color: #4f46e5;
-        padding: 6px 16px;
-        border-radius: 100px;
-        font-weight: 700;
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-    .hero-title { font-size: 3.2rem; font-weight: 850; color: #0f172a; letter-spacing: -2px; line-height: 1.1; }
-    .text-gradient { background: linear-gradient(to right, #4f46e5, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-subtitle { color: #64748b; font-size: 1.2rem; margin: 15px auto 0; max-width: 600px; }
-
-    /* PILLS */
-    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-    .filter-pill {
-        border: 1px solid #e2e8f0;
-        background: #fff;
-        color: #64748b;
-        padding: 8px 20px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .filter-pill.active { background-color: #0f172a; color: #fff; border-color: #0f172a; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .filter-pill i { font-size: 0.8rem; opacity: 0.7; }
-
-    /* CARDS */
-    .tool-link { text-decoration: none; display: block; height: 100%; }
-    .tool-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 20px;
-        padding: 24px;
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 100%;
-    }
-    .tool-icon-box { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .tool-name { font-weight: 700; color: #1e293b; margin: 0; }
-    .tool-desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0; }
-
-    @media (min-width: 768px) {
-        .tool-card { text-align: center; padding: 40px 24px; }
-        .card-header-wrapper { display: block; } 
-        .tool-icon-box { margin: 0 auto 15px; } 
-        .tool-card:hover { transform: translateY(-8px); border-color: #4f46e5; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important; }
-    }
-
-    @media (max-width: 767px) {
-        .hero-title { font-size: 2.2rem; }
-        .tool-card { text-align: left; padding: 20px; }
-        .card-header-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
-    }
-</style>
