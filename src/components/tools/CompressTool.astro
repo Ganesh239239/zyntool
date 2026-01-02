@@ -50,5 +50,72 @@ const { entry } = Astro.props;
 </style>
 
 <script is:inline>
-    // Logic for compression stays the same...
+    const fileInput = document.getElementById('fileInput');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const processingArea = document.getElementById('processingArea');
+    const btnAction = document.getElementById('btnAction');
+    const resultArea = document.getElementById('resultArea');
+    const mainPreview = document.getElementById('mainPreview');
+    const qIn = document.getElementById('qIn');
+    const qVal = document.getElementById('compVal');
+    const internalLoader = document.getElementById('internalLoader');
+
+    let originalFile = null;
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 KB';
+        const k = 1024;
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB'][i];
+    }
+
+    qIn.oninput = (e) => qVal.innerText = Math.round(e.target.value * 100) + '%';
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                mainPreview.src = ev.target.result;
+                uploadContainer.style.display = 'none';
+                processingArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    btnAction.addEventListener('click', async () => {
+        internalLoader.classList.remove('d-none');
+        btnAction.disabled = true;
+
+        try {
+            const blob = await imageCompression(originalFile, { 
+                maxSizeMB: 1, 
+                initialQuality: parseFloat(qIn.value) 
+            });
+
+            // Set KB Reduction Stats
+            document.getElementById('oldSizeLabel').innerText = formatBytes(originalFile.size);
+            document.getElementById('newSizeLabel').innerText = formatBytes(blob.size);
+            const savings = Math.max(0, Math.round(((originalFile.size - blob.size) / originalFile.size) * 100));
+            document.getElementById('percentLabel').innerText = savings + '%';
+
+            const url = URL.createObjectURL(blob);
+            const dlBtn = document.getElementById('downloadBtn');
+            dlBtn.href = url;
+            dlBtn.download = `optimized-${originalFile.name}`;
+            
+            setTimeout(() => {
+                processingArea.style.display = 'none';
+                resultArea.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 800);
+
+        } catch (e) {
+            alert("Compression failed.");
+            internalLoader.classList.add('d-none');
+            btnAction.disabled = false;
+        }
+    });
 </script>
