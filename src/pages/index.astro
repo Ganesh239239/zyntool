@@ -13,25 +13,18 @@ const categories = [
 ];
 ---
 
-<MainLayout title="ZynTool | Every tool you need to edit images">
+<MainLayout title="ZynTool | Professional Private Image Suite">
   
-  <!-- HERO SECTION -->
-  <section class="bg-white border-b border-slate-100 pt-10 pb-16">
-    <div class="container mx-auto px-4 text-center">
-      <h1 class="text-3xl md:text-5xl font-[800] text-slate-900 tracking-tight mb-4">
-        Every tool you could want to <span class="text-indigo-600">edit images in bulk</span>
-      </h1>
-      <p class="text-slate-500 text-lg max-w-2xl mx-auto font-medium mb-12">
-        Your online photo editor is here and forever free!
-      </p>
+  <!-- HERO SECTION: Simple & Native -->
+  <section class="hero-bg">
+    <div class="container-custom">
+      <h1>Every tool you could want to <span class="accent-text">edit images in bulk</span></h1>
+      <p>Your online photo editor is here and forever free!</p>
 
       <!-- FILTER PILLS -->
-      <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto px-2">
+      <div class="filter-pills">
         {categories.map((cat) => (
-          <button 
-            class={`filter-btn px-6 py-2.5 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white shadow-lg' : 'bg-white border-slate-200 text-[#495057] hover:border-slate-400'}`}
-            data-category={cat.id}
-          >
+          <button class="filter-btn" data-category={cat.id}>
             {cat.label}
           </button>
         ))}
@@ -39,69 +32,203 @@ const categories = [
     </div>
   </section>
 
-  <!-- TOOLS GRID: EXACT iLoveIMG Layout -->
-  <section class="bg-[#f3f3f7] py-12 min-h-screen">
-    <div class="container mx-auto px-4 lg:px-12 max-w-[1440px]">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolsGrid">
+  <!-- TOOLS GRID: THE PIXEL-PERFECT NATIVE CSS GRID -->
+  <section class="grid-bg">
+    <div class="container-custom">
+      <div class="tools-grid" id="toolsGrid">
         {tools.map((tool) => (
-          <div class="tool-item group" data-category={tool.data.category}>
-            <a href={`/${tool.slug || tool.id}`} class="block no-underline h-full">
+          <div class="tool-item" data-category={tool.data.category}>
+            <a href={`/${tool.slug || tool.id}`} class="tool-card">
               
-              <!-- CARD ARCHITECTURE 
-                   Mobile: flex-row (Side-by-side header)
-                   Desktop: items-start (Vertical stack header)
-              -->
-              <div class="bg-white p-6 md:p-8 rounded-[12px] border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-indigo-500 h-full flex flex-col items-start">
-                
-                <!-- Header Wrapper -->
-                <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 w-full">
-                    <!-- Icon Box: Stays Top-Left on Desktop -->
-                    <div class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 md:mb-6 rounded-xl flex items-center justify-center text-xl md:text-2xl transition-transform group-hover:scale-110" 
-                         style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
-                        <i class={`fa-solid ${tool.data.icon}`}></i>
-                    </div>
-
-                    <!-- Title: Beside icon on mobile, Below icon on desktop -->
-                    <h5 class="text-slate-800 font-bold text-lg md:text-xl m-0 md:mb-3 tracking-tight group-hover:text-indigo-600 transition-colors">
-                        {tool.data.title}
-                    </h5>
+              <!-- CARD HEADER: Switches from Row to Column -->
+              <div class="card-header">
+                <div class="icon-box" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
+                  <i class={`fa-solid ${tool.data.icon}`}></i>
                 </div>
-
-                <!-- Description: Always below and left-aligned -->
-                <p class="text-slate-500 text-[13.5px] font-medium leading-relaxed mt-3 md:mt-0">
-                    {tool.data.description}
-                </p>
+                <h3 class="tool-title">{tool.data.title}</h3>
               </div>
 
+              <!-- DESCRIPTION: Always stays below -->
+              <p class="tool-desc">{tool.data.description}</p>
             </a>
           </div>
         ))}
       </div>
     </div>
   </section>
+</MainLayout>
 
-  <script is:inline>
-    const buttons = document.querySelectorAll('.filter-btn');
-    const items = document.querySelectorAll('.tool-item');
+<style>
+  /* --- BASE CONTAINER --- */
+  .container-custom {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.dataset.category;
-        buttons.forEach(b => {
-            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg');
-            b.classList.add('bg-white', 'border-slate-200', 'text-[#495057]');
-        });
-        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg');
-        btn.classList.remove('bg-white', 'border-slate-200', 'text-[#495057]');
+  /* --- HERO STYLES --- */
+  .hero-bg {
+    background: #fff;
+    padding: 60px 0;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .hero-bg h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #1a202c;
+    letter-spacing: -1px;
+    margin-bottom: 15px;
+  }
+  .accent-text { color: #4f46e5; }
+  .hero-bg p { font-size: 18px; color: #64748b; margin-bottom: 40px; }
 
-        items.forEach(item => {
-          if (cat === 'all' || item.dataset.category === cat) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
+  /* Filter Pills */
+  .filter-pills {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .filter-btn {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50px;
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .filter-btn:hover { border-color: #2c2e33; }
+  .filter-btn.active { background: #2c2e33; border-color: #2c2e33; color: #fff; }
+
+  /* --- GRID STYLES --- */
+  .grid-bg {
+    background-color: #f3f3f7; /* iLoveIMG Light Gray */
+    padding: 50px 0;
+    min-height: 100vh;
+  }
+
+  .tools-grid {
+    display: grid;
+    /* Desktop: Perfect 5 Columns */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  .tool-card {
+    background: #fff;
+    padding: 28px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+    border-color: #4f46e5;
+  }
+
+  /* Card Header Internal Layout */
+  .card-header {
+    display: flex;
+    flex-direction: column; /* Desktop: Icon on top */
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px; /* Space above title on Desktop */
+  }
+
+  .tool-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .tool-desc {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+    margin-top: 5px;
+  }
+
+  /* --- RESPONSIVE BREAKPOINTS --- */
+  @media (max-width: 1100px) {
+    .tools-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .hero-bg h1 { font-size: 28px; }
+    .tools-grid { 
+        grid-template-columns: 1fr; /* Mobile: Single column */
+        gap: 12px;
+    }
+    
+    .tool-card {
+        padding: 20px;
+    }
+
+    /* THE MOBILE HORIZONTAL SHIFT */
+    .card-header {
+        flex-direction: row; /* Mobile: Icon next to title */
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 0; /* Reset desktop spacing */
+        font-size: 18px;
+    }
+    
+    .tool-title { font-size: 17px; }
+    .tool-desc { font-size: 13px; }
+  }
+</style>
+
+<script is:inline>
+  // Robust vanilla JS filtering
+  const buttons = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('.tool-item');
+
+  // Set default active button
+  document.querySelector('[data-category="all"]').classList.add('active');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.getAttribute('data-category');
+      
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
       });
     });
-  </script>
-</MainLayout>
+  });
+</script>
