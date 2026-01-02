@@ -4,37 +4,38 @@ import MainLayout from '../layouts/MainLayout.astro';
 const tools = await getCollection('tools');
 ---
 
-<MainLayout title="Home | Every tool you need to edit images">
-    <!-- HERO SECTION: Clean & Balanced -->
-    <!-- UNIQUE HERO SECTION -->
+<MainLayout title="ZynTool | Professional Private Image Suite">
+    <!-- REFINED HERO SECTION -->
     <section class="hero-section">
         <div class="container text-center">
-            <div class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill fw-bold small">
+            <div class="badge-brand mb-3">
                 <i class="fa-solid fa-shield-halved me-1"></i> 100% PRIVATE & LOCAL
             </div>
             <h1 class="hero-title">The <span class="text-gradient">Private</span> Way to Process Images</h1>
             <p class="hero-subtitle">
-                Professional-grade tools for bulk editing. Since we process everything in your browser, your photos <strong>never leave your device</strong>.
+                Professional-grade tools for bulk editing. Your photos <strong>never leave your device</strong>.
             </p>
 
+            <!-- PILLS WITH ICONS -->
             <div class="filter-container mt-4">
-                <button class="filter-pill active" onclick="filterTools('all', this)">All</button>
-                <button class="filter-pill" onclick="filterTools('optimize', this)">Optimize</button>
-                <button class="filter-pill" onclick="filterTools('create', this)">Creative</button>
-                <button class="filter-pill" onclick="filterTools('edit', this)">Adjust</button>
-                <button class="filter-pill" onclick="filterTools('convert', this)">Convert</button>
-                <button class="filter-pill" onclick="filterTools('security', this)">privacy</button>
+                <button class="filter-pill active" onclick="filterTools('all', this)"><i class="fa-solid fa-border-all me-1"></i> Everything</button>
+                <button class="filter-pill" onclick="filterTools('optimize', this)"><i class="fa-solid fa-rocket me-1"></i> Performance</button>
+                <button class="filter-pill" onclick="filterTools('create', this)"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Studio</button>
+                <button class="filter-pill" onclick="filterTools('edit', this)"><i class="fa-solid fa-sliders me-1"></i> Adjust</button>
+                <button class="filter-pill" onclick="filterTools('convert', this)"><i class="fa-solid fa-sync me-1"></i> Formats</button>
+                <button class="filter-pill" onclick="filterTools('security', this)"><i class="fa-solid fa-shield-halved me-1"></i> Privacy</button>
             </div>
         </div>
     </section>
-    <!-- TOOLS GRID: Preserving your exact mobile layout -->
-    <section class="tools-grid py-4">
+
+    <!-- TOOLS GRID -->
+    <section class="tools-grid py-5">
         <div class="container">
             <div class="row g-3" id="toolsGrid">
                 {tools.map((tool) => (
                     <div class="col-12 col-md-4 col-lg-3 tool-item" data-category={tool.data.category}>
                         <a href={`/${tool.slug || tool.id}`} class="tool-link">
-                            <div class="tool-card">
+                            <div class="tool-card shadow-sm">
                                 <div class="card-header-wrapper">
                                     <div class="tool-icon-box" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
                                         <i class={`fa-solid ${tool.data.icon}`}></i>
@@ -54,7 +55,6 @@ const tools = await getCollection('tools');
         function filterTools(cat, btn) {
             document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
             const items = document.querySelectorAll('.tool-item');
             items.forEach(item => {
                 if(cat === 'all' || item.dataset.category === cat) {
@@ -68,135 +68,68 @@ const tools = await getCollection('tools');
 </MainLayout>
 
 <style>
-    /* --- HERO STYLES (Refined) --- */
-    .hero-section { padding: 80px 0 40px; background-color: #f8f9fa; border-bottom: 1px solid #f1f3f5; }
-    .hero-title { font-size: 2.8rem; font-weight: 850; color: #1a202c; letter-spacing: -1.5px; line-height: 1.1; }
-    .hero-subtitle { color: #4a5568; font-size: 1.15rem; margin-top: 15px; }
-
-    /* --- FILTER PILLS (Matching your image exactly) --- */
-    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .filter-pill {
-        border: 1px solid #dee2e6;
-        background: #fff;
-        padding: 8px 24px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: 0.2s ease;
+    /* HERO STYLES */
+    .hero-section { 
+        padding: 20px 0 60px; 
+        background-color: #ffffff; 
+        background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px);
+        background-size: 30px 30px;
+        border-bottom: 1px solid #f1f5f9;
     }
-    .filter-pill.active { background-color: #2c2e33; color: #fff; border-color: #2c2e33; }
-    .filter-pill:hover:not(.active) { background-color: #f1f3f5; }
+    .badge-brand {
+        display: inline-block;
+        background: #4f46e510;
+        color: #4f46e5;
+        padding: 6px 16px;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    .hero-title { font-size: 3.2rem; font-weight: 850; color: #0f172a; letter-spacing: -2px; line-height: 1.1; }
+    .text-gradient { background: linear-gradient(to right, #4f46e5, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-subtitle { color: #64748b; font-size: 1.2rem; margin: 15px auto 0; max-width: 600px; }
 
-    /* --- TOOL CARD BASE (Professional Standard) --- */
+    /* PILLS */
+    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .filter-pill {
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #64748b;
+        padding: 8px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .filter-pill.active { background-color: #0f172a; color: #fff; border-color: #0f172a; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .filter-pill i { font-size: 0.8rem; opacity: 0.7; }
+
+    /* CARDS */
     .tool-link { text-decoration: none; display: block; height: 100%; }
     .tool-card {
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        border-radius: 20px;
         padding: 24px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         height: 100%;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    
-    .tool-icon-box {
-        width: 52px;
-        height: 52px;
-        min-width: 52px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-    
-    .tool-name { font-weight: 700; color: #2d3748; margin: 0; letter-spacing: -0.5px; }
-    .tool-desc { font-size: 0.92rem; color: #718096; line-height: 1.5; margin: 0; }
+    .tool-icon-box { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .tool-name { font-weight: 700; color: #1e293b; margin: 0; }
+    .tool-desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0; }
 
-    /* --- DESKTOP VIEW: Vertical Stack --- */
     @media (min-width: 768px) {
         .tool-card { text-align: center; padding: 40px 24px; }
         .card-header-wrapper { display: block; } 
-        .tool-icon-box { margin: 0 auto 20px; } 
-        .tool-name { font-size: 1.25rem; margin-bottom: 12px; }
-        .tool-card:hover { 
-            transform: translateY(-6px); 
-            border-color: var(--primary-blue); 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.06) !important; 
-        }
+        .tool-icon-box { margin: 0 auto 15px; } 
+        .tool-card:hover { transform: translateY(-8px); border-color: #4f46e5; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important; }
     }
 
-    /* --- MOBILE VIEW: Horizontal Stack (Matching your Sample Image) --- */
     @media (max-width: 767px) {
-        .hero-title { font-size: 1.9rem; padding: 0 10px; }
-        .tool-card { text-align: left; padding: 20px; border-radius: 20px; }
-        .card-header-wrapper { 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            margin-bottom: 12px; 
-        }
-        .tool-name { font-size: 1.15rem; }
-        .tool-desc { font-size: 0.88rem; }
+        .hero-title { font-size: 2.2rem; }
+        .tool-card { text-align: left; padding: 20px; }
+        .card-header-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
     }
-
-
-    /* --- UNIQUE ZYN DESIGN SYSTEM --- */
-    .hero-section { 
-        padding: 40px 0 40px; 
-        background-color: #ffffff; 
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .hero-title { 
-        font-size: 3.2rem; 
-        font-weight: 850; 
-        color: #0f172a; 
-        letter-spacing: -2px; 
-        line-height: 1.1; 
-    }
-
-    /* Modern Gradient Text Effect */
-    .text-gradient {
-        background: linear-gradient(to right, #4f46e5, #06b6d4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle { 
-        color: #64748b; 
-        font-size: 1.2rem; 
-        margin: 20px auto 0; 
-        max-width: 700px;
-        line-height: 1.6;
-    }
-
-    /* PILL BUTTONS (Matching your previous image but more refined) */
-    .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .filter-pill {
-        border: 1px solid #e2e8f0;
-        background: #fff;
-        color: #475569;
-        padding: 8px 22px;
-        border-radius: 12px; /* Sharp modern round */
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .filter-pill:hover { border-color: #4f46e5; color: #4f46e5; }
-    .filter-pill.active {
-        background-color: #0f172a;
-        color: #fff;
-        border-color: #0f172a;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Responsive Font Sizing */
-    @media (max-width: 767px) {
-        .hero-title { font-size: 2.2rem; padding: 0 10px; }
-        .hero-subtitle { font-size: 1.05rem; padding: 0 20px; }
-    }
-
 </style>
