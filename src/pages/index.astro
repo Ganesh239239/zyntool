@@ -4,8 +4,8 @@ import MainLayout from '../layouts/MainLayout.astro';
 const tools = await getCollection('tools');
 
 const categories = [
-  { id: 'all', label: 'Everything' },
-  { id: 'optimize', label: 'Performance' },
+  { id: 'all', label: 'All Tools' },
+  { id: 'optimize', label: 'Optimize' },
   { id: 'create', label: 'Studio' },
   { id: 'edit', label: 'Adjust' },
   { id: 'convert', label: 'Formats' },
@@ -15,21 +15,20 @@ const categories = [
 
 <MainLayout title="ZynTool | Professional Private Image Suite">
   
-  <!-- HERO SECTION (Kept simple and attractive) -->
-  <section class="bg-white pt-10 pb-14">
+  <section class="bg-white border-b border-gray-100 pt-10 pb-14">
     <div class="container mx-auto px-4 text-center">
-      <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+      <h1 class="text-4xl md:text-6xl font-[800] text-gray-900 tracking-tight mb-4">
         Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
       </h1>
-      <p class="text-slate-500 text-lg max-w-2xl mx-auto font-medium mb-10">
-        Fast, free, and secure. Your photos <strong>never leave your device</strong>.
+      <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium mb-10">
+        The fastest way to edit images in bulk without compromising your privacy.
       </p>
 
-      <!-- PILL MENUS -->
+      <!-- PILLS DESIGN (MATCHED) -->
       <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
         {categories.map((cat) => (
           <button 
-            class={`filter-btn px-6 py-2 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white shadow-lg shadow-slate-200' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400'}`}
+            class={`filter-btn px-6 py-2.5 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white' : 'bg-white border-gray-200 text-slate-600 hover:border-gray-400'}`}
             data-category={cat.id}
           >
             {cat.label}
@@ -39,33 +38,31 @@ const categories = [
     </div>
   </section>
 
-  <!-- TOOLS GRID: LIGHT GRAY BACKGROUND -->
-  <section class="bg-[#f3f3f7] py-12 min-h-screen">
-    <div class="container mx-auto px-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="toolsGrid">
+  <!-- GRID: LEFT ALIGNED (MATCHED) -->
+  <section class="py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolsGrid">
         {tools.map((tool) => (
           <div class="tool-item group" data-category={tool.data.category}>
             <a href={`/${tool.slug || tool.id}`} class="block no-underline">
-              
-              <!-- CARD DESIGN: Matching your image exactly -->
-              <div class="bg-white p-7 rounded-[22px] border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col items-start text-left h-full">
+              <!-- CARD DESIGN: LEFT ALIGNED -->
+              <div class="bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex flex-col items-start text-left h-full">
                 
                 <!-- Icon Box: Top Left -->
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 transition-transform group-hover:scale-110" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
                   <i class={`fa-solid ${tool.data.icon}`}></i>
                 </div>
 
-                <!-- Text Content: Left Aligned -->
+                <!-- Text Content -->
                 <div class="flex-1">
-                  <h5 class="text-slate-800 font-bold text-xl mb-3 tracking-tight group-hover:text-indigo-600 transition-colors">
+                  <h5 class="text-gray-900 font-bold text-lg mb-2 tracking-tight">
                     {tool.data.title}
                   </h5>
-                  <p class="text-slate-500 text-[13px] font-medium leading-snug">
+                  <p class="text-gray-500 text-[13px] font-medium leading-relaxed">
                     {tool.data.description}
                   </p>
                 </div>
               </div>
-
             </a>
           </div>
         ))}
@@ -74,18 +71,16 @@ const categories = [
   </section>
 
   <script is:inline>
+    // Filtering Logic stays robust
     const buttons = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.tool-item');
 
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.category;
-        buttons.forEach(b => {
-            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg', 'shadow-slate-200');
-            b.classList.add('bg-white', 'border-slate-200', 'text-slate-600');
-        });
-        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-lg', 'shadow-slate-200');
-        btn.classList.remove('bg-white', 'border-slate-200', 'text-slate-600');
+        buttons.forEach(b => b.classList.remove('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white'));
+        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-200', 'text-slate-600'));
+        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white');
 
         items.forEach(item => {
           if (cat === 'all' || item.dataset.category === cat) {
