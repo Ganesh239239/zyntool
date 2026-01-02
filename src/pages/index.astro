@@ -4,33 +4,35 @@ import MainLayout from '../layouts/MainLayout.astro';
 const tools = await getCollection('tools');
 
 const categories = [
-  { id: 'all', label: 'All Tools' },
-  { id: 'optimize', label: 'Optimize' },
-  { id: 'create', label: 'Studio' },
-  { id: 'edit', label: 'Adjust' },
-  { id: 'convert', label: 'Formats' },
-  { id: 'security', label: 'Privacy' },
+  { id: 'all', label: 'Everything', icon: 'fa-border-all', color: '#6366f1' },
+  { id: 'optimize', label: 'Performance', icon: 'fa-rocket', color: '#22c55e' },
+  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles', color: '#a855f7' },
+  { id: 'edit', label: 'Adjust', icon: 'fa-sliders', color: '#3b82f6' },
+  { id: 'convert', label: 'Formats', icon: 'fa-sync', color: '#f59e0b' },
+  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved', color: '#64748b' },
 ];
 ---
 
 <MainLayout title="ZynTool | Professional Private Image Suite">
   
-  <section class="bg-white border-b border-gray-100 pt-10 pb-14">
+  <!-- HERO SECTION -->
+  <section class="bg-white border-b border-slate-100 pt-6 pb-12">
     <div class="container mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-6xl font-[800] text-gray-900 tracking-tight mb-4">
+      <h1 class="text-3xl md:text-6xl font-black text-slate-900 tracking-tight mb-4">
         Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
       </h1>
-      <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium mb-10">
-        The fastest way to edit images in bulk without compromising your privacy.
+      <p class="text-slate-500 text-lg max-w-2xl mx-auto font-medium mb-8">
+        Fast, free, and secure. Your photos <strong>never leave your device</strong>.
       </p>
 
-      <!-- PILLS DESIGN (MATCHED) -->
-      <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+      <!-- FIXED HERO MENU: Center wrap for all devices -->
+      <div class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto px-2">
         {categories.map((cat) => (
           <button 
-            class={`filter-btn px-6 py-2.5 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white' : 'bg-white border-gray-200 text-slate-600 hover:border-gray-400'}`}
+            class={`filter-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white shadow-md' : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300'}`}
             data-category={cat.id}
           >
+            <i class={`fa-solid ${cat.icon} text-[12px]`} style={`color: ${cat.color}`}></i>
             {cat.label}
           </button>
         ))}
@@ -38,31 +40,35 @@ const categories = [
     </div>
   </section>
 
-  <!-- GRID: LEFT ALIGNED (MATCHED) -->
+  <!-- TOOLS GRID -->
   <section class="py-12">
     <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolsGrid">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3" id="toolsGrid">
         {tools.map((tool) => (
           <div class="tool-item group" data-category={tool.data.category}>
             <a href={`/${tool.slug || tool.id}`} class="block no-underline">
-              <!-- CARD DESIGN: LEFT ALIGNED -->
-              <div class="bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex flex-col items-start text-left h-full">
+              
+              <!-- CARD DESIGN: Row on Mobile, Column on Desktop -->
+              <div class="bg-white p-5 md:p-7 rounded-[22px] border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full">
                 
-                <!-- Icon Box: Top Left -->
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
-                  <i class={`fa-solid ${tool.data.icon}`}></i>
+                <div class="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0">
+                    <!-- Icon Box -->
+                    <div class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 md:mb-6 rounded-2xl flex items-center justify-center text-xl md:text-2xl" style={`background-color: ${tool.data.color}15; color: ${tool.data.color}`}>
+                        <i class={`fa-solid ${tool.data.icon}`}></i>
+                    </div>
+
+                    <!-- Title: Right of icon on mobile, Below on desktop -->
+                    <h5 class="text-slate-800 font-bold text-lg md:text-xl m-0 tracking-tight group-hover:text-indigo-600">
+                        {tool.data.title}
+                    </h5>
                 </div>
 
-                <!-- Text Content -->
-                <div class="flex-1">
-                  <h5 class="text-gray-900 font-bold text-lg mb-2 tracking-tight">
-                    {tool.data.title}
-                  </h5>
-                  <p class="text-gray-500 text-[13px] font-medium leading-relaxed">
+                <!-- Description: Always below -->
+                <p class="text-slate-500 text-[13px] font-medium leading-relaxed mt-3 md:mt-0">
                     {tool.data.description}
-                  </p>
-                </div>
+                </p>
               </div>
+
             </a>
           </div>
         ))}
@@ -71,16 +77,18 @@ const categories = [
   </section>
 
   <script is:inline>
-    // Filtering Logic stays robust
     const buttons = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.tool-item');
 
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.category;
-        buttons.forEach(b => b.classList.remove('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white'));
-        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-200', 'text-slate-600'));
-        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white');
+        buttons.forEach(b => {
+            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-md');
+            b.classList.add('bg-white', 'border-slate-100', 'text-slate-600');
+        });
+        btn.classList.add('active', 'bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white', 'shadow-md');
+        btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-600');
 
         items.forEach(item => {
           if (cat === 'all' || item.dataset.category === cat) {
