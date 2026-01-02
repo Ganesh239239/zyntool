@@ -3,13 +3,14 @@ import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 const tools = await getCollection('tools');
 
+// Categories matched to your specific design request
 const categories = [
-  { id: 'all', label: 'Everything', icon: 'fa-border-all', color: '#4b8df8' },
-  { id: 'optimize', label: 'Performance', icon: 'fa-rocket', color: '#22c55e' },
-  { id: 'create', label: 'Studio', icon: 'fa-wand-magic-sparkles', color: '#a855f7' },
-  { id: 'edit', label: 'Adjust', icon: 'fa-sliders', color: '#3b82f6' },
-  { id: 'convert', label: 'Formats', icon: 'fa-sync', color: '#f59e0b' },
-  { id: 'security', label: 'Privacy', icon: 'fa-shield-halved', color: '#64748b' },
+  { id: 'all', label: 'Everything' },
+  { id: 'optimize', label: 'Performance' },
+  { id: 'create', label: 'Studio' },
+  { id: 'edit', label: 'Adjust' },
+  { id: 'convert', label: 'Formats' },
+  { id: 'security', label: 'Privacy' },
 ];
 ---
 
@@ -20,28 +21,25 @@ const categories = [
       <h1 class="text-3xl md:text-5xl font-[900] text-gray-900 tracking-tight mb-3">
         Professional Tools. <span class="text-indigo-600">0% Server Uploads.</span>
       </h1>
-      <p class="text-gray-500 text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-        Fast, free, and secure. Since we process everything in your browser, your photos <strong>never leave your device</strong>.
+      <p class="text-gray-500 text-base md:text-lg max-w-2xl mx-auto font-medium mb-10">
+        Fast, free, and secure. Your photos <strong>never leave your device</strong>.
       </p>
 
-      <!-- FILTER MENU: Horizontal on Mobile, Centered on Desktop -->
-      <div class="filter-wrapper mt-8">
-        <div class="flex flex-nowrap md:flex-wrap md:justify-center gap-2 overflow-x-auto pb-4 md:pb-0 no-scrollbar">
-          {categories.map((cat) => (
-            <button 
-              class={`filter-btn flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${cat.id === 'all' ? 'active bg-gray-900 border-gray-900 text-white shadow-lg' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200'}`}
-              data-category={cat.id}
-            >
-              <!-- Colored Icons -->
-              <i class={`fa-solid ${cat.icon} text-[14px]`} style={`color: ${cat.color}`}></i>
-              {cat.label}
-            </button>
-          ))}
-        </div>
+      <!-- PILL MENUS: Matches your image perfectly -->
+      <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+        {categories.map((cat) => (
+          <button 
+            class={`filter-btn px-6 py-2.5 rounded-full text-sm font-bold transition-all border outline-none ${cat.id === 'all' ? 'active bg-[#2c2e33] border-[#2c2e33] text-white' : 'bg-white border-gray-200 text-slate-600 hover:border-gray-400'}`}
+            data-category={cat.id}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
     </div>
   </section>
 
+  <!-- Tools Grid section stays the same as previous success version -->
   <section class="py-10">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="toolsGrid">
@@ -49,18 +47,12 @@ const categories = [
           <div class="tool-item" data-category={tool.data.category}>
             <a href={`/${tool.slug || tool.id}`} class="block no-underline group">
               <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex md:flex-col items-center md:text-center gap-5 md:gap-0">
-                
                 <div class="flex-shrink-0 w-14 h-14 md:w-20 md:h-20 md:mx-auto md:mb-5 rounded-2xl flex items-center justify-center text-2xl md:text-3xl" style={`background-color: ${tool.data.color}10; color: ${tool.data.color}`}>
                   <i class={`fa-solid ${tool.data.icon}`}></i>
                 </div>
-
                 <div class="flex-1">
-                  <h5 class="text-gray-900 font-bold text-lg mb-1 tracking-tight">
-                    {tool.data.title}
-                  </h5>
-                  <p class="text-gray-500 text-xs font-medium leading-relaxed line-clamp-2">
-                    {tool.data.description}
-                  </p>
+                  <h5 class="text-gray-900 font-bold text-lg mb-1 tracking-tight">{tool.data.title}</h5>
+                  <p class="text-gray-500 text-xs font-medium leading-relaxed line-clamp-2">{tool.data.description}</p>
                 </div>
               </div>
             </a>
@@ -77,9 +69,16 @@ const categories = [
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.dataset.category;
-        buttons.forEach(b => b.classList.remove('active', 'bg-gray-900', 'border-gray-900', 'text-white', 'shadow-lg'));
-        buttons.forEach(b => b.classList.add('bg-white', 'border-gray-100', 'text-gray-500'));
-        btn.classList.add('active', 'bg-gray-900', 'border-gray-900', 'text-white', 'shadow-lg');
+        
+        // Reset all buttons to inactive state
+        buttons.forEach(b => {
+            b.classList.remove('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white');
+            b.classList.add('bg-white', 'border-gray-200', 'text-slate-600');
+        });
+
+        // Set clicked button to active (Dark Slate)
+        btn.classList.add('bg-[#2c2e33]', 'border-[#2c2e33]', 'text-white');
+        btn.classList.remove('bg-white', 'border-gray-200', 'text-slate-600');
 
         items.forEach(item => {
           if (cat === 'all' || item.dataset.category === cat) {
@@ -92,23 +91,3 @@ const categories = [
     });
   </script>
 </MainLayout>
-
-<style>
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-  /* Smooth horizontal scroll container for mobile */
-  .filter-wrapper {
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-</style>
