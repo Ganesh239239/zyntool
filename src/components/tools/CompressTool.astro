@@ -3,10 +3,10 @@ const { entry } = Astro.props;
 ---
 
 <div id="compress-engine">
-    <!-- VIEW 1: SELECT BUTTON (Like iLoveIMG home) -->
+    <!-- 1. INITIAL SELECT STATE -->
     <div id="uploadContainer" class="py-5">
         <div class="text-center">
-            <button class="btn-select-main shadow-lg" onclick="document.getElementById('fileInput').click()">
+            <button class="btn-select-images shadow-lg" onclick="document.getElementById('fileInput').click()">
                 Select images
             </button>
             <p class="mt-3 text-muted">or drop images here</p>
@@ -14,105 +14,171 @@ const { entry } = Astro.props;
         </div>
     </div>
 
-    <!-- VIEW 2: COMPACT WORKSPACE (Like iLoveIMG Workspace) -->
+    <!-- 2. PROFESSIONAL COMPACT WORKSPACE (The Fix) -->
     <div id="processingArea" style="display:none;" class="fade-in">
-        <div class="row g-0 bg-white shadow-sm rounded-4 overflow-hidden border">
-            
-            <!-- LEFT: Gallery (Compact Thumbnails) -->
-            <div class="col-lg-8 bg-light p-4" style="min-height: 450px; background-color: #f8f9fa !important;">
-                <div id="imageGrid" class="image-grid-compact">
-                    <!-- Thumbnails go here -->
+        <div class="app-workspace-container">
+            <!-- Left: Asset Gallery -->
+            <div class="asset-gallery">
+                <div id="imageGrid" class="asset-grid">
+                    <!-- Cards will be injected here as COMPACT objects -->
                 </div>
                 
-                <!-- Floating Add Button -->
+                <!-- Add More Button (Floats at bottom right of gallery) -->
                 <button class="btn-add-more shadow" onclick="document.getElementById('fileInput').click()">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
 
-            <!-- RIGHT: Sidebar (Sticky & Clean) -->
-            <div class="col-lg-4 border-start p-4 bg-white d-flex flex-column">
-                <h4 class="fw-bold mb-3">Compress images</h4>
-                <div class="alert alert-primary border-0 small mb-4 py-2">
-                    All images will be compressed with the best quality and size ratio.
-                </div>
-
-                <div class="mt-auto">
-                    <button id="btnAction" class="btn btn-primary w-100 fw-bold py-3 rounded-3 fs-4 shadow-sm">
-                        Compress IMAGES <i class="fa-solid fa-circle-arrow-right ms-2"></i>
+            <!-- Right: Settings Sidebar -->
+            <aside class="settings-sidebar">
+                <div class="sidebar-inner">
+                    <h4 class="fw-bold">Compress images</h4>
+                    <div class="info-alert mt-3">
+                        All images will be compressed with the best quality and filesize ratio.
+                    </div>
+                    
+                    <!-- Sidebar Footer (The Big Button) -->
+                    <button id="btnAction" class="btn-sidebar-action">
+                        Compress IMAGES <i class="fa-solid fa-arrow-right ms-2"></i>
                     </button>
                 </div>
-            </div>
+            </aside>
         </div>
     </div>
 
-    <!-- VIEW 3: SUCCESS RESULT -->
+    <!-- 3. SUCCESS STATE -->
     <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-        <h1 class="fw-bold text-dark mb-4">Your IMAGES have been compressed!</h1>
-        <a id="downloadBtn" class="btn btn-primary px-5 py-3 rounded-3 fw-bold shadow-lg h3">
+        <h2 class="fw-bold mb-4">Your IMAGES have been compressed!</h2>
+        <a id="downloadBtn" class="btn-select-images d-inline-block text-decoration-none shadow-lg mb-4">
             Download compressed IMAGES
         </a>
-        <div id="savingsInfo" class="mt-3 text-muted fw-bold"></div>
-        <button class="btn btn-link text-decoration-none mt-4" onclick="location.reload()">Compress more images</button>
+        <div id="statsLabel" class="h5 text-muted fw-bold"></div>
+        <br/>
+        <button class="btn btn-outline-primary rounded-pill px-4 mt-3" onclick="location.reload()">Start New Batch</button>
     </div>
 </div>
 
 <style>
-    /* THE BIG SELECT BUTTON */
-    .btn-select-main {
+    /* --- iLoveIMG SELECT BUTTON --- */
+    .btn-select-images {
         background-color: #4b8df8;
         color: white;
         border: none;
-        padding: 25px 80px;
-        font-size: 2.2rem;
+        padding: 22px 70px;
+        font-size: 2rem;
         font-weight: 700;
         border-radius: 12px;
         transition: 0.2s;
+        cursor: pointer;
     }
-    .btn-select-main:hover { background-color: #3b7dec; transform: scale(1.02); }
+    .btn-select-images:hover { background-color: #3b7dec; transform: scale(1.02); }
 
-    /* COMPACT GALLERY GRID */
-    .image-grid-compact {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 15px;
+    /* --- THE WORKSPACE APP SHELL --- */
+    .app-workspace-container {
+        display: flex;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        border: 1px solid #e0e0e6;
+        min-height: 550px;
+        overflow: hidden;
+        margin-top: -20px; /* Pulls it closer to navigation */
     }
 
-    .thumb-card {
-        background: white;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    .asset-gallery {
+        flex-grow: 1;
+        background-color: #f3f3f7; /* Gray iLoveIMG background */
+        padding: 30px;
         position: relative;
+        overflow-y: auto;
     }
 
-    /* THE FIX: Image size is strictly controlled here */
-    .thumb-card img {
+    .settings-sidebar {
+        width: 340px;
+        background: white;
+        border-left: 1px solid #e0e0e6;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-inner {
+        padding: 30px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- THE COMPACT CARDS (The Specific Fix) --- */
+    .asset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+    }
+
+    .asset-card {
+        background: white;
+        border: 1px solid #d1d1d1;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        transition: 0.2s;
+        height: 160px; /* Fixed height for cards */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .asset-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+    .asset-card img {
+        height: 100px; /* Fixed image height - won't grow big! */
         width: 100%;
-        height: 100px;
-        object-fit: contain; /* Keeps image shape without stretching */
-        margin-bottom: 8px;
+        object-fit: contain; /* Professional fit */
+        border-radius: 4px;
     }
 
-    .thumb-card span {
-        font-size: 0.65rem;
-        color: #666;
-        display: block;
+    .asset-card span {
+        font-size: 0.7rem;
+        color: #555;
+        font-weight: 600;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-top: 8px;
     }
 
+    /* Floating UI */
     .btn-add-more {
-        position: absolute; bottom: 20px; right: 20px; width: 50px; height: 50px;
-        background: #4b8df8; color: white; border: none; border-radius: 50%;
+        position: absolute; bottom: 30px; right: 30px;
+        width: 60px; height: 60px;
+        background: #4b8df8; color: white;
+        border: none; border-radius: 50%;
         font-size: 1.5rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
     }
 
-    .fade-in { animation: fadeIn 0.3s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .btn-sidebar-action {
+        background: #4b8df8; color: white; border: none;
+        padding: 20px; font-size: 1.5rem; font-weight: 800;
+        width: calc(100% + 60px); /* Extends to sidebar edges */
+        margin-left: -30px; margin-right: -30px;
+        margin-top: auto;
+    }
+
+    .info-alert { background: #e8f1ff; color: #1a4da1; padding: 15px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; }
+
+    /* Animation */
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* MOBILE ADJUSTMENTS */
+    @media (max-width: 991px) {
+        .app-workspace-container { flex-direction: column; height: auto; }
+        .settings-sidebar { width: 100%; border-left: none; border-top: 1px solid #eee; }
+        .btn-sidebar-action { width: 100%; margin: 20px 0 0 0; border-radius: 0 0 16px 16px; }
+        .btn-select-images { font-size: 1.4rem; padding: 15px 40px; }
+    }
 </style>
 
 <script is:inline>
@@ -130,13 +196,15 @@ const { entry } = Astro.props;
         if (files.length === 0) return;
 
         uploadContainer.style.display = 'none';
-        processingArea.style.display = 'block';
-        document.getElementById('tool-header-text').style.display = 'none'; // Hide text to save space
+        processingArea.style.display = 'flex';
+        // Hide tool text in parent for app feel
+        const parentHeader = document.querySelector('.container.py-5 .text-center.mb-5');
+        if(parentHeader) parentHeader.style.display = 'none';
 
         files.forEach(file => {
             queue.push(file);
             const div = document.createElement('div');
-            div.className = 'thumb-card fade-in';
+            div.className = 'asset-card fade-in';
             div.innerHTML = `
                 <img src="${URL.createObjectURL(file)}">
                 <span title="${file.name}">${file.name}</span>
@@ -147,7 +215,7 @@ const { entry } = Astro.props;
 
     btnAction.addEventListener('click', async () => {
         btnAction.disabled = true;
-        btnAction.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        btnAction.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing...';
 
         let oldTotal = 0; let newTotal = 0;
         const zip = new JSZip();
@@ -155,7 +223,8 @@ const { entry } = Astro.props;
         for (const file of queue) {
             oldTotal += file.size;
             try {
-                const blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: 0.7 });
+                // Aggressive engine: target 100KB per image
+                const blob = await imageCompression(file, { maxSizeMB: 0.1, initialQuality: 0.65 });
                 newTotal += blob.size;
                 zip.file(`compressed-${file.name}`, blob);
             } catch (err) { newTotal += file.size; }
@@ -165,11 +234,13 @@ const { entry } = Astro.props;
         const url = URL.createObjectURL(zipBlob);
         
         const savings = Math.round(((oldTotal - newTotal) / oldTotal) * 100);
-        document.getElementById('savingsInfo').innerText = `Saved ${savings}% of file size!`;
+        document.getElementById('statsLabel').innerHTML = `Images reduced from <b>${(oldTotal/1024).toFixed(0)}KB</b> to <b>${(newTotal/1024).toFixed(0)}KB</b>. You saved <b>${savings}%</b>!`;
+        
         document.getElementById('downloadBtn').href = url;
         document.getElementById('downloadBtn').download = "zyntool-images.zip";
 
         processingArea.style.display = 'none';
         resultArea.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 </script>
