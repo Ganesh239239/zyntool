@@ -6,14 +6,19 @@ const tools = await getCollection('tools');
 
 <MainLayout title="Home | Every tool you need to edit images">
     <!-- HERO SECTION: Clean & Balanced -->
+    <!-- UNIQUE HERO SECTION -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="hero-title">Every tool you could want to <span class="text-primary">edit images</span> in bulk</h1>
-            <p class="hero-subtitle">Your online photo editor is here and forever free!</p>
+            <div class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill fw-bold small">
+                <i class="fa-solid fa-shield-halved me-1"></i> 100% PRIVATE & LOCAL
+            </div>
+            <h1 class="hero-title">The <span class="text-gradient">Private</span> Way to Process Images</h1>
+            <p class="hero-subtitle">
+                Professional-grade tools for bulk editing. Since we process everything in your browser, your photos <strong>never leave your device</strong>.
+            </p>
 
-            <!-- DESIGN FROM YOUR IMAGE (STAYS THE SAME) -->
             <div class="filter-container mt-4">
-                <button class="filter-pill active" onclick="filterTools('all', this)">All</button>
+                <button class="filter-pill active" onclick="filterTools('all', this)">All Tools</button>
                 <button class="filter-pill" onclick="filterTools('optimize', this)">Optimize</button>
                 <button class="filter-pill" onclick="filterTools('create', this)">Create</button>
                 <button class="filter-pill" onclick="filterTools('edit', this)">Edit</button>
@@ -22,7 +27,6 @@ const tools = await getCollection('tools');
             </div>
         </div>
     </section>
-
     <!-- TOOLS GRID: Preserving your exact mobile layout -->
     <section class="tools-grid py-4">
         <div class="container">
