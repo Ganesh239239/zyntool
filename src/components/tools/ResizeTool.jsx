@@ -1,51 +1,60 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 
-export default function ResizeToolUnique({ color = '#00f2ff' }) { // Cyan Neon Default
+export default function ResizeToolZen({ color = '#3b82f6' }) {
   const [files, setFiles] = useState([]);
-  const [viewState, setViewState] = useState('upload'); // upload, workspace, finished
-  const [targetW, setTargetW] = useState(0);
-  const [targetH, setTargetH] = useState(0);
+  const [viewState, setViewState] = useState('upload'); 
+  const [resizeMode, setResizeMode] = useState('pixels'); // pixels, percentage, social
+  
+  // Settings
+  const [targetW, setTargetW] = useState('');
+  const [targetH, setTargetH] = useState('');
+  const [percentage, setPercentage] = useState(50);
   const [lockAspect, setLockAspect] = useState(true);
   const [aspectRatio, setAspectRatio] = useState(1);
   const [format, setFormat] = useState('original');
-  const [isDragging, setIsDragging] = useState(false);
+  const [socialPreset, setSocialPreset] = useState('ig-post');
+
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   
   const fileInputRef = useRef(null);
 
-  // --- LOGIC ---
-  const handleDrag = (e, active) => {
-    e.preventDefault(); e.stopPropagation();
-    setIsDragging(active);
+  // --- PRESETS CONFIG ---
+  const socialPresets = {
+    'ig-post': { w: 1080, h: 1080, label: 'Instagram Post' },
+    'ig-story': { w: 1080, h: 1920, label: 'Instagram Story' },
+    'fb-cover': { w: 820, h: 312, label: 'Facebook Cover' },
+    'yt-thumb': { w: 1280, h: 720, label: 'YouTube Thumbnail' },
+    'twitter': { w: 1500, h: 500, label: 'Twitter Header' }
   };
 
-  const onDrop = (e) => {
-    handleDrag(e, false);
-    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
-  };
+  // --- LOGIC ---
 
   const handleFiles = (incoming) => {
     const valid = Array.from(incoming).filter(f => f.type.startsWith('image/'));
     if (!valid.length) return;
 
-    // Detect first image dimensions
+    // Load first image to set defaults
     const img = new Image();
     img.onload = () => {
-      setTargetW(img.width);
-      setTargetH(img.height);
-      setAspectRatio(img.width / img.height);
+      const w = img.width;
+      const h = img.height;
+      setAspectRatio(w / h);
+      setTargetW(w);
+      setTargetH(h);
       
       const newEntries = valid.map(f => ({
         id: Math.random().toString(36).slice(2),
         file: f,
         preview: URL.createObjectURL(f),
         name: f.name,
-        size: f.size,
-        origDims: `${img.width}x${img.height}`,
-        status: 'ready'
+        origW: w, // Note: In batch, this usually varies, but for UI simplicty we track logic globally or per file. 
+        // For a true batch resize tool, calculating per-file preview requires reading all.
+        // We will simplify by showing "Target" based on mode.
+        size: f.size
       }));
       setFiles(prev => [...prev, ...newEntries]);
       setViewState('workspace');
@@ -53,22 +62,25 @@ export default function ResizeToolUnique({ color = '#00f2ff' }) { // Cyan Neon D
     img.src = URL.createObjectURL(valid[0]);
   };
 
-  const removeFile = (id) => {
-    setFiles(prev => prev.filter(f => f.id !== id));
-    if (files.length <= 1) setViewState('upload');
+  const handleDrag = (e, active) => { e.preventDefault(); e.stopPropagation(); setIsDragging(active); };
+  const onDrop = (e) => { handleDrag(e, false); if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files); };
+
+  // --- CALCULATIONS ---
+  
+  // Update inputs when Pixels change
+  const handlePixelChange = (dim, val) => {
+    const v = Number(val);
+    if (dim === 'w') {
+      setTargetW(v);
+      if (lockAspect && v > 0) setTargetH(Math.round(v / aspectRatio));
+    } else {
+      setTargetH(v);
+      if (lockAspect && v > 0) setTargetW(Math.round(v * aspectRatio));
+    }
   };
 
-  const handleWidthChange = (val) => {
-    setTargetW(Number(val));
-    if (lockAspect && val > 0) setTargetH(Math.round(val / aspectRatio));
-  };
-
-  const handleHeightChange = (val) => {
-    setTargetH(Number(val));
-    if (lockAspect && val > 0) setTargetW(Math.round(val * aspectRatio));
-  };
-
-  const runResize = async () => {
+  // Run the resize
+  const processResize = async () => {
     setProcessing(true);
     setProgress(0);
     const zip = new JSZip();
@@ -77,19 +89,41 @@ export default function ResizeToolUnique({ color = '#00f2ff' }) { // Cyan Neon D
     const processedFiles = [...files];
 
     for (let i = 0; i < processedFiles.length; i++) {
+      const item = processedFiles[i];
+      
+      // Determine final dimensions per file
+      let finalW, finalH;
+      
+      // We need to load each image to know its specific aspect ratio if we are doing percentage
+      // OR if we are doing pixels but "Lock Aspect" is on and images have different ratios.
+      // For this user-friendly version, we will load the image to be precise.
+      
+      const img = await loadImage(item.file);
+      const imgRatio = img.width / img.height;
+
+      if (resizeMode === 'percentage') {
+        finalW = Math.round(img.width * (percentage / 100));
+        finalH = Math.round(img.height * (percentage / 100));
+      } else if (resizeMode === 'social') {
+        finalW = socialPresets[socialPreset].w;
+        finalH = socialPresets[socialPreset].h;
+        // Social usually implies cropping or stretching, but here we force fit for simplicity 
+        // or user might want "Fit within". We will force dimensions for exact match.
+      } else {
+        // Pixels mode
+        finalW = targetW;
+        finalH = lockAspect ? Math.round(targetW / imgRatio) : targetH;
+      }
+
       try {
-        const blob = await resizeCanvas(processedFiles[i].file, targetW, targetH, format);
+        const blob = await resizeCanvas(img, finalW, finalH, format);
         
-        let newName = processedFiles[i].name;
+        let newName = item.name;
         if (format !== 'original') {
           newName = newName.substring(0, newName.lastIndexOf('.')) + '.' + format.split('/')[1];
         }
 
         zip.file(newName, blob);
-        processedFiles[i].status = 'done';
-        processedFiles[i].newSize = blob.size;
-        setFiles([...processedFiles]);
-        
         done++;
         setProgress(Math.round((done / files.length) * 100));
       } catch (e) { console.error(e); }
@@ -99,336 +133,325 @@ export default function ResizeToolUnique({ color = '#00f2ff' }) { // Cyan Neon D
     setResult({
       url: URL.createObjectURL(content),
       count: files.length,
-      size: (content.size/1024/1024).toFixed(2)
+      mode: resizeMode
     });
-
-    setTimeout(() => { setProcessing(false); setViewState('finished'); }, 600);
+    
+    setTimeout(() => { setProcessing(false); setViewState('finished'); }, 500);
   };
 
-  const resizeCanvas = (file, w, h, fmt) => {
-    return new Promise(resolve => {
+  const loadImage = (file) => {
+    return new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => {
-        const cvs = document.createElement('canvas');
-        cvs.width = w; cvs.height = h;
-        const ctx = cvs.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        ctx.toBlob(resolve, fmt === 'original' ? file.type : fmt, 0.9);
-      };
+      img.onload = () => resolve(img);
       img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const resizeCanvas = (img, w, h, fmt) => {
+    return new Promise(resolve => {
+      const cvs = document.createElement('canvas');
+      cvs.width = w; cvs.height = h;
+      const ctx = cvs.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      // Determine Mime
+      // If format is original, we try to guess from src or default to jpeg
+      let mime = fmt === 'original' ? 'image/jpeg' : fmt; 
+      cvs.toBlob(resolve, mime, 0.9);
     });
   };
 
   const reset = () => { setFiles([]); setViewState('upload'); setResult(null); setProgress(0); };
 
   return (
-    <div className="hud-interface" style={{'--neon': color}}>
+    <div className="zen-tool" style={{'--primary': color}}>
       <style>{`
-        /* --- THEME & BASE --- */
-        .hud-interface {
-          font-family: 'JetBrains Mono', 'Fira Code', monospace;
-          background: #09090b; /* Void Black */
-          color: #e4e4e7;
-          min-height: 650px;
-          border-radius: 20px;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 0 0 1px #27272a, 0 20px 50px -10px rgba(0,0,0,0.5);
-          display: flex; flex-direction: column;
+        .zen-tool {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          max-width: 1000px; margin: 0 auto;
+          color: #1f2937;
         }
 
-        /* Background Grid Noise */
-        .hud-interface::before {
-          content: ""; position: absolute; inset: 0;
-          background-image: 
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-          background-size: 40px 40px;
-          z-index: 0; pointer-events: none;
+        /* --- 1. MODERN UPLOAD (Clean & Big) --- */
+        .upload-hero {
+          background: #ffffff;
+          border-radius: 24px;
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
+          height: 400px;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .upload-hero:hover, .upload-hero.drag {
+          transform: translateY(-5px);
+          box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1);
+          border-color: var(--primary);
+        }
+        .hero-icon-circle {
+          width: 90px; height: 90px; background: #eff6ff;
+          border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          margin-bottom: 24px; color: var(--primary); font-size: 36px;
+        }
+        .hero-title { font-size: 1.8rem; font-weight: 800; color: #111827; letter-spacing: -0.5px; }
+        .hero-sub { color: #6b7280; margin-top: 8px; font-size: 1.1rem; }
+        .hero-btn {
+          margin-top: 30px; background: #111827; color: white;
+          padding: 14px 32px; border-radius: 50px; font-weight: 600;
         }
 
-        /* --- STATE 1: THE PORTAL (Upload) --- */
-        .portal-zone {
-          flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          position: relative; z-index: 2; transition: all 0.4s ease;
+        /* --- 2. WORKSPACE GRID --- */
+        .workspace {
+          display: grid; grid-template-columns: 1fr 340px; gap: 30px;
+          animation: fadeUp 0.5s ease;
         }
-        .portal-ring {
-          width: 160px; height: 160px; border-radius: 50%;
-          border: 2px dashed #3f3f46;
-          display: flex; align-items: center; justify-content: center;
-          transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-          cursor: pointer; position: relative;
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* LEFT: File Manager */
+        .file-manager {
+          background: white; border-radius: 20px;
+          border: 1px solid #e5e7eb; overflow: hidden;
+          display: flex; flex-direction: column; height: 600px;
+        }
+        .fm-header {
+          padding: 20px 24px; border-bottom: 1px solid #f3f4f6;
+          display: flex; justify-content: space-between; align-items: center;
+        }
+        .fm-title { font-weight: 700; color: #374151; font-size: 0.95rem; }
+        .add-btn { color: var(--primary); cursor: pointer; font-weight: 600; font-size: 0.9rem; background: none; border: none; }
+        
+        .file-scroller { flex: 1; overflow-y: auto; padding: 10px; background: #f9fafb; }
+        .file-item {
+          display: flex; align-items: center; padding: 12px;
+          background: white; border-radius: 12px; margin-bottom: 10px;
+          border: 1px solid #f3f4f6; transition: 0.2s;
+        }
+        .file-item:hover { transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .f-thumb { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; background: #eee; margin-right: 16px; }
+        .f-info { flex: 1; min-width: 0; }
+        .f-name { font-weight: 600; font-size: 0.9rem; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .f-meta { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; display: flex; gap: 8px; align-items: center; }
+        .arrow-right { color: var(--primary); font-size: 10px; }
+        .f-remove { 
+          width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          color: #d1d5db; cursor: pointer; transition: 0.2s;
+        }
+        .f-remove:hover { background: #fee2e2; color: #ef4444; }
+
+        /* RIGHT: Control Panel */
+        .controls {
+          background: white; border-radius: 20px;
+          border: 1px solid #e5e7eb; padding: 24px;
+          display: flex; flex-direction: column; height: fit-content;
         }
         
-        /* Interactive 3D Hover Effect */
-        .portal-zone:hover .portal-ring, .portal-zone.drag .portal-ring {
-          border-color: var(--neon);
-          box-shadow: 0 0 40px var(--neon), inset 0 0 20px var(--neon);
-          transform: scale(1.1) rotate(90deg);
-          border-style: solid;
+        /* TABS (Segmented Control) */
+        .tabs {
+          display: flex; background: #f3f4f6; padding: 4px; border-radius: 10px; margin-bottom: 24px;
         }
-
-        .portal-icon { font-size: 3rem; color: #52525b; transition: 0.3s; transform: rotate(0deg); }
-        .portal-zone:hover .portal-icon { color: #fff; transform: rotate(-90deg); } /* Counter rotate to stay upright */
-
-        .portal-text { 
-          margin-top: 30px; font-size: 1.5rem; font-weight: 700; letter-spacing: -1px;
-          background: linear-gradient(to right, #fff, #71717a); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .tab {
+          flex: 1; text-align: center; padding: 10px; font-size: 0.85rem; font-weight: 600;
+          color: #6b7280; cursor: pointer; border-radius: 8px; transition: 0.2s;
         }
+        .tab.active { background: white; color: #111827; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- STATE 2: THE WORKBENCH --- */
-        .workbench {
-          flex: 1; display: flex; flex-direction: column; z-index: 2;
-          padding: 20px; padding-bottom: 120px; /* Space for deck */
-        }
+        /* INPUTS */
+        .section-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
         
-        /* Data Grid */
-        .data-grid {
-          display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: 16px; overflow-y: auto; max-height: 450px;
-          padding-right: 10px;
+        .clean-input {
+          width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e5e7eb;
+          font-size: 1rem; font-weight: 600; color: #111;
         }
+        .clean-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
-        /* Tech Card */
-        .tech-card {
-          background: rgba(24, 24, 27, 0.6);
-          border: 1px solid #3f3f46;
-          border-radius: 8px;
-          padding: 8px;
-          position: relative;
-          transition: 0.2s;
-          backdrop-filter: blur(5px);
+        .toggle-icon {
+          width: 48px; display: flex; align-items: center; justify-content: center;
+          border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; color: #9ca3af;
         }
-        .tech-card:hover { border-color: var(--neon); transform: translateY(-2px); }
-        
-        .card-preview { 
-          width: 100%; height: 90px; object-fit: cover; border-radius: 4px; 
-          background: #000; margin-bottom: 8px; filter: grayscale(40%);
-        }
-        .tech-card:hover .card-preview { filter: grayscale(0%); }
-        
-        .card-meta { font-size: 10px; color: #a1a1aa; display: flex; justify-content: space-between; }
-        .card-name { color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-        
-        .status-dot {
-          width: 6px; height: 6px; border-radius: 50%; background: #52525b;
-          box-shadow: 0 0 5px #52525b;
-        }
-        .tech-card.done { border-color: #10b981; }
-        .tech-card.done .status-dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .toggle-icon.active { background: #eff6ff; color: var(--primary); border-color: var(--primary); }
 
-        .del-x {
-          position: absolute; top: -5px; right: -5px; width: 20px; height: 20px;
-          background: #ef4444; color: black; display: flex; align-items: center; justify-content: center;
-          font-weight: bold; border-radius: 2px; cursor: pointer; opacity: 0;
-        }
-        .tech-card:hover .del-x { opacity: 1; }
-
-        /* --- CONTROL DECK (Floating Bottom Bar) --- */
-        .control-deck {
-          position: absolute; bottom: 20px; left: 20px; right: 20px;
-          background: rgba(9, 9, 11, 0.85);
-          border: 1px solid #3f3f46;
-          border-radius: 16px;
-          padding: 16px 24px;
-          display: flex; align-items: center; gap: 30px;
-          backdrop-filter: blur(12px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-          animation: slideUp 0.4s ease-out;
-          z-index: 10;
-        }
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .deck-group { display: flex; flex-direction: column; gap: 4px; }
-        .deck-label { font-size: 10px; text-transform: uppercase; color: #71717a; letter-spacing: 1px; font-weight: 700; }
-        
-        .input-row { display: flex; align-items: center; gap: 10px; }
-        
-        .neon-input {
-          background: #18181b; border: 1px solid #3f3f46; color: var(--neon);
-          font-family: inherit; font-size: 16px; padding: 8px 12px; width: 90px;
-          border-radius: 4px; text-align: center; font-weight: bold;
-        }
-        .neon-input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-
-        .link-toggle {
-          color: #52525b; cursor: pointer; font-size: 14px; padding: 8px; border: 1px solid transparent; border-radius: 4px;
-        }
-        .link-toggle.active { color: var(--neon); border-color: rgba(0, 242, 255, 0.2); background: rgba(0, 242, 255, 0.05); }
-
-        .neon-select {
-          background: #18181b; border: 1px solid #3f3f46; color: #fff;
-          padding: 8px 12px; border-radius: 4px; font-family: inherit;
-        }
-
-        .deck-actions { margin-left: auto; display: flex; gap: 12px; }
-        
-        .cyber-btn {
-          background: var(--neon); color: #000; border: none;
-          padding: 10px 24px; font-family: inherit; font-weight: 800; font-size: 14px;
-          text-transform: uppercase; cursor: pointer;
-          clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-          transition: all 0.2s;
-        }
-        .cyber-btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 rgba(255,255,255,0.2); }
-        .cyber-btn:disabled { background: #3f3f46; color: #71717a; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        .ghost-btn {
-          background: transparent; border: 1px solid #3f3f46; color: #a1a1aa;
-          padding: 10px 20px; font-family: inherit; font-size: 14px; font-weight: 600;
-          cursor: pointer; border-radius: 4px; transition: 0.2s;
-        }
-        .ghost-btn:hover { border-color: #fff; color: #fff; }
-
-        /* --- STATE 3: MISSION REPORT (Result) --- */
-        .mission-report {
-          flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          z-index: 5; text-align: center;
-        }
-        .hologram-card {
-          background: rgba(24, 24, 27, 0.8); border: 1px solid var(--neon);
-          padding: 40px 60px; border-radius: 4px;
-          box-shadow: 0 0 40px rgba(0, 242, 255, 0.1), inset 0 0 20px rgba(0, 242, 255, 0.05);
-          position: relative;
-        }
-        .hologram-card::after {
-          content: "SUCCESS"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-          background: #09090b; padding: 0 10px; color: var(--neon); font-weight: bold; letter-spacing: 2px;
-        }
-        
-        .stat-display { 
-          font-size: 3rem; font-weight: 800; color: #fff; margin: 20px 0; text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-        
-        .dl-cyber-btn {
-          display: inline-block; text-decoration: none;
-          background: #fff; color: #000; padding: 15px 40px;
-          font-weight: 900; letter-spacing: 1px;
-          clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%);
+        .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .preset-card {
+          padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer;
           transition: 0.2s;
         }
-        .dl-cyber-btn:hover { background: var(--neon); }
+        .preset-card:hover { border-color: #d1d5db; background: #f9fafb; }
+        .preset-card.selected { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+        .p-icon { font-size: 18px; margin-bottom: 6px; }
+        .p-name { font-size: 0.8rem; font-weight: 600; }
+        .p-dims { font-size: 0.7rem; opacity: 0.7; }
 
-        /* LOADING BAR */
-        .scan-line {
-          position: absolute; top: 0; left: 0; height: 2px; background: var(--neon);
-          box-shadow: 0 0 10px var(--neon); z-index: 20; transition: width 0.1s linear;
+        .action-btn {
+          width: 100%; padding: 18px; border-radius: 12px;
+          background: #111827; color: white; font-weight: 700; font-size: 1.05rem;
+          border: none; cursor: pointer; transition: 0.2s;
+          display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .action-btn:hover { background: black; transform: translateY(-2px); }
+        .action-btn:disabled { opacity: 0.7; transform: none; cursor: wait; }
+
+        /* RESULT OVERLAY */
+        .result-modal {
+          grid-column: span 2; background: #f0fdf4; border: 1px solid #dcfce7;
+          border-radius: 20px; padding: 60px; text-align: center;
+        }
+        .confetti-icon {
+          width: 80px; height: 80px; background: #22c55e; color: white; border-radius: 50%;
+          font-size: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
         }
 
-        @media (max-width: 768px) {
-          .control-deck { 
-            flex-direction: column; align-items: stretch; gap: 15px; 
-            bottom: 0; left: 0; right: 0; border-radius: 20px 20px 0 0; border-bottom: none;
-          }
-          .input-row { justify-content: space-between; }
-          .deck-actions { margin-left: 0; }
+        @media (max-width: 800px) {
+          .workspace { grid-template-columns: 1fr; }
+          .file-manager { height: 400px; }
         }
       `}</style>
 
-      {/* VIEW 1: PORTAL */}
+      {/* VIEW 1: UPLOAD */}
       {viewState === 'upload' && (
         <div 
-          className={`portal-zone ${isDragging ? 'drag' : ''}`}
+          className={`upload-hero ${isDragging ? 'drag' : ''}`}
           onDragOver={(e) => handleDrag(e, true)}
           onDragLeave={(e) => handleDrag(e, false)}
           onDrop={onDrop}
           onClick={() => fileInputRef.current.click()}
         >
-          <div className="portal-ring">
-            <i className="fa-solid fa-plus portal-icon"></i>
+          <div className="hero-icon-circle">
+            <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
           </div>
-          <div className="portal-text">INITIALIZE UPLOAD</div>
-          <div style={{color: '#52525b', marginTop: '10px', fontSize: '12px', letterSpacing: '1px'}}>
-            DRAG FILES OR CLICK TO ENGAGE
-          </div>
+          <div className="hero-title">Resize Images</div>
+          <div className="hero-sub">The simplest way to resize for web & social</div>
+          <button className="hero-btn">Select Images</button>
         </div>
       )}
 
-      {/* VIEW 2: WORKBENCH */}
+      {/* VIEW 2: WORKSPACE */}
       {(viewState === 'workspace' || viewState === 'finished') && (
-        <div className="workbench">
+        <div className="workspace">
           
-          {/* SCAN LINE */}
-          {processing && <div className="scan-line" style={{width: `${progress}%`}}></div>}
+          {/* RESULT STATE OVERRIDE */}
+          {viewState === 'finished' && result ? (
+            <div className="result-modal">
+              <div className="confetti-icon"><i className="fa-solid fa-check"></i></div>
+              <h2 style={{fontSize:'2rem', marginBottom:'10px', color:'#14532d'}}>All Done!</h2>
+              <p style={{color:'#166534', marginBottom:'30px'}}>Your {result.count} images are ready to use.</p>
+              
+              <a href={result.url} download="resized.zip" className="action-btn" style={{maxWidth:'300px', margin:'0 auto', background:'#16a34a'}}>
+                Download ZIP
+              </a>
+              <button onClick={reset} style={{marginTop:'20px', background:'none', border:'none', cursor:'pointer', color:'#6b7280', fontWeight:'600'}}>
+                Resize More
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* LEFT: FILE LIST */}
+              <div className="file-manager">
+                <div className="fm-header">
+                  <span className="fm-title">{files.length} Images</span>
+                  <button className="add-btn" onClick={() => fileInputRef.current.click()}>+ Add More</button>
+                </div>
+                <div className="file-scroller">
+                  {files.map(f => (
+                    <div key={f.id} className="file-item">
+                      <img src={f.preview} className="f-thumb" alt="" />
+                      <div className="f-info">
+                        <div className="f-name">{f.name}</div>
+                        <div className="f-meta">
+                          {/* Live Preview Calculation */}
+                          {resizeMode === 'pixels' && `${targetW} × ${targetH}`}
+                          {resizeMode === 'percentage' && `${percentage}% size`}
+                          {resizeMode === 'social' && socialPresets[socialPreset].label}
+                        </div>
+                      </div>
+                      <div className="f-remove" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
+                        <i className="fa-solid fa-xmark"></i>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          {/* VIEW 3: MISSION REPORT (Overlay) */}
-          {viewState === 'finished' && result && (
-            <div className="mission-report">
-              <div className="hologram-card">
-                <div style={{color: '#71717a', fontSize:'12px', letterSpacing:'2px'}}>TOTAL REDUCTION</div>
-                <div className="stat-display">{result.count} FILES</div>
-                <div style={{marginBottom:'30px', color: '#a1a1aa'}}>OUTPUT SIZE: {result.size} MB</div>
+              {/* RIGHT: SETTINGS */}
+              <div className="controls">
                 
-                <a href={result.url} download="zyn-resized.zip" className="dl-cyber-btn">
-                  DOWNLOAD ARTIFACTS
-                </a>
-                <div style={{marginTop:'20px'}}>
-                  <button onClick={reset} style={{background:'none', border:'none', color:'#52525b', cursor:'pointer', letterSpacing:'1px'}}>
-                    // REBOOT SYSTEM
+                {/* TABS */}
+                <div className="tabs">
+                  <div className={`tab ${resizeMode === 'pixels' ? 'active' : ''}`} onClick={() => setResizeMode('pixels')}>Pixels</div>
+                  <div className={`tab ${resizeMode === 'percentage' ? 'active' : ''}`} onClick={() => setResizeMode('percentage')}>%</div>
+                  <div className={`tab ${resizeMode === 'social' ? 'active' : ''}`} onClick={() => setResizeMode('social')}>Social</div>
+                </div>
+
+                {/* PIXELS MODE */}
+                {resizeMode === 'pixels' && (
+                  <div className="animate-fade">
+                    <span className="section-label">Target Dimensions</span>
+                    <div className="input-row">
+                      <input type="number" className="clean-input" placeholder="W" value={targetW} onChange={e => handlePixelChange('w', e.target.value)} />
+                      <div className={`toggle-icon ${lockAspect ? 'active' : ''}`} onClick={() => setLockAspect(!lockAspect)}>
+                        <i className={`fa-solid ${lockAspect ? 'fa-link' : 'fa-link-slash'}`}></i>
+                      </div>
+                      <input type="number" className="clean-input" placeholder="H" value={targetH} onChange={e => handlePixelChange('h', e.target.value)} />
+                    </div>
+                  </div>
+                )}
+
+                {/* PERCENTAGE MODE */}
+                {resizeMode === 'percentage' && (
+                  <div className="animate-fade">
+                    <span className="section-label">Scale By</span>
+                    <div className="input-row">
+                      <input type="range" style={{width:'100%', accentColor:color}} min="10" max="200" value={percentage} onChange={e => setPercentage(e.target.value)} />
+                    </div>
+                    <div style={{textAlign:'center', fontWeight:'800', fontSize:'1.5rem', marginBottom:'20px'}}>
+                      {percentage}%
+                    </div>
+                    <div className="preset-grid">
+                      {[25, 50, 75].map(p => (
+                        <div key={p} className="preset-card" onClick={() => setPercentage(p)} style={{textAlign:'center'}}>
+                          {p}%
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* SOCIAL MODE (USER FRIENDLY MAGIC) */}
+                {resizeMode === 'social' && (
+                  <div className="animate-fade">
+                    <span className="section-label">Choose Preset</span>
+                    <div className="preset-grid">
+                      {Object.entries(socialPresets).map(([key, val]) => (
+                        <div key={key} className={`preset-card ${socialPreset === key ? 'selected' : ''}`} onClick={() => setSocialPreset(key)}>
+                          <div className="p-icon">
+                            {key.includes('ig') && <i className="fa-brands fa-instagram"></i>}
+                            {key.includes('fb') && <i className="fa-brands fa-facebook"></i>}
+                            {key.includes('yt') && <i className="fa-brands fa-youtube"></i>}
+                            {key.includes('twitter') && <i className="fa-brands fa-twitter"></i>}
+                          </div>
+                          <div className="p-name">{val.label}</div>
+                          <div className="p-dims">{val.w} x {val.h}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{marginTop:'auto'}}>
+                  <span className="section-label">Format</span>
+                  <div style={{marginBottom:'20px'}}>
+                    <select className="clean-input" value={format} onChange={e => setFormat(e.target.value)}>
+                      <option value="original">Keep Original</option>
+                      <option value="image/jpeg">JPG</option>
+                      <option value="image/png">PNG</option>
+                      <option value="image/webp">WEBP</option>
+                    </select>
+                  </div>
+
+                  <button className="action-btn" onClick={processResize} disabled={processing}>
+                    {processing ? 'Processing...' : 'Resize Images'}
                   </button>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* GRID OF CARDS (Only visible if not finished) */}
-          {viewState === 'workspace' && (
-            <div className="data-grid">
-              {files.map(f => (
-                <div key={f.id} className={`tech-card ${f.status === 'done' ? 'done' : ''}`}>
-                  <div className="del-x" onClick={() => removeFile(f.id)}>×</div>
-                  <img src={f.preview} className="card-preview" alt="" />
-                  <div className="card-name">{f.name}</div>
-                  <div className="card-meta">
-                    <span>{f.origDims}</span>
-                    <div className="status-dot"></div>
-                  </div>
-                </div>
-              ))}
-              <div 
-                className="tech-card" 
-                style={{display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', borderStyle:'dashed', minHeight:'130px'}}
-                onClick={() => fileInputRef.current.click()}
-              >
-                <i className="fa-solid fa-plus" style={{color:'#3f3f46', fontSize:'24px'}}></i>
-              </div>
-            </div>
-          )}
-
-          {/* CONTROL DECK (Bottom Bar) */}
-          {viewState === 'workspace' && (
-            <div className="control-deck">
-              <div className="deck-group">
-                <div className="deck-label">Dimensions</div>
-                <div className="input-row">
-                  <input type="number" className="neon-input" placeholder="W" value={targetW} onChange={e => handleWidthChange(e.target.value)} />
-                  <div 
-                    className={`link-toggle ${lockAspect ? 'active' : ''}`} 
-                    onClick={() => setLockAspect(!lockAspect)}
-                  >
-                    <i className={`fa-solid ${lockAspect ? 'fa-link' : 'fa-link-slash'}`}></i>
-                  </div>
-                  <input type="number" className="neon-input" placeholder="H" value={targetH} onChange={e => handleHeightChange(e.target.value)} />
-                </div>
-              </div>
-
-              <div className="deck-group">
-                <div className="deck-label">Format</div>
-                <select className="neon-select" value={format} onChange={e => setFormat(e.target.value)}>
-                  <option value="original">Original</option>
-                  <option value="image/jpeg">JPG</option>
-                  <option value="image/png">PNG</option>
-                  <option value="image/webp">WEBP</option>
-                </select>
-              </div>
-
-              <div className="deck-actions">
-                <button className="ghost-btn" onClick={() => setFiles([])}>CLEAR</button>
-                <button className="cyber-btn" onClick={runResize} disabled={processing || !targetW || !targetH}>
-                  {processing ? 'EXECUTING...' : 'INITIATE RESIZE'}
-                </button>
-              </div>
-            </div>
+            </>
           )}
         </div>
       )}
