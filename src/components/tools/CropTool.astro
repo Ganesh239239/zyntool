@@ -1,4 +1,5 @@
 ---
+import RelatedTools from '../RelatedTools.astro';
 const { entry, relatedTools } = Astro.props;
 ---
 
@@ -53,9 +54,11 @@ const { entry, relatedTools } = Astro.props;
                         Crop Image
                     </button>
                 </div>
+<RelatedTools relatedTools={relatedTools} />
             </div>
         </div>
     </div>
+ </div>
 
     <!-- STEP 3: RESULT -->
     <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
