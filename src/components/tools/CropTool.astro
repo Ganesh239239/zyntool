@@ -7,11 +7,7 @@ const { entry, relatedTools } = Astro.props;
 <div id="crop-tool">
   <!-- STEP 1: UPLOAD -->
   <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white">
-    <div
-      class="uploader-zone text-center"
-      onclick="document.getElementById('fileInput').click()"
-      style="cursor:pointer"
-    >
+    <div class="uploader-zone text-center" style="cursor:pointer">
       <div
         class="icon-circle mb-3 mx-auto"
         style={`background:${entry.data.color}15;color:${entry.data.color};width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;`}
@@ -45,7 +41,7 @@ const { entry, relatedTools } = Astro.props;
         </div>
       </div>
 
-      <!-- RIGHT: SIDEBAR (NON-STICKY) -->
+      <!-- RIGHT: SIDEBAR -->
       <div class="col-lg-4">
 
         <!-- CROP OPTIONS -->
@@ -54,23 +50,13 @@ const { entry, relatedTools } = Astro.props;
 
           <label class="small fw-bold text-muted mb-2">Aspect Ratio</label>
           <div class="d-grid gap-2 mb-4">
-            <button
-              id="btnFree"
-              class="btn btn-outline-dark btn-sm fw-bold active"
-              onclick="window.setCropRatio(NaN,this)"
-            >
+            <button id="btnFree" class="btn btn-outline-dark btn-sm fw-bold active">
               FREE
             </button>
-            <button
-              class="btn btn-outline-dark btn-sm fw-bold"
-              onclick="window.setCropRatio(1,this)"
-            >
+            <button class="btn btn-outline-dark btn-sm fw-bold" data-ratio="1">
               1:1
             </button>
-            <button
-              class="btn btn-outline-dark btn-sm fw-bold"
-              onclick="window.setCropRatio(16/9,this)"
-            >
+            <button class="btn btn-outline-dark btn-sm fw-bold" data-ratio="1.7777777778">
               16:9
             </button>
           </div>
@@ -84,7 +70,7 @@ const { entry, relatedTools } = Astro.props;
           </button>
         </div>
 
-        <!-- OTHER TOOLS (NORMAL FLOW) -->
+        <!-- RELATED TOOLS -->
         <RelatedTools relatedTools={relatedTools} />
 
       </div>
@@ -115,6 +101,111 @@ const { entry, relatedTools } = Astro.props;
 <style>
 .uploader-card { border-radius:30px;border:1px solid #eee }
 .uploader-zone { border:2px dashed #e2e8f0;border-radius:24px;padding:60px 20px }
+.uploader-zone:hover { background:#f8fbff;border-color:#4B90FF }
 .preview-stage { min-height:500px;display:flex;align-items:center;justify-content:center }
 .btn-outline-dark.active { background:#2c2e33;color:#fff }
 </style>
+
+<script is:inline>
+let cropper = null;
+let originalFile = null;
+
+const root = document.getElementById('crop-tool');
+const fileInput = root.querySelector('#fileInput');
+const uploadContainer = root.querySelector('#uploadContainer');
+const processingArea = root.querySelector('#processingArea');
+const resultArea = root.querySelector('#resultArea');
+const mainPreview = root.querySelector('#mainPreview');
+const btnAction = root.querySelector('#btnAction');
+const internalLoader = root.querySelector('#internalLoader');
+const uploadZone = root.querySelector('.uploader-zone');
+const ratioButtons = root.querySelectorAll('[data-ratio], #btnFree');
+
+/* ---------- UPLOAD (ROBUST) ---------- */
+uploadZone.addEventListener('click', () => {
+  fileInput.value = '';
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  originalFile = file;
+  const reader = new FileReader();
+
+  reader.onload = (ev) => {
+    mainPreview.src = ev.target.result;
+    uploadContainer.style.display = 'none';
+    processingArea.style.display = 'block';
+
+    mainPreview.onload = () => {
+      if (cropper) cropper.destroy();
+      cropper = new Cropper(mainPreview, {
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.8,
+        responsive: true,
+        restore: false,
+        minCropBoxWidth: 50,
+        minCropBoxHeight: 50
+      });
+    };
+  };
+
+  reader.readAsDataURL(file);
+});
+
+/* ---------- ASPECT RATIO ---------- */
+ratioButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!cropper) return;
+    ratioButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const ratio = btn.dataset.ratio ? Number(btn.dataset.ratio) : NaN;
+    cropper.setAspectRatio(ratio);
+  });
+});
+
+/* ---------- CROP ACTION ---------- */
+btnAction.addEventListener('click', () => {
+  if (!cropper) return;
+
+  internalLoader.classList.remove('d-none');
+  btnAction.disabled = true;
+
+  try {
+    const canvas = cropper.getCroppedCanvas({
+      maxWidth: 4096,
+      maxHeight: 4096,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high'
+    });
+
+    const isJpg = originalFile.type === 'image/jpeg';
+    const mime = isJpg ? 'image/jpeg' : 'image/png';
+    const ext = isJpg ? 'jpg' : 'png';
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const dl = document.getElementById('downloadBtn');
+      dl.href = url;
+      dl.download = `cropped-${Date.now()}.${ext}`;
+
+      internalLoader.classList.add('d-none');
+      btnAction.disabled = false;
+
+      processingArea.style.display = 'none';
+      resultArea.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, mime, 0.92);
+
+  } catch (err) {
+    internalLoader.classList.add('d-none');
+    btnAction.disabled = false;
+    alert('Crop failed.');
+    console.error(err);
+  }
+});
+</script>
