@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import './CompressTool.css';
 
-export default function CompressTool({ color, toolName }) {
+export default function CompressTool({ color }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFiles = (files) => {
     console.log("Processing files...", files);
-    // Transition to workspace will follow in Step 2
+    // Move to Workspace logic will be added in the next step
   };
 
   const onDrag = (e) => {
@@ -23,7 +23,7 @@ export default function CompressTool({ color, toolName }) {
 
   return (
     <div className="compress-engine-container">
-      {/* THE DASHED DROPZONE */}
+      {/* THE COMPACT DASHED DROPZONE */}
       <div 
         className={`dropzone-pro ${isDragging ? 'drag-active' : ''}`}
         style={{ '--active-color': color }}
@@ -33,8 +33,8 @@ export default function CompressTool({ color, toolName }) {
         onClick={() => document.getElementById('compress-upload').click()}
       >
         <div className="dropzone-content">
-          {/* REDUCED LIQUID CLOUD ICON */}
-          <div className="liquid-wrapper-sm">
+          {/* CENTERED LIQUID CLOUD */}
+          <div className="liquid-wrapper-centered">
             <div className="liquid-base-sm">
               <div className="water-layer"></div>
               <div className="water-layer"></div>
@@ -45,12 +45,6 @@ export default function CompressTool({ color, toolName }) {
           <div className="text-stack">
             <h2 className="title-pro">Choose Images</h2>
             <p className="subtitle-pro">Drag and drop or click to optimize your photos</p>
-            
-            <div className="badge-row">
-               <span className="file-badge">JPG</span>
-               <span className="file-badge">PNG</span>
-               <span className="file-badge">WEBP</span>
-            </div>
           </div>
         </div>
 
