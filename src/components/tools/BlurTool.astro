@@ -4,7 +4,7 @@ const { entry, relatedTools } = Astro.props;
 
 <div id="blur-tool">
     <!-- STEP 1: UPLOAD BOX -->
-    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border">
+    <div id="uploadContainer" class="uploader-card shadow-lg p-3 mb-5 bg-white border" style="max-width: 800px;">
         <div class="uploader-zone text-center" onclick="document.getElementById('fileInput').click()" style="cursor:pointer">
             <div class="icon-circle mb-3 mx-auto" style={`background: ${entry.data.color}15; color: ${entry.data.color}; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center;`}>
                 <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
