@@ -1,15 +1,18 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-// --- FIXED ICONS (All definitions included) ---
+// --- FIXED ICONS (All used icons are now defined) ---
 const Icon = {
   Plus: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  Upload: () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+  Upload: () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"/></svg>,
+  File: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>,
   Close: () => <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Download: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  Download: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
   Check: () => <svg width="16" height="16" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-  Settings: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  // These were missing causing the crash:
+  Settings: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  Wasm: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
 };
 
 export default function CompressTool() {
@@ -17,20 +20,19 @@ export default function CompressTool() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [zipUrl, setZipUrl] = useState(null);
   
-  // Settings State
+  // Settings
   const [quality, setQuality] = useState(0.75);
   const [useWebP, setUseWebP] = useState(true);
 
   const fileInputRef = useRef(null);
 
-  // --- STATS CALC ---
+  // --- STATS ---
   const stats = useMemo(() => {
     const totalOrig = files.reduce((acc, f) => acc + f.origSize, 0);
     const totalNew = files.reduce((acc, f) => acc + (f.newSize || f.origSize), 0);
     const processedCount = files.filter(f => f.status === 'done').length;
     const isDone = files.length > 0 && processedCount === files.length;
     const savings = totalOrig - totalNew;
-    
     return { totalOrig, totalNew, savings, isDone };
   }, [files]);
 
@@ -46,14 +48,13 @@ export default function CompressTool() {
         file: f,
         name: f.name,
         origSize: f.size,
-        status: 'pending', // pending, working, done, error
+        status: 'pending', 
         preview: URL.createObjectURL(f)
       }));
 
     setFiles(prev => [...prev, ...newQueue]);
   };
 
-  // The Processor
   const runBatch = async () => {
     setIsProcessing(true);
     const zip = new JSZip();
@@ -66,7 +67,6 @@ export default function CompressTool() {
         continue;
       }
 
-      // Optimistic Update
       item.status = 'working';
       setFiles([...queue]);
 
@@ -85,7 +85,6 @@ export default function CompressTool() {
         item.newSize = blob.size;
         item.status = 'done';
         
-        // Naming
         const ext = useWebP ? 'webp' : item.name.split('.').pop();
         const baseName = item.name.substring(0, item.name.lastIndexOf('.')) || item.name;
         item.finalName = `${baseName}.${ext}`;
@@ -95,7 +94,7 @@ export default function CompressTool() {
         console.error(err);
         item.status = 'error';
       }
-      setFiles([...queue]); // Live Update
+      setFiles([...queue]); 
     }
 
     if (queue.some(f => f.status === 'done')) {
@@ -145,18 +144,18 @@ export default function CompressTool() {
 
         .studio-interface {
           display: flex;
-          height: 85vh;
+          height: 80vh;
           max-height: 800px;
           border: 1px solid var(--border);
           background: var(--bg);
           font-family: 'Inter', -apple-system, sans-serif;
           color: var(--text);
-          border-radius: 8px; /* Sharper corners for dev tool look */
+          border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        /* --- LEFT: ASSET LIST --- */
+        /* LEFT: ASSET PANE */
         .asset-pane {
           flex: 1;
           display: flex;
@@ -175,11 +174,10 @@ export default function CompressTool() {
         
         .file-table-container { flex: 1; overflow-y: auto; position: relative; }
         
-        /* Empty State */
         .empty-drop {
           position: absolute; inset: 20px;
           border: 1px dashed var(--border);
-          border-radius: 6px;
+          border-radius: 8px;
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           color: var(--text-dim);
           background: var(--panel);
@@ -188,7 +186,6 @@ export default function CompressTool() {
         }
         .empty-drop:hover { background: #f3f4f6; border-color: #d1d5db; }
 
-        /* File List */
         .file-row {
           display: grid; 
           grid-template-columns: 40px 2fr 1fr 1fr 40px; 
@@ -200,7 +197,7 @@ export default function CompressTool() {
         }
         .file-row:hover { background: #f8fafc; }
         
-        .f-thumb { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; background: #eee; border: 1px solid var(--border); }
+        .f-thumb { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; background: #eee; border: 1px solid var(--border); }
         .f-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 15px; }
         .f-meta { font-family: var(--mono); color: var(--text-dim); font-size: 0.75rem; }
         .f-badge { 
@@ -215,7 +212,7 @@ export default function CompressTool() {
         }
         .icon-btn:hover { background: #fee2e2; color: #ef4444; }
 
-        /* --- RIGHT: INSPECTOR --- */
+        /* RIGHT: INSPECTOR PANE */
         .inspector-pane {
           width: 320px;
           background: var(--panel);
@@ -233,10 +230,7 @@ export default function CompressTool() {
           display: flex; align-items: center; gap: 6px;
         }
 
-        /* Controls */
         .control-row { margin-bottom: 16px; }
-        .control-row:last-child { margin-bottom: 0; }
-        
         .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500; }
         
         input[type="range"] {
@@ -250,23 +244,16 @@ export default function CompressTool() {
           background: var(--accent); margin-top: -6px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .select-input {
-          width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
-          background: white; font-size: 0.85rem; color: var(--text);
-        }
-
         .check-label {
           display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; user-select: none;
         }
         
-        /* Stats Box */
         .stat-box {
           background: white; border: 1px solid var(--border); border-radius: 6px; padding: 12px;
         }
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.8rem; color: var(--text-dim); }
         .stat-row.total { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-weight: 600; color: var(--text); }
 
-        /* Footer Actions */
         .inspector-footer {
           margin-top: auto; padding: 24px; border-top: 1px solid var(--border);
         }
@@ -292,15 +279,15 @@ export default function CompressTool() {
           .asset-pane { height: 400px; border-right: none; border-bottom: 1px solid var(--border); }
           .inspector-pane { width: 100%; }
           .file-row { grid-template-columns: 40px 1fr 60px; }
-          .file-row > :nth-child(3), .file-row > :nth-child(4) { display: none; } /* Hide stats on mobile */
+          .file-row > :nth-child(3), .file-row > :nth-child(4) { display: none; }
         }
       `}</style>
 
-      {/* LEFT PANE: ASSET MANAGER */}
+      {/* LEFT PANE: ASSETS */}
       <div className="asset-pane">
         <div className="pane-header">
           <span className="pane-title">Assets ({files.length})</span>
-          <button className="icon-btn" onClick={() => setFiles([])} title="Clear All" style={{fontSize:'0.75rem', gap:'4px', width:'auto', padding:'4px 8px'}}>
+          <button className="icon-btn" onClick={() => setFiles([])} title="Clear All" style={{width:'auto', padding:'4px 8px', fontSize:'0.75rem'}}>
             Clear
           </button>
         </div>
@@ -318,7 +305,7 @@ export default function CompressTool() {
               <span style={{fontSize:'0.8rem', opacity:0.6}}>JPG, PNG, WebP</span>
             </div>
           ) : (
-            <div className="file-list">
+            <div>
               {files.map(f => (
                 <div key={f.id} className="file-row">
                   <img src={f.preview} className="f-thumb" alt="" />
@@ -328,7 +315,7 @@ export default function CompressTool() {
                   </div>
                   <div style={{textAlign:'right'}}>
                     {f.status === 'done' && <span className="f-badge">-{Math.round(((f.origSize - f.newSize)/f.origSize)*100)}%</span>}
-                    {f.status === 'working' && <span style={{fontSize:'0.7rem', color:'#6366f1'}}>Processing</span>}
+                    {f.status === 'working' && <span style={{fontSize:'0.7rem', color:'#3b82f6'}}>Processing</span>}
                   </div>
                   <div style={{textAlign:'right'}}>
                     <button className="icon-btn" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
@@ -342,10 +329,9 @@ export default function CompressTool() {
         </div>
       </div>
 
-      {/* RIGHT PANE: INSPECTOR */}
+      {/* RIGHT PANE: CONTROLS */}
       <div className="inspector-pane">
         
-        {/* GROUP 1: SETTINGS */}
         <div className="inspector-group">
           <span className="group-label"><Icon.Settings /> Compression</span>
           
@@ -367,12 +353,11 @@ export default function CompressTool() {
             </div>
             <label className="check-label">
               <input type="checkbox" checked={useWebP} onChange={e => setUseWebP(e.target.checked)} disabled={isProcessing} />
-              <span>Convert to WebP (Google Rec.)</span>
+              <span>Convert to WebP (Recommended)</span>
             </label>
           </div>
         </div>
 
-        {/* GROUP 2: SUMMARY */}
         <div className="inspector-group">
           <span className="group-label"><Icon.File /> Summary</span>
           <div className="stat-box">
@@ -393,7 +378,6 @@ export default function CompressTool() {
           </div>
         </div>
 
-        {/* FOOTER: ACTIONS */}
         <div className="inspector-footer">
           <button className="secondary-btn" onClick={() => fileInputRef.current.click()}>
             <span style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'6px'}}>
