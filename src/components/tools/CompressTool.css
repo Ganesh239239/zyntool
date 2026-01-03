@@ -1,65 +1,120 @@
-/* --- NATIVE APP ARCHITECTURE --- */
-.zyn-pro-wrapper { width: 100%; color: #0f172a; }
-
-/* 1. LANDING DESIGN */
-.hero-uploader { position: relative; max-width: 800px; margin: 0 auto; padding: 20px; cursor: pointer; }
-.glow-effect { position: absolute; inset: 20%; filter: blur(100px); opacity: 0.15; border-radius: 50%; z-index: 0; }
-.glass-card { 
-    position: relative; z-index: 1; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.4); border-radius: 48px; padding: 100px 40px; text-align: center;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.05); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-}
-.glass-card:hover { transform: translateY(-10px) scale(1.01); box-shadow: 0 60px 120px rgba(79, 70, 229, 0.1); }
-.icon-pulse { 
-    width: 100px; height: 100px; background: #4f46e5; color: #fff; border-radius: 35%;
-    margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-    animation: icon-float 3s infinite ease-in-out;
-}
-@keyframes icon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-/* 2. WORKBENCH DESIGN */
-.app-grid { display: flex; gap: 30px; }
-.workbench { flex: 1; background: #f3f3f7; border-radius: 40px; padding: 30px; border: 1px solid #eef0f2; }
-.workbench-header { display: flex; justify-content: space-between; margin-bottom: 25px; }
-.assets-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-
-/* THE 198x244 CARD UPGRADE */
-.asset-card-v5 {
-    width: 198px; height: 244px; background: #fff; border-radius: 16px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    position: relative; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-}
-.asset-preview { width: 140px; height: 140px; position: relative; }
-.asset-preview img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
-.asset-meta { margin-top: 20px; text-align: center; width: 80%; }
-.asset-meta .name { font-size: 10px; font-weight: 800; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.asset-meta .status-text { font-size: 9px; color: #94a3b8; font-weight: 700; }
-
-/* LOADING ANIMATIONS */
-.loader-ring { 
-    position: absolute; inset: -5px; border: 4px solid #4f46e5; border-top-color: transparent;
-    border-radius: 50%; animation: spin 1s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* 3. INSPECTOR SIDEBAR */
-.inspector { width: 340px; background: #fff; border-radius: 40px; padding: 40px; border: 1px solid #eee; position: sticky; top: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.02); }
-.btn-execute { 
-    width: 100%; padding: 22px; background: #0f172a; color: #fff; border: none; border-radius: 50px;
-    font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
-}
-.btn-execute:hover { background: #000; transform: scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-
-/* 4. SUCCESS DASHBOARD */
-.success-screen { max-width: 700px; margin: 0 auto; text-align: center; }
-.success-glass { background: #fff; border-radius: 60px; padding: 80px 40px; box-shadow: 0 50px 100px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; }
-.score-badge { font-size: 8rem; font-weight: 950; color: #4f46e5; letter-spacing: -8px; margin-bottom: 10px; }
-.download-cta { 
-    display: block; background: #4f46e5; color: #fff; padding: 25px; border-radius: 24px;
-    font-size: 1.8rem; font-weight: 900; text-decoration: none; box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3);
+.compress-engine-init {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  width: 100%;
 }
 
-@media (max-width: 991px) {
-    .app-grid { flex-direction: column; }
-    .inspector { width: 100%; position: static; }
+.liquid-portal {
+  cursor: pointer;
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+/* THE LIQUID ENGINE */
+.liquid-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.liquid-base {
+  position: absolute;
+  inset: 0;
+  background: var(--tool-color, #4b8df8);
+  /* This creates the organic liquid shape */
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  animation: morphLiquid 8s infinite ease-in-out;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes morphLiquid {
+  0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  33% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+  66% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+
+/* THE WATER WAVES */
+.wave {
+  position: absolute;
+  top: 55%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 40%;
+  animation: rotateWave 12s infinite linear;
+}
+
+.wave:nth-child(2) {
+  top: 50%;
+  opacity: 0.5;
+  animation: rotateWave 18s infinite linear;
+}
+
+.wave:nth-child(3) {
+  top: 45%;
+  opacity: 0.3;
+  animation: rotateWave 25s infinite linear;
+}
+
+@keyframes rotateWave {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* THE CLOUD ICON */
+.cloud-icon {
+  font-size: 4rem;
+  color: white;
+  z-index: 2;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+  animation: floatCloud 3s infinite ease-in-out;
+}
+
+@keyframes floatCloud {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* TYPOGRAPHY */
+.portal-text .title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -2px;
+  margin-bottom: 10px;
+}
+
+.portal-text .subtitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.specs-bar {
+  display: inline-flex;
+  gap: 15px;
+  padding: 8px 20px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+/* DRAG STATE */
+.liquid-portal.active { transform: scale(1.05); }
+.liquid-portal.active .liquid-base { background: #0f172a; }
