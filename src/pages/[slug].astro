@@ -2,234 +2,137 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 
+// Import all modular tool components
+import CompressTool from '../components/tools/CompressTool.astro';
+import ResizeTool from '../components/tools/ResizeTool.astro';
+import CropTool from '../components/tools/CropTool.astro';
+import WatermarkTool from '../components/tools/WatermarkTool.astro';
+import BlurTool from '../components/tools/BlurTool.astro';
+import ConvertFromJpgTool from '../components/tools/ConvertFromJpgTool.astro';
+import ConvertToJpgTool from '../components/tools/ConvertToJpgTool.astro';
+import MemeTool from '../components/tools/MemeTool.astro';
+import HtmlToImageTool from '../components/tools/HtmlToImageTool.astro';
+import UpscaleTool from '../components/tools/UpscaleTool.astro';
+import RemoveBgTool from '../components/tools/RemoveBgTool.astro';
+import PhotoEditorTool from '../components/tools/PhotoEditorTool.astro';
+import ImageToPdfTool from '../components/tools/ImageToPdfTool.astro';
+import PdfToImageTool from '../components/tools/PdfToImageTool.astro';
+import RotateTool from '../components/tools/RotateTool.astro';
+import OcrTool from '../components/tools/OcrTool.astro';
+
+
+// 1. Generate paths for all tools
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
+if (!toolEntries || toolEntries.length === 0) return [];
   return toolEntries.map(entry => ({
-    params: { slug: entry.slug }, 
+    params: { slug: entry.slug || entry.id }, 
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
+
+// BUILD GUARD: Prevent crashes
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+// 2. Fetch other tools for the sidebar feature
+const allTools = await getCollection('tools');
+const toolId = entry.slug || entry.id;
+const relatedTools = allTools
+  .filter(t => (t.slug || t.id) !== toolId)
+  .slice(0, 6);
+
+// 3. Render the Markdown content
 const { Content } = await entry.render();
-const toolId = entry.slug;
+
+// 4. Dynamic SEO Metadata
+const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
+const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy. No registration required.`;
 ---
 
-<MainLayout title={`${entry.data.title} - ZynTool Studio`} description={entry.data.description}>
-    <div class="studio-root">
-        <!-- 1. LANDING STAGE -->
-        <div id="stage-landing" class="stage active">
-            <header class="studio-header">
-                <span class="badge-engine">ZYN-ENGINE v5.0 SECURE</span>
-                <h1>{entry.data.title}</h1>
-                <p>{entry.data.description}</p>
-            </header>
-
-            <div class="portal-card" id="dropzone">
-                <div class="portal-inner">
-                    <div class="liquid-container" style={`--brand-color: ${entry.data.color}`}>
-                        <div class="liquid-wave"></div>
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                    </div>
-                    <h2 class="fw-black">Choose Images</h2>
-                    <p class="text-muted">Drag & drop up to 20 files for batch processing</p>
-                    <button class="btn-studio-cta" style={`background: ${entry.data.color}`}>Browse Device</button>
-                </div>
-            </div>
-            <input type="file" id="fileInput" hidden multiple accept="image/*" />
+<MainLayout title={seoTitle} description={seoDesc}>
+    <!-- TOOL HERO SECTION -->
+    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+        <div class="container text-center">
+            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">FREE ONLINE TOOL</div>
+            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
+            <p class="opacity-75 fs-5">{entry.data.description}</p>
         </div>
+    </div>
 
-        <!-- 2. WORKSPACE STAGE (The Lab) -->
-        <div id="stage-workbench" class="stage">
-            <div class="workbench-layout">
-                <div class="workbench-main">
-                    <div class="batch-info">
-                        <span class="fw-bold">Queue: <span id="queue-count">0</span> files</span>
-                        <button class="btn-add-more" id="addMoreBtn">+ Add More</button>
-                    </div>
-                    <div class="asset-grid" id="assetGrid">
-                        <!-- 198x244 Cards will be injected here -->
-                    </div>
-                    <div id="laser-scanner" class="laser-line d-none"></div>
-                </div>
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div class="container tool-container-fixed pb-5">
+        
+        <!-- DYNAMIC TOOL COMPONENT SWITCHER -->
+        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
+        {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
+       {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+       {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
+       {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
+       {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
 
-                <aside class="workbench-sidebar">
-                    <div class="inspector-card">
-                        <label class="hud-label">Optimization Strength</label>
-                        <div class="hud-value" id="strengthVal">60%</div>
-                        <input type="range" id="qualityIn" min="10" max="90" value="60" class="studio-range" style={`accent-color: ${entry.data.color}`}>
-                        
-                        <div class="feature-checklist">
-                            <div class="item"><i class="fa-solid fa-check"></i> No Quality Loss</div>
-                            <div class="item"><i class="fa-solid fa-check"></i> Private & Local</div>
-                        </div>
+        <!-- The "Modular Engine Update" section has been removed -->
 
-                        <button id="processBtn" class="btn-run-batch" style={`background: ${entry.data.color}`}>
-                            START COMPRESSION <i class="fa-solid fa-bolt-lightning ms-2"></i>
-                        </button>
-                    </div>
-                </aside>
-            </div>
-        </div>
-
-        <!-- 3. RESULT STAGE (The Scorecard) -->
-        <div id="stage-result" class="stage text-center">
-            <div class="result-scorecard">
-                <div class="massive-stat" id="pctSaved">0%</div>
-                <h2 class="fw-black">Lighter than original!</h2>
-                <p class="text-muted mb-5" id="sizeSummary">0 KB reduced to 0 KB</p>
-                
-                <a id="downloadBtn" class="btn-download-studio" style={`background: ${entry.data.color}`}>
-                    DOWNLOAD ZIP <i class="fa-solid fa-file-zipper ms-2"></i>
-                </a>
-                <br/>
-                <button onclick="location.reload()" class="btn-restart-studio">← PROCESS NEW BATCH</button>
-            </div>
-        </div>
-
-        <!-- SEO Content -->
-        <section class="container mx-auto py-20 border-t mt-20">
-            <article class="prose-studio">
+        <!-- SEO CONTENT SECTION -->
+        <div class="content-section mt-5 pt-5 border-top">
+            <article class="prose mx-auto">
                 <Content />
             </article>
-        </section>
+        </div>
     </div>
 </MainLayout>
 
 <style>
-    /* --- REALISTIC STUDIO DESIGN SYSTEM --- */
-    .studio-root { width: 100%; min-height: 100vh; background: #fff; font-family: system-ui, -apple-system, sans-serif; }
+    /* Premium Typography */
     .fw-black { font-weight: 900; }
-    .stage { display: none; padding: 40px 20px; }
-    .stage.active { display: block; animation: fadeIn 0.4s ease-out; }
-
-    /* Header */
-    .studio-header { text-align: center; margin-bottom: 50px; }
-    .studio-header h1 { font-size: 3.5rem; font-weight: 900; color: #0f172a; letter-spacing: -2px; }
-    .badge-engine { font-size: 10px; font-weight: 900; color: #94a3b8; letter-spacing: 2px; }
-
-    /* Landing Portal */
-    .portal-card { max-width: 750px; margin: 0 auto; background: #fff; border-radius: 40px; padding: 12px; border: 1px solid #f1f5f9; box-shadow: 0 40px 100px rgba(0,0,0,0.05); cursor: pointer; transition: 0.4s; }
-    .portal-card:hover { transform: translateY(-5px); box-shadow: 0 60px 120px rgba(0,0,0,0.08); }
-    .portal-inner { border: 3px dashed #e2e8f0; border-radius: 32px; padding: 100px 20px; text-align: center; background: #fafafa; }
     
-    /* Liquid Cloud Animation */
-    .liquid-container { width: 110px; height: 110px; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.8rem; animation: morph 8s infinite ease-in-out; position: relative; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-    @keyframes morph { 0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; } 50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; } }
-    .btn-studio-cta { border: none; color: white; padding: 18px 50px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; margin-top: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    /* Hero Header */
+    .tool-hero { 
+        padding: 100px 0 120px; 
+        position: relative;
+        z-index: 1; 
+    }
 
-    /* Workbench Lab */
-    .workbench-layout { display: flex; gap: 30px; max-width: 1300px; margin: 0 auto; }
-    .workbench-main { flex: 1; background: #f3f3f7; border-radius: 32px; padding: 30px; min-height: 550px; border: 1px solid #eef0f2; position: relative; }
-    .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .batch-info { display: flex; justify-content: space-between; margin-bottom: 25px; color: #64748b; font-size: 0.9rem; }
-    .btn-add-more { background: #fff; border: 1px solid #e2e8f0; padding: 5px 15px; border-radius: 50px; font-weight: 700; cursor: pointer; }
+    /* THE LAYOUT FIX: Ensures card border is visible and on top of hero */
+    .tool-container-fixed { 
+        margin-top: -80px; 
+        position: relative; 
+        z-index: 10; 
+    }
 
-    /* Realistic Asset Card (198x244) */
-    .asset-card { width: 198px; height: 244px; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.05); position: relative; }
-    .asset-card img { max-width: 150px; max-height: 150px; object-fit: contain; }
-    .asset-card span { font-size: 10px; font-weight: 800; color: #94a3b8; margin-top: 15px; text-transform: uppercase; }
+    /* SEO Article Styling (Typography) */
+    .prose { 
+        max-width: 800px; 
+        color: #4a5568; 
+        line-height: 1.8; 
+    }
+    .prose :global(h2), .prose :global(h3) { 
+        color: #1a202c; 
+        font-weight: 800; 
+        margin-top: 2.5rem; 
+        margin-bottom: 1rem; 
+    }
+    .prose :global(p) { margin-bottom: 1.5rem; }
+    .prose :global(ul) { margin-bottom: 1.5rem; }
+    .prose :global(li) { margin-bottom: 0.5rem; }
 
-    /* Sidebar Inspector */
-    .workbench-sidebar { width: 350px; position: sticky; top: 100px; }
-    .inspector-card { background: #fff; border-radius: 32px; padding: 40px; border: 1px solid #f1f5f9; box-shadow: 0 20px 40px rgba(0,0,0,0.02); }
-    .hud-label { font-size: 10px; font-weight: 900; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px; }
-    .hud-value { font-size: 4rem; font-weight: 900; color: #0f172a; letter-spacing: -4px; line-height: 1; }
-    .studio-range { width: 100%; margin-top: 20px; }
-    .btn-run-batch { width: 100%; padding: 22px; color: #fff; border: none; border-radius: 100px; font-weight: 900; margin-top: 40px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-    .feature-checklist { margin-top: 30px; font-size: 12px; font-weight: 700; color: #64748b; }
-    .feature-checklist .item { margin-bottom: 8px; }
-    .feature-checklist i { color: #10b981; margin-right: 8px; }
-
-    /* Laser Scanner */
-    .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #4f46e5; box-shadow: 0 0 15px #4f46e5; z-index: 10; animation: scan 3s infinite ease-in-out; }
-    @keyframes scan { 0%, 100% { top: 10%; opacity: 0; } 50% { top: 90%; opacity: 1; } }
-
-    /* Result Scorecard */
-    .result-scorecard { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 60px; padding: 80px 40px; box-shadow: 0 50px 120px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; }
-    .massive-stat { font-size: 10rem; font-weight: 950; color: #0f172a; letter-spacing: -10px; line-height: 0.8; }
-    .btn-download-studio { color: white; padding: 25px 80px; font-size: 1.8rem; font-weight: 900; border-radius: 24px; text-decoration: none; display: inline-block; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .btn-restart-studio { margin-top: 40px; background: none; border: none; color: #94a3b8; font-weight: 900; cursor: pointer; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
-
-    .prose-studio { line-height: 1.8; color: #475569; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    @media (max-width: 991px) {
-        .workbench-layout { flex-direction: column; }
-        .workbench-sidebar { width: 100%; }
-        .asset-card { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: flex-start; gap: 20px; }
-        .asset-card img { width: 60px; height: 60px; }
-        .massive-stat { font-size: 6rem; letter-spacing: -5px; }
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+        .tool-hero { padding: 60px 0 100px; }
+        .display-3 { font-size: 2.4rem; }
+        .tool-container-fixed { margin-top: -60px; }
     }
 </style>
-
-<script is:inline>
-    // VANILLA ZYN-ENGINE 5.0
-    const fileIn = document.getElementById('fileInput');
-    const landing = document.getElementById('stage-landing');
-    const workbench = document.getElementById('stage-workbench');
-    const result = document.getElementById('stage-result');
-    const grid = document.getElementById('assetGrid');
-    const qIn = document.getElementById('qualityIn');
-    const qVal = document.getElementById('strengthVal');
-    const runBtn = document.getElementById('processBtn');
-    const laser = document.getElementById('laser-scanner');
-
-    let files = [];
-
-    qIn.oninput = (e) => qVal.innerText = e.target.value + '%';
-
-    fileIn.addEventListener('change', (e) => {
-        const selected = Array.from(e.target.files);
-        if (!selected.length) return;
-
-        landing.classList.remove('active');
-        workbench.classList.add('active');
-
-        selected.forEach(file => {
-            files.push(file);
-            const card = document.createElement('div');
-            card.className = 'asset-card';
-            card.innerHTML = `<img src="${URL.createObjectURL(file)}"><span>${(file.size/1024).toFixed(0)} KB</span>`;
-            grid.appendChild(card);
-        });
-        document.getElementById('queue-count').innerText = files.length;
-    });
-
-    document.getElementById('addMoreBtn').onclick = () => fileIn.click();
-
-    runBtn.addEventListener('click', async () => {
-        runBtn.disabled = true;
-        runBtn.innerText = "ENCODING PIXELS...";
-        laser.classList.remove('d-none');
-        
-        const zip = new JSZip();
-        let oldT = 0; let newT = 0;
-        const quality = parseInt(qIn.value) / 100;
-
-        for (const file of files) {
-            oldT += file.size;
-            try {
-                // Aggressive WASM Engine Logic
-                const blob = await imageCompression(file, { maxSizeMB: 0.2, initialQuality: quality });
-                newT += blob.size;
-                zip.file(`optimized-${file.name}`, blob);
-            } catch (err) { newT += file.size; }
-        }
-
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const saved = Math.max(0, Math.round(((oldT - newT) / oldT) * 100));
-
-        document.getElementById('pctSaved').innerText = saved + '%';
-        document.getElementById('sizeSummary').innerText = `${(oldT/1024).toFixed(0)} KB reduced to ${(newT/1024).toFixed(0)} KB`;
-        
-        const url = URL.createObjectURL(zipBlob);
-        const dl = document.getElementById('downloadBtn');
-        dl.href = url;
-        dl.download = "zyntool-studio-batch.zip";
-
-        workbench.classList.remove('active');
-        result.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-</script>
