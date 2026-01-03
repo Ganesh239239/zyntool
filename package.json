@@ -22,6 +22,7 @@
     "tesseract.js": "^5.0.0",
     "jspdf": "^2.5.1",
     "pdfjs-dist": "^3.11.174",
-    "cropperjs": "^1.6.1"
+    "cropperjs": "^1.6.1",
+    "modern-image-compression": "^1.0.0"
   }
 }
