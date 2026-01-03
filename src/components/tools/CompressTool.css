@@ -1,167 +1,98 @@
-/* --- ZYN ENGINE 5.0 NATIVE CSS --- */
-.zyn-studio-root {
-    width: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+/* --- ZYN ENGINE 6.0: STUDIO DESIGN SYSTEM --- */
+:root {
+    --bg-stage: #0f172a; /* Deep Slate (Stage) */
+    --bg-ui: #ffffff;    /* Pure White (UI) */
+    --accent: #4f46e5;   /* Indigo */
 }
 
-/* 1. LANDING: LIQUID PORTAL */
-.portal-container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: #fff;
-    border-radius: 40px;
-    padding: 12px;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.06);
-    cursor: pointer;
-    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+/* 1. LANDING PORTAL */
+.studio-portal {
+    max-width: 850px; margin: 40px auto; background: #fff;
+    border-radius: 48px; padding: 12px; border: 1px solid #f1f5f9;
+    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.08);
+    cursor: pointer; transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1);
 }
+.studio-portal:hover { transform: translateY(-10px); box-shadow: 0 60px 130px -20px rgba(79, 70, 229, 0.15); }
+.portal-inner { border: 3px dashed #e2e8f0; border-radius: 38px; padding: 100px 20px; text-align: center; }
 
-.portal-container:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 60px 120px rgba(79, 70, 229, 0.1);
-}
-
-.portal-inner {
-    border: 3px dashed #e2e8f0;
-    border-radius: 32px;
-    padding: 100px 20px;
-    text-align: center;
-    background: #fafafa;
-}
-
-.liquid-cloud {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    background: #4f46e5;
+/* THE LIQUID CLOUD */
+.liquid-cloud-engine {
+    width: 120px; height: 120px; background: var(--accent); color: white;
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    margin: 0 auto 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    animation: morph 8s infinite ease-in-out;
+    margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; animation: morph 8s infinite ease-in-out;
     box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3);
 }
-
-.liquid-cloud i {
-    font-size: 3rem;
-    color: white;
-    z-index: 5;
-    animation: float 3s infinite ease-in-out;
-}
-
 @keyframes morph {
     0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
     50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+/* 2. THE WORKSPACE (STUDIO) */
+.studio-workspace {
+    display: flex; height: 85vh; gap: 20px; padding: 0 20px;
+}
+.main-stage {
+    flex: 1; background: var(--bg-stage); border-radius: 40px;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+.viewport {
+    flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px;
+}
+.viewport img { 
+    max-width: 90%; max-height: 90%; object-fit: contain;
+    border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
 }
 
-/* 2. WORKSPACE: THE STUDIO WORKBENCH */
-.studio-workbench {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
+/* BATCH TRAY (Bottom) */
+.batch-tray {
+    height: 120px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 15px; padding: 15px 30px;
+    overflow-x: auto;
 }
-
-.asset-gallery {
-    flex: 1;
-    background: #f3f3f7; /* High-end workbench gray */
-    border-radius: 32px;
-    padding: 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    min-height: 550px;
-    border: 1px solid #eef0f2;
+.tray-card {
+    width: 85px; height: 85px; border-radius: 12px; border: 2px solid transparent;
+    cursor: pointer; flex-shrink: 0; transition: 0.3s; opacity: 0.5; position: relative;
 }
+.tray-card.active { border-color: var(--accent); opacity: 1; transform: translateY(-5px); }
+.tray-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 9px; }
 
-.asset-card {
-    width: 198px;
-    height: 244px;
-    background: #fff;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    position: relative;
-    border: 2px solid transparent;
-    transition: 0.3s;
+/* INSPECTOR (Right Panel) */
+.inspector-sidebar {
+    width: 380px; background: var(--bg-ui); border-radius: 40px;
+    padding: 40px; border: 1px solid #f1f5f9; box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+    display: flex; flex-direction: column;
 }
+.inspector-title { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 30px; }
+.ctrl-row { margin-bottom: 40px; }
+.ctrl-label { font-size: 10px; font-weight: 900; color: #cbd5e1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
+.val-huge { font-size: 4rem; font-weight: 950; color: #0f172a; letter-spacing: -4px; line-height: 1; margin-bottom: 10px; }
 
-.asset-card img { max-width: 150px; max-height: 150px; object-fit: contain; }
-.asset-card .label { font-size: 10px; font-weight: 800; color: #94a3b8; margin-top: 15px; text-transform: uppercase; }
-
-.inspector-panel {
-    width: 340px;
-    background: #fff;
-    border-radius: 32px;
-    padding: 40px;
-    border: 1px solid #f1f5f9;
-    position: sticky;
-    top: 100px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+.btn-studio-cta {
+    width: 100%; padding: 22px; background: #0f172a; color: #fff; border: none;
+    border-radius: 100px; font-weight: 900; font-size: 1.1rem; cursor: pointer;
+    transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: auto;
 }
+.btn-studio-cta:hover { background: #000; transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
 
-.btn-run-studio {
-    width: 100%;
-    padding: 22px;
-    background: #0f172a;
-    color: #fff;
-    border: none;
-    border-radius: 100px;
-    font-weight: 900;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.btn-run-studio:hover { background: #000; transform: translateY(-2px); }
-
-/* 3. RESULT: PERFORMANCE SCORECARD */
-.result-stage {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 60px;
-    padding: 80px 40px;
-    box-shadow: 0 50px 120px rgba(0,0,0,0.08);
+/* 3. THE RESULT SCORECARD */
+.scorecard-view {
+    max-width: 800px; margin: 40px auto; background: #fff; border-radius: 60px;
+    padding: 80px 40px; border: 1px solid #f1f5f9; box-shadow: 0 50px 120px rgba(0,0,0,0.08);
     text-align: center;
 }
-
-.massive-stat {
-    font-size: 10rem;
-    font-weight: 950;
-    color: #0f172a;
-    letter-spacing: -10px;
-    line-height: 0.8;
-}
-
-.btn-download-studio {
-    background: #4f46e5;
-    color: white;
-    padding: 25px 80px;
-    font-size: 1.8rem;
-    font-weight: 900;
-    border-radius: 24px;
-    text-decoration: none;
-    display: inline-block;
+.savings-number { font-size: 10rem; font-weight: 950; color: #0f172a; letter-spacing: -10px; line-height: 0.8; }
+.savings-label { font-size: 2.5rem; font-weight: 900; color: var(--accent); margin: 20px 0 40px; }
+.btn-download-pro {
+    background: var(--accent); color: white; padding: 25px 80px; font-size: 1.8rem;
+    font-weight: 900; border-radius: 24px; text-decoration: none; display: inline-block;
     box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE PIVOT */
 @media (max-width: 991px) {
-    .studio-workbench { flex-direction: column; }
-    .inspector-panel { width: 100%; position: static; }
-    .massive-stat { font-size: 6rem; letter-spacing: -5px; }
-    .asset-card { width: 100%; height: auto; flex-direction: row; padding: 20px; gap: 20px; justify-content: flex-start; }
-    .asset-card img { width: 60px; height: 60px; }
+    .studio-workspace { flex-direction: column; height: auto; }
+    .main-stage { height: 450px; }
+    .inspector-sidebar { width: 100%; }
+    .savings-number { font-size: 6rem; letter-spacing: -5px; }
 }
