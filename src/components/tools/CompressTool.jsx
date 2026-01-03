@@ -4,15 +4,14 @@ import './CompressTool.css';
 export default function CompressTool({ color, toolName }) {
   const [isDragging, setIsDragging] = useState(false);
 
-  // Future logic for Step 2 will go here
   const handleFiles = (files) => {
-    console.log("Files received for compression:", files);
-    // Transition to workspace will happen in the next step
+    console.log("Processing files...", files);
+    // Transition to workspace will follow in Step 2
   };
 
   const onDrag = (e) => {
     e.preventDefault();
-    if (e.type === "dragenter" || e.type === "dragover") setIsAttachmentsDragging(true);
+    if (e.type === "dragenter" || e.type === "dragover") setIsDragging(true);
     else setIsDragging(false);
   };
 
@@ -23,30 +22,35 @@ export default function CompressTool({ color, toolName }) {
   };
 
   return (
-    <div className="compress-engine-init">
+    <div className="compress-engine-container">
+      {/* THE DASHED DROPZONE */}
       <div 
-        className={`liquid-portal ${isDragging ? 'active' : ''}`}
+        className={`dropzone-pro ${isDragging ? 'drag-active' : ''}`}
+        style={{ '--active-color': color }}
         onDragOver={onDrag}
         onDragLeave={onDrag}
         onDrop={onDrop}
         onClick={() => document.getElementById('compress-upload').click()}
       >
-        {/* THE LIQUID CLOUD ICON */}
-        <div class="liquid-wrapper" style={{ '--tool-color': color }}>
-          <div class="liquid-base">
-            <div class="wave"></div>
-            <div class="wave"></div>
-            <div class="wave"></div>
+        <div className="dropzone-content">
+          {/* REDUCED LIQUID CLOUD ICON */}
+          <div className="liquid-wrapper-sm">
+            <div className="liquid-base-sm">
+              <div className="water-layer"></div>
+              <div className="water-layer"></div>
+            </div>
+            <i className="fa-solid fa-cloud-arrow-up cloud-icon-sm"></i>
           </div>
-          <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
-        </div>
 
-        <div class="portal-text">
-          <h2 class="title">Optimize Your Images</h2>
-          <p class="subtitle">Drag & drop or click to shrink your images with ZynEngine v5</p>
-          
-          <div class="specs-bar">
-             <span>JPG</span> • <span>PNG</span> • <span>WEBP</span>
+          <div className="text-stack">
+            <h2 className="title-pro">Choose Images</h2>
+            <p className="subtitle-pro">Drag and drop or click to optimize your photos</p>
+            
+            <div className="badge-row">
+               <span className="file-badge">JPG</span>
+               <span className="file-badge">PNG</span>
+               <span className="file-badge">WEBP</span>
+            </div>
           </div>
         </div>
 
