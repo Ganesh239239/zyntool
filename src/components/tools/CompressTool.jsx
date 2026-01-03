@@ -5,37 +5,45 @@ import './CompressTool.css';
 
 export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState('landing'); // landing, studio, result
-  const [quality, setQuality] = useState(0.4);
+  const [status, setStatus] = useState('landing'); // landing | lab | result
+  const [power, setPower] = useState(0.7); // 0.1 to 0.9
   const [activeIdx, setActiveIdx] = useState(0);
   const [summary, setSummary] = useState(null);
 
-  const onUpload = (e) => {
+  const handleUpload = (e) => {
     const selected = Array.from(e.target.files);
     setFiles(selected.map(f => ({
       file: f, id: Math.random().toString(36).substr(2, 9),
       url: URL.createObjectURL(f), name: f.name,
       size: (f.size / 1024).toFixed(0)
     })));
-    setStatus('studio');
+    setStatus('lab');
   };
 
-  const processBatch = async () => {
+  const executeWasmProcess = async () => {
     setStatus('working');
     const zip = new JSZip();
     let oldT = 0; let newT = 0;
 
     await Promise.all(files.map(async (item) => {
       oldT += item.file.size;
-      const options = { maxSizeMB: 0.1, initialQuality: quality, useWebWorker: true, maxIteration: 15 };
+      
+      // WASM-BACKED AGGRESSIVE COMPRESSION
+      const options = { 
+        maxSizeMB: 0.1, 
+        initialQuality: 1 - power, // Inverse for logic
+        useWebWorker: true, 
+        maxIteration: 20 // Force deep optimization
+      };
+      
       const blob = await imageCompression(item.file, options);
       newT += blob.size;
-      zip.file(`zyn-optimized-${item.name}`, blob);
+      zip.file(`zyntool-${item.name}`, blob);
     }));
 
-    const blob = await zip.generateAsync({ type: 'blob' });
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
     setSummary({
-      url: URL.createObjectURL(blob),
+      url: URL.createObjectURL(zipBlob),
       saved: Math.round(((oldT - newT) / oldT) * 100),
       oldS: (oldT / 1024).toFixed(0),
       newS: (newT / 1024).toFixed(0)
@@ -45,71 +53,64 @@ export default function CompressTool({ color }) {
 
   return (
     <div className="zyn-studio">
-      {/* LANDING PORTAL */}
       {status === 'landing' && (
-        <div className="portal-stage" onClick={() => document.getElementById('studio-in').click()}>
-          <div className="portal-glass">
-            <div className="portal-inner">
-              <div className="liquid-core" style={{ backgroundColor: color }}>
-                <i className="fa-solid fa-cloud-arrow-up"></i>
-              </div>
-              <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-1.5px' }}>Studio Import</h2>
-              <p style={{ color: '#94a3b8', fontWeight: 600 }}>Drag files into the portal to begin professional optimization</p>
-              <input type="file" id="studio-in" hidden multiple onChange={onUpload} />
+        <div className="studio-portal" onClick={() => document.getElementById('studio-in').click()}>
+          <div className="portal-inner">
+            <div className="liquid-cloud-engine" style={{ backgroundColor: color }}>
+              <i className="fa-solid fa-cloud-arrow-up"></i>
             </div>
+            <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-2px' }}>Import to Studio</h2>
+            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Drag and drop images for high-speed WASM batch processing</p>
+            <input type="file" id="studio-in" hidden multiple onChange={handleUpload} />
           </div>
         </div>
       )}
 
-      {/* STUDIO WORKSPACE */}
-      {(status === 'studio' || status === 'working') && (
-        <div className="workbench-shell">
-          <div className="stage-area">
+      {(status === 'lab' || status === 'working') && (
+        <div className="lab-layout">
+          <div className="lab-stage">
+            {status === 'working' && <div className="laser"></div>}
             <div className="viewport">
               <img src={files[activeIdx].url} alt="studio-viewport" />
             </div>
-            <div className="asset-tray">
-              {files.map((f, i) => (
-                <div key={i} className={`tray-item ${activeIdx === i ? 'active' : ''}`} onClick={() => setActiveIdx(i)}>
-                  <img src={f.url} />
-                </div>
-              ))}
+            <div className="batch-tray" style={{display: 'flex', gap: '15px', padding: '20px', background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)'}}>
+                {files.map((f, i) => (
+                    <div key={i} onClick={() => setActiveIdx(i)} style={{width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', border: activeIdx === i ? `2px solid ${color}` : '2px solid transparent', opacity: activeIdx === i ? 1 : 0.5}}>
+                        <img src={f.url} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    </div>
+                ))}
             </div>
           </div>
 
-          <aside className="inspector">
-            <h4>Inspector</h4>
-            <div className="control-block">
-                <span className="label-tiny">Target Power</span>
-                <div className="stat-value">{Math.round((1 - quality) * 100)}%</div>
-                <input 
-                  type="range" min="0.1" max="0.9" step="0.1" 
-                  value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} 
-                  style={{ width: '100%', accentColor: color }} 
-                />
-            </div>
+          <aside className="lab-inspector">
+            <span className="hud-label">WASM Engine Power</span>
+            <div className="hud-value">{Math.round(power * 100)}%</div>
+            <input 
+              type="range" min="0.1" max="0.9" step="0.1" 
+              value={power} onChange={(e) => setPower(parseFloat(e.target.value))} 
+              style={{ width: '100%', accentColor: color, marginBottom: '40px' }} 
+            />
             
-            <button className="btn-studio-primary" onClick={processBatch} disabled={status === 'working'}>
-               {status === 'working' ? 'COMPRESSING...' : 'RUN STUDIO ENGINE'}
+            <button className="btn-initialize" onClick={executeWasmProcess} disabled={status === 'working'}>
+               {status === 'working' ? 'OPTIMIZING PIXELS...' : 'INITIALIZE WASM BATCH'}
             </button>
           </aside>
         </div>
       )}
 
-      {/* RESULT SCORECARD */}
       {status === 'result' && (
         <div className="result-card-elite">
-          <div className="big-pct">{summary.saved}%</div>
-          <div style={{ fontSize: '2.5rem', fontWeight: 900, color: color, marginBottom: '40px' }}>Lighter!</div>
+          <div className="massive-stat">{summary.saved}%</div>
+          <div className="stat-msg" style={{ color: color }}>Lighter than original!</div>
           <p style={{ color: '#94a3b8', fontSize: '1.4rem', marginBottom: '60px', fontWeight: '700' }}>
-            Batch: {summary.oldS} KB <i className="fa-solid fa-arrow-right mx-2"></i> {summary.newS} KB
+            {summary.oldS} KB reduced to {summary.newS} KB
           </p>
-          <a href={summary.url} download="zyntool-studio.zip" className="download-btn-elite" style={{ background: color }}>
-             DOWNLOAD BATCH
+          <a href={summary.url} download="zyntool-wasm-batch.zip" className="btn-download-studio" style={{ background: color }}>
+             DOWNLOAD ZIP
           </a>
           <br/>
           <button onClick={() => location.reload()} style={{ marginTop: '50px', background: 'none', border: 'none', color: '#94a3b8', fontWeight: '900', cursor: 'pointer', fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' }}>
-             ← Start New Batch
+             ← New Studio Batch
           </button>
         </div>
       )}
