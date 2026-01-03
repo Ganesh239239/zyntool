@@ -1,203 +1,365 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-export default function CompressTool() {
+export default function CompressTool({ color = '#4f46e5' }) {
   const [files, setFiles] = useState([]);
-  const [viewState, setViewState] = useState('upload'); // upload, workspace
+  const [status, setStatus] = useState('upload'); // upload, processing, done
   const [quality, setQuality] = useState(0.75);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [zipUrl, setZipUrl] = useState(null);
+  const [stats, setStats] = useState({ savedMB: 0, percent: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   
   const fileInputRef = useRef(null);
 
-  // --- LOGIC ---
+  // --- ENGINE ---
+  const handleDrag = (e, active) => {
+    e.preventDefault(); e.stopPropagation();
+    setIsDragging(active);
+  };
+
+  const onDrop = (e) => {
+    handleDrag(e, false);
+    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
+  };
 
   const handleFiles = (incoming) => {
-    const validFiles = Array.from(incoming).filter(f => f.type.startsWith('image/'));
-    if (!validFiles.length) return;
+    const valid = Array.from(incoming).filter(f => f.type.startsWith('image/'));
+    if (!valid.length) return;
 
-    const newEntries = validFiles.map(f => ({
-      id: Math.random().toString(36).substr(2, 9),
+    const newEntries = valid.map(f => ({
+      id: Math.random().toString(36).slice(2),
       file: f,
       preview: URL.createObjectURL(f),
       name: f.name,
       origSize: f.size,
       newSize: null,
-      status: 'pending' // pending, working, done, error
+      status: 'queued', 
+      saved: 0
     }));
 
     setFiles(prev => [...prev, ...newEntries]);
-    setViewState('workspace');
+    setStatus('processing');
+    
+    // Auto-start queue
+    processQueue([...files, ...newEntries], quality);
   };
 
-  const removeFile = (id) => {
-    const nextFiles = files.filter(f => f.id !== id);
-    setFiles(nextFiles);
-    if (nextFiles.length === 0) setViewState('upload');
-  };
-
-  const startCompression = async () => {
-    setIsProcessing(true);
-    setZipUrl(null);
+  const processQueue = async (queue, q) => {
     const zip = new JSZip();
-    const processed = [...files];
+    let totalOrig = 0;
+    let totalNew = 0;
+    const processed = [...queue];
+
+    // Mark queued as working
+    processed.forEach(f => { if(f.status === 'queued') f.status = 'working'; });
+    setFiles([...processed]);
 
     for (let i = 0; i < processed.length; i++) {
-      processed[i].status = 'working';
-      setFiles([...processed]);
-      
+      if (processed[i].status !== 'working') {
+        if (processed[i].status === 'done') {
+           totalOrig += processed[i].origSize;
+           totalNew += processed[i].newSize;
+           zip.file(processed[i].name, processed[i].blob);
+        }
+        continue;
+      }
+
       try {
-        const options = { maxSizeMB: 2, useWebWorker: true, initialQuality: quality };
-        const blob = await imageCompression(processed[i].file, options);
+        const opts = { maxSizeMB: 2, maxWidthOrHeight: 2048, useWebWorker: true, initialQuality: q };
+        const blob = await imageCompression(processed[i].file, opts);
         
         processed[i].newSize = blob.size;
+        processed[i].saved = Math.round(((processed[i].origSize - blob.size) / processed[i].origSize) * 100);
         processed[i].status = 'done';
+        processed[i].blob = blob;
+        
+        totalOrig += processed[i].origSize;
+        totalNew += blob.size;
         zip.file(processed[i].name, blob);
-
-      } catch (err) {
+        
+        // Immediate UI update per file
+        setFiles([...processed]);
+      } catch (e) {
         processed[i].status = 'error';
-        console.error(err);
       }
-      setFiles([...processed]);
     }
 
-    const content = await zip.generateAsync({ type: 'blob' });
-    setZipUrl(URL.createObjectURL(content));
-    setIsProcessing(false);
+    if (totalOrig > 0) {
+      const content = await zip.generateAsync({ type: 'blob' });
+      setZipUrl(URL.createObjectURL(content));
+      setStats({
+        savedMB: ((totalOrig - totalNew) / 1024 / 1024).toFixed(2),
+        percent: Math.round(((totalOrig - totalNew) / totalOrig) * 100)
+      });
+      setStatus('done');
+    }
   };
 
   const reset = () => {
-    setFiles([]);
-    setViewState('upload');
-    setZipUrl(null);
+    setFiles([]); setStatus('upload'); setZipUrl(null);
   };
 
-  const formatSize = (bytes) => {
-    if (bytes === 0 || !bytes) return '0 B';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + ['B', 'KB', 'MB'][i];
+  const formatSize = (b) => {
+    if (!b) return '...';
+    const s = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(b) / Math.log(1024));
+    return parseFloat((b / Math.pow(1024, i)).toFixed(1)) + ' ' + s[i];
   };
 
-  const totalSavings = () => {
-    const oldTotal = files.reduce((acc, f) => acc + f.origSize, 0);
-    const newTotal = files.reduce((acc, f) => acc + (f.newSize || 0), 0);
-    if (oldTotal === 0 || newTotal === 0) return 0;
-    return Math.round(((oldTotal - newTotal) / oldTotal) * 100);
-  };
-
-  // --- RENDER ---
-  
   return (
-    <div className="w-full max-w-5xl mx-auto font-sans bg-white">
-      
-      {/* VIEW 1: UPLOAD (Minimalist & Professional) */}
-      {viewState === 'upload' && (
+    <div className="pro-tool-wrapper" style={{'--brand': color}}>
+      <style>{`
+        /* --- DESIGN SYSTEM --- */
+        .pro-tool-wrapper {
+          --bg: #ffffff;
+          --surface: #f8fafc;
+          --border: #e2e8f0;
+          --text: #0f172a;
+          --text-muted: #64748b;
+          --brand-glow: rgba(79, 70, 229, 0.15);
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          max-width: 960px; margin: 0 auto;
+          color: var(--text);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--brand-glow); } 70% { box-shadow: 0 0 0 10px transparent; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- 1. UPLOAD HERO (The "Portal") --- */
+        .upload-portal {
+          background: var(--bg);
+          border: 1px dashed var(--border);
+          border-radius: 24px;
+          height: 380px;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          cursor: pointer; position: relative; overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .upload-portal:hover, .upload-portal.drag {
+          border-color: var(--brand);
+          box-shadow: 0 20px 40px -10px var(--brand-glow);
+          transform: translateY(-2px);
+        }
+        
+        /* Background Grid */
+        .grid-pattern {
+          position: absolute; inset: 0; opacity: 0.4;
+          background-image: radial-gradient(var(--border) 1px, transparent 1px);
+          background-size: 24px 24px; pointer-events: none;
+        }
+
+        .liquid-orb {
+          width: 100px; height: 100px; background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+          border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          font-size: 32px; color: var(--brand); margin-bottom: 24px;
+          box-shadow: 0 10px 30px -10px var(--brand-glow);
+          position: relative; z-index: 2;
+        }
+        .liquid-orb::after {
+          content: ''; position: absolute; inset: -5px; border-radius: 50%;
+          border: 1px solid var(--brand); opacity: 0.2; animation: pulse 2s infinite;
+        }
+
+        .portal-title { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; position: relative; z-index: 2; }
+        .portal-sub { color: var(--text-muted); font-size: 1.1rem; position: relative; z-index: 2; }
+        .portal-btn {
+          margin-top: 30px; background: var(--text); color: white;
+          padding: 14px 32px; border-radius: 12px; font-weight: 600;
+          position: relative; z-index: 2; transition: 0.2s;
+        }
+        .portal-btn:hover { background: var(--brand); transform: scale(1.05); }
+
+        /* --- 2. WORKSPACE (The "Dashboard") --- */
+        .dashboard {
+          background: var(--bg); border: 1px solid var(--border);
+          border-radius: 20px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
+          overflow: hidden; animation: slideUp 0.4s ease-out;
+        }
+
+        /* HEADER / TOOLBAR */
+        .dash-header {
+          padding: 20px 30px; border-bottom: 1px solid var(--border);
+          display: flex; justify-content: space-between; align-items: center;
+          background: rgba(255,255,255,0.8); backdrop-filter: blur(8px);
+          position: sticky; top: 0; z-index: 10;
+        }
+        
+        .stat-badge {
+          display: flex; align-items: center; gap: 10px;
+          background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 16px;
+          border-radius: 10px; color: #166534; font-weight: 700; font-size: 0.9rem;
+        }
+
+        .download-trigger {
+          background: var(--brand); color: white; text-decoration: none;
+          padding: 12px 24px; border-radius: 10px; font-weight: 600;
+          display: flex; align-items: center; gap: 8px; transition: 0.2s;
+          box-shadow: 0 4px 12px var(--brand-glow);
+        }
+        .download-trigger:hover { filter: brightness(110%); transform: translateY(-1px); }
+
+        /* SLIDER */
+        .quality-control {
+          display: flex; align-items: center; gap: 12px;
+          background: var(--surface); padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border);
+        }
+        .q-txt { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        input[type=range] { width: 120px; accent-color: var(--brand); cursor: pointer; }
+
+        /* FILE LIST (Table-ish) */
+        .file-stack { padding: 0; list-style: none; margin: 0; }
+        
+        .file-item {
+          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 50px;
+          align-items: center; padding: 16px 30px;
+          border-bottom: 1px solid var(--surface);
+          transition: background 0.1s;
+        }
+        .file-item:hover { background: #fafafa; }
+        .file-item:last-child { border-bottom: none; }
+
+        .f-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid var(--border); }
+        .f-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
+        
+        .f-stat { font-family: 'SF Mono', 'Menlo', monospace; font-size: 0.85rem; color: var(--text-muted); }
+        .f-stat.new { color: var(--text); font-weight: 600; }
+        
+        .f-badge {
+          display: inline-block; padding: 4px 8px; border-radius: 6px;
+          font-size: 0.75rem; font-weight: 700;
+        }
+        .f-badge.saved { background: #dcfce7; color: #15803d; }
+        .f-badge.working { background: #eff6ff; color: var(--brand); }
+
+        .spinner { width: 16px; height: 16px; border: 2px solid #e2e8f0; border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; }
+
+        .icon-btn { 
+          width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+          border-radius: 6px; cursor: pointer; color: var(--text-muted); transition: 0.2s;
+        }
+        .icon-btn:hover { background: #fee2e2; color: #ef4444; }
+
+        /* ADD MORE BAR */
+        .add-bar {
+          padding: 16px; background: var(--surface); text-align: center;
+          border-top: 1px solid var(--border); cursor: pointer;
+          color: var(--text-muted); font-weight: 600; font-size: 0.9rem;
+          transition: 0.2s;
+        }
+        .add-bar:hover { background: #f1f5f9; color: var(--brand); }
+
+        @media(max-width: 640px) {
+          .file-item { grid-template-columns: 50px 1fr 50px; }
+          .f-stat { display: none; } /* Hide stats on mobile, keep name and status */
+          .dash-header { flex-direction: column; gap: 15px; align-items: stretch; }
+          .quality-control { justify-content: space-between; }
+        }
+      `}</style>
+
+      {/* --- VIEW 1: UPLOAD --- */}
+      {status === 'upload' && (
         <div 
-          className="relative group cursor-pointer border-2 border-dashed border-slate-300 hover:border-slate-900 bg-slate-50 hover:bg-white rounded-2xl p-12 text-center transition-all duration-300"
+          className={`upload-portal ${isDragging ? 'drag' : ''}`}
+          onDragOver={e => { e.preventDefault(); handleDrag(e, true); }}
+          onDragLeave={e => { e.preventDefault(); handleDrag(e, false); }}
+          onDrop={onDrop}
           onClick={() => fileInputRef.current.click()}
-          onDragOver={e => e.preventDefault()}
-          onDrop={e => { e.preventDefault(); handleFiles(e.dataTransfer.files); }}
         >
-          <div className="w-16 h-16 bg-white border border-slate-200 rounded-xl flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-slate-900 transition-colors">
-            <i className="fa-solid fa-arrow-up-from-bracket text-2xl"></i>
+          <div className="grid-pattern"></div>
+          <div className="liquid-orb">
+            <i className="fa-solid fa-bolt"></i>
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Drop your images here</h2>
-          <p className="text-slate-500">Or click to browse</p>
+          <h2 className="portal-title">Smart Image Compressor</h2>
+          <p className="portal-sub">Drag files here to optimize instantly</p>
+          <button className="portal-btn">Browse Files</button>
         </div>
       )}
 
-      {/* VIEW 2: WORKSPACE (Data-Dense Dashboard) */}
-      {viewState === 'workspace' && (
-        <div className="border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      {/* --- VIEW 2: DASHBOARD --- */}
+      {(status === 'processing' || status === 'done') && (
+        <div className="dashboard">
           
-          {/* Toolbar */}
-          <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <label htmlFor="quality" className="text-sm font-semibold text-slate-600">Quality</label>
+          {/* STICKY HEADER */}
+          <div className="dash-header">
+            
+            {/* Left: Quality */}
+            <div className="quality-control">
+              <span className="q-txt">Quality</span>
               <input 
-                id="quality" type="range" min="0.1" max="1.0" step="0.05" 
+                type="range" min="0.1" max="1.0" step="0.05" 
                 value={quality} onChange={e => setQuality(parseFloat(e.target.value))}
-                disabled={isProcessing}
-                className="w-full md:w-48 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
               />
-              <span className="font-mono text-sm font-bold bg-white px-2 py-1 rounded border border-slate-200">{Math.round(quality * 100)}</span>
+              <span style={{fontWeight:'700', fontSize:'0.9rem', width:'35px', textAlign:'right'}}>
+                {Math.round(quality*100)}%
+              </span>
             </div>
 
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              {zipUrl ? (
-                <>
-                  <span className="font-bold text-green-600 text-sm animate-pulse">
-                    SAVED {totalSavings()}%
-                  </span>
-                  <button onClick={reset} className="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition">
-                    New
-                  </button>
-                  <a href={zipUrl} download="compressed.zip" className="px-5 py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-600 transition shadow-sm">
-                    Download All
-                  </a>
-                </>
+            {/* Right: Actions */}
+            <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
+              {status === 'done' && (
+                <div className="stat-badge">
+                  <i className="fa-solid fa-leaf"></i> Saved {stats.savedMB}MB
+                </div>
+              )}
+              
+              {status === 'done' ? (
+                <a href={zipUrl} download="optimized.zip" className="download-trigger">
+                  Download All <i className="fa-solid fa-arrow-down"></i>
+                </a>
               ) : (
-                <>
-                  <button onClick={() => fileInputRef.current.click()} className="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition">
-                    Add
-                  </button>
-                  <button 
-                    onClick={startCompression} disabled={isProcessing}
-                    className="px-5 py-2 rounded-lg font-semibold bg-slate-900 text-white hover:bg-black transition shadow-sm disabled:opacity-50"
-                  >
-                    {isProcessing ? <><i className="fa-solid fa-circle-notch fa-spin mr-2"></i>Processing...</> : 'Compress All'}
-                  </button>
-                </>
+                <div style={{color: color, fontWeight:'600', fontSize:'0.9rem', display:'flex', gap:'8px', alignItems:'center'}}>
+                  <div className="spinner"></div> Processing...
+                </div>
               )}
             </div>
           </div>
-          
-          {/* File Table */}
-          <div className="max-h-[60vh] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-white shadow-sm">
-                <tr>
-                  <th className="p-3 text-left font-medium text-slate-500 uppercase w-20">Preview</th>
-                  <th className="p-3 text-left font-medium text-slate-500 uppercase">Details</th>
-                  <th className="p-3 text-left font-medium text-slate-500 uppercase w-48 hidden md:table-cell">Original Size</th>
-                  <th className="p-3 text-left font-medium text-slate-500 uppercase w-48 hidden md:table-cell">New Size</th>
-                  <th className="p-3 text-right font-medium text-slate-500 uppercase w-24">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {files.map(f => (
-                  <tr key={f.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-3">
-                      <img src={f.preview} alt="" className="w-12 h-12 rounded-md object-cover bg-slate-100 border border-slate-200" />
-                    </td>
-                    <td className="p-3">
-                      <p className="font-semibold text-slate-800 truncate">{f.name}</p>
-                      {/* Mobile View of Sizes */}
-                      <div className="font-mono text-xs text-slate-500 mt-1 md:hidden">
-                        {formatSize(f.origSize)}
-                        {f.newSize && <span className="text-green-600 font-bold"> → {formatSize(f.newSize)}</span>}
-                      </div>
-                    </td>
-                    <td className="p-3 font-mono text-slate-500 hidden md:table-cell">{formatSize(f.origSize)}</td>
-                    <td className="p-3 font-mono font-bold text-green-600 hidden md:table-cell">
-                      {f.status === 'done' ? formatSize(f.newSize) : '—'}
-                    </td>
-                    <td className="p-3 text-right">
-                      {f.status === 'pending' && <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-1 rounded-full">Queued</span>}
-                      {f.status === 'working' && <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full animate-pulse">Working</span>}
-                      {f.status === 'error' && <span className="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded-full">Error</span>}
-                      {f.status === 'done' && <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full">Done</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* FILE STACK */}
+          <div className="file-stack">
+            {files.map(f => (
+              <div key={f.id} className="file-item">
+                <img src={f.preview} className="f-thumb" alt="" />
+                
+                <div className="f-name" title={f.name}>{f.name}</div>
+                
+                <div className="f-stat">
+                  {formatSize(f.origSize)}
+                  {f.status === 'done' && <i className="fa-solid fa-arrow-right" style={{margin:'0 8px', fontSize:'10px', opacity:0.4}}></i>}
+                </div>
+                
+                <div className="f-stat new">
+                  {f.status === 'done' ? formatSize(f.newSize) : ''}
+                </div>
+                
+                <div style={{textAlign:'right'}}>
+                   {f.status === 'working' && <div className="spinner"></div>}
+                   {f.status === 'done' && <span className="f-badge saved">-{f.saved}%</span>}
+                   {f.status === 'error' && <span style={{color:'red'}}>Error</span>}
+                </div>
+              </div>
+            ))}
           </div>
+
+          {/* ADD MORE FOOTER */}
+          <div className="add-bar" onClick={() => fileInputRef.current.click()}>
+            <i className="fa-solid fa-plus"></i> Add more images
+          </div>
+          
+          {status === 'done' && (
+            <div style={{textAlign:'center', padding:'20px'}}>
+               <button onClick={reset} style={{background:'none', border:'none', color:'#94a3b8', cursor:'pointer', fontSize:'0.85rem'}}>
+                 Start New Batch
+               </button>
+            </div>
+          )}
+
         </div>
       )}
 
-      <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={e => handleFiles(e.target.files)} />
+      <input type="file" multiple accept="image/*" ref={fileInputRef} onChange={e => handleFiles(e.target.files)} style={{display:'none'}} />
     </div>
   );
 }
