@@ -2,16 +2,16 @@
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 20px;
 }
 
 /* --- THE PROFESSIONAL DASHED BOX --- */
 .dropzone-pro {
   width: 100%;
-  border: 2px dashed #cbd5e1; /* Professional Slate border */
+  border: 2px dashed #cbd5e1;
   border-radius: 40px;
-  padding: 80px 40px;
-  background: rgba(255, 255, 255, 0.5);
+  padding: 80px 40px; /* Desktop Height */
+  background: #ffffff;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
@@ -21,24 +21,16 @@
 
 .dropzone-pro:hover {
   border-color: var(--active-color, #4f46e5);
-  background: #ffffff;
   transform: translateY(-4px);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
 }
 
-.dropzone-pro.drag-active {
-  border-color: var(--active-color, #4f46e5);
-  background: rgba(79, 70, 229, 0.05);
-  border-style: solid;
-  transform: scale(1.02);
-}
-
-/* --- REFINED LIQUID ICON (REDUCED SIZE) --- */
-.liquid-wrapper-sm {
+/* --- THE FIX: Centering and Refined Size --- */
+.liquid-wrapper-centered {
   position: relative;
-  width: 110px; /* Reduced from 180px */
+  width: 110px;
   height: 110px;
-  margin-bottom: 30px;
+  margin: 0 auto 30px; /* Centers it horizontally */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,7 +75,7 @@
 }
 
 .cloud-icon-sm {
-  font-size: 2.2rem; /* Reduced from 4rem */
+  font-size: 2.2rem;
   color: white;
   z-index: 2;
   animation: floatCloud 3s infinite ease-in-out;
@@ -93,9 +85,6 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
-
-/* --- TYPOGRAPHY & TAGS --- */
-.text-stack { text-align: center; }
 
 .title-pro {
   font-size: 2.2rem;
@@ -109,22 +98,26 @@
   font-size: 1rem;
   color: #64748b;
   font-weight: 500;
-  margin-bottom: 20px;
 }
 
-.badge-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
+/* --- THE FIX: MOBILE HEIGHT REDUCTION --- */
+@media (max-width: 767px) {
+  .dropzone-pro {
+    padding: 40px 20px; /* Much tighter on mobile */
+    border-radius: 30px;
+  }
+  
+  .title-pro {
+    font-size: 1.8rem;
+  }
 
-.file-badge {
-  font-size: 10px;
-  font-weight: 800;
-  color: #94a3b8;
-  padding: 4px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 100px;
-  text-transform: uppercase;
-  background: white;
+  .liquid-wrapper-centered {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 20px;
+  }
+
+  .cloud-icon-sm {
+    font-size: 1.8rem;
+  }
 }
