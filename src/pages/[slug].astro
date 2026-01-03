@@ -10,43 +10,41 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const toolId = entry.slug || entry.id;
-const { Content } = await entry.render();
 ---
 
 <MainLayout title={entry.data.title} isHome={false}>
-    <div class="app-workspace">
-        <!-- THE REACT ENGINE -->
-        <div class="tool-island">
-            {toolId === 'compress-image' && <CompressTool client:load color={entry.data.color} />}
-        </div>
+    <div class="app-page-wrapper">
+        <div class="container-pro">
+            <!-- TOOL HEADING -->
+            <header class="tool-title-header">
+                <h1>{entry.data.title}</h1>
+                <p>{entry.data.description}</p>
+            </header>
 
-        <!-- SEO SECTION (Separated from the App) -->
-        <div class="seo-footer">
-            <article class="prose-content">
-                <Content />
-            </article>
+            <!-- REACT ENGINE -->
+            <div class="tool-content-area">
+                {toolId === 'compress-image' && <CompressTool client:load color={entry.data.color} />}
+            </div>
         </div>
     </div>
 </MainLayout>
 
 <style>
-    .app-workspace {
-        background: #ffffff;
-        min-height: 100vh;
+    .app-page-wrapper { background: #ffffff; min-height: 100vh; }
+    .container-pro { max-width: 1140px; margin: 0 auto; padding: 40px 20px; }
+    
+    .tool-title-header { text-align: center; margin-bottom: 50px; }
+    .tool-title-header h1 { 
+        font-size: 3.5rem; 
+        font-weight: 900; 
+        color: #0f172a; 
+        letter-spacing: -2px; 
+        margin-bottom: 10px; 
     }
-    .tool-island {
-        padding: 40px 0;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    .seo-footer {
-        max-width: 850px;
-        margin: 80px auto 0;
-        padding: 60px 20px;
-        border-top: 1px solid #f1f1f1;
-    }
-    .prose-content {
-        line-height: 1.8;
-        color: #444;
+    .tool-title-header p { font-size: 1.2rem; color: #64748b; font-weight: 500; }
+
+    @media (max-width: 768px) {
+        .tool-title-header h1 { font-size: 2.2rem; letter-spacing: -1px; }
+        .tool-title-header p { font-size: 1rem; }
     }
 </style>
