@@ -34,28 +34,51 @@ const { entry, relatedTools } = Astro.props;
                 </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="card p-4 shadow-sm rounded-4 sticky-top" style="top:100px;">
-                    <h5 class="fw-bold mb-4">Crop Options</h5>
+           <div class="col-lg-4">
 
-                    <label class="small fw-bold text-muted mb-2">Aspect Ratio</label>
-                    <div class="d-grid gap-2 mb-4">
-                        <button id="btnFree" class="btn btn-outline-dark btn-sm fw-bold active"
-                            onclick="window.setCropRatio(NaN,this)">FREE</button>
-                        <button class="btn btn-outline-dark btn-sm fw-bold"
-                            onclick="window.setCropRatio(1,this)">1:1</button>
-                        <button class="btn btn-outline-dark btn-sm fw-bold"
-                            onclick="window.setCropRatio(16/9,this)">16:9</button>
-                    </div>
+  <!-- STICKY: CROP OPTIONS ONLY -->
+  <div style="position:sticky; top:100px;">
+    <div class="card p-4 shadow-sm border-0 rounded-4 bg-white mb-4">
+      <h5 class="fw-bold mb-4">Crop Options</h5>
 
-                    <button id="btnAction"
-                        class="btn btn-lg w-100 text-white rounded-pill fw-bold py-3 border-0"
-                        style={`background:${entry.data.color}`}>
-                        Crop Image
-                    </button>
-                </div>
-<RelatedTools relatedTools={relatedTools} />
-            </div>
+      <label class="small fw-bold text-muted mb-2">Aspect Ratio</label>
+      <div class="d-grid gap-2 mb-4">
+        <button
+          id="btnFree"
+          class="btn btn-outline-dark btn-sm fw-bold active"
+          onclick="window.setCropRatio(NaN,this)"
+        >
+          FREE
+        </button>
+        <button
+          class="btn btn-outline-dark btn-sm fw-bold"
+          onclick="window.setCropRatio(1,this)"
+        >
+          1:1
+        </button>
+        <button
+          class="btn btn-outline-dark btn-sm fw-bold"
+          onclick="window.setCropRatio(16/9,this)"
+        >
+          16:9
+        </button>
+      </div>
+
+      <button
+        id="btnAction"
+        class="btn btn-lg w-100 text-white rounded-pill fw-bold py-3 border-0"
+        style={`background:${entry.data.color}`}
+      >
+        Crop Image
+      </button>
+    </div>
+  </div>
+
+  <!-- NON-STICKY: RELATED TOOLS -->
+  <RelatedTools relatedTools={relatedTools} />
+
+</div>
+
         </div>
     </div>
  </div>
