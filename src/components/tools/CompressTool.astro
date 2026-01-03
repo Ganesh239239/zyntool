@@ -3,51 +3,43 @@ const { entry } = Astro.props;
 ---
 
 <div id="compress-engine">
-    <!-- STEP 1: PURE SELECT STATE (No Card, No Container) -->
-    <div id="uploadContainer" class="py-5 text-center fade-in">
-        <div class="select-area-wrapper">
-            <!-- THE MAIN ACTION BUTTON -->
-            <div class="main-action-row">
-                <button class="btn-ilove-main shadow-lg" onclick="document.getElementById('fileInput').click()">
-                    Select images
-                </button>
-                
-                <!-- Professional Cloud Icons (iLoveIMG Style) -->
-                <div class="cloud-tray">
-                    <div class="cloud-btn shadow-sm"><i class="fa-brands fa-google-drive"></i></div>
-                    <div class="cloud-btn shadow-sm"><i class="fa-brands fa-dropbox"></i></div>
+    <!-- STEP 1: MINIMALIST UPLOADER (No card, no shadow, matches post background) -->
+    <div id="uploadContainer" class="uploader-wrapper mx-auto" onclick="document.getElementById('fileInput').click()">
+        <div class="inner-dashed-border">
+            <div class="uploader-content">
+                <div class="icon-circle mb-4" style={`background: ${entry.data.color}15; color: ${entry.data.color}`}>
+                    <i class={`fa-solid ${entry.data.icon} fa-3x`}></i>
+                </div>
+                <h2 class="upload-title">Select Images</h2>
+                <p class="upload-subtitle">or drop images here</p>
+                <div class="mt-4">
+                    <button class="btn-pro-action" style={`background: ${entry.data.color}`}>
+                        Choose Files
+                    </button>
                 </div>
             </div>
-            
-            <p class="drop-text">or drop images here</p>
-            <input type="file" id="fileInput" hidden accept="image/*" multiple />
         </div>
+        <input type="file" id="fileInput" hidden accept="image/*" multiple />
     </div>
 
-    <!-- STEP 2: WORKSPACE (Compact & Professional) -->
+    <!-- STEP 2: WORKSPACE (Remains functional but clean) -->
     <div id="processingArea" style="display:none;" class="fade-in">
         <div class="app-workspace-shell">
-            <!-- Left: Asset Gallery (Gray) -->
-            <div class="asset-gallery custom-scrollbar">
-                <div id="imageGrid" class="asset-grid">
-                    <!-- Cards will be injected here (198x244px) -->
-                </div>
-                <!-- Floating Add More Button -->
+            <div class="asset-gallery-area custom-scrollbar">
+                <div id="imageGrid" class="asset-grid-flex"></div>
                 <button class="btn-add-more shadow" onclick="document.getElementById('fileInput').click()">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
 
-            <!-- Right: Settings Sidebar (White) -->
             <aside class="settings-sidebar">
-                <div class="sidebar-inner">
+                <div class="p-4 h-100 d-flex flex-column">
                     <h5 class="fw-bold mb-3">Compress images</h5>
-                    <div class="info-tag mb-4">
-                        All images will be compressed with the best quality and size ratio.
+                    <div class="info-alert mb-4">
+                        Optimizing for best quality and smallest size.
                     </div>
-                    
-                    <button id="btnAction" class="btn-sidebar-execute">
-                        Compress IMAGES <i class="fa-solid fa-arrow-right ms-2"></i>
+                    <button id="btnAction" class="btn btn-primary btn-lg w-100 fw-bold py-3 mt-auto rounded-pill border-0" style={`background: ${entry.data.color}`}>
+                        Compress Now
                     </button>
                 </div>
             </aside>
@@ -56,133 +48,112 @@ const { entry } = Astro.props;
 
     <!-- STEP 3: RESULT -->
     <div id="resultArea" style="display:none;" class="text-center py-5 fade-in">
-        <h2 class="fw-bold mb-4">Your IMAGES have been compressed!</h2>
-        <a id="downloadBtn" class="btn-ilove-main d-inline-block text-decoration-none shadow-lg mb-4">
-            Download compressed IMAGES
+        <h2 class="fw-bold mb-4">Success! Your images are compressed.</h2>
+        <a id="downloadBtn" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg mb-3 border-0" style={`background: ${entry.data.color}`}>
+            Download Images
         </a>
-        <div id="statsSummary" class="text-muted small fw-bold"></div>
+        <div id="statsSummary" class="text-muted small fw-bold mt-2"></div>
     </div>
 </div>
 
 <style>
-    /* --- THE SELECT BUTTON DESIGN --- */
-    .select-area-wrapper {
-        display: inline-block;
-        position: relative;
-    }
-
-    .main-action-row {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .btn-ilove-main {
-        background-color: #4b8df8; /* The classic iLoveIMG Blue */
-        color: white;
-        border: none;
-        padding: 24px 80px;
-        font-size: 2.2rem;
-        font-weight: 700;
-        border-radius: 12px;
-        transition: background 0.2s, transform 0.2s;
+    /* --- THE MINIMALIST UPLOADER (NO CARD) --- */
+    .uploader-wrapper {
+        max-width: 850px;
         cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    
+    .uploader-wrapper:hover {
+        transform: scale(1.01);
     }
 
-    .btn-ilove-main:hover {
-        background-color: #3b7dec;
-        transform: scale(1.02);
+    .inner-dashed-border {
+        /* This is the only boundary, sitting directly on the gray background */
+        border: 2px dashed #cbd5e1; 
+        border-radius: 24px;
+        padding: 80px 40px;
+        transition: all 0.3s ease;
     }
 
-    .cloud-tray {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+    .uploader-wrapper:hover .inner-dashed-border {
+        border-color: #4b8df8;
+        background-color: rgba(255, 255, 255, 0.5); /* Subtle highlight on hover */
     }
 
-    .cloud-btn {
-        width: 40px;
-        height: 40px;
-        background: white;
+    .uploader-content {
+        text-align: center;
+    }
+
+    .icon-circle {
+        width: 90px; height: 90px;
+        margin: 0 auto;
+        display: flex; align-items: center; justify-content: center;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #4b8df8;
-        font-size: 1.2rem;
-        cursor: pointer;
     }
 
-    .drop-text {
-        margin-top: 25px;
-        color: #47474f;
-        font-weight: 500;
+    .upload-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: -1px;
+    }
+
+    .upload-subtitle {
         font-size: 1.1rem;
+        color: #64748b;
+        font-weight: 500;
     }
 
-    /* --- WORKSPACE APP DESIGN --- */
+    .btn-pro-action {
+        border: none;
+        color: white;
+        padding: 14px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* --- WORKSPACE STYLES (MATCHING ILOVEIMG) --- */
     .app-workspace-shell {
         display: flex;
         background: #fff;
-        border-radius: 12px;
+        border-radius: 16px;
         border: 1px solid #e0e0e6;
         height: 600px;
         overflow: hidden;
-        margin-top: 20px;
     }
 
-    .asset-gallery {
+    .asset-gallery-area {
         flex-grow: 1;
-        background-color: #f3f3f7; /* Gray stage */
+        background-color: #f3f3f7;
         padding: 20px;
         position: relative;
         overflow-y: auto;
     }
 
     .settings-sidebar {
-        width: 340px;
+        width: 320px;
         background: white;
         border-left: 1px solid #e0e0e6;
     }
 
-    .sidebar-inner {
-        padding: 25px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .info-tag {
-        background: #e8f1ff;
-        color: #1a4da1;
+    .info-alert {
+        background: #eef2ff;
+        color: #4338ca;
         padding: 15px;
-        border-radius: 8px;
+        border-radius: 12px;
         font-size: 0.85rem;
         font-weight: 600;
     }
 
-    .btn-sidebar-execute {
-        width: calc(100% + 50px);
-        margin-left: -25px;
-        margin-bottom: -25px;
-        margin-top: auto;
-        background: #4b8df8;
-        color: white;
-        border: none;
-        padding: 25px;
-        font-size: 1.6rem;
-        font-weight: 800;
-        cursor: pointer;
-    }
-
-    /* --- YOUR 198x244 CARD LOGIC --- */
-    .asset-grid {
+    .asset-grid-flex {
         display: flex;
         flex-wrap: wrap;
-        justify-content: flex-start;
     }
 
-    /* Using :global to ensure the JS-injected cards get these styles */
+    /* Card styling for images after upload */
     #imageGrid :global(.image-preview-card) {
         margin: 6px;
         width: 198px;
@@ -191,45 +162,31 @@ const { entry } = Astro.props;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: #fdfdfd;
+        background: #fff;
         border-radius: 8px;
-        box-shadow: 0 0 8px 0 rgba(0, 0, 0, .08);
-        border: 1px solid transparent;
-        transition: 0.2s;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
 
     #imageGrid :global(.image-preview-card img) {
-        max-width: 160px;
-        max-height: 160px;
+        max-width: 150px;
+        max-height: 150px;
         object-fit: contain;
-    }
-
-    #imageGrid :global(.image-preview-card .file-name) {
-        font-size: 11px;
-        font-weight: 700;
-        color: #777;
-        margin-top: 15px;
-        width: 80%;
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
     .btn-add-more {
         position: absolute; bottom: 25px; right: 25px; width: 60px; height: 60px;
         background: #4b8df8; color: white; border: none; border-radius: 50%;
         font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
     }
 
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
-    .fade-in { animation: fadeIn 0.3s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 <script is:inline>
+    // Logic handles multiple files and ZIP generation
     const fileInput = document.getElementById('fileInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const processingArea = document.getElementById('processingArea');
@@ -252,34 +209,28 @@ const { entry } = Astro.props;
             card.className = 'image-preview-card';
             card.innerHTML = `
                 <img src="${URL.createObjectURL(file)}">
-                <span class="file-name">${file.name}</span>
+                <span style="font-size:10px; color: #999; margin-top:10px; font-weight:bold; text-transform:uppercase;">${file.name}</span>
             `;
             imageGrid.appendChild(card);
         });
     });
 
     btnAction.addEventListener('click', async () => {
-        btnAction.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
         btnAction.disabled = true;
-
-        let totalOld = 0; let totalNew = 0;
+        btnAction.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> processing...';
+        
         const zip = new JSZip();
-
         for (const file of queue) {
-            totalOld += file.size;
             try {
-                const blob = await imageCompression(file, { maxSizeMB: 1, initialQuality: 0.7 });
-                totalNew += blob.size;
+                const blob = await imageCompression(file, { maxSizeMB: 0.5, initialQuality: 0.7 });
                 zip.file(`compressed-${file.name}`, blob);
-            } catch (err) { totalNew += file.size; }
+            } catch (err) { zip.file(file.name, file); }
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(zipBlob);
-        
-        document.getElementById('statsSummary').innerText = `Total Saved: ${Math.round(((totalOld - totalNew)/totalOld)*100)}%`;
+        const content = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(content);
         document.getElementById('downloadBtn').href = url;
-        document.getElementById('downloadBtn').download = "zyntool-images.zip";
+        document.getElementById('downloadBtn').download = "zyntool-batch.zip";
 
         processingArea.style.display = 'none';
         resultArea.style.display = 'block';
