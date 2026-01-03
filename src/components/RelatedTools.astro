@@ -7,15 +7,15 @@ const {
 if (!relatedTools.length) return;
 ---
 
-<!-- DESKTOP SIDEBAR -->
-<div class="card p-4 border-0 shadow-sm rounded-4 bg-light d-none d-lg-block">
+<div class="card p-4 border-0 shadow-sm rounded-4 bg-light mt-4">
   <h6 class="fw-bold mb-3 text-dark">{title}</h6>
+
   <div class="row g-2">
     {relatedTools.map(t => (
       <div class="col-6">
         <a
           href={`/${t.slug || t.id}`}
-          class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border transition-all hover-blue"
+          class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border hover-blue"
         >
           <i
             class={`fa-solid ${t.data.icon} me-2`}
@@ -27,48 +27,5 @@ if (!relatedTools.length) return;
         </a>
       </div>
     ))}
-  </div>
-</div>
-
-<!-- MOBILE ACCORDION -->
-<div class="accordion d-lg-none mt-4" id="relatedToolsAccordion">
-  <div class="accordion-item border-0 shadow-sm rounded-4 overflow-hidden">
-    <h2 class="accordion-header">
-      <button
-        class="accordion-button collapsed fw-bold"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#relatedToolsCollapse"
-      >
-        {title}
-      </button>
-    </h2>
-
-    <div
-      id="relatedToolsCollapse"
-      class="accordion-collapse collapse show"
-      data-bs-parent="#relatedToolsAccordion"
-    >
-      <div class="accordion-body bg-light">
-        <div class="row g-2">
-          {relatedTools.map(t => (
-            <div class="col-6">
-              <a
-                href={`/${t.slug || t.id}`}
-                class="text-decoration-none small text-muted d-flex align-items-center p-2 bg-white rounded-3 border transition-all hover-blue"
-              >
-                <i
-                  class={`fa-solid ${t.data.icon} me-2`}
-                  style={`color:${t.data.color}`}
-                ></i>
-                <span class="text-truncate">
-                  {t.data.title.split(' ')[0]}
-                </span>
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   </div>
 </div>
