@@ -21,10 +21,9 @@ import RotateTool from '../components/tools/RotateTool.astro';
 import OcrTool from '../components/tools/OcrTool.astro';
 
 
-// 1. Generate paths for all tools
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-if (!toolEntries || toolEntries.length === 0) return [];
+  if (!toolEntries || toolEntries.length === 0) return [];
   return toolEntries.map(entry => ({
     params: { slug: entry.slug || entry.id }, 
     props: { entry },
@@ -33,58 +32,55 @@ if (!toolEntries || toolEntries.length === 0) return [];
 
 const { entry } = Astro.props;
 
-// BUILD GUARD: Prevent crashes
 if (!entry) {
   return Astro.redirect('/404');
 }
 
-// 2. Fetch other tools for the sidebar feature
 const allTools = await getCollection('tools');
 const toolId = entry.slug || entry.id;
 const relatedTools = allTools
   .filter(t => (t.slug || t.id) !== toolId)
   .slice(0, 6);
 
-// 3. Render the Markdown content
 const { Content } = await entry.render();
 
-// 4. Dynamic SEO Metadata
 const seoTitle = `${entry.data.title} Online - 100% Free & Fast | ZynTool`;
 const seoDesc = `${entry.data.description} Process your images locally in your browser for 100% privacy. No registration required.`;
 ---
 
 <MainLayout title={seoTitle} description={seoDesc}>
-    <!-- TOOL HERO SECTION -->
-    <div class="tool-hero text-white" style={`background: linear-gradient(135deg, ${entry.data.color}, #1a202c);`}>
+    
+    <!-- MINIMALIST HEADER (Matching your image) -->
+    <div class="tool-header-wrapper">
         <div class="container text-center">
-            <div class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill fw-bold small">FREE ONLINE TOOL</div>
-            <h1 class="display-3 fw-black mb-2">{entry.data.title}</h1>
-            <p class="opacity-75 fs-5">{entry.data.description}</p>
+            <h1 class="tool-main-title">{entry.data.title}</h1>
+            <p class="tool-main-desc">
+                Compress <span class="text-primary">JPG</span>, <span class="text-primary">PNG</span>, <span class="text-primary">SVG</span> or <span class="text-primary">GIF</span> with the best quality and compression.<br/>
+                Reduce the filesize of your images at once.
+            </p>
         </div>
     </div>
 
-    <!-- MAIN WORKSPACE CONTAINER -->
-    <div class="container tool-container-fixed pb-5">
-        
-        <!-- DYNAMIC TOOL COMPONENT SWITCHER -->
-        {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
-        {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
-       {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
-       {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
-       {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
-       {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
-
-        <!-- The "Modular Engine Update" section has been removed -->
+    <!-- MAIN WORKSPACE -->
+    <div class="container pb-5">
+        <div class="tool-mount-point">
+            {toolId === 'compress-image' && <CompressTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'resize-image' && <ResizeTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'crop-image' && <CropTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'watermark-image' && <WatermarkTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'blur-image' && <BlurTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'convert-from-jpg' && <ConvertFromJpgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'convert-to-jpg' && <ConvertToJpgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'meme-generator' && <MemeTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'html-to-image' && <HtmlToImageTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'upscale-image' && <UpscaleTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'remove-background' && <RemoveBgTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'photo-editor' && <PhotoEditorTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'image-to-pdf' && <ImageToPdfTool entry={entry} relatedTools={relatedTools} />}
+            {toolId === 'pdf-to-image' && <PdfToImageTool entry={entry} relatedTools={relatedTools} />} 
+            {toolId === 'rotate-image' && <RotateTool entry={entry} relatedTools={relatedTools} />} 
+            {toolId === 'ocr-image' && <OcrTool entry={entry} relatedTools={relatedTools} />}
+        </div>
 
         <!-- SEO CONTENT SECTION -->
         <div class="content-section mt-5 pt-5 border-top">
@@ -96,24 +92,33 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
 </MainLayout>
 
 <style>
-    /* Premium Typography */
-    .fw-black { font-weight: 900; }
-    
-    /* Hero Header */
-    .tool-hero { 
-        padding: 100px 0 120px; 
-        position: relative;
-        z-index: 1; 
+    /* --- iLoveIMG Style Header --- */
+    .tool-header-wrapper {
+        padding: 60px 0 40px;
+        background-color: #f3f3f7; /* Light gray background from image */
     }
 
-    /* THE LAYOUT FIX: Ensures card border is visible and on top of hero */
-    .tool-container-fixed { 
-        margin-top: -80px; 
-        position: relative; 
-        z-index: 10; 
+    .tool-main-title {
+        font-size: 48px;
+        font-weight: 800;
+        color: #33333b;
+        margin-bottom: 15px;
+        letter-spacing: -1px;
     }
 
-    /* SEO Article Styling (Typography) */
+    .tool-main-desc {
+        font-size: 20px;
+        color: #47474f;
+        line-height: 1.5;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .tool-mount-point {
+        margin-top: 20px;
+    }
+
+    /* SEO Article Styling */
     .prose { 
         max-width: 800px; 
         color: #4a5568; 
@@ -125,14 +130,10 @@ const seoDesc = `${entry.data.description} Process your images locally in your b
         margin-top: 2.5rem; 
         margin-bottom: 1rem; 
     }
-    .prose :global(p) { margin-bottom: 1.5rem; }
-    .prose :global(ul) { margin-bottom: 1.5rem; }
-    .prose :global(li) { margin-bottom: 0.5rem; }
 
-    /* Responsive Adjustments */
     @media (max-width: 767px) {
-        .tool-hero { padding: 60px 0 100px; }
-        .display-3 { font-size: 2.4rem; }
-        .tool-container-fixed { margin-top: -60px; }
+        .tool-main-title { font-size: 32px; }
+        .tool-main-desc { font-size: 16px; }
+        .tool-header-wrapper { padding: 40px 0 20px; }
     }
 </style>
