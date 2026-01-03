@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { encode as encodeJpeg } from '@jsquash/jpeg';
-import { encode as encodeWebp } from '@jsquash/webp';
+import encodeJpeg from '@jsquash/jpeg/encode';
+import encodeWebp from '@jsquash/webp/encode';
 import JSZip from 'jszip';
 import './CompressTool.css';
 
@@ -21,8 +21,8 @@ export default function CompressTool({ color }) {
     setStatus('lab');
   };
 
-  // Helper to convert File to ImageData for WASM
-  const getImageData = async (file) => {
+  // Helper: Convert File to ImageData (Required for WASM Encoders)
+  const getImgData = async (file) => {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     await new Promise(r => img.onload = r);
@@ -33,7 +33,7 @@ export default function CompressTool({ color }) {
     return ctx.getImageData(0, 0, img.width, img.height);
   };
 
-  const executeWasmProcess = async () => {
+  const executeWasmBatch = async () => {
     setStatus('working');
     const zip = new JSZip();
     let totalOld = 0; let totalNew = 0;
@@ -41,17 +41,14 @@ export default function CompressTool({ color }) {
     try {
       for (const item of files) {
         totalOld += item.file.size;
-        const imageData = await getImageData(item.file);
-        
-        // POWERFUL WASM ENCODING
-        let compressedBuffer;
+        const imageData = await getImgData(item.file);
         const quality = Math.round((1 - power) * 100);
-
+        
+        let compressedBuffer;
         if (item.file.type === 'image/webp') {
-            compressedBuffer = await encodeWebp(imageData, { quality });
+          compressedBuffer = await encodeWebp(imageData, { quality });
         } else {
-            // MozJPEG WASM Engine
-            compressedBuffer = await encodeJpeg(imageData, { quality });
+          compressedBuffer = await encodeJpeg(imageData, { quality });
         }
 
         const blob = new Blob([compressedBuffer], { type: item.file.type });
@@ -69,7 +66,7 @@ export default function CompressTool({ color }) {
       setStatus('result');
     } catch (err) {
       console.error(err);
-      alert("WASM Engine Error. Please try a different image.");
+      alert("WASM Engine Error. Please try again.");
       setStatus('lab');
     }
   };
@@ -83,7 +80,7 @@ export default function CompressTool({ color }) {
               <i className="fa-solid fa-microchip"></i>
             </div>
             <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-2px' }}>Initialize WASM</h2>
-            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Extreme 70%+ compression using Google Squoosh WASM Engines</p>
+            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Extreme browser-based compression using high-performance C++ engines</p>
             <input type="file" id="studio-in" hidden multiple onChange={handleUpload} />
           </div>
         </div>
@@ -98,7 +95,7 @@ export default function CompressTool({ color }) {
             </div>
             <div className="batch-tray" style={{display: 'flex', gap: '15px', padding: '20px', background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)'}}>
                 {files.map((f, i) => (
-                    <div key={i} onClick={() => setActiveIdx(i)} style={{width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', border: activeIdx === i ? `2px solid ${color}` : '2px solid transparent', opacity: activeIdx === i ? 1 : 0.5}}>
+                    <div key={i} onClick={() => setActiveIdx(i)} style={{width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', border: activeIdx === i ? `2px solid ${color}` : '2px solid transparent', opacity: activeIdx === i ? 1 : 0.5, position: 'relative'}}>
                         <img src={f.url} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                     </div>
                 ))}
@@ -106,7 +103,7 @@ export default function CompressTool({ color }) {
           </div>
 
           <aside className="lab-inspector">
-            <span className="hud-label">WASM Precision</span>
+            <span className="hud-label">WASM Strength</span>
             <div className="hud-value">{Math.round(power * 100)}%</div>
             <input 
               type="range" min="0.1" max="0.9" step="0.1" 
@@ -114,8 +111,8 @@ export default function CompressTool({ color }) {
               style={{ width: '100%', accentColor: color, marginBottom: '40px' }} 
             />
             
-            <button className="btn-initialize" onClick={executeWasmProcess} disabled={status === 'working'}>
-               {status === 'working' ? 'WASM PROCESSING...' : 'INITIALIZE STUDIO'}
+            <button className="btn-initialize" onClick={executeWasmBatch} disabled={status === 'working'}>
+               {status === 'working' ? 'PIXEL ENCODING...' : 'INITIALIZE BATCH'}
             </button>
           </aside>
         </div>
@@ -124,7 +121,7 @@ export default function CompressTool({ color }) {
       {status === 'result' && (
         <div className="result-card-elite">
           <div className="massive-stat">{summary.saved}%</div>
-          <div className="stat-msg" style={{ color: color }}>Lighter!</div>
+          <div className="stat-msg" style={{ color: color }}>Lighter than original!</div>
           <p style={{ color: '#94a3b8', fontSize: '1.4rem', marginBottom: '60px', fontWeight: '700' }}>
             {summary.oldS} KB reduced to {summary.newS} KB
           </p>
@@ -133,7 +130,7 @@ export default function CompressTool({ color }) {
           </a>
           <br/>
           <button onClick={() => location.reload()} style={{ marginTop: '50px', background: 'none', border: 'none', color: '#94a3b8', fontWeight: '900', cursor: 'pointer', fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' }}>
-             ← NEW STUDIO SESSION
+             ← START NEW SESSION
           </button>
         </div>
       )}
