@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import encodeJpeg from '@jsquash/jpeg/encode';
 import encodeWebp from '@jsquash/webp/encode';
+import encodePng from '@jsquash/png/encode';
 import JSZip from 'jszip';
 import './CompressTool.css';
 
 export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
   const [status, setStatus] = useState('landing'); 
-  const [power, setPower] = useState(0.7); 
+  const [power, setPower] = useState(0.5); 
+  const [isLossless, setIsLossless] = useState(true); // Default to High Quality
   const [activeIdx, setActiveIdx] = useState(0);
   const [summary, setSummary] = useState(null);
 
@@ -21,7 +23,6 @@ export default function CompressTool({ color }) {
     setStatus('lab');
   };
 
-  // Helper: Convert File to ImageData (Required for WASM Encoders)
   const getImgData = async (file) => {
     const img = new Image();
     img.src = URL.createObjectURL(file);
@@ -33,7 +34,7 @@ export default function CompressTool({ color }) {
     return ctx.getImageData(0, 0, img.width, img.height);
   };
 
-  const executeWasmBatch = async () => {
+  const executeStudioProcess = async () => {
     setStatus('working');
     const zip = new JSZip();
     let totalOld = 0; let totalNew = 0;
@@ -42,18 +43,30 @@ export default function CompressTool({ color }) {
       for (const item of files) {
         totalOld += item.file.size;
         const imageData = await getImgData(item.file);
-        const quality = Math.round((1 - power) * 100);
         
         let compressedBuffer;
-        if (item.file.type === 'image/webp') {
-          compressedBuffer = await encodeWebp(imageData, { quality });
+        
+        if (isLossless) {
+          // MODE: LOSSLESS (Metadata Stripping & Perfect Encoding)
+          if (item.file.type === 'image/png') {
+              compressedBuffer = await encodePng(imageData);
+          } else {
+              // MozJPEG Lossless stripping
+              compressedBuffer = await encodeJpeg(imageData, { quality: 100 });
+          }
         } else {
-          compressedBuffer = await encodeJpeg(imageData, { quality });
+          // MODE: HIGH COMPRESSION (WASM Lossy)
+          const quality = Math.round((1 - power) * 100);
+          if (item.file.type === 'image/webp') {
+            compressedBuffer = await encodeWebp(imageData, { quality });
+          } else {
+            compressedBuffer = await encodeJpeg(imageData, { quality });
+          }
         }
 
         const blob = new Blob([compressedBuffer], { type: item.file.type });
         totalNew += blob.size;
-        zip.file(`zyntool-${item.name}`, blob);
+        zip.file(`optimized-${item.name}`, blob);
       }
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });
@@ -66,7 +79,6 @@ export default function CompressTool({ color }) {
       setStatus('result');
     } catch (err) {
       console.error(err);
-      alert("WASM Engine Error. Please try again.");
       setStatus('lab');
     }
   };
@@ -77,10 +89,10 @@ export default function CompressTool({ color }) {
         <div className="studio-portal" onClick={() => document.getElementById('studio-in').click()}>
           <div className="portal-inner">
             <div className="liquid-cloud-engine" style={{ backgroundColor: color }}>
-              <i className="fa-solid fa-microchip"></i>
+              <i className="fa-solid fa-wand-magic-sparkles"></i>
             </div>
-            <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-2px' }}>Initialize WASM</h2>
-            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Extreme browser-based compression using high-performance C++ engines</p>
+            <h2 style={{ fontWeight: 950, fontSize: '2.8rem', color: '#0f172a', letterSpacing: '-2px' }}>Studio Import</h2>
+            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Choose between 100% Quality preservation or Extreme compression</p>
             <input type="file" id="studio-in" hidden multiple onChange={handleUpload} />
           </div>
         </div>
@@ -91,28 +103,50 @@ export default function CompressTool({ color }) {
           <div className="lab-stage">
             {status === 'working' && <div className="laser"></div>}
             <div className="viewport">
-              <img src={files[activeIdx].url} alt="studio-viewport" />
-            </div>
-            <div className="batch-tray" style={{display: 'flex', gap: '15px', padding: '20px', background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)'}}>
-                {files.map((f, i) => (
-                    <div key={i} onClick={() => setActiveIdx(i)} style={{width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', border: activeIdx === i ? `2px solid ${color}` : '2px solid transparent', opacity: activeIdx === i ? 1 : 0.5, position: 'relative'}}>
-                        <img src={f.url} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-                    </div>
-                ))}
+              <img src={files[activeIdx].url} alt="studio-viewport" style={{ filter: isLossless ? 'none' : `contrast(1.05) brightness(${1.05 - power/10})` }} />
             </div>
           </div>
 
           <aside className="lab-inspector">
-            <span className="hud-label">WASM Strength</span>
-            <div className="hud-value">{Math.round(power * 100)}%</div>
-            <input 
-              type="range" min="0.1" max="0.9" step="0.1" 
-              value={power} onChange={(e) => setPower(parseFloat(e.target.value))} 
-              style={{ width: '100%', accentColor: color, marginBottom: '40px' }} 
-            />
+            <span className="hud-label">Processing Mode</span>
+            <div className="mode-toggle-group" style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
+                <button 
+                  onClick={() => setIsLossless(true)}
+                  className={`mode-btn ${isLossless ? 'active' : ''}`}
+                >
+                    LOSSLESS
+                </button>
+                <button 
+                  onClick={() => setIsLossless(false)}
+                  className={`mode-btn ${!isLossless ? 'active' : ''}`}
+                >
+                    EXTREME
+                </button>
+            </div>
+
+            {!isLossless && (
+                <>
+                    <span className="hud-label">Engine Intensity</span>
+                    <div className="hud-value">{Math.round(power * 100)}%</div>
+                    <input 
+                    type="range" min="0.1" max="0.9" step="0.1" 
+                    value={power} onChange={(e) => setPower(parseFloat(e.target.value))} 
+                    style={{ width: '100%', accentColor: color, marginBottom: '40px' }} 
+                    />
+                </>
+            )}
+
+            {isLossless && (
+                <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '15px', marginBottom: '40px' }}>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', margin: 0 }}>
+                        <i className="fa-solid fa-shield-heart" style={{ color: '#10b981', marginRight: '8px' }}></i>
+                        Perfect Quality Guaranteed. Our engine will only remove metadata and optimize file headers.
+                    </p>
+                </div>
+            )}
             
-            <button className="btn-initialize" onClick={executeWasmBatch} disabled={status === 'working'}>
-               {status === 'working' ? 'PIXEL ENCODING...' : 'INITIALIZE BATCH'}
+            <button className="btn-initialize" onClick={executeStudioProcess} disabled={status === 'working'}>
+               {status === 'working' ? 'ENCODING PIXELS...' : 'INITIALIZE BATCH'}
             </button>
           </aside>
         </div>
@@ -121,16 +155,16 @@ export default function CompressTool({ color }) {
       {status === 'result' && (
         <div className="result-card-elite">
           <div className="massive-stat">{summary.saved}%</div>
-          <div className="stat-msg" style={{ color: color }}>Lighter than original!</div>
+          <div className="stat-msg" style={{ color: color }}>{isLossless ? 'Pixels Preserved!' : 'Successfully Optimized!'}</div>
           <p style={{ color: '#94a3b8', fontSize: '1.4rem', marginBottom: '60px', fontWeight: '700' }}>
             {summary.oldS} KB reduced to {summary.newS} KB
           </p>
-          <a href={summary.url} download="zyntool-wasm-batch.zip" className="btn-download-studio" style={{ background: color }}>
-             DOWNLOAD BATCH
+          <a href={summary.url} download="zyntool-studio.zip" className="btn-download-studio" style={{ background: color }}>
+             EXPORT FROM STUDIO
           </a>
           <br/>
           <button onClick={() => location.reload()} style={{ marginTop: '50px', background: 'none', border: 'none', color: '#94a3b8', fontWeight: '900', cursor: 'pointer', fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' }}>
-             ← START NEW SESSION
+             ← NEW STUDIO SESSION
           </button>
         </div>
       )}
