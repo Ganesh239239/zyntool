@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 
-export default function ResizeToolA4({ color = '#3b82f6' }) {
+export default function ResizeTool({ color = '#3b82f6' }) {
   const [files, setFiles] = useState([]);
   const [viewState, setViewState] = useState('upload'); 
   const [resizeMode, setResizeMode] = useState('pixels'); 
@@ -131,7 +131,7 @@ export default function ResizeToolA4({ color = '#3b82f6' }) {
           color: #1f2937;
         }
 
-        /* --- 1. HERO UPLOAD --- */
+        /* --- 1. UPLOAD HERO --- */
         .upload-hero {
           background: #ffffff;
           border-radius: 24px;
@@ -157,91 +157,83 @@ export default function ResizeToolA4({ color = '#3b82f6' }) {
 
         /* --- 2. MAIN WORKSPACE --- */
         .workspace {
-          display: flex; /* Flex layout to keep sidebar fixed width */
+          display: flex;
           background: white; border-radius: 20px; border: 1px solid #e5e7eb;
           overflow: hidden; height: 750px;
           box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
           position: relative;
         }
 
-        /* LEFT: A4 DESK STAGE */
+        /* LEFT: DESK STAGE */
         .desk-stage {
-          flex: 1; /* Takes remaining space */
-          background-color: #f1f5f9; /* The Desk Color */
-          background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-          background-size: 20px 20px;
+          flex: 1;
+          background-color: #f8fafc; /* Lighter background like screenshot */
           padding: 40px;
-          display: flex; justify-content: center; align-items: flex-start;
           overflow-y: auto;
           position: relative;
         }
 
-        /* The A4 Paper */
-        .a4-paper {
-          background: white;
-          width: 100%; max-width: 600px; /* A4-ish width */
-          min-height: 840px; /* A4 aspect ratio height */
-          box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-          padding: 40px;
-          position: relative;
-          display: flex; flex-direction: column;
-        }
-
-        .paper-title {
-          font-size: 0.9rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;
-          border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;
-          display: flex; justify-content: space-between;
-        }
-
-        /* Grid Layout inside Paper */
+        /* Grid Layout matching Screenshot */
         .image-grid {
           display: grid; 
-          grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Dynamic filling */
-          gap: 15px;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Larger Cards */
+          gap: 20px;
           align-content: start;
         }
 
         .img-item {
-          aspect-ratio: 1;
-          border-radius: 8px;
+          background: white;
+          border-radius: 12px;
+          padding: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
           border: 1px solid #e5e7eb;
           position: relative;
-          overflow: hidden;
-          background: #f8fafc;
           transition: transform 0.2s;
           cursor: default;
+          display: flex; flex-direction: column;
         }
-        .img-item:hover { transform: translateY(-3px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .img-item img {
-          width: 100%; height: 100%; object-fit: contain; padding: 5px;
+        .img-item:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        .img-preview-box {
+          width: 100%; height: 140px; 
+          background: #f1f5f9; border-radius: 8px;
+          margin-bottom: 12px; overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
         }
+        .img-preview-box img {
+          max-width: 100%; max-height: 100%; object-fit: contain;
+        }
+        
+        .img-info { font-size: 0.9rem; font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .img-meta { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+
         .del-badge {
-          position: absolute; top: 4px; right: 4px;
-          width: 20px; height: 20px; background: rgba(0,0,0,0.6); color: white;
-          border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center;
-          cursor: pointer; opacity: 0; transition: 0.2s;
+          position: absolute; top: -8px; right: -8px;
+          width: 24px; height: 24px; background: #ef4444; color: white;
+          border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center;
+          cursor: pointer; opacity: 0; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .img-item:hover .del-badge { opacity: 1; }
         
         /* Add Card */
         .add-card {
-          aspect-ratio: 1; border: 2px dashed #cbd5e1; border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          color: #94a3b8; cursor: pointer; transition: 0.2s;
+          min-height: 200px;
+          border: 2px dashed #cbd5e1; border-radius: 12px;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          color: #94a3b8; cursor: pointer; transition: 0.2s; background: white;
         }
-        .add-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdf4; }
+        .add-card:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
 
         /* RIGHT: CONTROLS SIDEBAR */
         .controls {
-          width: 320px; /* Fixed width */
+          width: 320px;
           background: white; border-left: 1px solid #e5e7eb;
           display: flex; flex-direction: column;
-          z-index: 10; /* Above scroll */
+          z-index: 10;
         }
         .controls-body { padding: 24px; flex: 1; overflow-y: auto; }
         .controls-footer { padding: 24px; border-top: 1px solid #e5e7eb; background: #f9fafb; }
 
-        /* UI Elements */
         .tabs { display: flex; background: #f3f4f6; padding: 4px; border-radius: 10px; margin-bottom: 24px; }
         .tab { flex: 1; text-align: center; padding: 10px; font-size: 0.85rem; font-weight: 600; color: #6b7280; cursor: pointer; border-radius: 8px; transition: 0.2s; }
         .tab.active { background: white; color: #111827; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -249,20 +241,17 @@ export default function ResizeToolA4({ color = '#3b82f6' }) {
         .section-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; display: block; }
         .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
         .clean-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e5e7eb; font-size: 1rem; font-weight: 600; color: #111; }
-        .clean-input:focus { outline: none; border-color: var(--primary); }
         .toggle-icon { width: 48px; display: flex; align-items: center; justify-content: center; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; color: #9ca3af; }
         .toggle-icon.active { background: #eff6ff; color: var(--primary); border-color: var(--primary); }
 
         .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .preset-card { padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .preset-card:hover { border-color: #d1d5db; background: #f9fafb; }
         .preset-card.selected { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
         .p-name { font-size: 0.8rem; font-weight: 600; }
         .p-dims { font-size: 0.7rem; opacity: 0.7; }
 
         .action-btn { width: 100%; padding: 18px; border-radius: 12px; background: #111827; color: white; font-weight: 700; font-size: 1.05rem; border: none; cursor: pointer; transition: 0.2s; }
         .action-btn:hover { background: black; }
-        .action-btn:disabled { opacity: 0.7; cursor: wait; }
 
         /* RESULT OVERLAY */
         .result-overlay {
@@ -321,28 +310,27 @@ export default function ResizeToolA4({ color = '#3b82f6' }) {
             </div>
           )}
 
-          {/* LEFT: THE A4 DESK */}
+          {/* LEFT: DESK STAGE */}
           <div className="desk-stage">
-            <div className="a4-paper">
-              <div className="paper-title">
-                <span>{files.length} Images</span>
-                <span style={{color: color}}>A4 Preview</span>
-              </div>
-              
-              <div className="image-grid">
-                {files.map(f => (
-                  <div key={f.id} className="img-item">
-                    <img src={f.preview} alt="" />
-                    <div className="del-badge" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
-                      <i className="fa-solid fa-xmark"></i>
-                    </div>
+            <div className="image-grid">
+              {files.map(f => (
+                <div key={f.id} className="img-item">
+                  <div className="img-preview-box">
+                    <img src={f.preview} alt={f.name} />
                   </div>
-                ))}
-                
-                {/* Add More Button (Looks like a card) */}
-                <div className="add-card" onClick={() => fileInputRef.current.click()}>
-                  <i className="fa-solid fa-plus" style={{fontSize:'24px'}}></i>
+                  <div className="img-info">{f.name}</div>
+                  <div className="img-meta">{f.size}</div>
+                  
+                  <div className="del-badge" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
+                    <i className="fa-solid fa-xmark"></i>
+                  </div>
                 </div>
+              ))}
+              
+              {/* Add More Card */}
+              <div className="add-card" onClick={() => fileInputRef.current.click()}>
+                <i className="fa-solid fa-plus" style={{fontSize:'32px', marginBottom:'10px'}}></i>
+                <span style={{fontSize:'0.9rem', fontWeight:'600'}}>Add More</span>
               </div>
             </div>
           </div>
