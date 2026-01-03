@@ -1,123 +1,107 @@
-.compress-engine-container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+/* --- WORKBENCH LAYOUT --- */
+.workbench-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
 }
 
-/* --- THE PROFESSIONAL DASHED BOX --- */
-.dropzone-pro {
-  width: 100%;
-  border: 2px dashed #cbd5e1;
-  border-radius: 40px;
-  padding: 80px 40px; /* Desktop Height */
-  background: #ffffff;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.workbench-main {
+    flex: 1;
+    background-color: #f3f3f7; /* High-end gray Workbench */
+    border-radius: 32px;
+    padding: 30px;
+    border: 1px solid #eef0f2;
+    min-height: 600px;
 }
 
-.dropzone-pro:hover {
-  border-color: var(--active-color, #4f46e5);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+.batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-/* --- THE FIX: Centering and Refined Size --- */
-.liquid-wrapper-centered {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 30px; /* Centers it horizontally */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.batch-header h3 { font-weight: 900; color: #1e293b; font-size: 1.4rem; }
+.badge-count { background: #1e293b; color: white; padding: 2px 10px; border-radius: 50px; font-size: 0.8rem; vertical-align: middle; margin-left: 10px; }
+
+.btn-add-small {
+    background: #fff; border: 1px solid #e2e8f0; padding: 8px 20px;
+    border-radius: 100px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+}
+.btn-add-small:hover { border-color: #4f46e5; color: #4f46e5; }
+
+/* --- ASSET CARDS --- */
+.assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
 }
 
-.liquid-base-sm {
-  position: absolute;
-  inset: 0;
-  background: var(--active-color, #4b8df8);
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  animation: morphLiquid 8s infinite ease-in-out;
-  overflow: hidden;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+/* REALISTIC 198x244 CARD DESIGN */
+.asset-card-pro {
+    width: 198px;
+    height: 244px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 12px rgba(0,0,0,0.04);
+    border: 2px solid transparent;
+    transition: 0.3s;
+}
+.asset-card-pro:hover { border-color: #4f46e5; transform: translateY(-5px); }
+
+.asset-img-container { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; }
+.asset-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+
+.asset-info { margin-top: 20px; text-align: center; width: 85%; }
+.file-name { font-size: 10px; font-weight: 800; color: #1e293b; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }
+.file-size { font-size: 10px; font-weight: 700; color: #94a3b8; }
+
+.remove-asset {
+    position: absolute; top: 10px; right: 10px; background: none; border: none;
+    font-size: 1.2rem; color: #cbd5e1; cursor: pointer;
+}
+.remove-asset:hover { color: #ef4444; }
+
+/* --- SIDEBAR CONFIGURATION --- */
+.workbench-sidebar {
+    width: 340px;
+    position: sticky;
+    top: 100px;
+}
+.sidebar-card { background: #fff; border-radius: 32px; padding: 40px; border: 1px solid #eef0f2; box-shadow: 0 20px 40px rgba(0,0,0,0.02); }
+.label-caps { font-size: 11px; font-weight: 900; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; }
+
+.btn-execute-pro {
+    width: 100%; padding: 22px; color: #fff; border: none; border-radius: 50px;
+    font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.btn-execute-pro:hover { transform: scale(1.02); filter: brightness(1.1); }
+
+/* --- RESPONSIVE WORKBENCH --- */
+@media (max-width: 991px) {
+    .workbench-layout { flex-direction: column; }
+    .workbench-sidebar { width: 100%; position: static; order: -1; }
+    .workbench-main { border-radius: 20px; padding: 20px; }
+    
+    /* THE MOBILE SHIFT: Horizontal row layout on mobile */
+    .asset-card-pro {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        padding: 15px;
+        justify-content: flex-start;
+        gap: 20px;
+    }
+    .asset-img-container { width: 60px; height: 60px; }
+    .asset-info { text-align: left; margin: 0; }
 }
 
-.water-layer {
-  position: absolute;
-  top: 60%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 40%;
-  animation: rotateWater 10s infinite linear;
-}
-
-.water-layer:nth-child(2) {
-  top: 55%;
-  opacity: 0.5;
-  animation: rotateWater 14s infinite linear;
-}
-
-@keyframes morphLiquid {
-  0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-  33% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-  66% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
-}
-
-@keyframes rotateWater {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.cloud-icon-sm {
-  font-size: 2.2rem;
-  color: white;
-  z-index: 2;
-  animation: floatCloud 3s infinite ease-in-out;
-}
-
-@keyframes floatCloud {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.title-pro {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #1e293b;
-  letter-spacing: -1.5px;
-  margin-bottom: 8px;
-}
-
-.subtitle-pro {
-  font-size: 1rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-/* --- THE FIX: MOBILE HEIGHT REDUCTION --- */
-@media (max-width: 767px) {
-  .dropzone-pro {
-    padding: 40px 20px; /* Much tighter on mobile */
-    border-radius: 30px;
-  }
-  
-  .title-pro {
-    font-size: 1.8rem;
-  }
-
-  .liquid-wrapper-centered {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 20px;
-  }
-
-  .cloud-icon-sm {
-    font-size: 1.8rem;
-  }
-}
+/* Animations */
+.animate-in { animation: slideUp 0.6s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
