@@ -1,349 +1,274 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-export default function CompressTool({ color = '#2563eb' }) {
+export default function CompressTool() {
   const [files, setFiles] = useState([]);
-  const [viewState, setViewState] = useState('upload'); // upload, workspace, finished
-  const [quality, setQuality] = useState(0.7); 
-  const [isDragging, setIsDragging] = useState(false);
-  const [processing, setProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState(null);
+  const [status, setStatus] = useState('upload'); // upload, processing, done
+  const [quality, setQuality] = useState(0.7);
+  const [totalSaved, setTotalSaved] = useState(0);
+  const [zipUrl, setZipUrl] = useState(null);
   
   const fileInputRef = useRef(null);
 
-  // --- RELATED TOOLS CONFIG (Edit your links here) ---
-  const relatedTools = [
-    { name: 'Resize Image', icon: 'fa-solid fa-expand', link: '/tools/resize-image' },
-    { name: 'Crop Image', icon: 'fa-solid fa-crop-simple', link: '/tools/crop-image' },
-    { name: 'Convert to JPG', icon: 'fa-solid fa-image', link: '/tools/convert-to-jpg' },
-    { name: 'Watermark', icon: 'fa-solid fa-stamp', link: '/tools/watermark-image' },
-  ];
-
   // --- LOGIC ---
-  const handleDrag = (e, active) => {
-    e.preventDefault(); e.stopPropagation();
-    setIsDragging(active);
-  };
+  const handleFiles = (e) => {
+    const selected = e.target.files || e.dataTransfer.files;
+    if (!selected.length) return;
 
-  const onDrop = (e) => {
-    handleDrag(e, false);
-    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
-  };
+    const newFiles = Array.from(selected)
+      .filter(f => f.type.startsWith('image/'))
+      .map(f => ({
+        id: Math.random().toString(36).substr(2, 9),
+        file: f,
+        preview: URL.createObjectURL(f),
+        name: f.name,
+        origSize: f.size,
+        newSize: null,
+        status: 'pending' // pending, done
+      }));
 
-  const handleFiles = (incoming) => {
-    const valid = Array.from(incoming).filter(f => f.type.startsWith('image/'));
-    if (!valid.length) return;
-
-    const newEntries = valid.map(f => ({
-      id: Math.random().toString(36).slice(2),
-      file: f,
-      preview: URL.createObjectURL(f),
-      name: f.name,
-      origSize: f.size,
-      status: 'pending' 
-    }));
-
-    setFiles(prev => [...prev, ...newEntries]);
-    setViewState('workspace');
+    setFiles(prev => [...prev, ...newFiles]);
+    setStatus('processing'); // Immediately go to workspace
   };
 
   const removeFile = (id) => {
-    setFiles(prev => prev.filter(f => f.id !== id));
-    if (files.length <= 1) setViewState('upload');
+    const next = files.filter(f => f.id !== id);
+    setFiles(next);
+    if (next.length === 0) setStatus('upload');
   };
 
-  const runCompression = async () => {
-    setProcessing(true);
-    setProgress(0);
+  const startCompression = async () => {
+    setStatus('working');
     const zip = new JSZip();
-    let oldTotal = 0; 
+    let savedAccumulator = 0;
+    let oldTotal = 0;
     let newTotal = 0;
 
-    const processedFiles = [...files];
+    const processed = [...files];
 
-    for (let i = 0; i < processedFiles.length; i++) {
-      const item = processedFiles[i];
+    for (let i = 0; i < processed.length; i++) {
+      const item = processed[i];
       oldTotal += item.origSize;
       
       try {
-        const opts = { maxSizeMB: 2, maxWidthOrHeight: 2048, useWebWorker: true, initialQuality: quality };
-        const compressed = await imageCompression(item.file, opts);
-        newTotal += compressed.size;
+        const options = { maxSizeMB: 2, maxWidthOrHeight: 1920, useWebWorker: true, initialQuality: quality };
+        const compressedBlob = await imageCompression(item.file, options);
         
-        zip.file(item.name, compressed);
-        processedFiles[i].status = 'done';
-        processedFiles[i].newSize = compressed.size;
-        setFiles([...processedFiles]); 
-        setProgress(Math.round(((i + 1) / processedFiles.length) * 100));
-      } catch (e) { console.error(e); }
+        processed[i].newSize = compressedBlob.size;
+        processed[i].status = 'done';
+        
+        newTotal += compressedBlob.size;
+        zip.file(item.name, compressedBlob);
+        
+        // Update UI immediately per file
+        setFiles([...processed]); 
+      } catch (err) { console.error(err); }
     }
 
-    const blob = await zip.generateAsync({ type: 'blob' });
-    setResult({
-      url: URL.createObjectURL(blob),
-      saved: Math.round(((oldTotal - newTotal) / oldTotal) * 100),
-      oldMB: (oldTotal / 1024 / 1024).toFixed(2),
-      newMB: (newTotal / 1024 / 1024).toFixed(2)
-    });
-
-    setTimeout(() => { setProcessing(false); setViewState('finished'); }, 500);
+    const content = await zip.generateAsync({ type: 'blob' });
+    setZipUrl(URL.createObjectURL(content));
+    setTotalSaved(Math.round(((oldTotal - newTotal) / oldTotal) * 100));
+    setStatus('done');
   };
 
-  const reset = () => { setFiles([]); setViewState('upload'); setResult(null); setProgress(0); };
-  
-  const formatBytes = (bytes) => {
+  const reset = () => {
+    setFiles([]);
+    setStatus('upload');
+    setZipUrl(null);
+  };
+
+  const formatSize = (bytes) => {
     if (bytes === 0) return '0 B';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return parseFloat((bytes / Math.pow(1024, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
   return (
-    <div className="dev-compressor-root" style={{'--accent': color}}>
-      <style>{`
-        .dev-compressor-root {
-          font-family: -apple-system, system-ui, sans-serif;
-          max-width: 900px; margin: 0 auto; color: #1e293b;
-        }
-
-        /* 1. UPLOAD ZONE */
-        .upload-zone {
-          border: 2px dashed #cbd5e1;
-          border-radius: 12px;
-          height: 300px;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          transition: all 0.2s; background: #f8fafc; cursor: pointer;
-        }
-        .upload-zone:hover, .upload-zone.dragging {
-          border-color: #22c55e; background: #f0fdf4;
-        }
-        /* THE GREEN ICON STYLE */
-        .upload-zone i { 
-          font-size: 56px; 
-          color: #22c55e; /* Green Color */
-          margin-bottom: 20px; 
-          transition: 0.2s; 
-          filter: drop-shadow(0 4px 6px rgba(34, 197, 94, 0.2));
-        }
-        .upload-zone:hover i { transform: scale(1.1); }
-        
-        .upload-main-text { font-size: 1.4rem; font-weight: 700; color: #334155; }
-        .upload-sub-text { font-size: 0.95rem; color: #64748b; margin-top: 8px; }
-
-        /* 2. WORKSPACE */
-        .workspace { margin-top: 20px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
-        
-        /* SUCCESS BANNER */
-        .success-banner {
-          background: #f0fdf4; border-bottom: 1px solid #dcfce7;
-          padding: 24px; text-align: center; animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .stat-row { display: flex; justify-content: center; gap: 40px; margin: 16px 0 24px 0; }
-        .stat h3 { font-size: 0.8rem; text-transform: uppercase; color: #15803d; margin: 0 0 4px 0; }
-        .stat p { font-size: 1.5rem; font-weight: 800; color: #166534; margin: 0; }
-        .dl-btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: #22c55e; color: white; padding: 12px 30px;
-          border-radius: 6px; text-decoration: none; font-weight: 700;
-          transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3);
-        }
-        .dl-btn:hover { background: #16a34a; transform: translateY(-1px); }
-
-        /* TOOLBAR */
-        .toolbar {
-          display: flex; gap: 24px; align-items: flex-end; justify-content: space-between;
-          padding: 20px; border-bottom: 1px solid #e2e8f0; background: #fff;
-        }
-        .slider-group { flex: 1; max-width: 400px; }
-        .slider-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 12px; }
-        
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
-        input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track {
-          width: 100%; height: 6px; border-radius: 4px;
-          background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--fill-pct), #e2e8f0 var(--fill-pct), #e2e8f0 100%);
-        }
-        input[type=range]::-webkit-slider-thumb {
-          height: 20px; width: 20px; border-radius: 50%;
-          background: #ffffff; border: 2px solid var(--accent);
-          -webkit-appearance: none; margin-top: -7px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.1s;
-        }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        
-        .actions { display: flex; gap: 12px; }
-        .btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
-        .btn-ghost { background: transparent; color: #475569; border-color: #cbd5e1; }
-        .btn-ghost:hover { background: #f1f5f9; color: #0f172a; }
-        .btn-primary { background: #0f172a; color: white; }
-        .btn-primary:hover { background: #000; }
-        .btn-primary:disabled { opacity: 0.6; cursor: wait; }
-
-        /* FILE LIST */
-        .list-header {
-          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 40px;
-          background: #f8fafc; padding: 12px 16px;
-          font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b;
-          border-bottom: 1px solid #e2e8f0;
-        }
-        .list-row {
-          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 40px;
-          align-items: center; padding: 12px 16px;
-          border-bottom: 1px solid #f1f5f9; background: white; font-size: 0.9rem;
-        }
-        .list-row:last-child { border-bottom: none; }
-        .preview-thumb { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; background: #eee; }
-        .fname { font-weight: 500; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px; }
-        .fsize { color: #64748b; font-family: monospace; font-size: 0.85rem; }
-
-        /* LOADING BAR */
-        .progress-line { height: 4px; background: #e2e8f0; width: 100%; position: relative; overflow: hidden; }
-        .progress-active { height: 100%; background: var(--accent); transition: width 0.2s; }
-
-        /* 3. RELATED TOOLS GRID (iloveimg style) */
-        .related-section {
-          margin-top: 60px;
-          padding-top: 40px;
-          border-top: 1px solid #e2e8f0;
-        }
-        .related-title { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin-bottom: 24px; text-align: center; }
-        .tools-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-          gap: 16px;
-        }
-        .tool-link {
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          padding: 24px; background: white; border: 1px solid #e2e8f0; border-radius: 12px;
-          text-decoration: none; color: #475569; transition: all 0.2s;
-        }
-        .tool-link:hover {
-          transform: translateY(-3px); border-color: var(--accent); color: var(--accent);
-          box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);
-        }
-        .tool-icon { font-size: 28px; margin-bottom: 12px; color: #94a3b8; transition: 0.2s; }
-        .tool-link:hover .tool-icon { color: var(--accent); }
-        .tool-name { font-weight: 600; font-size: 0.9rem; text-align: center; }
-
-        @media (max-width: 600px) {
-          .toolbar { flex-direction: column; align-items: stretch; }
-          .list-header, .list-row { grid-template-columns: 50px 1fr 40px; }
-          .list-header > :nth-child(3), .list-header > :nth-child(4),
-          .list-row > :nth-child(3), .list-row > :nth-child(4) { display: none; }
-          .tools-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-      `}</style>
-
-      {/* --- VIEW 1: UPLOAD --- */}
-      {viewState === 'upload' && (
+    <div className="w-full max-w-5xl mx-auto font-sans text-slate-800">
+      
+      {/* --- STEP 1: UPLOAD HERO --- */}
+      {status === 'upload' && (
         <div 
-          className={`upload-zone ${isDragging ? 'dragging' : ''}`}
-          onDragOver={(e) => handleDrag(e, true)}
-          onDragLeave={(e) => handleDrag(e, false)}
-          onDrop={onDrop}
+          className="relative group cursor-pointer"
+          onDragOver={e => e.preventDefault()}
+          onDrop={e => { e.preventDefault(); handleFiles(e); }}
           onClick={() => fileInputRef.current.click()}
         >
-          {/* GREEN ICON HERE */}
-          <i className="fa-solid fa-cloud-arrow-up"></i>
+          {/* Animated Background Glow */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
           
-          <div className="upload-main-text">Click or Drop Images</div>
-          <div className="upload-sub-text">Up to 50 files • JPG, PNG, WebP</div>
+          <div className="relative bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center hover:border-blue-500 hover:bg-slate-50 transition-all duration-300">
+            <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:scale-110 transition-transform">
+              <i className="fa-solid fa-cloud-arrow-up text-3xl"></i>
+            </div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Upload Images to Compress</h2>
+            <p className="text-slate-500 text-lg mb-8">Support for PNG, JPG, WEBP, and GIF</p>
+            <button className="bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg shadow-slate-900/20 hover:bg-blue-600 hover:shadow-blue-600/30 transition-all">
+              Select Images
+            </button>
+          </div>
         </div>
       )}
 
-      {/* --- VIEW 2: WORKSPACE --- */}
-      {(viewState === 'workspace' || viewState === 'finished') && (
-        <div className="workspace">
-          
-          {/* SUCCESS BANNER */}
-          {viewState === 'finished' && result && (
-            <div className="success-banner">
-              <h2 style={{fontSize: '1.5rem', marginBottom:'10px', color: '#166534'}}>Optimization Complete</h2>
-              <div className="stat-row">
-                <div className="stat"><h3>Saved</h3><p>{result.saved}%</p></div>
-                <div className="stat"><h3>Size</h3><p>{result.newMB} MB</p></div>
-              </div>
-              <a href={result.url} download="optimized-images.zip" className="dl-btn">
-                <i className="fa-solid fa-download"></i> Download ZIP
-              </a>
-            </div>
-          )}
+      {/* --- STEP 2 & 3: WORKSPACE & RESULTS --- */}
+      {(status === 'processing' || status === 'working' || status === 'done') && (
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
           
           {/* TOOLBAR */}
-          <div className="toolbar">
-            <div className="slider-group">
-              <div className="slider-header">
-                <span>Quality</span>
-                <span style={{color: color}}>{Math.round(quality * 100)}%</span>
+          <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <span className="font-bold text-slate-700 whitespace-nowrap">Compression Level</span>
+              <div className="flex-1 md:w-64">
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={quality} 
+                  onChange={e => setQuality(parseFloat(e.target.value))}
+                  disabled={status !== 'processing'}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
               </div>
-              <input 
-                type="range" min="0.1" max="1.0" step="0.05"
-                value={quality} onChange={e => setQuality(parseFloat(e.target.value))}
-                style={{'--fill-pct': `${((quality - 0.1) / 0.9) * 100}%`}}
-                disabled={processing || viewState === 'finished'}
-              />
+              <span className="bg-white px-3 py-1 rounded-md border border-slate-200 font-mono text-sm font-bold text-blue-600">
+                {Math.round(quality * 100)}%
+              </span>
             </div>
-            <div className="actions">
-              {viewState === 'finished' ? (
-                <button className="btn btn-ghost" onClick={reset}><i className="fa-solid fa-rotate-right"></i> New</button>
+
+            <div className="flex gap-3 w-full md:w-auto">
+              {status === 'done' ? (
+                <>
+                  <button onClick={reset} className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition">
+                    New Batch
+                  </button>
+                  <a 
+                    href={zipUrl} 
+                    download="compressed-images.zip"
+                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-green-500/30 hover:bg-green-600 hover:scale-105 transition-all"
+                  >
+                    <i className="fa-solid fa-download"></i> Download All
+                  </a>
+                </>
               ) : (
                 <>
-                  <button className="btn btn-ghost" onClick={() => fileInputRef.current.click()}>+ Add</button>
-                  <button className="btn btn-primary" onClick={runCompression} disabled={processing}>
-                    {processing ? `Working...` : 'Compress'}
+                  <button onClick={() => fileInputRef.current.click()} className="px-5 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition">
+                    + Add More
+                  </button>
+                  <button 
+                    onClick={startCompression}
+                    disabled={status === 'working'}
+                    className="flex-1 md:flex-none bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:scale-105 transition-all disabled:opacity-70 disabled:cursor-wait"
+                  >
+                    {status === 'working' ? <><i className="fa-solid fa-circle-notch fa-spin mr-2"></i> Compressing...</> : 'Compress Images'}
                   </button>
                 </>
               )}
             </div>
           </div>
 
-          {/* PROGRESS BAR */}
-          {processing && (
-            <div className="progress-line"><div className="progress-active" style={{width: `${progress}%`}}></div></div>
+          {/* SUCCESS MESSAGE */}
+          {status === 'done' && (
+            <div className="bg-green-50 border-b border-green-100 p-4 text-center animate-fade-in">
+              <p className="text-green-800 font-medium text-lg">
+                <i className="fa-solid fa-party-horn mr-2"></i>
+                Awesome! You saved <span className="font-bold">{totalSaved}%</span> file size.
+              </p>
+            </div>
           )}
 
           {/* FILE LIST */}
-          <div className="file-list">
-            <div className="list-header"><span>Preview</span><span>Filename</span><span>Original</span><span>New Size</span><span></span></div>
-            <div style={{maxHeight: '400px', overflowY: 'auto'}}>
-              {files.map(f => (
-                <div key={f.id} className="list-row">
-                  <img src={f.preview} className="preview-thumb" alt="" />
-                  <div className="fname" title={f.name}>{f.name}</div>
-                  <div className="fsize">{formatBytes(f.origSize)}</div>
-                  <div className="fsize" style={{color: f.status==='done' ? '#16a34a' : ''}}>
-                     {f.newSize ? formatBytes(f.newSize) : '—'}
-                  </div>
-                  <div style={{textAlign: 'center'}}>
-                    {f.status === 'done' ? (
-                      <i className="fa-solid fa-check" style={{color:'#16a34a'}}></i>
-                    ) : (
-                      !processing && <button onClick={() => removeFile(f.id)} style={{border:'none', background:'none', cursor:'pointer', color:'#94a3b8'}}><i className="fa-solid fa-xmark"></i></button>
+          <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+            {files.map((f) => (
+              <div key={f.id} className="group p-4 flex items-center gap-4 hover:bg-slate-50 transition">
+                {/* Image Preview */}
+                <div className="relative w-16 h-16 shrink-0 bg-slate-100 rounded-lg overflow-hidden border border-slate-200">
+                  <img src={f.preview} alt="" className="w-full h-full object-cover" />
+                  {f.status === 'done' && (
+                    <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                      <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                        <i className="fa-solid fa-check"></i>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-slate-700 truncate">{f.name}</h4>
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                    <span className="font-mono bg-slate-100 px-2 rounded">{formatSize(f.origSize)}</span>
+                    {f.status === 'done' && (
+                      <>
+                        <i className="fa-solid fa-arrow-right text-xs text-slate-300"></i>
+                        <span className="font-mono bg-green-100 text-green-700 px-2 rounded font-bold">{formatSize(f.newSize)}</span>
+                        <span className="text-green-600 font-bold ml-2">
+                          (-{Math.round((1 - f.newSize/f.origSize)*100)}%)
+                        </span>
+                      </>
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Actions */}
+                <div className="shrink-0">
+                  {f.status === 'done' ? (
+                     // Download individual file if needed (not implemented here for zip focus, but placeholder icon)
+                     <span className="text-green-500 text-xl"><i className="fa-solid fa-circle-check"></i></span>
+                  ) : (
+                     status !== 'working' && (
+                       <button 
+                         onClick={() => removeFile(f.id)}
+                         className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:bg-red-50 hover:text-red-500 transition"
+                       >
+                         <i className="fa-solid fa-xmark"></i>
+                       </button>
+                     )
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
+          
+          {/* Footer Stat */}
+          <div className="bg-slate-50 p-3 text-center text-xs text-slate-400 font-medium uppercase tracking-wider">
+            Client-side Processing • Secure & Private
+          </div>
+
         </div>
       )}
 
-      {/* --- SECTION 3: RELATED TOOLS (Internal Linking) --- */}
-      <div className="related-section">
-        <h3 className="related-title">More PDF & Image Tools</h3>
-        <div className="tools-grid">
-          {relatedTools.map((tool, index) => (
-            <a key={index} href={tool.link} className="tool-link">
-              <i className={`${tool.icon} tool-icon`}></i>
-              <span className="tool-name">{tool.name}</span>
-            </a>
-          ))}
-        </div>
-      </div>
+      {/* Hidden Input */}
+      <input 
+        type="file" 
+        multiple 
+        accept="image/*" 
+        ref={fileInputRef} 
+        onChange={handleFiles} 
+        className="hidden" 
+      />
 
-      <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={e => handleFiles(e.target.files)} />
+      {/* SEO CONTENT SECTION - Critical for Google Ranking */}
+      <article className="mt-20 prose prose-slate max-w-none">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Why use this Image Compressor?</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4 text-xl"><i className="fa-solid fa-bolt"></i></div>
+            <h3 className="font-bold text-lg mb-2">Lightning Fast</h3>
+            <p className="text-slate-600">Compression happens directly in your browser. No files are uploaded to any server, ensuring maximum speed.</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+             <div className="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mb-4 text-xl"><i className="fa-solid fa-shield-halved"></i></div>
+            <h3 className="font-bold text-lg mb-2">100% Secure</h3>
+            <p className="text-slate-600">Your photos never leave your device. We use advanced client-side technology to ensure your privacy.</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+             <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4 text-xl"><i className="fa-solid fa-layer-group"></i></div>
+            <h3 className="font-bold text-lg mb-2">Batch Processing</h3>
+            <p className="text-slate-600">Select up to 50 images at once. Our tool automatically optimizes them and lets you download a single ZIP file.</p>
+          </div>
+        </div>
+      </article>
+
     </div>
   );
 }
