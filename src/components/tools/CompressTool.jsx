@@ -4,27 +4,22 @@ import JSZip from 'jszip';
 
 export default function CompressTool({ color = '#4f46e5' }) {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState('landing'); // landing, idle (files added), working, result
+  const [status, setStatus] = useState('landing'); // landing, idle, working, result
   const [quality, setQuality] = useState(0.6);
   const [resultZip, setResultZip] = useState(null);
+  const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [compressionProgress, setCompressionProgress] = useState(0);
-  
   const fileInputRef = useRef(null);
 
-  // --- HANDLERS ---
-  
+  // --- LOGIC HANDLERS ---
   const handleDrag = (e, active) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     setIsDragging(active);
   };
 
   const handleDrop = (e) => {
     handleDrag(e, false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      addFiles(e.dataTransfer.files);
-    }
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) addFiles(e.dataTransfer.files);
   };
 
   const addFiles = (fileList) => {
@@ -34,14 +29,9 @@ export default function CompressTool({ color = '#4f46e5' }) {
         file: f,
         id: Math.random().toString(36).substr(2, 9),
         preview: URL.createObjectURL(f),
-        name: f.name,
-        originalSize: f.size,
-        compressedSize: null,
-        status: 'ready' // ready, done
+        size: f.size
       }));
-
     if (newFiles.length === 0) return;
-
     setFiles(prev => [...prev, ...newFiles]);
     setStatus('idle');
   };
@@ -53,353 +43,342 @@ export default function CompressTool({ color = '#4f46e5' }) {
 
   const startCompression = async () => {
     setStatus('working');
-    setCompressionProgress(0);
+    setProgress(0);
     const zip = new JSZip();
-    
-    // Process files sequentially to show progress
-    const processedFiles = [...files];
     let totalOld = 0;
     let totalNew = 0;
 
-    for (let i = 0; i < processedFiles.length; i++) {
-      const item = processedFiles[i];
-      totalOld += item.originalSize;
+    // Artificial delay for smooth UI start
+    await new Promise(r => setTimeout(r, 300));
 
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      totalOld += file.size;
       try {
-        const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, initialQuality: quality, useWebWorker: true };
-        const compressedBlob = await imageCompression(item.file, options);
-        
-        // Update individual file status
-        processedFiles[i].compressedSize = compressedBlob.size;
-        processedFiles[i].status = 'done';
-        totalNew += compressedBlob.size;
-        
-        zip.file(item.name, compressedBlob);
-        setFiles([...processedFiles]); // Trigger re-render to show green checkmarks
-        
-        // Update progress bar
-        setCompressionProgress(Math.round(((i + 1) / processedFiles.length) * 100));
-        
-      } catch (err) {
-        console.error("Error compressing " + item.name, err);
-      }
+        const options = { maxSizeMB: 1, initialQuality: quality, useWebWorker: true };
+        const blob = await imageCompression(file.file, options);
+        totalNew += blob.size;
+        zip.file(file.file.name, blob);
+        setProgress(Math.round(((i + 1) / files.length) * 100));
+      } catch (err) { console.error(err); }
     }
 
-    // Generate Zip
-    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const content = await zip.generateAsync({ type: 'blob' });
     setResultZip({
-      url: URL.createObjectURL(zipBlob),
+      url: URL.createObjectURL(content),
       oldSize: (totalOld / 1024 / 1024).toFixed(2),
       newSize: (totalNew / 1024 / 1024).toFixed(2),
       saved: Math.round(((totalOld - totalNew) / totalOld) * 100)
     });
-
-    // Small delay to let user see 100% bar
-    setTimeout(() => setStatus('result'), 600);
+    
+    // Slight delay before showing result to let progress bar finish
+    setTimeout(() => setStatus('result'), 500);
   };
 
   const reset = () => {
-    setFiles([]);
-    setResultZip(null);
-    setStatus('landing');
-    setCompressionProgress(0);
+    setFiles([]); setStatus('landing'); setResultZip(null); setProgress(0);
   };
 
-  // --- RENDER ---
   return (
-    <div className="tool-container" style={{ '--accent': color }}>
+    <div className="modern-compressor" style={{ '--primary': color }}>
       <style>{`
-        /* --- CORE STYLES --- */
-        .tool-container {
-          font-family: 'Inter', system-ui, sans-serif;
-          max-width: 1000px;
-          margin: 0 auto;
+        /* --- VARIABLES & BASE --- */
+        .modern-compressor {
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          max-width: 900px; margin: 0 auto;
           color: #1e293b;
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse-border { 0% { border-color: rgba(var(--accent-rgb), 0.4); } 50% { border-color: var(--accent); } 100% { border-color: rgba(var(--accent-rgb), 0.4); } }
-        @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-
-        /* --- 1. LANDING ZONE --- */
-        .drop-zone {
-          background: #ffffff;
-          border: 3px dashed #e2e8f0;
-          border-radius: 32px;
-          padding: 80px 20px;
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes confettiDrop { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        
+        /* --- 1. LANDING (GLASS CARD) --- */
+        .upload-card {
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          border-radius: 30px;
+          padding: 60px 20px;
           text-align: center;
+          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.5);
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
           position: relative;
           overflow: hidden;
         }
-        .drop-zone:hover, .drop-zone.active {
-          border-color: var(--accent);
-          background: #f8fafc;
-          transform: translateY(-4px);
-          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+        .upload-card:hover, .upload-card.drag-active {
+          transform: translateY(-5px);
+          box-shadow: 0 30px 60px -15px rgba(var(--primary), 0.15);
+          border-color: var(--primary);
         }
-        .icon-circle {
-          width: 100px; height: 100px;
-          background: var(--accent);
-          border-radius: 50%;
+        .upload-icon-3d {
+          width: 80px; height: 80px;
+          margin: 0 auto 24px;
+          background: linear-gradient(135deg, var(--primary), #818cf8);
+          border-radius: 24px;
           display: flex; align-items: center; justify-content: center;
-          margin: 0 auto 30px;
-          color: white; font-size: 40px;
-          box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+          color: white; font-size: 32px;
+          box-shadow: 0 15px 30px -8px rgba(79, 70, 229, 0.4);
+          animation: float 4s ease-in-out infinite;
+          transform: rotate(-5deg);
         }
-
-        /* --- 2. WORKBENCH (GRID) --- */
-        .workbench {
-          animation: slideUp 0.4s ease-out;
+        
+        /* --- 2. GRID GALLERY (MAC OS STYLE) --- */
+        .gallery-container {
           background: #fff;
           border-radius: 24px;
           box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
-          border: 1px solid #f1f5f9;
-          overflow: hidden;
+          padding: 24px;
+          animation: popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        
-        /* HEADER */
-        .wb-header {
-          padding: 24px 32px;
-          border-bottom: 1px solid #e2e8f0;
+        .grid-header {
           display: flex; justify-content: space-between; align-items: center;
-          background: #f8fafc;
+          margin-bottom: 20px; padding-bottom: 15px;
+          border-bottom: 1px solid #f1f5f9;
         }
-        .file-count { font-weight: 700; color: #334155; font-size: 1.1rem; }
-        .add-more-btn {
-          color: var(--accent); font-weight: 600; cursor: pointer; font-size: 0.9rem;
-          display: flex; align-items: center; gap: 6px;
+        .images-scroll {
+          display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 12px; max-height: 350px; overflow-y: auto; padding: 4px;
         }
-
-        /* GRID */
-        .grid-scroller {
-          max-height: 400px; overflow-y: auto; padding: 32px;
-          background: #ffffff;
+        .thumb-card {
+          position: relative; aspect-ratio: 1; border-radius: 12px;
+          overflow: hidden; border: 2px solid white;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+          transition: 0.2s;
         }
-        .image-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: 20px;
-        }
-        .img-card {
-          position: relative;
-          border-radius: 16px;
-          overflow: hidden;
-          background: #f1f5f9;
-          aspect-ratio: 1;
-          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-          transition: transform 0.2s;
-        }
-        .img-card:hover { transform: scale(1.03); }
-        .img-card img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* CARD OVERLAYS */
-        .remove-icon {
-          position: absolute; top: 8px; right: 8px;
-          background: rgba(0,0,0,0.5); color: white;
-          width: 24px; height: 24px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; font-size: 12px; backdrop-filter: blur(4px);
-        }
-        .status-badge {
-          position: absolute; bottom: 8px; left: 8px; right: 8px;
-          background: rgba(255,255,255,0.9);
-          padding: 4px 8px; border-radius: 8px;
-          font-size: 10px; font-weight: 700; color: #334155;
-          display: flex; justify-content: space-between; align-items: center;
-          backdrop-filter: blur(4px);
-        }
-        .check-icon { color: #22c55e; } /* Green check */
-
-        /* CONTROLS FOOTER */
-        .wb-footer {
-          padding: 24px 32px;
-          border-top: 1px solid #e2e8f0;
-          display: flex; align-items: center; gap: 30px;
-          background: #fff;
-        }
-        .quality-slider { flex: 1; }
-        .slider-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #475569; }
-        
-        input[type=range] {
-          width: 100%; -webkit-appearance: none; background: transparent;
-        }
-        input[type=range]::-webkit-slider-thumb {
-          -webkit-appearance: none; height: 20px; width: 20px;
-          border-radius: 50%; background: var(--accent);
-          cursor: pointer; margin-top: -8px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-          width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px;
+        .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-card:hover { transform: scale(1.05); z-index: 2; }
+        .del-btn {
+          position: absolute; top: 4px; right: 4px;
+          width: 20px; height: 20px; border-radius: 50%;
+          background: rgba(0,0,0,0.6); color: white;
+          border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+          font-size: 10px;
         }
 
+        /* --- 3. CONTROLS & PROGRESS --- */
+        .controls-wrapper {
+          margin-top: 24px;
+          background: #f8fafc; padding: 20px; border-radius: 16px;
+        }
         .compress-btn {
-          background: #0f172a; color: white; border: none;
-          padding: 14px 32px; border-radius: 12px;
-          font-weight: 700; font-size: 1rem; cursor: pointer;
-          display: flex; align-items: center; gap: 10px;
-          transition: all 0.2s;
+          width: 100%;
+          background: var(--primary);
+          color: white; border: none;
+          padding: 18px; border-radius: 14px;
+          font-size: 1.1rem; font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+          transition: 0.2s;
+          display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .compress-btn:hover { background: var(--accent); transform: translateY(-2px); }
-        .compress-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+        .compress-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(110%); }
+        .compress-btn:disabled { opacity: 0.8; cursor: wait; }
 
-        /* --- 3. LOADING OVERLAY --- */
-        .scanner-line {
-          position: absolute; left: 0; right: 0; height: 2px;
-          background: #22c55e;
-          box-shadow: 0 0 10px #22c55e;
-          animation: scan 1.5s linear infinite;
-          z-index: 10;
-        }
-        .progress-bar-container {
-          position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: #e2e8f0;
+        .progress-track {
+          height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 15px;
         }
         .progress-fill {
           height: 100%; background: #22c55e; transition: width 0.3s ease;
         }
 
-        /* --- 4. RESULT --- */
-        .result-view {
-          text-align: center; animation: slideUp 0.5s ease;
-          background: #fff; padding: 60px 40px; border-radius: 32px;
-          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        /* --- 4. REALISTIC RESULT CARD --- */
+        .result-modal {
+          background: white;
+          border-radius: 32px;
+          box-shadow: 0 40px 80px -20px rgba(0,0,0,0.15);
+          padding: 50px 40px;
+          text-align: center;
+          animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+          max-width: 600px; margin: 0 auto;
+          position: relative; overflow: hidden;
         }
-        .big-stat {
-          font-size: 4rem; font-weight: 900; color: #0f172a;
-          line-height: 1; letter-spacing: -2px; margin: 10px 0;
-        }
-        .stat-label { font-size: 1.25rem; font-weight: 600; color: #64748b; margin-bottom: 40px; }
         
-        .download-hero {
-          background: var(--accent); color: white;
-          padding: 20px 40px; border-radius: 50px;
-          font-size: 1.2rem; font-weight: 800; text-decoration: none;
-          display: inline-flex; align-items: center; gap: 12px;
-          box-shadow: 0 20px 40px -10px rgba(var(--accent-rgb), 0.4);
-          transition: transform 0.2s;
+        /* Celebration Confetti Background */
+        .confetti-piece {
+          position: absolute; width: 10px; height: 10px; background: #ffd700;
+          animation: confettiDrop 3s linear infinite; top: -20px; z-index: 0;
         }
-        .download-hero:hover { transform: scale(1.05); }
+        .confetti-piece:nth-child(2n) { background: #ff4757; animation-duration: 2.5s; left: 20%; }
+        .confetti-piece:nth-child(3n) { background: #2ed573; animation-duration: 3.2s; left: 80%; }
+        .confetti-piece:nth-child(4n) { background: #1e90ff; animation-duration: 2.8s; left: 50%; }
 
-        @media(max-width: 600px) {
-          .wb-footer { flex-direction: column; align-items: stretch; }
-          .image-grid { grid-template-columns: repeat(3, 1fr); }
+        .result-content { position: relative; z-index: 2; }
+
+        .success-seal {
+          width: 90px; height: 90px;
+          background: #dcfce7; color: #16a34a;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 40px; margin: 0 auto 25px;
+          box-shadow: 0 0 0 10px #f0fdf4;
         }
+
+        /* Visual Comparison Bar */
+        .comparison-viz {
+          background: #f1f5f9;
+          border-radius: 16px;
+          padding: 24px;
+          margin: 30px 0;
+          display: flex; flex-direction: column; gap: 15px;
+        }
+        .viz-row { display: flex; align-items: center; gap: 15px; }
+        .viz-label { width: 80px; text-align: right; font-weight: 600; font-size: 0.9rem; color: #64748b; }
+        .viz-bar-track { flex: 1; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; }
+        .viz-bar-fill { height: 100%; border-radius: 6px; width: 0; animation: fillBar 1s ease forwards; }
+        .viz-val { width: 80px; text-align: left; font-weight: 700; color: #1e293b; }
+        
+        @keyframes fillBar { from { width: 0; } to { width: var(--w); } }
+
+        .download-btn-primary {
+          display: inline-flex; align-items: center; gap: 12px;
+          background: #1e293b; color: white;
+          padding: 18px 40px; border-radius: 50px;
+          text-decoration: none; font-weight: 700; font-size: 1.1rem;
+          box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+          transition: all 0.3s;
+        }
+        .download-btn-primary:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 20px 35px -5px rgba(0,0,0,0.4);
+          background: black;
+        }
+        
+        .savings-badge {
+          display: inline-block;
+          background: linear-gradient(135deg, #16a34a, #22c55e);
+          color: white; padding: 6px 16px; border-radius: 20px;
+          font-weight: 800; font-size: 0.9rem; margin-top: 10px;
+          box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+        }
+
       `}</style>
 
-      {/* --- STATE: LANDING --- */}
+      {/* 1. LANDING STATE */}
       {status === 'landing' && (
         <div 
-          className={`drop-zone ${isDragging ? 'active' : ''}`}
-          onDragEnter={(e) => handleDrag(e, true)}
+          className={`upload-card ${isDragging ? 'drag-active' : ''}`}
           onDragOver={(e) => handleDrag(e, true)}
           onDragLeave={(e) => handleDrag(e, false)}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current.click()}
         >
-          <div className="icon-circle">
-            <i className="fa-solid fa-layer-group"></i>
+          <div className="upload-icon-3d">
+            <i className="fa-solid fa-cloud-arrow-up"></i>
           </div>
-          <h2 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '10px' }}>Bulk Image Compressor</h2>
-          <p style={{ fontSize: '1.1rem', color: '#64748b' }}>Drop folder or multiple images here</p>
-          <input type="file" multiple accept="image/*" hidden ref={fileInputRef} onChange={(e) => addFiles(e.target.files)} />
+          <h2 style={{fontSize: '2rem', fontWeight: '800', marginBottom:'10px'}}>Drag Images Here</h2>
+          <p style={{color: '#64748b', fontSize:'1.1rem'}}>Support for high-res JPG, PNG</p>
         </div>
       )}
 
-      {/* --- STATE: WORKBENCH (IDLE & WORKING) --- */}
+      {/* 2. WORKBENCH STATE */}
       {(status === 'idle' || status === 'working') && (
-        <div className="workbench">
-          <div className="wb-header">
-            <div className="file-count"><i className="fa-regular fa-images"></i> {files.length} Images Ready</div>
+        <div className="gallery-container">
+          <div className="grid-header">
+            <h3 style={{margin:0, fontSize:'1.2rem'}}>{files.length} Images Selected</h3>
             {status === 'idle' && (
-              <div className="add-more-btn" onClick={() => fileInputRef.current.click()}>
-                <i className="fa-solid fa-plus-circle"></i> Add More
-              </div>
+              <button onClick={() => fileInputRef.current.click()} style={{background:'none', border:'none', color:color, fontWeight:'700', cursor:'pointer'}}>
+                + Add More
+              </button>
             )}
           </div>
 
-          <div className="grid-scroller">
-            <div className="image-grid">
-              {files.map((f) => (
-                <div key={f.id} className="img-card">
-                  <img src={f.preview} alt="preview" />
-                  
-                  {/* Scanner Effect per card if working */}
-                  {status === 'working' && f.status !== 'done' && <div className="scanner-line"></div>}
-
-                  {/* Badges */}
-                  <div className="status-badge">
-                    <span>{f.status === 'done' ? 'SAVED' : (f.originalSize/1024).toFixed(0) + 'KB'}</span>
-                    {f.status === 'done' && <i className="fa-solid fa-check check-icon"></i>}
-                  </div>
-
-                  {/* Remove Button (Only in idle) */}
-                  {status === 'idle' && (
-                    <div className="remove-icon" onClick={() => removeFile(f.id)}>
-                      <i className="fa-solid fa-times"></i>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="images-scroll">
+            {files.map(f => (
+              <div key={f.id} className="thumb-card">
+                <img src={f.preview} alt="" />
+                {status === 'idle' && (
+                  <button className="del-btn" onClick={() => removeFile(f.id)}>
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
 
-          {/* Progress Bar (Bottom) */}
-          {status === 'working' && (
-            <div className="progress-bar-container">
-              <div className="progress-fill" style={{ width: `${compressionProgress}%` }}></div>
-            </div>
-          )}
+          <div className="controls-wrapper">
+            {status === 'idle' && (
+              <>
+                <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', fontSize:'0.9rem', fontWeight:'600'}}>
+                  <span>Quality</span>
+                  <span>{Math.round(quality * 10)} / 10</span>
+                </div>
+                <input 
+                  type="range" min="0.1" max="0.9" step="0.1" 
+                  value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} 
+                  style={{width: '100%', marginBottom: '20px', accentColor: color}}
+                />
+              </>
+            )}
 
-          {/* Footer Controls */}
-          <div className="wb-footer">
-            <div className="quality-slider">
-              <div className="slider-label">
-                <span>Compression Strength</span>
-                <span style={{color: color}}>{Math.round((1-quality)*100)}%</span>
-              </div>
-              <input 
-                type="range" min="0.1" max="0.9" step="0.1" 
-                value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} 
-                disabled={status === 'working'}
-              />
-            </div>
-            
             <button className="compress-btn" onClick={startCompression} disabled={status === 'working'}>
               {status === 'working' ? (
-                 <>Compressing {compressionProgress}%...</>
+                <>Processing... {progress}%</>
               ) : (
-                 <>Compress All <i className="fa-solid fa-bolt"></i></>
+                <>Compress Files <i className="fa-solid fa-bolt"></i></>
               )}
             </button>
+            
+            {status === 'working' && (
+              <div className="progress-track">
+                <div className="progress-fill" style={{width: `${progress}%`}}></div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* --- STATE: RESULT --- */}
+      {/* 3. REALISTIC RESULT STATE */}
       {status === 'result' && resultZip && (
-        <div className="result-view">
-          <div style={{fontSize:'60px', color: '#22c55e', marginBottom:'20px'}}>
-            <i className="fa-solid fa-circle-check"></i>
-          </div>
-          <div className="big-stat">{resultZip.saved}%</div>
-          <div className="stat-label">Size reduced from {resultZip.oldSize}MB to {resultZip.newSize}MB</div>
-          
-          <a href={resultZip.url} download="compressed_images.zip" className="download-hero">
-            <i className="fa-solid fa-download"></i> Download All
-          </a>
+        <div className="result-modal">
+          {/* Confetti Elements */}
+          {[...Array(10)].map((_, i) => <div key={i} className="confetti-piece" style={{left: `${Math.random()*100}%`, animationDelay: `${Math.random()}s`}}></div>)}
 
-          <div style={{marginTop: '40px'}}>
-             <button onClick={reset} style={{background:'none', border:'none', color:'#94a3b8', cursor:'pointer', fontWeight:'600'}}>
-               Start Over
-             </button>
+          <div className="result-content">
+            <div className="success-seal">
+              <i className="fa-solid fa-check"></i>
+            </div>
+            
+            <h2 style={{fontSize:'2.2rem', fontWeight:'800', margin:'0 0 5px 0'}}>Amazing!</h2>
+            <div className="savings-badge">SAVED {resultZip.saved}% STORAGE</div>
+
+            {/* Comparison Visualization */}
+            <div className="comparison-viz">
+              {/* Original Bar */}
+              <div className="viz-row">
+                <span className="viz-label">Before</span>
+                <div className="viz-bar-track">
+                  <div className="viz-bar-fill" style={{width: '100%', background: '#94a3b8', '--w': '100%'}}></div>
+                </div>
+                <span className="viz-val">{resultZip.oldSize} MB</span>
+              </div>
+              
+              {/* Compressed Bar */}
+              <div className="viz-row">
+                <span className="viz-label" style={{color: '#16a34a'}}>After</span>
+                <div className="viz-bar-track">
+                  <div className="viz-bar-fill" style={{background: '#16a34a', width: 0, '--w': `${100 - resultZip.saved}%`, transitionDelay: '0.5s'}}></div>
+                </div>
+                <span className="viz-val" style={{color: '#16a34a'}}>{resultZip.newSize} MB</span>
+              </div>
+            </div>
+
+            <a href={resultZip.url} download="optimized_images.zip" className="download-btn-primary">
+              <i className="fa-solid fa-download"></i> Download All Images
+            </a>
+
+            <div style={{marginTop: '25px'}}>
+              <button onClick={reset} style={{background:'transparent', border:'none', color:'#94a3b8', fontSize:'0.9rem', cursor:'pointer', fontWeight:'600'}}>
+                Start New Compression
+              </button>
+            </div>
           </div>
         </div>
       )}
-      
-      {/* Hidden Input for Add More */}
+
       <input type="file" multiple accept="image/*" hidden ref={fileInputRef} onChange={(e) => addFiles(e.target.files)} />
     </div>
   );
