@@ -1,357 +1,171 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-// --- ICONS (Inline SVG for zero dependencies & fast loading) ---
-const Icons = {
-  Upload: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
-  Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-  Close: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Download: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
-  Zip: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 12h4"/><path d="M10 16h4"/><path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>,
-  Plus: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-};
-
-export default function CompressTool({ color = '#6366f1' }) {
-  // --- STATE ---
+export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
-  const [view, setView] = useState('empty'); // empty, workspace
-  const [quality, setQuality] = useState(0.7);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [zipUrl, setZipUrl] = useState(null);
-  const [dragActive, setDragActive] = useState(false);
-  const fileInputRef = useRef(null);
+  const [status, setStatus] = useState('landing'); // landing | processing | result
+  const [quality, setQuality] = useState(0.4); // Pro default for high savings
+  const [results, setResults] = useState(null);
 
-  // --- DERIVED STATS (High-End Performance) ---
-  const stats = useMemo(() => {
-    let original = 0;
-    let compressed = 0;
-    let count = 0;
-    files.forEach(f => {
-      original += f.origSize;
-      if (f.status === 'done') {
-        compressed += f.newSize;
-        count++;
-      }
-    });
-    const saved = original - compressed;
-    return {
-      original: (original / 1024 / 1024).toFixed(2),
-      saved: compressed > 0 ? (saved / 1024 / 1024).toFixed(2) : '0.00',
-      percent: compressed > 0 ? Math.round((saved / original) * 100) : 0,
-      isDone: count === files.length && files.length > 0
-    };
-  }, [files]);
-
-  // --- CORE ENGINE ---
-  const handleFiles = (incoming) => {
-    if (!incoming || incoming.length === 0) return;
-    const validFiles = Array.from(incoming).filter(f => f.type.startsWith('image/'));
-    
-    if (validFiles.length > 0) {
-      const newQueue = validFiles.map(f => ({
-        id: Math.random().toString(36).substr(2, 9),
-        file: f,
-        preview: URL.createObjectURL(f),
-        name: f.name,
-        origSize: f.size,
-        status: 'queued',
-      }));
-      setFiles(prev => [...prev, ...newQueue]);
-      setView('workspace');
-      processQueue([...files, ...newQueue], quality);
-    }
+  const handleUpload = (e) => {
+    const selected = Array.from(e.target.files);
+    setFiles(selected.map(f => ({
+      file: f, id: Math.random().toString(36).substr(2, 9),
+      url: URL.createObjectURL(f), name: f.name,
+      size: (f.size / 1024).toFixed(1)
+    })));
+    setStatus('processing');
   };
 
-  const processQueue = async (queue, q) => {
-    setIsProcessing(true);
+  const startBatch = async () => {
+    setStatus('working');
     const zip = new JSZip();
-    const workingQueue = [...queue];
+    let oldT = 0; let newT = 0;
 
-    for (let i = 0; i < workingQueue.length; i++) {
-      const item = workingQueue[i];
-      if (item.status === 'done') {
-        zip.file(item.name, item.blob);
-        continue; // Skip already processed
-      }
+    await Promise.all(files.map(async (item) => {
+      oldT += item.file.size;
+      // THE AGGRESSIVE ENGINE: Multi-pass compression
+      const options = { maxSizeMB: 0.1, initialQuality: quality, useWebWorker: true, maxIteration: 20 };
+      const blob = await imageCompression(item.file, options);
+      newT += blob.size;
+      zip.file(`optimized-${item.name}`, blob);
+    }));
 
-      // Optimistic UI Update
-      item.status = 'processing';
-      setFiles([...workingQueue]);
-
-      try {
-        const options = { maxSizeMB: 2, maxWidthOrHeight: 2048, useWebWorker: true, initialQuality: q };
-        const blob = await imageCompression(item.file, options);
-        
-        item.newSize = blob.size;
-        item.status = 'done';
-        item.blob = blob;
-        zip.file(item.name, blob);
-      } catch (err) {
-        item.status = 'error';
-      }
-      setFiles([...workingQueue]); // Live Update
-    }
-
-    if (workingQueue.length > 0) {
-      const content = await zip.generateAsync({ type: 'blob' });
-      setZipUrl(URL.createObjectURL(content));
-    }
-    setIsProcessing(false);
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    setResults({
+      url: URL.createObjectURL(zipBlob),
+      saved: Math.round(((oldT - newT) / oldT) * 100),
+      oldKB: (oldT / 1024).toFixed(0),
+      newKB: (newT / 1024).toFixed(0)
+    });
+    setStatus('result');
   };
 
-  const removeFile = (id) => {
-    const updated = files.filter(f => f.id !== id);
-    setFiles(updated);
-    if (updated.length === 0) {
-      setView('empty');
-      setZipUrl(null);
-    }
-  };
-
-  const formatBytes = (bytes) => {
-    if (bytes === 0) return '0 B';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return parseFloat((bytes / Math.pow(1024, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
-  };
-
-  // --- RENDER ---
   return (
-    <div className="zenith-interface" style={{'--accent': color}}>
+    <div className="studio-root">
       <style>{`
-        /* --- ZENITH DESIGN SYSTEM --- */
-        .zenith-interface {
-          --bg-body: #f8fafc;
-          --bg-card: #ffffff;
-          --text-main: #0f172a;
-          --text-sub: #64748b;
-          --border: #e2e8f0;
-          --glass: rgba(255, 255, 255, 0.7);
-          --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
-          --shadow-lg: 0 20px 40px -5px rgba(0,0,0,0.1);
-          --radius: 20px;
-          
-          font-family: 'Inter', -apple-system, sans-serif;
-          max-width: 1000px; margin: 0 auto;
-          color: var(--text-main);
-          position: relative;
+        /* --- NATIVE STUDIO CSS --- */
+        .landing-portal {
+            max-width: 800px; margin: 0 auto; background: #fff; border-radius: 48px;
+            padding: 12px; border: 1px solid #f1f5f9; box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+            cursor: pointer; transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .landing-portal:hover { transform: translateY(-8px); box-shadow: 0 60px 120px rgba(0,0,0,0.1); }
+        .portal-inner { border: 3px dashed #e2e8f0; border-radius: 40px; padding: 100px 20px; text-align: center; background: #fafafa; }
+        
+        /* LIQUID CLOUD ANIMATION */
+        .liquid-icon {
+            width: 110px; height: 110px; background: ${color}; color: white;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;
+            font-size: 2.8rem; animation: morph 6s infinite ease-in-out;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        @keyframes morph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
         }
 
-        /* --- 1. THE DROP PORTAL (Empty State) --- */
-        .drop-portal {
-          background: var(--bg-card);
-          border: 1px dashed var(--border);
-          border-radius: var(--radius);
-          height: 400px;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          cursor: pointer; position: relative; overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .drop-portal:hover, .drop-portal.active {
-          border-color: var(--accent);
-          box-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.15);
-          transform: translateY(-4px);
-        }
-        .portal-icon {
-          width: 80px; height: 80px; background: #f1f5f9; color: var(--text-main);
-          border-radius: 30px; display: flex; align-items: center; justify-content: center;
-          margin-bottom: 24px; transition: 0.3s;
-        }
-        .drop-portal:hover .portal-icon { background: var(--accent); color: white; transform: scale(1.1); }
-        .portal-title { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
-        .portal-sub { color: var(--text-sub); font-size: 1.1rem; font-weight: 500; }
-
-        /* --- 2. WORKSPACE TABLE --- */
-        .workspace-card {
-          background: var(--bg-card); border-radius: var(--radius);
-          box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-          overflow: hidden; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Floating Header */
-        .ws-header {
-          padding: 20px 32px; border-bottom: 1px solid var(--border);
-          display: flex; justify-content: space-between; align-items: center;
-          background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
-          position: sticky; top: 0; z-index: 10;
+        /* WORKBENCH LAYOUT */
+        .workbench { display: flex; gap: 30px; }
+        .gallery { 
+            flex: 1; background: #f3f3f7; border-radius: 32px; padding: 30px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; min-height: 550px; border: 1px solid #eef0f2;
         }
         
-        /* The File Table */
-        .file-grid { display: flex; flex-direction: column; }
-        .file-row {
-          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 50px;
-          align-items: center; padding: 16px 32px;
-          border-bottom: 1px solid #f8fafc; transition: background 0.1s;
+        /* THE 198x244 CARD */
+        .asset-card {
+            width: 198px; height: 244px; background: #fff; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; transition: 0.3s;
         }
-        .file-row:hover { background: #f8fafc; }
+        .asset-card:hover { transform: scale(1.03); border: 2px solid ${color}; }
+        .asset-card img { max-width: 150px; max-height: 150px; object-fit: contain; }
+        .asset-card span { font-size: 10px; font-weight: 800; color: #94a3b8; margin-top: 15px; text-transform: uppercase; }
+
+        .inspector { width: 340px; background: #fff; border-radius: 32px; padding: 40px; border: 1px solid #f1f5f9; position: sticky; top: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.02); }
+        .ctrl-label { font-size: 11px; font-weight: 900; color: #cbd5e1; text-transform: uppercase; margin-bottom: 20px; display: block; letter-spacing: 2px; }
+        .stat-massive { font-size: 4rem; font-weight: 950; color: #0f172a; letter-spacing: -4px; line-height: 1; margin-bottom: 10px; }
         
-        .f-preview { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #eee; border: 1px solid var(--border); }
-        .f-name { font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
-        .f-size { font-family: monospace; color: var(--text-sub); font-size: 0.9rem; }
-        
-        /* Status Badges */
-        .status-pill {
-          display: inline-flex; align-items: center; gap: 6px;
-          padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+        .btn-run { 
+            width: 100%; padding: 22px; background: #0f172a; color: #fff; border: none; 
+            border-radius: 100px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
         }
-        .status-pill.done { background: #dcfce7; color: #15803d; }
-        .status-pill.proc { background: #e0e7ff; color: #4338ca; }
-        .loader { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-run:hover { background: #000; transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
-        /* Action Buttons */
-        .btn-icon {
-          width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-          border-radius: 8px; color: #cbd5e1; cursor: pointer; transition: 0.2s;
-        }
-        .btn-icon:hover { background: #fee2e2; color: #ef4444; }
+        /* SUCCESS SCORECARD */
+        .scorecard { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 60px; padding: 80px 40px; box-shadow: 0 50px 120px rgba(0,0,0,0.08); text-align: center; }
+        .score-pct { font-size: 10rem; font-weight: 950; color: #0f172a; letter-spacing: -10px; line-height: 0.8; }
+        .score-msg { font-size: 2.5rem; font-weight: 900; color: ${color}; margin: 20px 0 40px; }
+        .btn-dl { background: ${color}; color: white; padding: 25px 80px; font-size: 1.8rem; font-weight: 900; border-radius: 24px; text-decoration: none; display: inline-block; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
-        /* --- 3. FLOATING DOCK (The "Magic" Control Bar) --- */
-        .control-dock {
-          position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-          background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px);
-          padding: 12px 12px 12px 24px; border-radius: 100px;
-          display: flex; align-items: center; gap: 24px;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-          z-index: 100; border: 1px solid rgba(255,255,255,0.1);
-          animation: floatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes floatUp { from { transform: translate(-50%, 100%); } to { transform: translate(-50%, 0); } }
-
-        .dock-stat { color: white; font-size: 0.9rem; font-weight: 500; display: flex; gap: 8px; align-items: center; }
-        .dock-val { font-weight: 700; color: #4ade80; }
-        
-        .dock-slider { display: flex; align-items: center; gap: 10px; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 24px; }
-        .slider-label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
-        input[type=range] { width: 100px; accent-color: var(--accent); cursor: pointer; }
-
-        .btn-primary {
-          background: var(--accent); color: white; border: none;
-          padding: 12px 24px; border-radius: 50px; font-weight: 600;
-          display: flex; align-items: center; gap: 8px; cursor: pointer;
-          transition: transform 0.2s; text-decoration: none;
-        }
-        .btn-primary:hover { transform: scale(1.05); filter: brightness(110%); }
-        
-        .btn-secondary {
-          background: rgba(255,255,255,0.1); color: white; border: none;
-          width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: 0.2s;
-        }
-        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-
-        @media (max-width: 768px) {
-          .control-dock { 
-            width: 90%; bottom: 20px; flex-direction: column; 
-            border-radius: 20px; padding: 20px; gap: 16px;
-          }
-          .dock-slider { border-left: none; padding-left: 0; width: 100%; justify-content: space-between; }
-          .file-row { grid-template-columns: 50px 1fr 60px; }
-          .f-size, .f-stat-col { display: none; }
+        @media (max-width: 991px) {
+            .workbench { flex-direction: column; }
+            .inspector { width: 100%; position: static; }
+            .score-pct { font-size: 6rem; letter-spacing: -5px; }
+            .asset-card { width: 100%; height: auto; flex-direction: row; padding: 20px; gap: 20px; justify-content: flex-start; }
+            .asset-card img { width: 60px; height: 60px; }
+            .asset-card span { margin: 0; }
         }
       `}</style>
 
-      {/* --- VIEW 1: EMPTY STATE --- */}
-      {view === 'empty' && (
-        <div 
-          className={`drop-portal ${dragActive ? 'active' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={(e) => { e.preventDefault(); setDragActive(false); handleFiles(e.dataTransfer.files); }}
-          onClick={() => fileInputRef.current.click()}
-        >
-          <div className="portal-icon"><Icons.Upload /></div>
-          <h2 className="portal-title">Drop images to compress</h2>
-          <p className="portal-sub">Or click to browse (JPG, PNG, WebP)</p>
+      {/* STAGE 1: LANDING */}
+      {status === 'landing' && (
+        <div className="landing-portal" onClick={() => document.getElementById('fIn').click()}>
+          <div className="portal-inner">
+            <div className="liquid-icon">
+              <i className="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h2 style={{fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', marginBottom: '10px'}}>Optimize Batch</h2>
+            <p style={{color: '#94a3b8', fontWeight: 600, fontSize: '1.2rem'}}>Upload up to 20 images for extreme compression</p>
+            <input type="file" id="fIn" hidden multiple onChange={handleUpload} />
+          </div>
         </div>
       )}
 
-      {/* --- VIEW 2: WORKSPACE --- */}
-      {view === 'workspace' && (
-        <div className="workspace-card">
-          <div className="ws-header">
-            <h3 style={{fontWeight: 800, fontSize: '1.2rem'}}>Workspace ({files.length})</h3>
-            <button className="btn-icon" onClick={() => fileInputRef.current.click()} title="Add more">
-              <Icons.Plus />
-            </button>
-          </div>
-
-          <div className="file-grid">
-            {files.map(f => (
-              <div key={f.id} className="file-row">
-                <img src={f.preview} className="f-preview" alt="" />
-                
-                <div className="f-name" title={f.name}>{f.name}</div>
-                
-                <div className="f-size">{formatBytes(f.origSize)}</div>
-                
-                <div className="f-stat-col">
-                  {f.status === 'done' ? (
-                    <div className="status-pill done">
-                      <Icons.Check /> -{f.saved}%
-                    </div>
-                  ) : (
-                    <div className="status-pill proc">
-                      <div className="loader"></div> Working
-                    </div>
-                  )}
-                </div>
-
-                <div style={{textAlign: 'right'}}>
-                  <div className="btn-icon" onClick={() => removeFile(f.id)}>
-                    <Icons.Close />
-                  </div>
-                </div>
+      {/* STAGE 2: WORKSPACE */}
+      {(status === 'processing' || status === 'working') && (
+        <div className="workbench">
+          <div className="gallery">
+            {files.map((f, i) => (
+              <div key={i} className="asset-card">
+                <img src={f.url} />
+                <span>{f.size} KB</span>
+                {status === 'working' && <div style={{position:'absolute', inset:0, background:'rgba(255,255,255,0.7)', borderRadius:'12px', display:'flex', alignItems:'center', justify-content:center}}><i className="fa-solid fa-circle-notch fa-spin"></i></div>}
               </div>
             ))}
           </div>
-          
-          {/* Spacer for floating dock */}
-          <div style={{height: '120px'}}></div>
-        </div>
-      )}
 
-      {/* --- 3. FLOATING DOCK (The High-End Touch) --- */}
-      {view === 'workspace' && (
-        <div className="control-dock">
-          <div className="dock-stat">
-            <span>SAVED</span>
-            <span className="dock-val">{stats.saved} MB</span>
-          </div>
-
-          <div className="dock-slider">
-            <span className="slider-label">Power</span>
-            <input 
-              type="range" min="0.1" max="1.0" step="0.05" 
-              value={quality} 
-              onChange={e => {
-                setQuality(parseFloat(e.target.value));
-                if(!isProcessing) processQueue(files, parseFloat(e.target.value));
-              }}
-              disabled={isProcessing}
-            />
-          </div>
-
-          <div style={{flex:1}}></div>
-
-          <button className="btn-secondary" onClick={() => fileInputRef.current.click()} title="Add Images">
-            <Icons.Plus />
-          </button>
-
-          {stats.isDone ? (
-            <a href={zipUrl} download="compressed-assets.zip" className="btn-primary">
-              <Icons.Download /> Download All
-            </a>
-          ) : (
-            <button className="btn-primary" disabled style={{opacity: 0.7, cursor: 'wait'}}>
-              <div className="loader" style={{width:16, height:16, border: '2px solid white', borderRightColor:'transparent'}}></div> Processing
+          <aside className="inspector">
+            <span className="ctrl-label">Engine Strength</span>
+            <div className="stat-massive">{Math.round((1 - quality) * 100)}%</div>
+            <input type="range" min="0.1" max="0.9" step="0.1" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} style={{width: '100%', accentColor: color, marginBottom: '40px'}} />
+            
+            <button className="btn-run" onClick={startBatch} disabled={status === 'working'}>
+              {status === 'working' ? 'OPTIMIZING...' : 'START PROCESSING'}
             </button>
-          )}
+          </aside>
         </div>
       )}
 
-      <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={e => handleFiles(e.target.files)} />
+      {/* STAGE 3: RESULT */}
+      {status === 'result' && (
+        <div className="scorecard">
+          <div className="score-pct">{results.saved}%</div>
+          <div className="score-msg">Lighter than original!</div>
+          <p style={{color: '#94a3b8', fontSize: '1.3rem', marginBottom: '60px', fontWeight: '700'}}>{results.oldS} KB reduced to {results.newS} KB</p>
+          
+          <a href={results.url} download="zyntool-optimized.zip" className="btn-dl">
+             DOWNLOAD ZIP
+          </a>
+          <br/>
+          <button onClick={() => location.reload()} style={{marginTop: '50px', background: 'none', border: 'none', color: '#94a3b8', fontWeight: '900', cursor: 'pointer', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase'}}>
+             ← Process New Batch
+          </button>
+        </div>
+      )}
     </div>
   );
 }
