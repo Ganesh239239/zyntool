@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 
-export default function ResizeToolFinal({ color = '#3b82f6' }) {
+export default function ResizeToolA4({ color = '#3b82f6' }) {
   const [files, setFiles] = useState([]);
   const [viewState, setViewState] = useState('upload'); 
-  const [resizeMode, setResizeMode] = useState('pixels'); // pixels, percentage, social
+  const [resizeMode, setResizeMode] = useState('pixels'); 
   
   // Settings
   const [targetW, setTargetW] = useState('');
@@ -21,7 +21,7 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
   
   const fileInputRef = useRef(null);
 
-  // --- PRESETS CONFIG ---
+  // --- CONFIG ---
   const socialPresets = {
     'ig-post': { w: 1080, h: 1080, label: 'Instagram Post' },
     'ig-story': { w: 1080, h: 1920, label: 'Instagram Story' },
@@ -37,18 +37,16 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
 
     const img = new Image();
     img.onload = () => {
-      const w = img.width;
-      const h = img.height;
-      setAspectRatio(w / h);
-      setTargetW(w);
-      setTargetH(h);
+      setTargetW(img.width);
+      setTargetH(img.height);
+      setAspectRatio(img.width / img.height);
       
       const newEntries = valid.map(f => ({
         id: Math.random().toString(36).slice(2),
         file: f,
         preview: URL.createObjectURL(f),
         name: f.name,
-        size: f.size
+        size: (f.size / 1024).toFixed(0) + ' KB'
       }));
       setFiles(prev => [...prev, ...newEntries]);
       setViewState('workspace');
@@ -73,13 +71,11 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
   const processResize = async () => {
     setProcessing(true);
     const zip = new JSZip();
-
     const processedFiles = [...files];
 
     for (let i = 0; i < processedFiles.length; i++) {
       const item = processedFiles[i];
       let finalW, finalH;
-      
       const img = await loadImage(item.file);
       const imgRatio = img.width / img.height;
 
@@ -105,46 +101,37 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
     }
 
     const content = await zip.generateAsync({ type: 'blob' });
-    setResult({
-      url: URL.createObjectURL(content),
-      count: files.length,
-      mode: resizeMode
-    });
-    
+    setResult({ url: URL.createObjectURL(content), count: files.length });
     setTimeout(() => { setProcessing(false); setViewState('finished'); }, 500);
   };
 
-  const loadImage = (file) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.src = URL.createObjectURL(file);
-    });
-  };
+  const loadImage = (file) => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.src = URL.createObjectURL(file);
+  });
 
-  const resizeCanvas = (img, w, h, fmt) => {
-    return new Promise(resolve => {
-      const cvs = document.createElement('canvas');
-      cvs.width = w; cvs.height = h;
-      const ctx = cvs.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      let mime = fmt === 'original' ? 'image/jpeg' : fmt; 
-      cvs.toBlob(resolve, mime, 0.9);
-    });
-  };
+  const resizeCanvas = (img, w, h, fmt) => new Promise(resolve => {
+    const cvs = document.createElement('canvas');
+    cvs.width = w; cvs.height = h;
+    const ctx = cvs.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    let mime = fmt === 'original' ? 'image/jpeg' : fmt; 
+    cvs.toBlob(resolve, mime, 0.9);
+  });
 
   const reset = () => { setFiles([]); setViewState('upload'); setResult(null); };
 
   return (
-    <div className="resize-tool-final" style={{'--primary': color}}>
+    <div className="resize-studio" style={{'--primary': color}}>
       <style>{`
-        .resize-tool-final {
+        .resize-studio {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-          max-width: 1100px; margin: 0 auto;
+          max-width: 1200px; margin: 0 auto;
           color: #1f2937;
         }
 
-        /* --- UPLOAD HERO --- */
+        /* --- 1. HERO UPLOAD --- */
         .upload-hero {
           background: #ffffff;
           border-radius: 24px;
@@ -168,72 +155,93 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
           padding: 12px 30px; border-radius: 50px; font-weight: 600;
         }
 
-        /* --- MAIN WORKSPACE --- */
+        /* --- 2. MAIN WORKSPACE --- */
         .workspace {
-          display: grid; grid-template-columns: 1fr 340px; gap: 0;
+          display: flex; /* Flex layout to keep sidebar fixed width */
           background: white; border-radius: 20px; border: 1px solid #e5e7eb;
-          overflow: hidden; height: 700px; /* Fixed height for app-feel */
+          overflow: hidden; height: 750px;
           box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+          position: relative;
         }
 
-        /* LEFT: A4 CANVAS PREVIEW */
-        .canvas-stage {
-          background: #e5e7eb; /* The Desk */
+        /* LEFT: A4 DESK STAGE */
+        .desk-stage {
+          flex: 1; /* Takes remaining space */
+          background-color: #f1f5f9; /* The Desk Color */
+          background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+          background-size: 20px 20px;
           padding: 40px;
           display: flex; justify-content: center; align-items: flex-start;
           overflow-y: auto;
           position: relative;
         }
 
-        /* The "A4" Paper Sheet */
-        .a4-sheet {
+        /* The A4 Paper */
+        .a4-paper {
           background: white;
-          width: 100%; max-width: 500px;
-          aspect-ratio: 1 / 1.414; /* A4 Ratio */
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          padding: 30px;
-          overflow-y: auto;
-          display: flex; flex-direction: column; gap: 15px;
+          width: 100%; max-width: 600px; /* A4-ish width */
+          min-height: 840px; /* A4 aspect ratio height */
+          box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+          padding: 40px;
+          position: relative;
+          display: flex; flex-direction: column;
         }
 
-        /* Items on the Paper */
-        .paper-header {
-          border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; margin-bottom: 10px;
-          font-size: 0.8rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;
+        .paper-title {
+          font-size: 0.9rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;
+          border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;
           display: flex; justify-content: space-between;
         }
-        .paper-grid {
-          display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-          gap: 10px;
+
+        /* Grid Layout inside Paper */
+        .image-grid {
+          display: grid; 
+          grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Dynamic filling */
+          gap: 15px;
+          align-content: start;
         }
-        .paper-item {
+
+        .img-item {
+          aspect-ratio: 1;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
           position: relative;
-          aspect-ratio: 1; border-radius: 4px; overflow: hidden;
-          border: 1px solid #f3f4f6; cursor: default;
+          overflow: hidden;
+          background: #f8fafc;
+          transition: transform 0.2s;
+          cursor: default;
         }
-        .paper-item img { width: 100%; height: 100%; object-fit: cover; }
-        .paper-item:hover .remove-x { opacity: 1; }
-        
-        .remove-x {
-          position: absolute; top: 2px; right: 2px;
-          background: rgba(0,0,0,0.6); color: white; width: 18px; height: 18px;
+        .img-item:hover { transform: translateY(-3px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .img-item img {
+          width: 100%; height: 100%; object-fit: contain; padding: 5px;
+        }
+        .del-badge {
+          position: absolute; top: 4px; right: 4px;
+          width: 20px; height: 20px; background: rgba(0,0,0,0.6); color: white;
           border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center;
           cursor: pointer; opacity: 0; transition: 0.2s;
         }
-
-        .add-more-card {
-          border: 2px dashed #e5e7eb; border-radius: 4px;
-          display: flex; align-items: center; justify-content: center;
-          color: #d1d5db; cursor: pointer; aspect-ratio: 1;
-        }
-        .add-more-card:hover { border-color: var(--primary); color: var(--primary); }
-
-        /* RIGHT: CONTROLS (Your liked design) */
-        .controls {
-          background: white; padding: 24px; border-left: 1px solid #e5e7eb;
-          display: flex; flex-direction: column; overflow-y: auto;
-        }
+        .img-item:hover .del-badge { opacity: 1; }
         
+        /* Add Card */
+        .add-card {
+          aspect-ratio: 1; border: 2px dashed #cbd5e1; border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          color: #94a3b8; cursor: pointer; transition: 0.2s;
+        }
+        .add-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdf4; }
+
+        /* RIGHT: CONTROLS SIDEBAR */
+        .controls {
+          width: 320px; /* Fixed width */
+          background: white; border-left: 1px solid #e5e7eb;
+          display: flex; flex-direction: column;
+          z-index: 10; /* Above scroll */
+        }
+        .controls-body { padding: 24px; flex: 1; overflow-y: auto; }
+        .controls-footer { padding: 24px; border-top: 1px solid #e5e7eb; background: #f9fafb; }
+
+        /* UI Elements */
         .tabs { display: flex; background: #f3f4f6; padding: 4px; border-radius: 10px; margin-bottom: 24px; }
         .tab { flex: 1; text-align: center; padding: 10px; font-size: 0.85rem; font-weight: 600; color: #6b7280; cursor: pointer; border-radius: 8px; transition: 0.2s; }
         .tab.active { background: white; color: #111827; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -258,10 +266,13 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
 
         /* RESULT OVERLAY */
         .result-overlay {
-          position: absolute; inset: 0; background: rgba(255,255,255,0.9);
-          backdrop-filter: blur(5px); z-index: 10;
+          position: absolute; inset: 0; background: rgba(255,255,255,0.95);
+          backdrop-filter: blur(5px); z-index: 20;
           display: flex; flex-direction: column; align-items: center; justify-content: center;
+          animation: fadeIn 0.3s ease;
         }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        
         .result-box {
           background: white; border: 1px solid #e5e7eb; padding: 40px; border-radius: 20px;
           text-align: center; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.1);
@@ -269,9 +280,9 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
         }
 
         @media (max-width: 800px) {
-          .workspace { grid-template-columns: 1fr; height: auto; }
-          .canvas-stage { height: 400px; }
-          .a4-sheet { aspect-ratio: unset; min-height: 400px; }
+          .workspace { flex-direction: column; height: auto; }
+          .desk-stage { min-height: 400px; }
+          .controls { width: 100%; border-left: none; border-top: 1px solid #e5e7eb; }
         }
       `}</style>
 
@@ -293,7 +304,7 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
 
       {/* VIEW 2: WORKSPACE */}
       {(viewState === 'workspace' || viewState === 'finished') && (
-        <div className="workspace" style={{position:'relative'}}>
+        <div className="workspace">
           
           {/* RESULT OVERLAY */}
           {viewState === 'finished' && result && (
@@ -311,79 +322,81 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
           )}
 
           {/* LEFT: THE A4 DESK */}
-          <div className="canvas-stage">
-            <div className="a4-sheet">
-              <div className="paper-header">
-                <span>{files.length} Files Loaded</span>
-                <span style={{color: color}}>Visual Preview</span>
+          <div className="desk-stage">
+            <div className="a4-paper">
+              <div className="paper-title">
+                <span>{files.length} Images</span>
+                <span style={{color: color}}>A4 Preview</span>
               </div>
               
-              <div className="paper-grid">
+              <div className="image-grid">
                 {files.map(f => (
-                  <div key={f.id} className="paper-item">
+                  <div key={f.id} className="img-item">
                     <img src={f.preview} alt="" />
-                    <div className="remove-x" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
+                    <div className="del-badge" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
                       <i className="fa-solid fa-xmark"></i>
                     </div>
                   </div>
                 ))}
-                <div className="add-more-card" onClick={() => fileInputRef.current.click()}>
-                  <i className="fa-solid fa-plus"></i>
+                
+                {/* Add More Button (Looks like a card) */}
+                <div className="add-card" onClick={() => fileInputRef.current.click()}>
+                  <i className="fa-solid fa-plus" style={{fontSize:'24px'}}></i>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: CONTROLS (UNTOUCHED) */}
+          {/* RIGHT: CONTROLS */}
           <div className="controls">
-            <div className="tabs">
-              <div className={`tab ${resizeMode === 'pixels' ? 'active' : ''}`} onClick={() => setResizeMode('pixels')}>Pixels</div>
-              <div className={`tab ${resizeMode === 'percentage' ? 'active' : ''}`} onClick={() => setResizeMode('percentage')}>%</div>
-              <div className={`tab ${resizeMode === 'social' ? 'active' : ''}`} onClick={() => setResizeMode('social')}>Social</div>
-            </div>
-
-            {resizeMode === 'pixels' && (
-              <div>
-                <span className="section-label">Target Dimensions</span>
-                <div className="input-row">
-                  <input type="number" className="clean-input" placeholder="W" value={targetW} onChange={e => handlePixelChange('w', e.target.value)} />
-                  <div className={`toggle-icon ${lockAspect ? 'active' : ''}`} onClick={() => setLockAspect(!lockAspect)}>
-                    <i className={`fa-solid ${lockAspect ? 'fa-link' : 'fa-link-slash'}`}></i>
-                  </div>
-                  <input type="number" className="clean-input" placeholder="H" value={targetH} onChange={e => handlePixelChange('h', e.target.value)} />
-                </div>
+            <div className="controls-body">
+              <div className="tabs">
+                <div className={`tab ${resizeMode === 'pixels' ? 'active' : ''}`} onClick={() => setResizeMode('pixels')}>Pixels</div>
+                <div className={`tab ${resizeMode === 'percentage' ? 'active' : ''}`} onClick={() => setResizeMode('percentage')}>%</div>
+                <div className={`tab ${resizeMode === 'social' ? 'active' : ''}`} onClick={() => setResizeMode('social')}>Social</div>
               </div>
-            )}
 
-            {resizeMode === 'percentage' && (
-              <div>
-                <span className="section-label">Scale By {percentage}%</span>
-                <input type="range" style={{width:'100%', accentColor:color, marginBottom:'20px'}} min="10" max="200" value={percentage} onChange={e => setPercentage(e.target.value)} />
-                <div className="preset-grid">
-                  {[25, 50, 75].map(p => (
-                    <div key={p} className="preset-card" onClick={() => setPercentage(p)} style={{textAlign:'center'}}>{p}%</div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {resizeMode === 'social' && (
-              <div>
-                <span className="section-label">Choose Preset</span>
-                <div className="preset-grid">
-                  {Object.entries(socialPresets).map(([key, val]) => (
-                    <div key={key} className={`preset-card ${socialPreset === key ? 'selected' : ''}`} onClick={() => setSocialPreset(key)}>
-                      <div className="p-name">{val.label}</div>
-                      <div className="p-dims">{val.w} x {val.h}</div>
+              {resizeMode === 'pixels' && (
+                <div>
+                  <span className="section-label">Dimensions</span>
+                  <div className="input-row">
+                    <input type="number" className="clean-input" placeholder="W" value={targetW} onChange={e => handlePixelChange('w', e.target.value)} />
+                    <div className={`toggle-icon ${lockAspect ? 'active' : ''}`} onClick={() => setLockAspect(!lockAspect)}>
+                      <i className={`fa-solid ${lockAspect ? 'fa-link' : 'fa-link-slash'}`}></i>
                     </div>
-                  ))}
+                    <input type="number" className="clean-input" placeholder="H" value={targetH} onChange={e => handlePixelChange('h', e.target.value)} />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div style={{marginTop:'auto'}}>
-              <span className="section-label">Format</span>
-              <div style={{marginBottom:'20px'}}>
+              {resizeMode === 'percentage' && (
+                <div>
+                  <span className="section-label">Scale By {percentage}%</span>
+                  <input type="range" style={{width:'100%', accentColor:color, marginBottom:'20px'}} min="10" max="200" value={percentage} onChange={e => setPercentage(e.target.value)} />
+                  <div className="preset-grid">
+                    {[25, 50, 75].map(p => (
+                      <div key={p} className="preset-card" onClick={() => setPercentage(p)} style={{textAlign:'center'}}>{p}%</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {resizeMode === 'social' && (
+                <div>
+                  <span className="section-label">Select Preset</span>
+                  <div className="preset-grid">
+                    {Object.entries(socialPresets).map(([key, val]) => (
+                      <div key={key} className={`preset-card ${socialPreset === key ? 'selected' : ''}`} onClick={() => setSocialPreset(key)}>
+                        <div className="p-name">{val.label}</div>
+                        <div className="p-dims">{val.w} x {val.h}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div style={{marginTop:'20px'}}>
+                <span className="section-label">Format</span>
                 <select className="clean-input" value={format} onChange={e => setFormat(e.target.value)}>
                   <option value="original">Keep Original</option>
                   <option value="image/jpeg">JPG</option>
@@ -391,7 +404,9 @@ export default function ResizeToolFinal({ color = '#3b82f6' }) {
                   <option value="image/webp">WEBP</option>
                 </select>
               </div>
+            </div>
 
+            <div className="controls-footer">
               <button className="action-btn" onClick={processResize} disabled={processing}>
                 {processing ? 'Processing...' : 'Resize Images'}
               </button>
