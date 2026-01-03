@@ -17,13 +17,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.0",
-    "browser-image-compression": "^2.0.2",
     "jszip": "^3.10.1",
-    "tesseract.js": "^5.0.0",
-    "jspdf": "^2.5.1",
-    "pdfjs-dist": "^3.11.174",
-    "cropperjs": "^1.6.1",
-    "modern-image-compression": "^1.0.0",
     "@jsquash/jpeg": "^1.2.0",
     "@jsquash/webp": "^1.2.0",
     "@jsquash/png": "^1.2.0"
