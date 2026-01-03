@@ -1,146 +1,183 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 import './CompressTool.css';
 
 export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState('landing'); // landing, studio, result
-  const [settings, setSettings] = useState({ quality: 0.5, format: 'image/webp', preserveMeta: false });
-  const [results, setResults] = useState(null);
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [appState, setAppState] = useState('idle'); // idle | working | success
+  const [globalQuality, setGlobalQuality] = useState(0.6);
+  const [batchStats, setBatchStats] = useState({ old: 0, new: 0, saved: 0 });
 
-  const onUpload = (e) => {
+  // --- 1. HANDLING THE QUEUE ---
+  const onFileSelect = (e) => {
     const selected = Array.from(e.target.files);
     if (!selected.length) return;
-    setFiles(selected.map(f => ({
-      file: f,
+
+    const newFiles = selected.map(file => ({
       id: Math.random().toString(36).substr(2, 9),
-      preview: URL.createObjectURL(f),
-      name: f.name,
-      size: (f.size / 1024).toFixed(1),
-      compressed: null
-    })));
-    setStatus('studio');
-  };
-
-  const runEngine = async () => {
-    setStatus('processing');
-    const zip = new JSZip();
-    let oldT = 0; let newT = 0;
-
-    await Promise.all(files.map(async (item) => {
-      oldT += item.file.size;
-      const options = { 
-        maxSizeMB: 0.1, 
-        initialQuality: settings.quality, 
-        fileType: settings.format === 'original' ? item.file.type : settings.format,
-        useWebWorker: true,
-        maxIteration: 20 
-      };
-      
-      const blob = await imageCompression(item.file, options);
-      newT += blob.size;
-      zip.file(`zyn-optimized-${item.name.split('.')[0]}.${blob.type.split('/')[1]}`, blob);
+      file,
+      url: URL.createObjectURL(file),
+      name: file.name,
+      oldSize: file.size,
+      newSize: null,
+      status: 'queued', // queued | compressing | done
+      progress: 0
     }));
 
+    setFiles(prev => [...prev, ...newFiles]);
+    setAppState('working');
+  };
+
+  // --- 2. THE COMPRESSION ENGINE (Aggressive & Individual) ---
+  const runBatchProcess = async () => {
+    setAppState('working');
+    const zip = new JSZip();
+    let totalOld = 0;
+    let totalNew = 0;
+
+    // Process one by one for that "Realistic" loading feel
+    for (let i = 0; i < files.length; i++) {
+      const item = files[i];
+      if (item.status === 'done') continue;
+
+      // Update UI to "Compressing"
+      updateFileStatus(item.id, { status: 'compressing', progress: 30 });
+      totalOld += item.oldSize;
+
+      try {
+        const options = {
+          maxSizeMB: 0.5,
+          initialQuality: globalQuality,
+          useWebWorker: true,
+          maxIteration: 10,
+          onProgress: (p) => updateFileStatus(item.id, { progress: 30 + (p * 0.7) })
+        };
+
+        const result = await imageCompression(item.file, options);
+        totalNew += result.size;
+        
+        const resultUrl = URL.createObjectURL(result);
+        zip.file(`zyn-optimized-${item.name}`, result);
+
+        updateFileStatus(item.id, { 
+            status: 'done', 
+            newSize: result.size, 
+            progress: 100,
+            url: resultUrl 
+        });
+      } catch (err) {
+        updateFileStatus(item.id, { status: 'error' });
+        totalNew += item.oldSize;
+      }
+    }
+
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    setResults({
-      url: URL.createObjectURL(zipBlob),
-      pct: Math.round(((oldT - newT) / oldT) * 100),
-      oldS: (oldT / 1024).toFixed(0),
-      newS: (newT / 1024).toFixed(0)
+    setBatchStats({
+      old: (totalOld / 1024).toFixed(0),
+      new: (totalNew / 1024).toFixed(0),
+      saved: Math.round(((totalOld - totalNew) / totalOld) * 100),
+      url: URL.createObjectURL(zipBlob)
     });
-    setStatus('result');
+    setAppState('success');
+  };
+
+  const updateFileStatus = (id, updates) => {
+    setFiles(prev => prev.map(f => f.id === id ? { ...f, ...updates } : f));
+  };
+
+  const removeFile = (id) => {
+    setFiles(prev => prev.filter(f => f.id !== id));
+    if (files.length <= 1) setAppState('idle');
   };
 
   return (
-    <div className="studio-container">
-      {/* 1. LANDING STATE */}
-      {status === 'landing' && (
-        <div className="landing-stage animate-fade">
-          <div className="glass-dropzone" onClick={() => document.getElementById('fIn').click()}>
-            <div className="dropzone-inner">
-              <div class="badge-new">NEW ENGINE v4</div>
-              <div className="icon-morph" style={{background: color}}>
-                <i className="fa-solid fa-bolt-lightning"></i>
-              </div>
-              <h2 className="title-huge">Optimize Images</h2>
-              <p className="subtitle">Drag and drop up to 20 files for extreme compression.</p>
-              <button className="btn-main-pro">Choose Photos</button>
-              <input type="file" id="fIn" hidden multiple onChange={onUpload} />
+    <div className="zyn-pro-wrapper">
+      {/* LANDING STATE */}
+      {appState === 'idle' && (
+        <div className="hero-uploader" onClick={() => document.getElementById('f').click()}>
+          <div class="glow-effect" style={{background: color}}></div>
+          <div className="glass-card">
+            <div className="icon-pulse">
+               <i className="fa-solid fa-cloud-arrow-up"></i>
             </div>
+            <h2>Optimize Batch</h2>
+            <p>Select up to 20 images for high-speed compression</p>
+            <button className="btn-glass">Choose Files</button>
+            <input type="file" id="f" hidden multiple onChange={onFileSelect} />
           </div>
         </div>
       )}
 
-      {/* 2. STUDIO STATE */}
-      {(status === 'studio' || status === 'processing') && (
-        <div className="app-layout animate-slide-up">
-          <div className="main-content">
-             <div class="workbench-header">
-                <span class="file-name-pill">{files[activeIdx].name}</span>
-                <span class="file-size-pill">{files[activeIdx].size} KB</span>
-             </div>
-             <div className="stage-area">
-                <img src={files[activeIdx].preview} className="stage-image" />
-                {status === 'processing' && (
-                  <div className="stage-loader">
-                    <div className="spinner-pro"></div>
-                    <span>Optimizing Pixels...</span>
+      {/* WORKSPACE STATE */}
+      {appState === 'working' && (
+        <div className="app-grid animate-in">
+          <div className="workbench">
+            <div className="workbench-header">
+                <h3>Asset Queue <span className="count">{files.length}</span></h3>
+                <button className="add-more" onClick={() => document.getElementById('f').click()}>+ Add More</button>
+            </div>
+            
+            <div className="assets-container">
+              {files.map(f => (
+                <div key={f.id} className={`asset-card-v5 ${f.status}`}>
+                  <div className="asset-preview">
+                    <img src={f.url} />
+                    {f.status === 'compressing' && <div className="loader-ring"></div>}
+                    {f.status === 'done' && <div className="done-check"><i className="fa-solid fa-check"></i></div>}
                   </div>
-                )}
-             </div>
-             <div className="gallery-tray">
-                {files.map((f, i) => (
-                  <div key={i} className={`tray-item ${activeIdx === i ? 'active' : ''}`} onClick={() => setActiveIdx(i)}>
-                    <img src={f.preview} />
+                  <div className="asset-meta">
+                    <span className="name">{f.name}</span>
+                    <span className="status-text">
+                        {f.status === 'done' ? `Reduced to ${(f.newSize/1024).toFixed(0)}KB` : `${(f.oldSize/1024).toFixed(0)}KB`}
+                    </span>
                   </div>
-                ))}
-             </div>
+                  <button className="remove-btn" onClick={() => removeFile(f.id)}>&times;</button>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <aside className="inspector-sidebar">
-            <h4 className="sidebar-title">Inspector</h4>
-            
-            <div className="control-group">
-                <label className="label-pro">Compression Strength</label>
-                <div className="quality-display">{Math.round((1 - settings.quality) * 100)}%</div>
-                <input type="range" className="pro-range" min="0.1" max="0.9" step="0.1" value={settings.quality} onChange={(e) => setSettings({...settings, quality: parseFloat(e.target.value)})} />
-            </div>
+          <aside className="inspector">
+            <div className="inspector-inner">
+                <div className="section-title">Engine Config</div>
+                <div className="control-group">
+                    <div className="label-row">
+                        <label>Strength</label>
+                        <span>{Math.round((1 - globalQuality) * 100)}%</span>
+                    </div>
+                    <input type="range" min="0.1" max="0.9" step="0.1" value={globalQuality} onChange={(e) => setGlobalQuality(e.target.value)} className="pro-slider" />
+                </div>
+                
+                <div className="pro-features">
+                    <div className="feature-item">
+                        <i className="fa-solid fa-shield-check"></i>
+                        <span>Browser-only Processing</span>
+                    </div>
+                </div>
 
-            <div className="control-group">
-                <label className="label-pro">Output Format</label>
-                <select className="pro-select" value={settings.format} onChange={(e) => setSettings({...settings, format: e.target.value})}>
-                    <option value="original">Original Format</option>
-                    <option value="image/webp">WebP (Optimized)</option>
-                    <option value="image/jpeg">JPEG (Standard)</option>
-                </select>
+                <button className="btn-execute" onClick={runBatchProcess}>
+                    OPTIMIZE ALL
+                </button>
             </div>
-
-            <button className="btn-execute" onClick={runEngine} disabled={status === 'processing'}>
-                {status === 'processing' ? 'PROCESSING...' : 'RUN BATCH'}
-            </button>
           </aside>
         </div>
       )}
 
-      {/* 3. RESULT STATE */}
-      {status === 'result' && (
-        <div className="result-stage animate-zoom">
-          <div className="result-glass shadow-2xl">
-            <div class="success-check"><i class="fa-solid fa-check"></i></div>
-            <div className="massive-pct">{results.pct}%</div>
-            <h3 className="lighter-text">Lighter & Faster</h3>
-            <div className="kb-details">{results.oldS} KB <i className="fa-solid fa-arrow-right"></i> {results.newS} KB</div>
+      {/* SUCCESS STATE */}
+      {appState === 'success' && (
+        <div className="success-screen animate-zoom">
+          <div className="success-glass">
+            <div className="score-badge">{batchStats.saved}%</div>
+            <h1>Lighter!</h1>
+            <p className="summary-text">{batchStats.old}KB <i className="fa-solid fa-arrow-right"></i> {batchStats.new}KB</p>
             
-            <a href={results.url} download="zyntool-batch.zip" className="btn-download-pro">
-               Download optimized images
-            </a>
-            
-            <button onClick={() => location.reload()} className="btn-restart-pro">
-               ← New Batch
-            </button>
+            <div className="action-stack">
+                <a href={batchStats.url} download="zyntool-optimized.zip" className="download-cta">
+                    DOWNLOAD ZIP <i className="fa-solid fa-file-zipper ms-2"></i>
+                </a>
+                <button className="restart-btn" onClick={() => location.reload()}>Process New Batch</button>
+            </div>
           </div>
         </div>
       )}
