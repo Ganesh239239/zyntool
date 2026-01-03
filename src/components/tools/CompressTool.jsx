@@ -1,308 +1,429 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-// --- ICONS ---
+// --- PRO ICONS ---
 const Icon = {
-  Upload: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
-  Wasm: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>,
-  Check: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-  Close: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Download: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  Plus: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3v10M3 8h10"/></svg>,
+  Upload: () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"/></svg>,
+  File: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>,
+  Close: () => <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 1L1 13M1 1l12 12"/></svg>,
+  Download: () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
+  Check: () => <svg width="16" height="16" fill="none" stroke="#10b981" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
 };
 
-export default function CompressTool({ color = '#3b82f6' }) {
-  // --- STATE ---
+export default function CompressTool() {
   const [files, setFiles] = useState([]);
-  const [view, setView] = useState('empty');
-  const [quality, setQuality] = useState(0.75);
-  const [useWebP, setUseWebP] = useState(false); // Default false to keep original format
   const [isProcessing, setIsProcessing] = useState(false);
   const [zipUrl, setZipUrl] = useState(null);
-  const [dragActive, setDragActive] = useState(false);
+  
+  // Settings State
+  const [quality, setQuality] = useState(0.75);
+  const [useWebP, setUseWebP] = useState(true);
+  const [resizeW, setResizeW] = useState(''); // Optional: Squoosh features usually have resize
+
   const fileInputRef = useRef(null);
 
-  // --- STATS ENGINE ---
+  // --- STATS CALC ---
   const stats = useMemo(() => {
-    let orig = 0, comp = 0, count = 0;
-    files.forEach(f => {
-      orig += f.origSize;
-      if (f.status === 'done') {
-        comp += f.newSize;
-        count++;
-      }
-    });
-    const saved = orig - comp;
-    return {
-      totalSavedMB: (saved / 1024 / 1024).toFixed(2),
-      isDone: count === files.length && count > 0,
-      count: count
-    };
+    const totalOrig = files.reduce((acc, f) => acc + f.origSize, 0);
+    const totalNew = files.reduce((acc, f) => acc + (f.newSize || f.origSize), 0);
+    const processedCount = files.filter(f => f.status === 'done').length;
+    const isDone = files.length > 0 && processedCount === files.length;
+    const savings = totalOrig - totalNew;
+    
+    return { totalOrig, totalNew, savings, isDone };
   }, [files]);
 
-  // --- CORE LOGIC ---
-  const handleFiles = (incoming) => {
-    if (!incoming || incoming.length === 0) return;
-    const valid = Array.from(incoming).filter(f => f.type.startsWith('image/'));
-    
-    if (valid.length > 0) {
-      const queue = valid.map(f => ({
-        id: Math.random().toString(36).substr(2, 9),
+  // --- ENGINE ---
+  const handleFiles = (e) => {
+    const incoming = e.target.files || e.dataTransfer?.files;
+    if (!incoming?.length) return;
+
+    const newQueue = Array.from(incoming)
+      .filter(f => f.type.startsWith('image/'))
+      .map(f => ({
+        id: Math.random().toString(36).slice(2),
         file: f,
-        preview: URL.createObjectURL(f),
         name: f.name,
         origSize: f.size,
-        status: 'queued',
-        saved: 0
+        status: 'pending', // pending, working, done, error
+        preview: URL.createObjectURL(f)
       }));
-      setFiles(prev => [...prev, ...queue]);
-      setView('workspace');
-      processQueue([...files, ...queue]);
-    }
+
+    setFiles(prev => [...prev, ...newQueue]);
   };
 
-  const processQueue = async (queue) => {
-    if (isProcessing) return;
+  // The Processor
+  const runBatch = async () => {
     setIsProcessing(true);
     const zip = new JSZip();
-    const workQueue = [...queue];
+    const queue = [...files];
 
-    workQueue.forEach(f => { if(f.status === 'queued') f.status = 'processing'; });
-    setFiles([...workQueue]);
-
-    for (let i = 0; i < workQueue.length; i++) {
-      const item = workQueue[i];
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i];
       if (item.status === 'done') {
-        // Re-add existing blobs to zip
-        zip.file(item.newName || item.name, item.blob);
-        continue; 
+        zip.file(item.finalName, item.blob);
+        continue;
       }
+
+      // Optimistic Update
+      item.status = 'working';
+      setFiles([...queue]);
 
       try {
-        const options = { 
-          maxSizeMB: 2, 
-          maxWidthOrHeight: 2048, 
-          useWebWorker: true,
+        // Squoosh / Browser-Image-Compression Logic
+        const options = {
+          maxSizeMB: 2,
+          maxWidthOrHeight: resizeW ? parseInt(resizeW) : 1920,
+          useWebWorker: true, // Multi-threading
           initialQuality: quality,
-          fileType: useWebP ? "image/webp" : undefined // Keep original if false
+          fileType: useWebP ? "image/webp" : undefined
         };
-        
+
         const blob = await imageCompression(item.file, options);
         
-        // Handle Filename Extension
-        let finalName = item.name;
-        if (useWebP) {
-          finalName = item.name.substring(0, item.name.lastIndexOf('.')) + '.webp';
-        }
-
-        item.newSize = blob.size;
-        item.saved = Math.round(((item.origSize - blob.size) / item.origSize) * 100);
-        item.status = 'done';
         item.blob = blob;
-        item.newName = finalName;
+        item.newSize = blob.size;
+        item.status = 'done';
         
-        zip.file(finalName, blob);
+        // Naming
+        const ext = useWebP ? 'webp' : item.name.split('.').pop();
+        const baseName = item.name.substring(0, item.name.lastIndexOf('.')) || item.name;
+        item.finalName = `${baseName}.${ext}`;
+
+        zip.file(item.finalName, blob);
       } catch (err) {
+        console.error(err);
         item.status = 'error';
       }
-      setFiles([...workQueue]);
+      setFiles([...queue]); // Live Update
     }
 
-    if (workQueue.some(f => f.status === 'done')) {
+    if (queue.some(f => f.status === 'done')) {
       const content = await zip.generateAsync({ type: 'blob' });
       setZipUrl(URL.createObjectURL(content));
     }
     setIsProcessing(false);
   };
 
-  // --- SMART DOWNLOAD HANDLER ---
   const handleDownload = () => {
-    if (files.length === 1) {
-      // SINGLE FILE: Download directly (No ZIP)
-      const f = files[0];
-      if (f.blob) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(f.blob);
-        link.download = f.newName || f.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    } else {
-      // MULTIPLE FILES: Download ZIP
-      if (zipUrl) {
-        const link = document.createElement('a');
-        link.href = zipUrl;
-        link.download = "compressed_images.zip";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    }
-  };
-
-  const removeFile = (id) => {
-    const next = files.filter(f => f.id !== id);
-    setFiles(next);
-    if (next.length === 0) {
-      setView('empty');
-      setZipUrl(null);
+    if (files.length === 1 && files[0].blob) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(files[0].blob);
+      link.download = files[0].finalName;
+      link.click();
+    } else if (zipUrl) {
+      const link = document.createElement('a');
+      link.href = zipUrl;
+      link.download = "optimized_assets.zip";
+      link.click();
     }
   };
 
   const formatSize = (b) => {
-    if (!b) return '...';
-    const i = Math.floor(Math.log(b) / Math.log(1024));
-    return parseFloat((b / Math.pow(1024, i)).toFixed(1)) + ' ' + ['B', 'KB', 'MB'][i];
+    if (!b) return '-';
+    if (b < 1024) return b + ' B';
+    const k = 1024;
+    const sizes = ['KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(b) / Math.log(k));
+    return parseFloat((b / Math.pow(k, i)).toFixed(1)) + sizes[i-1];
   };
 
   return (
-    <div className="zenith-engine" style={{'--accent': color}}>
+    <div className="studio-interface">
       <style>{`
-        .zenith-engine {
-          --bg: #0f172a; --card: #1e293b; --border: #334155;
-          --text: #f8fafc; --sub: #94a3b8; --active: var(--accent);
-          font-family: 'Inter', system-ui, sans-serif;
-          max-width: 950px; margin: 0 auto; color: var(--text);
-          min-height: 600px; display: flex; flex-direction: column;
+        :root {
+          --bg: #ffffff;
+          --panel: #f9fafb;
+          --border: #e5e7eb;
+          --text: #0f172a;
+          --text-dim: #64748b;
+          --accent: #000000;
+          --accent-hover: #333333;
+          --green: #10b981;
+          --mono: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
         }
 
-        /* UPLOAD PORTAL */
-        .portal {
-          flex: 1; background: var(--card); border: 2px dashed var(--border);
-          border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          cursor: pointer; transition: 0.3s;
+        .studio-interface {
+          display: flex;
+          height: 85vh;
+          max-height: 800px;
+          border: 1px solid var(--border);
+          background: var(--bg);
+          font-family: 'Inter', -apple-system, sans-serif;
+          color: var(--text);
+          border-radius: 8px; /* Sharper corners for dev tool look */
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-        .portal:hover { border-color: var(--active); background: #1e293b; box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2); }
-        .orb {
-          width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 50%;
-          display: flex; align-items: center; justify-content: center; color: var(--active); margin-bottom: 24px;
+
+        /* --- LEFT: ASSET LIST --- */
+        .asset-pane {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          border-right: 1px solid var(--border);
+          background: #fff;
         }
+
+        .pane-header {
+          padding: 16px 24px;
+          border-bottom: 1px solid var(--border);
+          display: flex; justify-content: space-between; align-items: center;
+          background: #fff;
+        }
+        .pane-title { font-weight: 600; font-size: 0.9rem; letter-spacing: -0.01em; }
         
-        /* WORKSPACE */
-        .workspace {
-          background: var(--bg); border-radius: 24px; border: 1px solid var(--border);
-          overflow: hidden; box-shadow: 0 20px 50px -20px rgba(0,0,0,0.5); padding-bottom: 100px;
+        .file-table-container { flex: 1; overflow-y: auto; position: relative; }
+        
+        /* Empty State */
+        .empty-drop {
+          position: absolute; inset: 20px;
+          border: 1px dashed var(--border);
+          border-radius: 6px;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          color: var(--text-dim);
+          background: var(--panel);
+          cursor: pointer;
+          transition: background 0.2s;
         }
-        .ws-head {
-          padding: 20px 30px; border-bottom: 1px solid var(--border); background: rgba(15, 23, 42, 0.8);
-          backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center;
-        }
+        .empty-drop:hover { background: #f3f4f6; border-color: #d1d5db; }
+
+        /* File List */
         .file-row {
-          display: grid; grid-template-columns: 50px 2fr 1fr 1fr 40px; align-items: center;
-          padding: 16px 30px; border-bottom: 1px solid var(--border);
+          display: grid; 
+          grid-template-columns: 40px 2fr 1fr 1fr 40px; 
+          align-items: center;
+          padding: 12px 24px;
+          border-bottom: 1px solid var(--border);
+          font-size: 0.85rem;
+          transition: background 0.1s;
         }
-        .thumb { width: 36px; height: 36px; border-radius: 6px; object-fit: cover; background: #334155; }
-        .fname { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px; }
-        .status-pill {
-          display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
-        }
-        .pill-done { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .pill-work { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
-
-        /* FLOATING DOCK */
-        .dock-wrapper {
-          position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-          z-index: 100; width: 90%; max-width: 650px;
-        }
-        .dock {
-          background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(16px);
-          border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 12px 24px;
-          display: flex; align-items: center; justify-content: space-between;
-          box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
-        }
-        .slider-wrap { display: flex; align-items: center; gap: 10px; }
-        .slider-wrap input { width: 100px; accent-color: var(--active); cursor: pointer; }
+        .file-row:hover { background: #f8fafc; }
         
-        .dl-btn {
-          background: var(--text); color: #000; padding: 10px 24px; border-radius: 12px;
-          font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer;
-          display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        .f-thumb { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; background: #eee; border: 1px solid var(--border); }
+        .f-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 15px; }
+        .f-meta { font-family: var(--mono); color: var(--text-dim); font-size: 0.75rem; }
+        .f-badge { 
+          font-family: var(--mono); color: var(--green); background: #ecfdf5; 
+          padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;
         }
-        .dl-btn:hover { transform: scale(1.05); background: white; }
         
-        .loading-spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s infinite linear; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .icon-btn { 
+          background: none; border: none; cursor: pointer; color: var(--text-dim); 
+          display: flex; align-items: center; justify-content: center; padding: 4px;
+          border-radius: 4px;
+        }
+        .icon-btn:hover { background: #fee2e2; color: #ef4444; }
 
-        @media (max-width: 600px) {
-          .dock { flex-direction: column; gap: 15px; padding: 20px; }
+        /* --- RIGHT: INSPECTOR --- */
+        .inspector-pane {
+          width: 320px;
+          background: var(--panel);
+          display: flex; flex-direction: column;
+        }
+
+        .inspector-group {
+          padding: 24px;
+          border-bottom: 1px solid var(--border);
+        }
+        
+        .group-label {
+          font-size: 0.75rem; text-transform: uppercase; font-weight: 700; 
+          color: var(--text-dim); letter-spacing: 0.05em; margin-bottom: 16px;
+          display: block;
+        }
+
+        /* Controls */
+        .control-row { margin-bottom: 16px; }
+        .control-row:last-child { margin-bottom: 0; }
+        
+        .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500; }
+        
+        input[type="range"] {
+          width: 100%; -webkit-appearance: none; background: transparent; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+          width: 100%; height: 4px; background: var(--border); border-radius: 2px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+          background: var(--accent); margin-top: -6px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .select-input {
+          width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
+          background: white; font-size: 0.85rem; color: var(--text);
+        }
+
+        .check-label {
+          display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; user-select: none;
+        }
+        
+        /* Stats Box */
+        .stat-box {
+          background: white; border: 1px solid var(--border); border-radius: 6px; padding: 12px;
+        }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.8rem; color: var(--text-dim); }
+        .stat-row.total { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-weight: 600; color: var(--text); }
+
+        /* Footer Actions */
+        .inspector-footer {
+          margin-top: auto; padding: 24px; border-top: 1px solid var(--border);
+        }
+        
+        .primary-btn {
+          width: 100%; background: var(--accent); color: white; border: none;
+          padding: 12px; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
+          cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+          transition: background 0.1s;
+        }
+        .primary-btn:hover { background: var(--accent-hover); }
+        .primary-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        .secondary-btn {
+          width: 100%; background: white; border: 1px solid var(--border); color: var(--text);
+          padding: 10px; border-radius: 6px; font-weight: 500; font-size: 0.85rem;
+          cursor: pointer; margin-bottom: 12px; text-align: center;
+        }
+        .secondary-btn:hover { background: #f9fafb; border-color: #d1d5db; }
+
+        @media (max-width: 800px) {
+          .studio-interface { flex-direction: column; height: auto; max-height: none; border: none; }
+          .asset-pane { height: 400px; border-right: none; border-bottom: 1px solid var(--border); }
+          .inspector-pane { width: 100%; }
           .file-row { grid-template-columns: 40px 1fr 60px; }
-          .fmeta, .f-stat-col { display: none; }
+          .file-row > :nth-child(3), .file-row > :nth-child(4) { display: none; } /* Hide stats on mobile */
         }
       `}</style>
 
-      {/* VIEW 1: PORTAL */}
-      {view === 'empty' && (
-        <div 
-          className={`portal ${dragActive ? 'drag' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={(e) => { e.preventDefault(); setDragActive(false); handleFiles(e.dataTransfer.files); }}
-          onClick={() => fileInputRef.current.click()}
-        >
-          <div className="orb"><Icon.Upload /></div>
-          <h2 style={{fontSize:'1.5rem', fontWeight:'700'}}>Compress Images</h2>
-          <p style={{color:'#94a3b8'}}>Support for JPG, PNG, WebP</p>
+      {/* LEFT PANE: ASSET MANAGER */}
+      <div className="asset-pane">
+        <div className="pane-header">
+          <span className="pane-title">Assets ({files.length})</span>
+          <button className="icon-btn" onClick={() => setFiles([])} title="Clear All" style={{fontSize:'0.75rem', gap:'4px', width:'auto', padding:'4px 8px'}}>
+            Clear
+          </button>
         </div>
-      )}
 
-      {/* VIEW 2: WORKSPACE */}
-      {view === 'workspace' && (
-        <>
-          <div className="workspace">
-            <div className="ws-head">
-              <span style={{fontWeight:'700'}}>Queue ({files.length})</span>
-              <button onClick={() => fileInputRef.current.click()} style={{background:'none', border:'none', color:'#94a3b8', cursor:'pointer', fontWeight:'600'}}>+ Add</button>
+        <div className="file-table-container">
+          {files.length === 0 ? (
+            <div 
+              className="empty-drop"
+              onClick={() => fileInputRef.current.click()}
+              onDragOver={e => e.preventDefault()}
+              onDrop={e => { e.preventDefault(); handleFiles(e); }}
+            >
+              <div style={{marginBottom:'16px', color:'#9ca3af'}}><Icon.Upload /></div>
+              <span style={{fontWeight:600, marginBottom:'4px'}}>Drop files here</span>
+              <span style={{fontSize:'0.8rem', opacity:0.6}}>JPG, PNG, WebP</span>
             </div>
-
+          ) : (
             <div className="file-list">
               {files.map(f => (
                 <div key={f.id} className="file-row">
-                  <img src={f.preview} className="thumb" alt="" />
-                  <div className="fname" title={f.name}>{f.name}</div>
-                  <div className="fmeta" style={{color:'#94a3b8', fontSize:'0.8rem', fontFamily:'monospace'}}>{formatSize(f.origSize)}</div>
-                  <div className="f-stat-col">
-                    {f.status === 'done' ? (
-                      <span className="status-pill pill-done"><Icon.Check /> -{f.saved}%</span>
-                    ) : (
-                      <span className="status-pill pill-work"><div className="loading-spin"></div> Working</span>
-                    )}
+                  <img src={f.preview} className="f-thumb" alt="" />
+                  <div className="f-name" title={f.name}>{f.name}</div>
+                  <div className="f-meta">
+                    {formatSize(f.origSize)} <span style={{margin:'0 4px'}}>→</span> {f.status === 'done' ? formatSize(f.newSize) : '...'}
                   </div>
-                  <div style={{textAlign:'right', cursor:'pointer', color:'#334155'}} onClick={() => removeFile(f.id)}><Icon.Close /></div>
+                  <div style={{textAlign:'right'}}>
+                    {f.status === 'done' && <span className="f-badge">-{Math.round(((f.origSize - f.newSize)/f.origSize)*100)}%</span>}
+                    {f.status === 'working' && <span style={{fontSize:'0.7rem', color:color}}>Processing</span>}
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <button className="icon-btn" onClick={() => setFiles(files.filter(x => x.id !== f.id))}>
+                      <Icon.Close />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* RIGHT PANE: INSPECTOR */}
+      <div className="inspector-pane">
+        
+        {/* GROUP 1: SETTINGS */}
+        <div className="inspector-group">
+          <span className="group-label">Compression Settings</span>
+          
+          <div className="control-row">
+            <div className="label-row">
+              <span>Quality</span>
+              <span style={{fontFamily:'var(--mono)'}}>{Math.round(quality*100)}%</span>
+            </div>
+            <input 
+              type="range" min="0.1" max="1.0" step="0.05" 
+              value={quality} onChange={e => setQuality(parseFloat(e.target.value))}
+              disabled={isProcessing}
+            />
           </div>
 
-          {/* SMART FLOATING DOCK */}
-          <div className="dock-wrapper">
-            <div className="dock">
-              <div style={{display:'flex', gap:'20px', alignItems:'center'}}>
-                <div className="slider-wrap">
-                  <span style={{fontWeight:'700', color:color}}>{Math.round(quality*100)}%</span>
-                  <input type="range" min="0.1" max="1.0" step="0.05" value={quality} onChange={e => { setQuality(parseFloat(e.target.value)); if(!isProcessing) processQueue(files); }} disabled={isProcessing} />
-                </div>
-                <label style={{display:'flex', gap:'8px', cursor:'pointer', fontSize:'0.8rem', fontWeight:'600', color:'#94a3b8'}}>
-                  <input type="checkbox" checked={useWebP} onChange={e => setUseWebP(e.target.checked)} disabled={isProcessing} />
-                  Convert to WebP
-                </label>
-              </div>
+          <div className="control-row">
+            <div className="label-row">
+              <span>Format</span>
+            </div>
+            <label className="check-label">
+              <input type="checkbox" checked={useWebP} onChange={e => setUseWebP(e.target.checked)} disabled={isProcessing} />
+              <span>Convert to WebP (Google Rec.)</span>
+            </label>
+          </div>
 
-              {stats.isDone ? (
-                <button onClick={handleDownload} className="dl-btn">
-                  {stats.count > 1 ? `Download All` : `Download Image`} <Icon.Download />
-                </button>
-              ) : (
-                <button className="dl-btn" style={{opacity:0.7, cursor:'wait'}}>
-                  <div className="loading-spin" style={{borderColor:'black', borderTopColor:'transparent'}}></div> Processing
-                </button>
-              )}
+          {/* Optional: Add Resize if you want Squoosh features */}
+          {/* 
+          <div className="control-row">
+             <div className="label-row"><span>Max Width (px)</span></div>
+             <input type="number" className="select-input" placeholder="e.g. 1920" value={resizeW} onChange={e=>setResizeW(e.target.value)} />
+          </div>
+          */}
+        </div>
+
+        {/* GROUP 2: SUMMARY */}
+        <div className="inspector-group">
+          <span className="group-label">Summary</span>
+          <div className="stat-box">
+            <div className="stat-row">
+              <span>Original</span>
+              <span style={{fontFamily:'var(--mono)'}}>{formatSize(stats.totalOrig)}</span>
+            </div>
+            <div className="stat-row">
+              <span>Compressed</span>
+              <span style={{fontFamily:'var(--mono)'}}>{stats.totalNew > 0 ? formatSize(stats.totalNew) : '-'}</span>
+            </div>
+            <div className="stat-row total">
+              <span>Savings</span>
+              <span style={{color: stats.savings > 0 ? 'var(--green)' : 'inherit'}}>
+                {stats.savings > 0 ? `-${formatSize(stats.savings)}` : '0 B'}
+              </span>
             </div>
           </div>
-        </>
-      )}
+        </div>
 
-      <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={e => handleFiles(e.target.files)} />
+        {/* FOOTER: ACTIONS */}
+        <div className="inspector-footer">
+          <button className="secondary-btn" onClick={() => fileInputRef.current.click()}>
+            <span style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'6px'}}>
+              <Icon.Plus /> Add Images
+            </span>
+          </button>
+
+          {stats.isDone ? (
+            <button className="primary-btn" style={{backgroundColor: '#10b981'}} onClick={handleDownload}>
+              Download {files.length > 1 ? 'ZIP' : 'File'} <Icon.Download />
+            </button>
+          ) : (
+            <button className="primary-btn" onClick={runBatch} disabled={isProcessing || files.length === 0}>
+              {isProcessing ? 'Processing...' : 'Compress All'}
+            </button>
+          )}
+        </div>
+      </div>
+
+      <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={handleFiles} />
     </div>
   );
 }
