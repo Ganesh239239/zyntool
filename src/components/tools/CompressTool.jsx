@@ -1,19 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import imageCompression from 'browser-image-compression';
 import JSZip from 'jszip';
 
-export default function CompressTool({ color = '#2563eb' }) {
+export default function CompressTool({ color = '#3b82f6' }) {
   const [files, setFiles] = useState([]);
   const [viewState, setViewState] = useState('upload'); // upload, workspace, finished
-  const [quality, setQuality] = useState(0.7); // 0.1 to 1.0
-  const [isDragging, setIsDragging] = useState(false);
+  const [quality, setQuality] = useState(0.7);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   
   const fileInputRef = useRef(null);
 
-  // --- LOGIC ---
+  // --- HANDLERS ---
 
   const handleDrag = (e, active) => {
     e.preventDefault(); e.stopPropagation();
@@ -35,7 +35,7 @@ export default function CompressTool({ color = '#2563eb' }) {
       preview: URL.createObjectURL(f),
       name: f.name,
       origSize: f.size,
-      status: 'pending' // pending, done, error
+      status: 'pending' 
     }));
 
     setFiles(prev => [...prev, ...newEntries]);
@@ -51,9 +51,7 @@ export default function CompressTool({ color = '#2563eb' }) {
     setProcessing(true);
     setProgress(0);
     const zip = new JSZip();
-    let oldTotal = 0; 
-    let newTotal = 0;
-
+    let oldTotal = 0; let newTotal = 0;
     const processedFiles = [...files];
 
     for (let i = 0; i < processedFiles.length; i++) {
@@ -61,36 +59,20 @@ export default function CompressTool({ color = '#2563eb' }) {
       oldTotal += item.origSize;
       
       try {
-        // High-performance config
-        const opts = { 
-          maxSizeMB: 2, 
-          maxWidthOrHeight: 2048, 
-          useWebWorker: true,
-          initialQuality: quality
-        };
-
+        const opts = { maxSizeMB: 2, maxWidthOrHeight: 2048, useWebWorker: true, initialQuality: quality };
         const compressed = await imageCompression(item.file, opts);
         newTotal += compressed.size;
         
-        // Add to zip
         zip.file(item.name, compressed);
-        
-        // Update local status for UI feedback
         processedFiles[i].status = 'done';
         processedFiles[i].newSize = compressed.size;
-        setFiles([...processedFiles]); // Force re-render of list
+        setFiles([...processedFiles]); 
         
-        // Progress tick
         setProgress(Math.round(((i + 1) / processedFiles.length) * 100));
-
-      } catch (e) {
-        console.error(e);
-        processedFiles[i].status = 'error';
-      }
+      } catch (e) { console.error(e); }
     }
 
     const blob = await zip.generateAsync({ type: 'blob' });
-    
     setResult({
       url: URL.createObjectURL(blob),
       saved: Math.round(((oldTotal - newTotal) / oldTotal) * 100),
@@ -101,293 +83,240 @@ export default function CompressTool({ color = '#2563eb' }) {
     setTimeout(() => {
       setProcessing(false);
       setViewState('finished');
-    }, 600);
+    }, 500);
   };
 
   const reset = () => {
     setFiles([]); setViewState('upload'); setResult(null); setProgress(0);
   };
 
-  // --- HELPERS ---
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 B';
-    const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return parseFloat((bytes / Math.pow(1024, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
   return (
-    <div className="dev-compressor-root" style={{'--accent': color}}>
+    <div className="compress-root" style={{'--theme': color}}>
       <style>{`
-        /* --- PRO STYLING --- */
-        .dev-compressor-root {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-          max-width: 900px;
-          margin: 0 auto;
-          color: #111827;
+        .compress-root {
+          font-family: -apple-system, system-ui, sans-serif;
+          max-width: 900px; margin: 0 auto; color: #1e293b;
         }
 
-        /* 1. UPLOAD ZONE (Not a card, but a workspace) */
-        .upload-zone {
-          border: 2px dashed #d1d5db;
-          border-radius: 8px;
-          height: 300px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
-          background: #f9fafb;
-          cursor: pointer;
+        /* --- 1. LIQUID UPLOAD BOX --- */
+        .upload-box {
+          position: relative;
+          height: 320px;
+          border-radius: 24px;
+          border: 2px dashed rgba(59, 130, 246, 0.3); /* Subtle blue border */
+          background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%); /* Soft Blue Gradient */
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          cursor: pointer; overflow: hidden;
+          transition: all 0.3s ease;
         }
-        .upload-zone:hover, .upload-zone.dragging {
-          border-color: var(--accent);
-          background: #eff6ff;
+        .upload-box:hover, .upload-box.drag {
+          border-color: var(--theme);
+          transform: translateY(-2px);
+          box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15);
         }
-        .upload-zone i { font-size: 48px; color: #9ca3af; margin-bottom: 16px; transition: 0.2s; }
-        .upload-zone:hover i { color: var(--accent); transform: translateY(-5px); }
-        .upload-main-text { font-size: 1.25rem; font-weight: 600; color: #374151; }
-        .upload-sub-text { font-size: 0.9rem; color: #6b7280; margin-top: 8px; }
-
-        /* 2. WORKSPACE LAYOUT */
-        .workspace { margin-top: 20px; }
         
+        /* The Liquid Animation Circle */
+        .liquid-icon {
+          width: 100px; height: 100px;
+          background: white; border-radius: 50%;
+          position: relative; overflow: hidden;
+          margin-bottom: 24px;
+          box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 2;
+        }
+        .liquid-icon i { font-size: 40px; color: var(--theme); z-index: 5; position: relative; }
+        
+        /* The Waves */
+        .wave {
+          position: absolute; bottom: 0; left: 0; width: 200%; height: 200%;
+          background: var(--theme); opacity: 0.1;
+          border-radius: 40%;
+          transform-origin: 50% 50%;
+          animation: wave-spin 6s linear infinite;
+          margin-left: -50%; margin-bottom: -60%;
+        }
+        .wave:nth-child(2) { opacity: 0.2; animation-duration: 8s; margin-bottom: -65%; }
+        
+        @keyframes wave-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .up-title { font-size: 1.4rem; font-weight: 700; color: #1e3a8a; margin-bottom: 8px; }
+        .up-sub { color: #64748b; font-weight: 500; }
+
+        /* --- 2. WORKSPACE --- */
+        .workspace { animation: fade-in 0.4s ease; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SUCCESS BANNER (Now at Top) */
+        .success-top {
+          background: #ecfdf5; border: 1px solid #d1fae5;
+          padding: 24px; border-radius: 16px;
+          display: flex; flex-direction: column; align-items: center; text-align: center;
+          margin-bottom: 24px;
+          animation: slide-down 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        @keyframes slide-down { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .success-stats { display: flex; gap: 30px; margin-bottom: 20px; }
+        .stat-box h4 { margin: 0; font-size: 0.8rem; text-transform: uppercase; color: #059669; }
+        .stat-box p { margin: 0; font-size: 1.4rem; font-weight: 800; color: #064e3b; }
+        
+        .dl-btn {
+          background: #059669; color: white; padding: 14px 40px;
+          border-radius: 50px; font-weight: 700; font-size: 1.1rem;
+          text-decoration: none; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+          transition: transform 0.2s;
+        }
+        .dl-btn:hover { transform: scale(1.05); }
+
         /* TOOLBAR */
         .toolbar {
-          display: flex; gap: 24px; align-items: flex-end; justify-content: space-between;
-          padding: 20px 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 20px;
+          background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+          padding: 20px; margin-bottom: 20px;
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
         }
+        .range-wrap { flex: 1; max-width: 300px; }
+        .range-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 10px; }
         
-        /* PRO SLIDER */
-        .slider-group { flex: 1; max-width: 400px; }
-        .slider-header {
-          display: flex; justify-content: space-between; font-size: 0.85rem; 
-          font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 12px;
-          letter-spacing: 0.5px;
-        }
-        
-        /* The Actual Input */
-        input[type=range] {
-          -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
-        }
-        input[type=range]:focus { outline: none; }
-        
-        /* Track Logic (Dynamic Fill) */
-        input[type=range]::-webkit-slider-runnable-track {
-          width: 100%; height: 6px; border-radius: 4px;
-          /* Magic Gradient: Fills the bar based on value */
-          background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--fill-pct), #e5e7eb var(--fill-pct), #e5e7eb 100%);
-        }
-        
-        /* Thumb Logic */
-        input[type=range]::-webkit-slider-thumb {
-          height: 20px; width: 20px; border-radius: 50%;
-          background: #ffffff; border: 2px solid var(--accent);
-          -webkit-appearance: none; margin-top: -7px; /* Center on track */
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          transition: transform 0.1s;
-        }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        
-        /* Trade-off Labels */
-        .tradeoff-labels {
-          display: flex; justify-content: space-between; margin-top: 8px;
-          font-size: 10px; color: #9ca3af; font-weight: 500;
-        }
+        input[type=range] { width: 100%; accent-color: var(--theme); cursor: pointer; }
 
-        /* ACTIONS */
-        .actions { display: flex; gap: 12px; }
         .btn {
-          padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
-          cursor: pointer; border: 1px solid transparent; transition: 0.2s;
-          display: inline-flex; align-items: center; gap: 8px;
+          padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem;
         }
-        .btn-ghost { background: transparent; color: #4b5563; border-color: #d1d5db; }
-        .btn-ghost:hover { background: #f3f4f6; color: #111827; }
-        .btn-primary { background: #111827; color: white; }
-        .btn-primary:hover { background: #000; }
-        .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+        .btn-primary { background: #1e293b; color: white; transition: 0.2s; }
+        .btn-primary:hover { background: black; }
+        .btn-ghost { background: transparent; color: #64748b; }
+        
+        /* TABLE LIST */
+        .file-table {
+          width: 100%; border-collapse: collapse; font-size: 0.9rem;
+        }
+        .file-table th { text-align: left; padding: 12px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .file-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: #eee; }
+        .fname { font-weight: 500; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* FILE LIST (Data Density) */
-        .file-list {
-          border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;
-        }
-        .list-header {
-          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 40px;
-          background: #f9fafb; padding: 12px 16px;
-          font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #6b7280;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .list-row {
-          display: grid; grid-template-columns: 60px 2fr 1fr 1fr 40px;
-          align-items: center; padding: 12px 16px;
-          border-bottom: 1px solid #f3f4f6; background: white;
-          font-size: 0.9rem;
-        }
-        .list-row:last-child { border-bottom: none; }
-        .preview-thumb { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; background: #eee; }
-        .fname { font-weight: 500; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px; }
-        .fsize { color: #6b7280; font-family: 'SF Mono', Consolas, monospace; font-size: 0.85rem; }
-        .rm-btn {
-          background: none; border: none; color: #d1d5db; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .rm-btn:hover { color: #ef4444; }
-
-        /* 3. FINISHED STATE (Clean Summary) */
-        .success-banner {
-          background: #ecfdf5; border: 1px solid #d1fae5;
-          padding: 30px; border-radius: 8px; text-align: center;
-          margin-top: 20px;
-        }
-        .stat-row {
-          display: flex; justify-content: center; gap: 40px; margin: 24px 0;
-        }
-        .stat h3 { font-size: 0.8rem; text-transform: uppercase; color: #059669; margin: 0 0 4px 0; }
-        .stat p { font-size: 1.5rem; font-weight: 700; color: #064e3b; margin: 0; }
-        .dl-btn {
-          display: inline-block; background: #059669; color: white;
-          padding: 12px 30px; border-radius: 6px; text-decoration: none;
-          font-weight: 600; transition: 0.2s;
-        }
-        .dl-btn:hover { background: #047857; }
-
-        /* LOADING BAR */
-        .progress-line {
-          height: 4px; background: #e5e7eb; width: 100%; position: relative; overflow: hidden;
-        }
-        .progress-active {
-          height: 100%; background: var(--accent); transition: width 0.2s;
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 600px) {
+          .toolbar { flex-direction: column; align-items: stretch; }
+          .range-wrap { max-width: 100%; }
+          .file-table th:nth-child(3), .file-table td:nth-child(3) { display: none; } /* Hide Original Size on mobile */
         }
       `}</style>
 
-      {/* --- VIEW 1: UPLOAD (Non-Card) --- */}
+      {/* --- VIEW 1: LIQUID UPLOAD BOX --- */ }
       {viewState === 'upload' && (
         <div 
-          className={`upload-zone ${isDragging ? 'dragging' : ''}`}
+          className={`upload-box ${isDragging ? 'drag' : ''}`}
           onDragOver={(e) => handleDrag(e, true)}
           onDragLeave={(e) => handleDrag(e, false)}
           onDrop={onDrop}
           onClick={() => fileInputRef.current.click()}
         >
-          <i className="fa-solid fa-cloud-arrow-up"></i>
-          <div className="upload-main-text">Click or Drop Images</div>
-          <div className="upload-sub-text">Up to 50 files • JPG, PNG, WebP</div>
+          {/* Animated Liquid Icon */}
+          <div className="liquid-icon">
+            <div className="wave"></div>
+            <div className="wave"></div>
+            <i className="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          
+          <div className="up-title">Drop your images here</div>
+          <div className="up-sub">We'll make them smaller, faster.</div>
         </div>
       )}
 
-      {/* --- VIEW 2: WORKSPACE (Toolbar + List) --- */}
+      {/* --- VIEW 2: WORKSPACE --- */ }
       {(viewState === 'workspace' || viewState === 'finished') && (
         <div className="workspace">
           
-          {/* Pro Toolbar */}
-          <div className="toolbar">
-            <div className="slider-group">
-              <div className="slider-header">
-                <span>Compression Quality</span>
-                <span style={{color: color}}>{Math.round(quality * 100)}%</span>
-              </div>
-              
-              {/* Custom CSS Variable --fill-pct drives the gradient */}
-              <input 
-                type="range" min="0.1" max="1.0" step="0.05"
-                value={quality}
-                onChange={e => setQuality(parseFloat(e.target.value))}
-                style={{'--fill-pct': `${((quality - 0.1) / 0.9) * 100}%`}}
-                disabled={processing || viewState === 'finished'}
-              />
-              
-              <div className="tradeoff-labels">
-                <span>Small Size</span>
-                <span>Best Quality</span>
-              </div>
-            </div>
-
-            <div className="actions">
-              {viewState === 'finished' ? (
-                <button className="btn btn-ghost" onClick={reset}>
-                  <i className="fa-solid fa-rotate-right"></i> Reset
-                </button>
-              ) : (
-                <>
-                  <button className="btn btn-ghost" onClick={() => fileInputRef.current.click()}>
-                    + Add
-                  </button>
-                  <button className="btn btn-primary" onClick={runCompression} disabled={processing}>
-                    {processing ? `Processing ${progress}%` : 'Compress Now'}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Loading Bar */}
-          {processing && (
-            <div className="progress-line">
-              <div className="progress-active" style={{width: `${progress}%`}}></div>
-            </div>
-          )}
-
-          {/* Developer File List */}
-          <div className="file-list">
-            <div className="list-header">
-              <span>Preview</span>
-              <span>Filename</span>
-              <span>Original</span>
-              <span>New Size</span>
-              <span></span>
-            </div>
-            
-            <div style={{maxHeight: '400px', overflowY: 'auto'}}>
-              {files.map(f => (
-                <div key={f.id} className="list-row">
-                  <img src={f.preview} className="preview-thumb" alt="" />
-                  <div className="fname" title={f.name}>{f.name}</div>
-                  <div className="fsize">{formatBytes(f.origSize)}</div>
-                  <div className="fsize" style={{color: f.status==='done' ? '#059669' : ''}}>
-                     {f.newSize ? formatBytes(f.newSize) : '—'}
-                  </div>
-                  <div style={{textAlign: 'center'}}>
-                    {f.status === 'done' ? (
-                      <i className="fa-solid fa-check" style={{color:'#059669'}}></i>
-                    ) : (
-                      !processing && (
-                        <button className="rm-btn" onClick={() => removeFile(f.id)}>
-                          <i className="fa-solid fa-xmark"></i>
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Success Summary */}
+          {/* 1. SUCCESS BANNER (MOVED TO TOP) */}
           {viewState === 'finished' && result && (
-            <div className="success-banner">
-              <h2 style={{fontSize: '1.5rem', marginBottom:'10px'}}>Optimization Complete</h2>
-              <div className="stat-row">
-                <div className="stat">
-                  <h3>Saved</h3>
+            <div className="success-top">
+              <div className="success-stats">
+                <div className="stat-box">
+                  <h4>Saved</h4>
                   <p>{result.saved}%</p>
                 </div>
-                <div className="stat">
-                  <h3>Size</h3>
+                <div className="stat-box">
+                  <h4>New Size</h4>
                   <p>{result.newMB} MB</p>
                 </div>
               </div>
               <a href={result.url} download="optimized-images.zip" className="dl-btn">
-                Download ZIP
+                <i className="fa-solid fa-download"></i> Download ZIP
               </a>
+              <button onClick={reset} style={{marginTop:'15px', background:'none', border:'none', color:'#64748b', cursor:'pointer'}}>Start Over</button>
             </div>
           )}
+
+          {/* 2. TOOLBAR */}
+          <div className="toolbar">
+            <div className="range-wrap">
+              <div className="range-info">
+                <span>Quality</span>
+                <span>{Math.round(quality * 100)}%</span>
+              </div>
+              <input 
+                type="range" min="0.1" max="1.0" step="0.05" 
+                value={quality} onChange={e => setQuality(parseFloat(e.target.value))}
+                disabled={processing || viewState === 'finished'} 
+              />
+            </div>
+            
+            {viewState !== 'finished' && (
+              <div style={{display:'flex', gap:'10px'}}>
+                <button className="btn btn-ghost" onClick={() => fileInputRef.current.click()}>+ Add</button>
+                <button className="btn btn-primary" onClick={runCompression} disabled={processing}>
+                  {processing ? `Compressing ${progress}%` : 'Compress Now'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 3. FILE LIST (TABLE) */}
+          <div style={{background:'white', borderRadius:'12px', border:'1px solid #e2e8f0', overflow:'hidden'}}>
+            <table className="file-table">
+              <thead>
+                <tr>
+                  <th width="50">Img</th>
+                  <th>Name</th>
+                  <th>Original</th>
+                  <th>Result</th>
+                  <th width="40"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {files.map(f => (
+                  <tr key={f.id}>
+                    <td><img src={f.preview} className="thumb" alt="" /></td>
+                    <td><div className="fname">{f.name}</div></td>
+                    <td>{formatBytes(f.origSize)}</td>
+                    <td style={{color: '#059669', fontWeight:'600'}}>
+                      {f.newSize ? formatBytes(f.newSize) : '—'}
+                    </td>
+                    <td>
+                      {f.status === 'done' ? (
+                         <i className="fa-solid fa-check" style={{color:'#059669'}}></i>
+                      ) : (
+                         !processing && <i className="fa-solid fa-xmark" style={{cursor:'pointer', color:'#94a3b8'}} onClick={()=>removeFile(f.id)}></i>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
         </div>
       )}
 
-      {/* Hidden Input */}
       <input type="file" ref={fileInputRef} hidden multiple accept="image/*" onChange={e => handleFiles(e.target.files)} />
     </div>
   );
