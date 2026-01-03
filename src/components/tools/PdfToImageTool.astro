@@ -2,19 +2,19 @@
 import RelatedTools from '../RelatedTools.astro';
 const { entry, relatedTools } = Astro.props;
 ---
-
 <!-- PDF.JS (REQUIRED) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <div id="pdf-to-image-tool">
+
   <!-- STEP 1: UPLOAD -->
   <div
     id="uploadContainer"
     class="uploader-card shadow-lg mb-5 bg-white mx-auto"
-    style="max-width:800px;"
+    style="max-width:800px; cursor:pointer;"
   >
     <div class="uploader-border-wrapper p-3">
-      <div class="uploader-zone text-center" style="cursor:pointer">
+      <div class="uploader-zone text-center">
         <div
           class="icon-circle mb-3 mx-auto"
           style={`background:${entry.data.color}15;color:${entry.data.color};width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;`}
@@ -28,10 +28,11 @@ const { entry, relatedTools } = Astro.props;
     </div>
   </div>
 
-  <!-- STEP 2 -->
+  <!-- STEP 2: WORKSPACE -->
   <div id="processingArea" style="display:none;" class="fade-in">
     <div class="row g-4 text-start">
 
+      <!-- LEFT: PREVIEW -->
       <div class="col-lg-8">
         <div class="preview-stage">
           <div class="p-4 bg-light rounded-4 d-inline-block shadow-sm text-center">
@@ -42,6 +43,7 @@ const { entry, relatedTools } = Astro.props;
         </div>
       </div>
 
+      <!-- RIGHT: OPTIONS + RELATED TOOLS -->
       <div class="col-lg-4">
 
         <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
@@ -49,8 +51,8 @@ const { entry, relatedTools } = Astro.props;
 
           <label class="small fw-bold text-muted mb-2">Image Format</label>
           <select id="imgFmt" class="form-select mb-4">
-            <option value="image/jpeg">JPEG</option>
-            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG (Optimized)</option>
+            <option value="image/png">PNG (Lossless)</option>
           </select>
 
           <button
@@ -62,15 +64,19 @@ const { entry, relatedTools } = Astro.props;
           </button>
         </div>
 
-        <!-- SHARED RELATED TOOLS -->
+        <!-- RELATED TOOLS -->
         <RelatedTools relatedTools={relatedTools} />
 
       </div>
     </div>
   </div>
 
-  <!-- STEP 3 -->
-  <div id="resultArea" style="display:none;" class="text-center py-5 fade-in mx-auto">
+  <!-- STEP 3: RESULT -->
+  <div
+    id="resultArea"
+    style="display:none;"
+    class="text-center py-5 fade-in mx-auto"
+  >
     <h3 class="fw-bold mb-4">Extracted Images</h3>
     <div id="imageGridResult" class="row g-3 justify-content-center"></div>
     <button
@@ -82,15 +88,39 @@ const { entry, relatedTools } = Astro.props;
   </div>
 </div>
 
+<style>
+.uploader-card { border-radius:24px; }
+.uploader-zone {
+  border:3px dashed #cbd5e1;
+  border-radius:20px;
+  padding:80px 20px;
+  transition:0.3s;
+  background:#fff;
+}
+.uploader-zone:hover {
+  border-color:#4B90FF;
+  background:#f8faff;
+}
+
+/* GLOBAL PREVIEW BEHAVIOR */
+.preview-stage {
+  background:#ffffff;
+  border:1px solid #f0f0f0;
+  border-radius:24px;
+  padding:16px;
+  text-align:center;
+}
+</style>
+
 <script is:inline>
-/* PDF.JS SETUP */
+/* PDF.JS WORKER */
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 const root = document.getElementById('pdf-to-image-tool');
-const uploadZone = root.querySelector('.uploader-zone');
-const fileInput = root.querySelector('#fileInput');
+
 const uploadContainer = root.querySelector('#uploadContainer');
+const fileInput = root.querySelector('#fileInput');
 const processingArea = root.querySelector('#processingArea');
 const resultArea = root.querySelector('#resultArea');
 const pdfName = root.querySelector('#pdfName');
@@ -101,12 +131,13 @@ const grid = root.querySelector('#imageGridResult');
 
 let pdfDoc = null;
 
-/* UPLOAD */
-uploadZone.addEventListener('click', () => {
+/* MAKE ENTIRE UPLOAD BOX CLICKABLE */
+uploadContainer.addEventListener('click', () => {
   fileInput.value = '';
   fileInput.click();
 });
 
+/* LOAD PDF */
 fileInput.addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
