@@ -1,0 +1,105 @@
+.uploader-portal-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.liquid-container {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100%;
+    max-width: 500px;
+}
+
+.liquid-container:hover {
+    transform: scale(1.02);
+}
+
+/* THE LIQUID BLOB ENGINE */
+.liquid-blob {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 40px;
+    background: var(--brand-color, #4f46e5);
+    /* Morphing border radius creates the "Liquid" shape */
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    animation: morphing 8s infinite ease-in-out;
+}
+
+@keyframes morphing {
+    0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+    100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+}
+
+/* THE WATER WAVE EFFECT */
+.water-wave {
+    position: absolute;
+    top: 60%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 38%;
+    animation: rotate-wave 10s infinite linear;
+    pointer-events: none;
+}
+
+.water-wave:nth-child(2) {
+    top: 55%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: rotate-wave 14s infinite linear;
+}
+
+@keyframes rotate-wave {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.cloud-icon {
+    font-size: 3.5rem;
+    color: white;
+    z-index: 10;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* TYPOGRAPHY */
+.title-realistic {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -1.5px;
+    margin-bottom: 8px;
+}
+
+.subtitle-realistic {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* Drag State */
+.liquid-container.active {
+    transform: scale(1.1);
+}
+.liquid-container.active .liquid-blob {
+    background: #0f172a;
+    animation-duration: 2s;
+}
