@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import imageCompression from 'browser-image-compression';
+import { encode as encodeJpeg } from '@jsquash/jpeg';
+import { encode as encodeWebp } from '@jsquash/webp';
 import JSZip from 'jszip';
 import './CompressTool.css';
 
 export default function CompressTool({ color }) {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState('landing'); // landing | lab | result
-  const [power, setPower] = useState(0.7); // 0.1 to 0.9
+  const [status, setStatus] = useState('landing'); 
+  const [power, setPower] = useState(0.7); 
   const [activeIdx, setActiveIdx] = useState(0);
   const [summary, setSummary] = useState(null);
 
@@ -20,35 +21,57 @@ export default function CompressTool({ color }) {
     setStatus('lab');
   };
 
+  // Helper to convert File to ImageData for WASM
+  const getImageData = async (file) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await new Promise(r => img.onload = r);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width; canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, img.width, img.height);
+  };
+
   const executeWasmProcess = async () => {
     setStatus('working');
     const zip = new JSZip();
-    let oldT = 0; let newT = 0;
+    let totalOld = 0; let totalNew = 0;
 
-    await Promise.all(files.map(async (item) => {
-      oldT += item.file.size;
-      
-      // WASM-BACKED AGGRESSIVE COMPRESSION
-      const options = { 
-        maxSizeMB: 0.1, 
-        initialQuality: 1 - power, // Inverse for logic
-        useWebWorker: true, 
-        maxIteration: 20 // Force deep optimization
-      };
-      
-      const blob = await imageCompression(item.file, options);
-      newT += blob.size;
-      zip.file(`zyntool-${item.name}`, blob);
-    }));
+    try {
+      for (const item of files) {
+        totalOld += item.file.size;
+        const imageData = await getImageData(item.file);
+        
+        // POWERFUL WASM ENCODING
+        let compressedBuffer;
+        const quality = Math.round((1 - power) * 100);
 
-    const zipBlob = await zip.generateAsync({ type: 'blob' });
-    setSummary({
-      url: URL.createObjectURL(zipBlob),
-      saved: Math.round(((oldT - newT) / oldT) * 100),
-      oldS: (oldT / 1024).toFixed(0),
-      newS: (newT / 1024).toFixed(0)
-    });
-    setStatus('result');
+        if (item.file.type === 'image/webp') {
+            compressedBuffer = await encodeWebp(imageData, { quality });
+        } else {
+            // MozJPEG WASM Engine
+            compressedBuffer = await encodeJpeg(imageData, { quality });
+        }
+
+        const blob = new Blob([compressedBuffer], { type: item.file.type });
+        totalNew += blob.size;
+        zip.file(`zyntool-${item.name}`, blob);
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      setSummary({
+        url: URL.createObjectURL(zipBlob),
+        saved: Math.round(((totalOld - totalNew) / totalOld) * 100),
+        oldS: (totalOld / 1024).toFixed(0),
+        newS: (totalNew / 1024).toFixed(0)
+      });
+      setStatus('result');
+    } catch (err) {
+      console.error(err);
+      alert("WASM Engine Error. Please try a different image.");
+      setStatus('lab');
+    }
   };
 
   return (
@@ -57,10 +80,10 @@ export default function CompressTool({ color }) {
         <div className="studio-portal" onClick={() => document.getElementById('studio-in').click()}>
           <div className="portal-inner">
             <div className="liquid-cloud-engine" style={{ backgroundColor: color }}>
-              <i className="fa-solid fa-cloud-arrow-up"></i>
+              <i className="fa-solid fa-microchip"></i>
             </div>
-            <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-2px' }}>Import to Studio</h2>
-            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Drag and drop images for high-speed WASM batch processing</p>
+            <h2 style={{ fontWeight: 950, fontSize: '2.5rem', color: '#0f172a', letterSpacing: '-2px' }}>Initialize WASM</h2>
+            <p style={{ color: '#94a3b8', fontWeight: 600 }}>Extreme 70%+ compression using Google Squoosh WASM Engines</p>
             <input type="file" id="studio-in" hidden multiple onChange={handleUpload} />
           </div>
         </div>
@@ -83,7 +106,7 @@ export default function CompressTool({ color }) {
           </div>
 
           <aside className="lab-inspector">
-            <span className="hud-label">WASM Engine Power</span>
+            <span className="hud-label">WASM Precision</span>
             <div className="hud-value">{Math.round(power * 100)}%</div>
             <input 
               type="range" min="0.1" max="0.9" step="0.1" 
@@ -92,7 +115,7 @@ export default function CompressTool({ color }) {
             />
             
             <button className="btn-initialize" onClick={executeWasmProcess} disabled={status === 'working'}>
-               {status === 'working' ? 'OPTIMIZING PIXELS...' : 'INITIALIZE WASM BATCH'}
+               {status === 'working' ? 'WASM PROCESSING...' : 'INITIALIZE STUDIO'}
             </button>
           </aside>
         </div>
@@ -101,16 +124,16 @@ export default function CompressTool({ color }) {
       {status === 'result' && (
         <div className="result-card-elite">
           <div className="massive-stat">{summary.saved}%</div>
-          <div className="stat-msg" style={{ color: color }}>Lighter than original!</div>
+          <div className="stat-msg" style={{ color: color }}>Lighter!</div>
           <p style={{ color: '#94a3b8', fontSize: '1.4rem', marginBottom: '60px', fontWeight: '700' }}>
             {summary.oldS} KB reduced to {summary.newS} KB
           </p>
           <a href={summary.url} download="zyntool-wasm-batch.zip" className="btn-download-studio" style={{ background: color }}>
-             DOWNLOAD ZIP
+             DOWNLOAD BATCH
           </a>
           <br/>
           <button onClick={() => location.reload()} style={{ marginTop: '50px', background: 'none', border: 'none', color: '#94a3b8', fontWeight: '900', cursor: 'pointer', fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' }}>
-             ← New Studio Batch
+             ← NEW STUDIO SESSION
           </button>
         </div>
       )}
