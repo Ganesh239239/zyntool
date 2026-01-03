@@ -1,50 +1,36 @@
 ---
 import { getCollection } from 'astro:content';
-import MainLayout from '../layouts/MainLayout.astro';
-import CompressTool from '../components/tools/CompressTool.jsx';
+import MainLayout from '../../../layouts/MainLayout.astro';
+// Import all your tool components here
+import CompressTool from '../../../components/tools/CompressTool.jsx';
+import ResizeTool from '../../../components/tools/ResizeTool.jsx'; // You need to create this
+import CropTool from '../../../components/tools/CropTool.jsx';     // You need to create this
+import ConverterTool from '../../../components/tools/ConverterTool.jsx'; // You need to create this
 
 export async function getStaticPaths() {
   const toolEntries = await getCollection('tools');
-  return toolEntries.map(entry => ({ params: { slug: entry.slug || entry.id }, props: { entry } }));
+  return toolEntries.map(entry => ({ params: { slug: entry.slug }, props: { entry } }));
 }
 
 const { entry } = Astro.props;
-const toolId = entry.slug || entry.id;
+const toolId = entry.slug;
 ---
 
-<MainLayout title={entry.data.title} isHome={false}>
+<MainLayout title={entry.data.title} description={entry.data.description}>
     <div class="app-page-wrapper">
         <div class="container-pro">
-            <!-- TOOL HEADING -->
             <header class="tool-title-header">
                 <h1>{entry.data.title}</h1>
                 <p>{entry.data.description}</p>
             </header>
 
-            <!-- REACT ENGINE -->
             <div class="tool-content-area">
+                {/* CONDITIONAL RENDERING SWITCH */}
                 {toolId === 'compress-image' && <CompressTool client:load color={entry.data.color} />}
+                {toolId === 'resize-image'   && <ResizeTool client:load color={entry.data.color} />}
+                {toolId === 'crop-image'     && <CropTool client:load color={entry.data.color} />}
+                {toolId === 'convert-to-jpg' && <ConverterTool client:load color={entry.data.color} />}
             </div>
         </div>
     </div>
 </MainLayout>
-
-<style>
-    .app-page-wrapper { background: #ffffff; min-height: 100vh; }
-    .container-pro { max-width: 1140px; margin: 0 auto; padding: 40px 20px; }
-    
-    .tool-title-header { text-align: center; margin-bottom: 50px; }
-    .tool-title-header h1 { 
-        font-size: 3.5rem; 
-        font-weight: 900; 
-        color: #0f172a; 
-        letter-spacing: -2px; 
-        margin-bottom: 10px; 
-    }
-    .tool-title-header p { font-size: 1.2rem; color: #64748b; font-weight: 500; }
-
-    @media (max-width: 768px) {
-        .tool-title-header h1 { font-size: 2.2rem; letter-spacing: -1px; }
-        .tool-title-header p { font-size: 1rem; }
-    }
-</style>
